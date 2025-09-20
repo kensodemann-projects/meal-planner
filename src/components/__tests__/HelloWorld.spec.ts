@@ -10,8 +10,6 @@ const vuetify = createVuetify({
   directives,
 });
 
-global.ResizeObserver = require('resize-observer-polyfill');
-
 it('displays message', () => {
   const wrapper = mount(
     {
