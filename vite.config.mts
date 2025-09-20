@@ -1,12 +1,12 @@
 /// <reference types="vitest" />
 
-import { fileURLToPath, URL } from 'node:url'
-import Vue from '@vitejs/plugin-vue'
-import Fonts from 'unplugin-fonts/vite'
-import Components from 'unplugin-vue-components/vite'
-import VueRouter from 'unplugin-vue-router/vite'
-import { defineConfig } from 'vite'
-import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
+import { fileURLToPath, URL } from 'node:url';
+import Vue from '@vitejs/plugin-vue';
+import Fonts from 'unplugin-fonts/vite';
+import Components from 'unplugin-vue-components/vite';
+import VueRouter from 'unplugin-vue-router/vite';
+import { defineConfig } from 'vite';
+import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -68,4 +68,4 @@ export default defineConfig({
     },
     setupFiles: './vitest.setup.ts',
   },
-})
+});
