@@ -59,6 +59,22 @@ export default defineConfig({
     port: 3000,
   },
   test: {
+    coverage: {
+      provider: 'v8',
+      exclude: [
+        '**/*.d.ts',
+        '**/*.config.*',
+        'dist/',
+        'src/**/__mocks__',
+        'src/models',
+        'src/plugins',
+        'src/router',
+        'src/*.vue',
+        'src/*.ts',
+        'src/composables/firebase-app.ts',
+      ],
+    },
+    clearMocks: true,
     globals: true,
     environment: 'jsdom',
     server: {
