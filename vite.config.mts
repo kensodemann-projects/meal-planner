@@ -1,11 +1,12 @@
 /// <reference types="vitest" />
 
-import { fileURLToPath, URL } from 'node:url';
 import Vue from '@vitejs/plugin-vue';
+import { fileURLToPath, URL } from 'node:url';
 import Fonts from 'unplugin-fonts/vite';
 import Components from 'unplugin-vue-components/vite';
 import VueRouter from 'unplugin-vue-router/vite';
 import { defineConfig } from 'vite';
+import Layouts from 'vite-plugin-vue-layouts-next';
 import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 
 // https://vitejs.dev/config/
@@ -14,6 +15,7 @@ export default defineConfig({
     VueRouter({
       dts: 'src/typed-router.d.ts',
     }),
+    Layouts(),
     Vue({
       template: { transformAssetUrls },
     }),
