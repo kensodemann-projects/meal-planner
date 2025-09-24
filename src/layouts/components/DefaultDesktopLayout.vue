@@ -1,0 +1,39 @@
+<template>
+  <v-layout>
+    <v-navigation-drawer expand-on-hover permanent rail>
+      <v-list density="compact" nav>
+        <v-list-item
+          v-for="item in menuItems"
+          :key="item.value"
+          :prepend-icon="item.icon"
+          :title="item.title"
+          :value="item.value"
+          :to="{ path: item.path }"
+        ></v-list-item>
+      </v-list>
+
+      <v-divider></v-divider>
+      <v-list density="compact" nav>
+        <v-list-item prepend-icon="mdi-logout" title="Logout" value="logout" to="/login"></v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+
+    <v-main class="full">
+      <router-view />
+    </v-main>
+  </v-layout>
+</template>
+
+<script lang="ts" setup>
+import type { MenuItem } from './menu-item';
+
+defineProps<{
+  menuItems: MenuItem[];
+}>();
+</script>
+
+<style scoped>
+.full {
+  height: 100vh;
+}
+</style>
