@@ -14,11 +14,12 @@ const mountComponent = (menuItems: MenuItem[]) =>
   mount(DefaultDesktopLayout, { props: { menuItems }, global: { plugins: [vuetify], stubs: { 'router-view': true } } });
 
 describe('default desktop layout', () => {
-  it('always includes a logout menu item', () => {
+  it('always includes logout and settings menu items', () => {
     const wrapper = mountComponent([]);
     const items = wrapper.findAllComponents(components.VListItem);
-    expect(items.length).toBe(1);
-    expect(items[0].text()).toBe('Logout');
+    expect(items.length).toBe(2);
+    expect(items[0].text()).toBe('Settings');
+    expect(items[1].text()).toBe('Logout');
   });
 
   it('renders each menu item', () => {
@@ -29,11 +30,12 @@ describe('default desktop layout', () => {
       { icon: 'mdi-information-outline', title: 'About', value: 'about', path: '/about' },
     ]);
     const items = wrapper.findAllComponents(components.VListItem);
-    expect(items.length).toBe(5);
+    expect(items.length).toBe(6);
     expect(items[0].text()).toBe('My Files');
     expect(items[1].text()).toBe('Shared with me');
     expect(items[2].text()).toBe('Starred');
     expect(items[3].text()).toBe('About');
-    expect(items[4].text()).toBe('Logout');
+    expect(items[4].text()).toBe('Settings');
+    expect(items[5].text()).toBe('Logout');
   });
 });
