@@ -1,23 +1,12 @@
-/**
- * main.ts
- *
- * Bootstraps Vuetify and other plugins then mounts the App`
- */
-
-// Composables
-import { createApp } from 'vue';
-
-// Plugins
 import { registerPlugins } from '@/plugins';
-
-// Components
-import App from './App.vue';
-
-// Styles
 import 'unfonts.css';
+import { createApp } from 'vue';
+import { VueFire, VueFireAuth } from 'vuefire';
+import App from './App.vue';
+import { useFirebaseApp } from './core/firebase-app';
 
-const app = createApp(App);
+const { app: firebaseApp } = useFirebaseApp();
+const app = createApp(App).use(VueFire, { firebaseApp, modules: [VueFireAuth()] });
 
 registerPlugins(app);
-
 app.mount('#app');
