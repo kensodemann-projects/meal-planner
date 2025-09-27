@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-const login = async () => {
+const login = async (): Promise<void> => {
   await router.replace('/dashboard');
 };
 </script>
