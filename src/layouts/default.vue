@@ -1,11 +1,13 @@
 <template>
-  <DefaultMobileLayout :menuItems="menuItems" v-if="$vuetify.display.mobile" />
-  <DefaultDesktopLayout :menuItems="menuItems" v-else />
+  <DefaultMobileLayout :menuItems="menuItems" @logout="performLogout" v-if="$vuetify.display.mobile" />
+  <DefaultDesktopLayout :menuItems="menuItems" @logout="performLogout" v-else />
 </template>
 
 <script lang="ts" setup>
+import { useAuthentication } from '@/core/authentication';
 import DefaultDesktopLayout from './components/DefaultDesktopLayout.vue';
 import DefaultMobileLayout from './components/DefaultMobileLayout.vue';
+import { useRouter } from 'vue-router';
 
 const menuItems = [
   { icon: 'mdi-view-dashboard-outline', title: 'Dashboard', value: 'dashboard', path: '/dashboard' },
@@ -13,6 +15,14 @@ const menuItems = [
   { icon: 'mdi-format-list-checkbox', title: 'Shopping', value: 'shopping', path: '/shopping' },
   { icon: 'mdi-food-outline', title: 'Recipes', value: 'recipes', path: '/recipes' },
 ];
+
+const router = useRouter();
+const { logout } = useAuthentication();
+
+const performLogout = async () => {
+  await logout();
+  router.replace('/login');
+};
 </script>
 
 <style scoped>

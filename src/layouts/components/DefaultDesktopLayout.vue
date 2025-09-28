@@ -15,7 +15,7 @@
       <v-divider></v-divider>
       <v-list density="compact" nav>
         <v-list-item prepend-icon="mdi-cog-outline" title="Settings" value="settings" to="/settings"></v-list-item>
-        <v-list-item prepend-icon="mdi-logout" title="Logout" value="logout" to="/login"></v-list-item>
+        <v-list-item prepend-icon="mdi-logout" title="Logout" value="logout" @click="$emit('logout')"></v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -31,6 +31,7 @@ import type { MenuItem } from './menu-item';
 defineProps<{
   menuItems: MenuItem[];
 }>();
+defineEmits(['logout']);
 </script>
 
 <style scoped>
