@@ -1,5 +1,5 @@
 import { useAuthentication } from '@/core/authentication';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
@@ -64,11 +64,55 @@ describe('LoginPage', () => {
         email: 'test@example.com',
         password: 'wrongpassword',
       });
-      await wrapper.vm.$nextTick();
+      await flushPromises();
 
       const alert = wrapper.findComponent({ name: 'VAlert' });
       expect(alert.exists()).toBe(true);
       expect(alert.text()).toBe('Login failed. Please try again.');
+    });
+  });
+
+  describe('on reset password ', () => {
+    it('calls the sendPasswordReset method', () => {
+      const { sendPasswordReset } = useAuthentication();
+      const wrapper = mountPage();
+      const loginCard = wrapper.findComponent({ name: 'AppLoginCard' });
+      loginCard.vm.$emit('resetPassword', {
+        email: 'test@example.com',
+      });
+      expect(sendPasswordReset).toHaveBeenCalledExactlyOnceWith('test@example.com');
+    });
+
+    it('alerts the user on password reset', async () => {
+      const wrapper = mountPage();
+      const loginCard = wrapper.findComponent({ name: 'AppLoginCard' });
+      loginCard.vm.$emit('resetPassword', {
+        email: 'test@example.com',
+      });
+      await flushPromises();
+
+      const alert = wrapper.findComponent({ name: 'VAlert' });
+      expect(alert.exists()).toBe(true);
+      expect(alert.text()).toBe(
+        'Password reset email sent. Please check your inbox for further instructions. Be sure to look in your spam folder if you do not see it right away.',
+      );
+    });
+
+    it('shows error message on password reset failure', async () => {
+      const { sendPasswordReset } = useAuthentication();
+      const wrapper = mountPage();
+      const loginCard = wrapper.findComponent({ name: 'AppLoginCard' });
+
+      (sendPasswordReset as Mock).mockRejectedValue(new Error('Email not found'));
+
+      loginCard.vm.$emit('resetPassword', {
+        email: 'test@example.com',
+      });
+      await flushPromises();
+
+      const alert = wrapper.findComponent({ name: 'VAlert' });
+      expect(alert.exists()).toBe(true);
+      expect(alert.text()).toBe('Failed to send password reset email. Please try again.');
     });
   });
 });

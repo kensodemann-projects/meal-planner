@@ -1,4 +1,4 @@
-import { signInWithEmailAndPassword, signOut, type UserCredential } from 'firebase/auth';
+import { sendPasswordResetEmail, signInWithEmailAndPassword, signOut, type UserCredential } from 'firebase/auth';
 import { getCurrentUser, useCurrentUser, useFirebaseAuth } from 'vuefire';
 
 export const useAuthentication = () => {
@@ -17,5 +17,9 @@ export const useAuthentication = () => {
     return auth && (await signOut(auth));
   };
 
-  return { isAuthenticated, login, logout, user };
+  const sendPasswordReset = async (email: string): Promise<void | null> => {
+    return auth && (await sendPasswordResetEmail(auth, email));
+  };
+
+  return { isAuthenticated, login, logout, sendPasswordReset, user };
 };

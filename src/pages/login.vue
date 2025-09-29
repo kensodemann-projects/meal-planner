@@ -1,8 +1,8 @@
 <template>
   <div>
-    <app-login-card :loading="loading" @login="onLogin" @forgotPassword="onForgotPassword" />
-    <v-alert v-if="errorMessage" type="error" class="error-message mt-4" @click="clearError">
-      {{ errorMessage }}
+    <app-login-card :loading="loading" @login="onLogin" @resetPassword="onResetPassword" />
+    <v-alert v-if="message" :type="messageType" class="error-message mt-4" @click="clearMessage">
+      {{ message }}
     </v-alert>
   </div>
 </template>
@@ -13,26 +13,37 @@ import { useAuthentication } from '@/core/authentication';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const { login } = useAuthentication();
-const errorMessage = ref<string>('');
+const { login, sendPasswordReset } = useAuthentication();
+const message = ref<string>('');
+const messageType = ref<'error' | 'success'>('error');
 const loading = ref(false);
 
-const clearError = (): void => {
-  errorMessage.value = '';
+const clearMessage = (): void => {
+  message.value = '';
 };
 
-const onForgotPassword = async (): Promise<void> => {
-  console.log('Forgot password clicked');
+const onResetPassword = async ({ email }: { email: string }): Promise<void> => {
+  try {
+    clearMessage();
+    await sendPasswordReset(email);
+    message.value =
+      'Password reset email sent. Please check your inbox for further instructions. Be sure to look in your spam folder if you do not see it right away.';
+    messageType.value = 'success';
+  } catch {
+    message.value = 'Failed to send password reset email. Please try again.';
+    messageType.value = 'error';
+  }
 };
 
 const onLogin = async ({ email, password }: { email: string; password: string }): Promise<void> => {
   try {
-    clearError();
+    clearMessage();
     loading.value = true;
     await login(email, password);
     await router.replace('/dashboard');
   } catch {
-    errorMessage.value = 'Login failed. Please try again.';
+    message.value = 'Login failed. Please try again.';
+    messageType.value = 'error';
   } finally {
     loading.value = false;
   }

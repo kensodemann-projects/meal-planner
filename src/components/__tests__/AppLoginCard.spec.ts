@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { describe, it, expect } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
@@ -31,7 +31,9 @@ const getButtons = (wrapper: ReturnType<typeof createWrapper>) => {
   const buttons = wrapper.findAll('button');
   const loginButton = buttons.find((btn) => btn.text() === 'Login')!;
   const forgotPasswordButton = buttons.find((btn) => btn.text() === 'Forgot Password?')!;
-  return { loginButton, forgotPasswordButton };
+  const sendResetButton = buttons.find((btn) => btn.text() === 'Send Reset Instructions')!;
+  const cancelButton = buttons.find((btn) => btn.text() === 'Cancel')!;
+  return { loginButton, forgotPasswordButton, sendResetButton, cancelButton };
 };
 
 const getInputs = (wrapper: ReturnType<typeof createWrapper>) => {
@@ -51,16 +53,16 @@ describe('AppLoginCard', () => {
     const wrapper = createWrapper();
     const inputs = wrapper.findAllComponents(components.VTextField);
     expect(inputs).toHaveLength(2);
-    expect(inputs[0].props('label')).toBe('Email');
-    expect(inputs[1].props('label')).toBe('Password');
+    expect(inputs[0]?.props('label')).toBe('Email');
+    expect(inputs[1]?.props('label')).toBe('Password');
   });
 
   it('renders login and forgot password buttons', () => {
     const wrapper = createWrapper();
     const buttons = wrapper.findAllComponents(components.VBtn);
     expect(buttons).toHaveLength(2);
-    expect(buttons[0].text()).toBe('Login');
-    expect(buttons[1].text()).toBe('Forgot Password?');
+    expect(buttons[0]?.text()).toBe('Login');
+    expect(buttons[1]?.text()).toBe('Forgot Password?');
   });
 
   it('disables login button when form is invalid', async () => {
@@ -79,7 +81,7 @@ describe('AppLoginCard', () => {
     await emailInput.setValue('test@example.com');
     await passwordInput.setValue('password123');
 
-    await wrapper.vm.$nextTick();
+    await flushPromises();
 
     expect(loginButton.exists()).toBe(true);
     expect(loginButton.attributes('disabled')).toBeUndefined();
@@ -127,12 +129,12 @@ describe('AppLoginCard', () => {
 
     await emailInput.setValue('test@example.com');
     await passwordInput.setValue('password123');
+    await flushPromises();
     await loginButton.trigger('click');
 
     expect(loginCard.emitted('login')).toBeTruthy();
     expect(loginCard.emitted('login')).toHaveLength(1);
 
-    // Check that the event includes email and password payload
     const loginEvent = loginCard.emitted('login')?.[0];
     expect(loginEvent).toBeDefined();
     expect(loginEvent?.[0]).toEqual({
@@ -141,15 +143,63 @@ describe('AppLoginCard', () => {
     });
   });
 
-  it('handles forgot password click', async () => {
-    const wrapper = createWrapper();
-    const loginCard = wrapper.findComponent(AppLoginCard);
-    const { forgotPasswordButton } = getButtons(wrapper);
+  describe('clicking the forgot password button', () => {
+    let wrapper: ReturnType<typeof createWrapper>;
+    beforeEach(async () => {
+      wrapper = createWrapper();
+      const { forgotPasswordButton } = getButtons(wrapper);
+      await forgotPasswordButton.trigger('click');
+    });
 
-    await forgotPasswordButton.trigger('click');
+    it('changes the title of the card', async () => {
+      const title = wrapper.findComponent(components.VCardTitle);
+      expect(title.text()).toBe('Get Password Reset Instructions');
+    });
 
-    expect(loginCard.emitted('forgotPassword')).toBeTruthy();
-    expect(loginCard.emitted('forgotPassword')).toHaveLength(1);
+    it('renders just the email field', () => {
+      const inputs = wrapper.findAllComponents(components.VTextField);
+      expect(inputs).toHaveLength(1);
+      expect(inputs[0]?.props('label')).toBe('Email');
+    });
+
+    it('renders send reset instructions and cancel buttons', () => {
+      const buttons = wrapper.findAllComponents(components.VBtn);
+      expect(buttons).toHaveLength(2);
+      expect(buttons[0]?.text()).toBe('Send Reset Instructions');
+      expect(buttons[1]?.text()).toBe('Cancel');
+    });
+
+    it('emits resetPassword event when send reset instructions is clicked', async () => {
+      const loginCard = wrapper.findComponent(AppLoginCard);
+      const { emailInput } = getInputs(wrapper);
+      const { sendResetButton } = getButtons(wrapper);
+
+      await emailInput.setValue('test@example.com');
+      await flushPromises();
+      await sendResetButton.trigger('click');
+
+      expect(loginCard.emitted('resetPassword')).toBeTruthy();
+      expect(loginCard.emitted('resetPassword')).toHaveLength(1);
+
+      const loginEvent = loginCard.emitted('resetPassword')?.[0];
+      expect(loginEvent).toBeDefined();
+      expect(loginEvent?.[0]).toEqual({
+        email: 'test@example.com',
+      });
+    });
+
+    it('resets to login on cancel', async () => {
+      const { cancelButton } = getButtons(wrapper);
+      await cancelButton.trigger('click');
+      const title = wrapper.findComponent(components.VCardTitle);
+      expect(title.text()).toBe('Login to Your Account');
+      const inputs = wrapper.findAllComponents(components.VTextField);
+      expect(inputs).toHaveLength(2);
+      const buttons = wrapper.findAllComponents(components.VBtn);
+      expect(buttons).toHaveLength(2);
+      expect(buttons[0]?.text()).toBe('Login');
+      expect(buttons[1]?.text()).toBe('Forgot Password?');
+    });
   });
 
   it('applies correct CSS classes', () => {

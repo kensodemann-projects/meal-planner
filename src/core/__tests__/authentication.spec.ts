@@ -1,5 +1,5 @@
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { Mock, beforeEach, describe, expect, it, vi } from 'vitest';
+import { sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest';
 import { getCurrentUser, useFirebaseAuth } from 'vuefire';
 import { useAuthentication } from '../authentication';
 
@@ -9,6 +9,7 @@ vi.mock('firebase/auth', async () => {
   return {
     ...actual,
     signInWithEmailAndPassword: vi.fn(),
+    sendPasswordResetEmail: vi.fn(),
     signOut: vi.fn(),
   };
 });
@@ -51,8 +52,7 @@ describe('use authentication', () => {
     it('signs out', async () => {
       const { logout } = useAuthentication();
       await logout();
-      expect(signOut).toHaveBeenCalledOnce();
-      expect(signOut).toHaveBeenCalledWith(auth);
+      expect(signOut).toHaveBeenCalledExactlyOnceWith(auth);
     });
   });
 
@@ -67,6 +67,18 @@ describe('use authentication', () => {
       (getCurrentUser as Mock).mockResolvedValue({ email: 'test@testy.com' });
       const { isAuthenticated } = useAuthentication();
       expect(await isAuthenticated()).toEqual(true);
+    });
+  });
+
+  describe('sendPasswordReset', () => {
+    beforeEach(() => {
+      (useFirebaseAuth as Mock).mockReturnValue(auth);
+    });
+
+    it('sends a password reset', async () => {
+      const { sendPasswordReset } = useAuthentication();
+      await sendPasswordReset('test@testy.com');
+      expect(sendPasswordResetEmail).toHaveBeenCalledExactlyOnceWith(auth, 'test@testy.com');
     });
   });
 });
