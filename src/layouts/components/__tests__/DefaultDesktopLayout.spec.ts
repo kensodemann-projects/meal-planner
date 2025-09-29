@@ -4,7 +4,7 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import DefaultDesktopLayout from '../DefaultDesktopLayout.vue';
-import type { MenuItem } from '../menu-item';
+import { type MenuItem } from '../menu-item';
 
 const vuetify = createVuetify({
   components,
@@ -18,8 +18,8 @@ describe('default desktop layout', () => {
     const wrapper = mountComponent([]);
     const items = wrapper.findAllComponents(components.VListItem);
     expect(items.length).toBe(2);
-    expect(items[0].text()).toBe('Settings');
-    expect(items[1].text()).toBe('Logout');
+    expect(items[0]?.text()).toBe('Settings');
+    expect(items[1]?.text()).toBe('Logout');
   });
 
   it('renders each menu item', () => {
@@ -31,11 +31,11 @@ describe('default desktop layout', () => {
     ]);
     const items = wrapper.findAllComponents(components.VListItem);
     expect(items.length).toBe(6);
-    expect(items[0].text()).toBe('My Files');
-    expect(items[1].text()).toBe('Shared with me');
-    expect(items[2].text()).toBe('Starred');
-    expect(items[3].text()).toBe('About');
-    expect(items[4].text()).toBe('Settings');
-    expect(items[5].text()).toBe('Logout');
+    expect(items[0]?.text()).toBe('My Files');
+    expect(items[1]?.text()).toBe('Shared with me');
+    expect(items[2]?.text()).toBe('Starred');
+    expect(items[3]?.text()).toBe('About');
+    expect(items[4]?.text()).toBe('Settings');
+    expect(items[5]?.text()).toBe('Logout');
   });
 });

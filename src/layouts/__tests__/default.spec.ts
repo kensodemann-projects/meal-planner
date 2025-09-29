@@ -7,7 +7,7 @@ import * as directives from 'vuetify/directives';
 import DefaultLayout from '../default.vue';
 import { beforeEach } from 'vitest';
 import { useRouter } from 'vue-router';
-import { Mock } from 'vitest';
+import { type Mock } from 'vitest';
 
 vi.mock('@/core/authentication');
 vi.mock('vue-router');
@@ -46,19 +46,19 @@ describe('DefaultLayout', () => {
     const wrapper = mountComponent();
     const items = wrapper.findAllComponents(components.VListItem);
     expect(items.length).toBe(6);
-    expect(items[0].text()).toBe('Dashboard');
-    expect(items[1].text()).toBe('Planning');
-    expect(items[2].text()).toBe('Shopping');
-    expect(items[3].text()).toBe('Recipes');
-    expect(items[4].text()).toBe('Settings');
-    expect(items[5].text()).toBe('Logout');
+    expect(items[0]?.text()).toBe('Dashboard');
+    expect(items[1]?.text()).toBe('Planning');
+    expect(items[2]?.text()).toBe('Shopping');
+    expect(items[3]?.text()).toBe('Recipes');
+    expect(items[4]?.text()).toBe('Settings');
+    expect(items[5]?.text()).toBe('Logout');
   });
 
   it('calls the logout if logout is clicked', async () => {
     const { logout } = useAuthentication();
     const wrapper = mountComponent();
     const items = wrapper.findAllComponents(components.VListItem);
-    await items[5].trigger('click');
+    await items[5]?.trigger('click');
     expect(logout).toHaveBeenCalledExactlyOnceWith();
   });
 
@@ -66,7 +66,7 @@ describe('DefaultLayout', () => {
     const router = useRouter();
     const wrapper = mountComponent();
     const items = wrapper.findAllComponents(components.VListItem);
-    await items[5].trigger('click');
+    await items[5]?.trigger('click');
     expect(router.replace).toHaveBeenCalledExactlyOnceWith('/login');
   });
 });

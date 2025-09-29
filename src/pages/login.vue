@@ -120,4 +120,5 @@ const onLogin = async ({ email, password }: { email: string; password: string })
 <route lang="yaml">
 meta:
   layout: standalone
+  allowAnonymous: true
 </route>

@@ -48,15 +48,17 @@ const rules = {
 };
 
 const login = async () => {
-  resetMode.value
-    ? emit('resetPassword', {
-        email: email.value,
-      })
-    : emit('login', {
-        email: email.value,
-        password: password.value,
-      });
-  resetMode.value = false;
+  if (resetMode.value) {
+    emit('resetPassword', {
+      email: email.value,
+    });
+  } else {
+    emit('login', {
+      email: email.value,
+      password: password.value,
+    });
+    resetMode.value = false;
+  }
 };
 
 const forgotPassword = () => {
