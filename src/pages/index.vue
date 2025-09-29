@@ -6,7 +6,7 @@
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-router.replace('/login');
+router.replace('/dashboard');
 </script>
 
 <route lang="yaml">

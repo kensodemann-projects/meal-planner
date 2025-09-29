@@ -25,9 +25,9 @@ describe('IndexPage', () => {
     expect(mountPage()).toBeDefined();
   });
 
-  it('redirects to the login page', () => {
+  it('redirects to the dashboard page', () => {
     const router = useRouter();
     mountPage();
-    expect(router.replace).toHaveBeenCalledWith('/login');
+    expect(router.replace).toHaveBeenCalledWith('/dashboard');
   });
 });
