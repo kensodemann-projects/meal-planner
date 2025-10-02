@@ -13,7 +13,8 @@ const menuItems = [
   { icon: 'mdi-view-dashboard-outline', title: 'Dashboard', value: 'dashboard', path: '/dashboard' },
   { icon: 'mdi-clipboard-list-outline', title: 'Planning', value: 'planning', path: '/planning' },
   { icon: 'mdi-format-list-checkbox', title: 'Shopping', value: 'shopping', path: '/shopping' },
-  { icon: 'mdi-food-outline', title: 'Recipes', value: 'recipes', path: '/recipes' },
+  { icon: 'mdi-food-apple-outline', title: 'Foods', value: 'foods', path: '/foods' },
+  { icon: 'mdi-pasta', title: 'Recipes', value: 'recipes', path: '/recipes' },
 ];
 
 const router = useRouter();
