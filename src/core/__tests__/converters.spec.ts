@@ -1,0 +1,642 @@
+import type { FdcFoodItem, FoodItem } from '@/models';
+import { describe, expect, it } from 'vitest';
+import { useConverters } from '../converters';
+
+describe('use converters', () => {
+  describe('from FDC to food item', () => {
+    const { fromFdcToFoodItem } = useConverters();
+
+    it.each([
+      {
+        testCase: 'egg product',
+        input: {
+          fdcId: 748967,
+          description: 'Eggs, Grade A, Large, egg whole',
+          foodNutrients: [
+            {
+              nutrient: { id: 1008, number: '208', name: 'Energy', rank: 300, unitName: 'kcal' },
+              amount: 148.0,
+            },
+            {
+              nutrient: { id: 1003, number: '203', name: 'Protein', rank: 600, unitName: 'g' },
+              amount: 12.4,
+            },
+            {
+              nutrient: { id: 1004, number: '204', name: 'Total lipid (fat)', rank: 800, unitName: 'g' },
+              amount: 9.96,
+            },
+            {
+              nutrient: { id: 1005, number: '205', name: 'Carbohydrate, by difference', rank: 1110, unitName: 'g' },
+              amount: 0.96,
+            },
+            {
+              nutrient: { id: 1063, number: '269.3', name: 'Sugars, Total', rank: 1500, unitName: 'g' },
+              amount: 0.2,
+            },
+            {
+              nutrient: { id: 1093, number: '307', name: 'Sodium, Na', rank: 5800, unitName: 'mg' },
+              amount: 129.0,
+            },
+          ],
+          foodPortions: [
+            {
+              gramWeight: 50.3,
+              amount: 1.0,
+              measureUnit: { name: 'egg', abbreviation: 'egg' },
+            },
+            {
+              gramWeight: 50.0,
+              amount: 1.0,
+              measureUnit: { name: 'RACC', abbreviation: 'RACC' },
+            },
+          ],
+          foodCategory: { id: 1, code: '0100', description: 'Dairy and Egg Products' },
+        } as FdcFoodItem,
+        expected: {
+          fdcId: 748967,
+          name: 'Eggs, Grade A, Large, egg whole',
+          category: 'Dairy',
+          servingSize: 100,
+          unitOfMeasure: { id: 'g', name: 'Gram', type: 'weight', system: 'metric' },
+          grams: 100,
+          calories: 148,
+          protein: 12.4,
+          fat: 9.96,
+          carbs: 0.96,
+          sugar: 0.2,
+          sodium: 129,
+        } as FoodItem,
+      },
+      {
+        testCase: 'pork product',
+        input: {
+          fdcId: 2727575,
+          description: 'Pork, chop, center cut, raw',
+          foodNutrients: [
+            {
+              nutrient: { id: 1003, number: '203', name: 'Protein', rank: 600, unitName: 'g' },
+              amount: 22.8125,
+            },
+            {
+              nutrient: { id: 1004, number: '204', name: 'Total lipid (fat)', rank: 800, unitName: 'g' },
+              amount: 5.475,
+            },
+            {
+              nutrient: { id: 1005, number: '205', name: 'Carbohydrate, by difference', rank: 1110, unitName: 'g' },
+              amount: -0.5625,
+            },
+            {
+              nutrient: { id: 1093, number: '307', name: 'Sodium, Na', rank: 5800, unitName: 'mg' },
+              amount: 39.3,
+            },
+          ],
+          foodPortions: [
+            {
+              gramWeight: 110.0,
+              amount: 1.0,
+              measureUnit: { name: 'RACC', abbreviation: 'RACC' },
+            },
+          ],
+          foodCategory: { id: 10, code: '1000', description: 'Pork Products' },
+        } as FdcFoodItem,
+        expected: {
+          fdcId: 2727575,
+          name: 'Pork, chop, center cut, raw',
+          category: 'Meats',
+          servingSize: 100,
+          unitOfMeasure: { id: 'g', name: 'Gram', type: 'weight', system: 'metric' },
+          grams: 100,
+          calories: 0,
+          protein: 22.8125,
+          fat: 5.475,
+          carbs: -0.5625,
+          sodium: 39.3,
+          sugar: 0,
+        } as FoodItem,
+      },
+      {
+        testCase: 'chicken product without nutrients',
+        input: {
+          fdcId: 2646170,
+          description: 'Chicken, breast, boneless, skinless, raw',
+          foodCategory: {
+            id: 5,
+            code: '0500',
+            description: 'Poultry Products',
+          },
+          foodNutrients: [],
+          foodPortions: [],
+        } as FdcFoodItem,
+        expected: {
+          fdcId: 2646170,
+          name: 'Chicken, breast, boneless, skinless, raw',
+          category: 'Meats',
+          servingSize: 100,
+          unitOfMeasure: { id: 'g', name: 'Gram', type: 'weight', system: 'metric' },
+          grams: 100,
+          calories: 0,
+          protein: 0,
+          fat: 0,
+          carbs: 0,
+          sugar: 0,
+          sodium: 0,
+        } as FoodItem,
+      },
+      {
+        testCase: 'salt',
+        input: {
+          fdcId: 746775,
+          description: 'Salt, table, iodized',
+          foodNutrients: [
+            {
+              nutrient: { id: 1093, number: '307', name: 'Sodium, Na', rank: 5800, unitName: 'mg' },
+              amount: 38700.0,
+            },
+          ],
+          foodPortions: [
+            {
+              gramWeight: 6.1,
+              amount: 1.0,
+              measureUnit: { name: 'teaspoon', abbreviation: 'tsp' },
+            },
+          ],
+          foodCategory: { id: 2, code: '0200', description: 'Spices and Herbs' },
+        } as FdcFoodItem,
+        expected: {
+          fdcId: 746775,
+          name: 'Salt, table, iodized',
+          category: 'Spices',
+          servingSize: 100,
+          unitOfMeasure: { id: 'g', name: 'Gram', type: 'weight', system: 'metric' },
+          grams: 100,
+          calories: 0,
+          protein: 0,
+          fat: 0,
+          carbs: 0,
+          sugar: 0,
+          sodium: 38700,
+        } as FoodItem,
+      },
+      {
+        testCase: 'sugar',
+        input: {
+          fdcId: 746784,
+          description: 'Sugars, granulated',
+          foodNutrients: [
+            {
+              nutrient: { id: 1008, number: '208', name: 'Energy', rank: 300, unitName: 'kcal' },
+              amount: 385.0,
+            },
+            {
+              nutrient: { id: 1003, number: '203', name: 'Protein', rank: 600, unitName: 'g' },
+              amount: 0e-8,
+            },
+            {
+              nutrient: { id: 1004, number: '204', name: 'Total lipid (fat)', rank: 800, unitName: 'g' },
+              amount: 0.32,
+            },
+            {
+              nutrient: { id: 1005, number: '205', name: 'Carbohydrate, by difference', rank: 1110, unitName: 'g' },
+              amount: 99.6,
+            },
+            {
+              nutrient: { id: 1063, number: '269.3', name: 'Sugars, Total', rank: 1500, unitName: 'g' },
+              amount: 99.8,
+            },
+            {
+              nutrient: { id: 1093, number: '307', name: 'Sodium, Na', rank: 5800, unitName: 'mg' },
+              amount: 1.0,
+            },
+          ],
+          foodPortions: [
+            {
+              gramWeight: 4.0,
+              amount: 1.0,
+              measureUnit: { name: 'teaspoon', abbreviation: 'tsp' },
+            },
+            {
+              gramWeight: 188.0,
+              amount: 1.0,
+              measureUnit: { name: 'cup', abbreviation: 'cup' },
+            },
+            {
+              gramWeight: 8.0,
+              amount: 1.0,
+              measureUnit: { name: 'RACC', abbreviation: 'RACC' },
+            },
+          ],
+          foodCategory: { id: 19, code: '1900', description: 'Sweets' },
+        },
+        expected: {
+          fdcId: 746784,
+          name: 'Sugars, granulated',
+          category: 'Sweets',
+          servingSize: 100,
+          unitOfMeasure: { id: 'g', name: 'Gram', type: 'weight', system: 'metric' },
+          grams: 100,
+          calories: 385,
+          protein: 0,
+          fat: 0.32,
+          carbs: 99.6,
+          sugar: 99.8,
+          sodium: 1,
+        } as FoodItem,
+      },
+      {
+        testCase: 'rice',
+        input: {
+          fdcId: 2512380,
+          description: 'Rice, brown, long grain, unenriched, raw',
+          foodNutrients: [
+            {
+              nutrient: { id: 1003, number: '203', name: 'Protein', rank: 600, unitName: 'g' },
+              amount: 7.25305,
+            },
+            {
+              nutrient: { id: 1004, number: '204', name: 'Total lipid (fat)', rank: 800, unitName: 'g' },
+              amount: 3.306,
+            },
+            {
+              nutrient: { id: 1005, number: '205', name: 'Carbohydrate, by difference', rank: 1110, unitName: 'g' },
+              amount: 76.68795,
+            },
+            {
+              nutrient: { id: 1093, number: '307', name: 'Sodium, Na', rank: 5800, unitName: 'mg' },
+              amount: 0e-8,
+            },
+          ],
+          foodPortions: [
+            {
+              gramWeight: 45.0,
+              amount: 1.0,
+              measureUnit: { name: 'RACC', abbreviation: 'RACC' },
+            },
+          ],
+          foodCategory: { id: 20, code: '2000', description: 'Cereal Grains and Pasta' },
+        } as FdcFoodItem,
+        expected: {
+          fdcId: 2512380,
+          name: 'Rice, brown, long grain, unenriched, raw',
+          category: 'Grains',
+          servingSize: 100,
+          unitOfMeasure: { id: 'g', name: 'Gram', type: 'weight', system: 'metric' },
+          grams: 100,
+          calories: 0,
+          protein: 7.25305,
+          fat: 3.306,
+          carbs: 76.68795,
+          sugar: 0,
+          sodium: 0,
+        } as FoodItem,
+      },
+      {
+        testCase: 'Almond flour',
+        input: {
+          fdcId: 2261420,
+          description: 'Flour, almond',
+          foodNutrients: [
+            {
+              type: 'FoodNutrient',
+              nutrient: { id: 1003, number: '203', name: 'Protein', rank: 600, unitName: 'g' },
+              amount: 26.24375,
+            },
+            {
+              type: 'FoodNutrient',
+              nutrient: { id: 1004, number: '204', name: 'Total lipid (fat)', rank: 800, unitName: 'g' },
+              amount: 50.23,
+            },
+            {
+              nutrient: { id: 1005, number: '205', name: 'Carbohydrate, by difference', rank: 1110, unitName: 'g' },
+              amount: 16.24925,
+            },
+            {
+              nutrient: { id: 1093, number: '307', name: 'Sodium, Na', rank: 5800, unitName: 'mg' },
+              amount: 0.8944,
+            },
+          ],
+          foodPortions: [
+            {
+              gramWeight: 15.0,
+              amount: 1.0,
+              measureUnit: { name: 'RACC', abbreviation: 'RACC' },
+            },
+          ],
+          foodCategory: { id: 12, code: '1200', description: 'Nut and Seed Products' },
+        } as FdcFoodItem,
+        expected: {
+          fdcId: 2261420,
+          name: 'Flour, almond',
+          category: 'Nuts & Seeds',
+          servingSize: 100,
+          unitOfMeasure: { id: 'g', name: 'Gram', type: 'weight', system: 'metric' },
+          grams: 100,
+          calories: 0,
+          protein: 26.24375,
+          fat: 50.23,
+          carbs: 16.24925,
+          sugar: 0,
+          sodium: 0.8944,
+        } as FoodItem,
+      },
+      {
+        testCase: 'apple',
+        input: {
+          fdcId: 1750342,
+          description: 'Apples, granny smith, with skin, raw',
+          foodNutrients: [
+            {
+              nutrient: { id: 1003, number: '203', name: 'Protein', rank: 600, unitName: 'g' },
+              amount: 0.265625,
+            },
+            {
+              nutrient: { id: 1004, number: '204', name: 'Total lipid (fat)', rank: 800, unitName: 'g' },
+              amount: 0.1375,
+            },
+            {
+              nutrient: { id: 1005, number: '205', name: 'Carbohydrate, by difference', rank: 1110, unitName: 'g' },
+              amount: 14.142975,
+            },
+            {
+              nutrient: { id: 1063, number: '269.3', name: 'Sugars, Total', rank: 1500, unitName: 'g' },
+              amount: 10.651,
+            },
+            {
+              nutrient: { id: 1093, number: '307', name: 'Sodium, Na', rank: 5800, unitName: 'mg' },
+              amount: 0e-8,
+            },
+          ],
+          foodPortions: [
+            {
+              gramWeight: 140.0,
+              amount: 1.0,
+              measureUnit: { name: 'RACC', abbreviation: 'RACC' },
+            },
+          ],
+          foodCategory: { id: 9, code: '0900', description: 'Fruits and Fruit Juices' },
+        } as FdcFoodItem,
+        expected: {
+          fdcId: 1750342,
+          name: 'Apples, granny smith, with skin, raw',
+          category: 'Produce',
+          servingSize: 100,
+          unitOfMeasure: { id: 'g', name: 'Gram', type: 'weight', system: 'metric' },
+          grams: 100,
+          calories: 0,
+          protein: 0.265625,
+          fat: 0.1375,
+          carbs: 14.142975,
+          sugar: 10.651,
+          sodium: 0,
+        } as FoodItem,
+      },
+      {
+        testCase: 'bread',
+        input: {
+          fdcId: 325871,
+          description: 'Bread, white, commercially prepared',
+          foodNutrients: [
+            {
+              nutrient: { id: 1008, number: '208', name: 'Energy', rank: 300, unitName: 'kcal' },
+              amount: 270.0,
+            },
+            {
+              nutrient: { id: 1003, number: '203', name: 'Protein', rank: 600, unitName: 'g' },
+              amount: 9.43,
+            },
+            {
+              nutrient: { id: 1004, number: '204', name: 'Total lipid (fat)', rank: 800, unitName: 'g' },
+              amount: 3.59,
+            },
+            {
+              nutrient: { id: 1005, number: '205', name: 'Carbohydrate, by difference', rank: 1110, unitName: 'g' },
+              id: 2238520,
+              amount: 49.2,
+            },
+            {
+              nutrient: { id: 1063, number: '269.3', name: 'Sugars, Total', rank: 1500, unitName: 'g' },
+              amount: 5.34,
+            },
+            {
+              nutrient: { id: 1093, number: '307', name: 'Sodium, Na', rank: 5800, unitName: 'mg' },
+              amount: 477.0,
+            },
+          ],
+          foodPortions: [
+            {
+              gramWeight: 27.3,
+              amount: 1.0,
+              measureUnit: { name: 'slice', abbreviation: 'slice' },
+            },
+            {
+              gramWeight: 50.0,
+              amount: 1.0,
+              measureUnit: { name: 'RACC', abbreviation: 'RACC' },
+            },
+          ],
+          foodCategory: { id: 18, code: '1800', description: 'Baked Products' },
+        } as FdcFoodItem,
+        expected: {
+          fdcId: 325871,
+          name: 'Bread, white, commercially prepared',
+          category: 'Bakery',
+          servingSize: 100,
+          unitOfMeasure: { id: 'g', name: 'Gram', type: 'weight', system: 'metric' },
+          grams: 100,
+          calories: 270,
+          protein: 9.43,
+          fat: 3.59,
+          carbs: 49.2,
+          sugar: 5.34,
+          sodium: 477,
+        } as FoodItem,
+      },
+      {
+        testCase: 'carrot',
+        input: {
+          fdcId: 2258587,
+          description: 'Carrots, baby, raw',
+          foodNutrients: [
+            {
+              nutrient: { id: 1003, number: '203', name: 'Protein', rank: 600, unitName: 'g' },
+              amount: 0.805,
+            },
+            {
+              type: 'FoodNutrient',
+              nutrient: { id: 1004, number: '204', name: 'Total lipid (fat)', rank: 800, unitName: 'g' },
+              amount: 0.1375,
+            },
+            {
+              nutrient: { id: 1005, number: '205', name: 'Carbohydrate, by difference', rank: 1110, unitName: 'g' },
+              amount: 9.0787,
+            },
+            {
+              nutrient: { id: 1093, number: '307', name: 'Sodium, Na', rank: 5800, unitName: 'mg' },
+              amount: 62.66,
+            },
+          ],
+          foodPortions: [
+            {
+              gramWeight: 85.0,
+              amount: 1.0,
+              measureUnit: { name: 'RACC', abbreviation: 'RACC' },
+            },
+          ],
+          foodCategory: { id: 11, code: '1100', description: 'Vegetables and Vegetable Products' },
+        } as FdcFoodItem,
+        expected: {
+          fdcId: 2258587,
+          name: 'Carrots, baby, raw',
+          category: 'Produce',
+          servingSize: 100,
+          unitOfMeasure: { id: 'g', name: 'Gram', type: 'weight', system: 'metric' },
+          grams: 100,
+          calories: 0,
+          protein: 0.805,
+          fat: 0.1375,
+          carbs: 9.0787,
+          sugar: 0,
+          sodium: 62.66,
+        } as FoodItem,
+      },
+      {
+        testCase: 'Chicken',
+        input: {
+          fdcId: 2646170,
+          description: 'Chicken, breast, boneless, skinless, raw',
+          foodNutrients: [
+            {
+              nutrient: { id: 1003, number: '203', name: 'Protein', rank: 600, unitName: 'g' },
+              amount: 22.525,
+            },
+            {
+              nutrient: { id: 1004, number: '204', name: 'Total lipid (fat)', rank: 800, unitName: 'g' },
+              amount: 1.934,
+            },
+            {
+              nutrient: { id: 1005, number: '205', name: 'Carbohydrate, by difference', rank: 1110, unitName: 'g' },
+              amount: 0,
+            },
+            {
+              nutrient: { id: 1093, number: '307', name: 'Sodium, Na', rank: 5800, unitName: 'mg' },
+              amount: 65.75,
+            },
+          ],
+          foodPortions: [
+            {
+              gramWeight: 114.0,
+              amount: 1.0,
+              measureUnit: { name: 'RACC', abbreviation: 'RACC' },
+            },
+          ],
+          foodCategory: { id: 5, code: '0500', description: 'Poultry Products' },
+        } as FdcFoodItem,
+        expected: {
+          fdcId: 2646170,
+          name: 'Chicken, breast, boneless, skinless, raw',
+          category: 'Meats',
+          servingSize: 100,
+          unitOfMeasure: { id: 'g', name: 'Gram', type: 'weight', system: 'metric' },
+          grams: 100,
+          calories: 0,
+          protein: 22.525,
+          fat: 1.934,
+          carbs: 0,
+          sugar: 0,
+          sodium: 65.75,
+        } as FoodItem,
+      },
+      {
+        testCase: 'milk',
+        input: {
+          fdcId: 746776,
+          description: 'Milk, nonfat, fluid, with added vitamin A and vitamin D (fat free or skim)',
+          foodNutrients: [
+            {
+              nutrient: { id: 1003, number: '203', name: 'Protein', rank: 600, unitName: 'g' },
+              amount: 3.43,
+            },
+            {
+              nutrient: { id: 1004, number: '204', name: 'Total lipid (fat)', rank: 800, unitName: 'g' },
+              amount: 0.08,
+            },
+            {
+              nutrient: { id: 1005, number: '205', name: 'Carbohydrate, by difference', rank: 1110, unitName: 'g' },
+              amount: 4.92,
+            },
+          ],
+          foodPortions: [
+            {
+              gramWeight: 246.0,
+              amount: 1.0,
+              measureUnit: { name: 'cup', abbreviation: 'cup' },
+            },
+          ],
+          foodCategory: { id: 1, code: '0100', description: 'Dairy and Egg Products' },
+        } as FdcFoodItem,
+        expected: {
+          fdcId: 746776,
+          name: 'Milk, nonfat, fluid, with added vitamin A and vitamin D (fat free or skim)',
+          category: 'Dairy',
+          servingSize: 100,
+          unitOfMeasure: { id: 'g', name: 'Gram', type: 'weight', system: 'metric' },
+          grams: 100,
+          calories: 0,
+          protein: 3.43,
+          fat: 0.08,
+          carbs: 4.92,
+          sugar: 0,
+          sodium: 0,
+        } as FoodItem,
+      },
+      {
+        testCase: 'Lentils',
+        input: {
+          fdcId: 2644283,
+          description: 'Lentils, dry',
+          foodNutrients: [
+            {
+              nutrient: { id: 1003, number: '203', name: 'Protein', rank: 600, unitName: 'g' },
+              amount: 23.56875,
+            },
+            {
+              nutrient: { id: 1004, number: '204', name: 'Total lipid (fat)', rank: 800, unitName: 'g' },
+              amount: 1.925,
+            },
+            {
+              nutrient: { id: 1005, number: '205', name: 'Carbohydrate, by difference', rank: 1110, unitName: 'g' },
+              amount: 62.17125,
+            },
+            {
+              nutrient: { id: 1093, number: '307', name: 'Sodium, Na', rank: 5800, unitName: 'mg' },
+              amount: 0e-8,
+            },
+          ],
+          foodPortions: [
+            {
+              gramWeight: 35.0,
+              amount: 1.0,
+              measureUnit: { name: 'RACC', abbreviation: 'RACC' },
+            },
+          ],
+          foodCategory: { id: 16, code: '1600', description: 'Legumes and Legume Products' },
+        } as FdcFoodItem,
+        expected: {
+          fdcId: 2644283,
+          name: 'Lentils, dry',
+          category: 'Beans',
+          servingSize: 100,
+          unitOfMeasure: { id: 'g', name: 'Gram', type: 'weight', system: 'metric' },
+          grams: 100,
+          calories: 0,
+          protein: 23.56875,
+          fat: 1.925,
+          carbs: 62.17125,
+          sugar: 0,
+          sodium: 0,
+        } as FoodItem,
+      },
+    ])('converts the base data for a $testCase', ({ input, expected }) => {
+      expect(fromFdcToFoodItem(input)).toEqual(expected);
+    });
+  });
+});
