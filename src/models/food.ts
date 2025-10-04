@@ -17,19 +17,29 @@ export type FoodCategory =
   | 'Sweets'
   | 'Unknown';
 
+export interface Portion {
+  units: number;
+  unitOfMeasure: UnitOfMeasure;
+  grams: number;
+  calories: number;
+  sodium: number;
+  fat: number;
+  protein: number;
+  carbs: number;
+  sugar: number;
+}
 export interface FoodItem {
   id?: string;
   fdcId: number;
   name: string;
   brand?: string;
   category: FoodCategory;
-  servingSize: number;
-  unitOfMeasure: UnitOfMeasure;
-  grams: number;
-  calories?: number;
-  sodium?: number;
-  fat?: number;
-  protein?: number;
-  carbs?: number;
-  sugar?: number;
+  // These values are stored for the standard 100g portion
+  calories: number;
+  sodium: number;
+  fat: number;
+  protein: number;
+  carbs: number;
+  sugar: number;
+  alternativePortions: Portion[];
 }

@@ -1,4 +1,5 @@
-import type { FdcFoodItem, FoodCategory, FoodItem } from '@/models';
+import type { FdcFoodItem, FdcFoodPortion, FoodCategory, FoodItem, Portion } from '@/models';
+import { findUnitOfMeasure } from './unit-of-measure';
 
 const fdcCategoryCodeToCategory = (code: string): FoodCategory => {
   switch (code) {
@@ -60,23 +61,38 @@ const lookupNutrient = (fdcFoodItem: FdcFoodItem, nutrientNumber: string): numbe
   return nutrient?.amount;
 };
 
-const fromFdcToFoodItem = (fdcFoodItem: FdcFoodItem): FoodItem => {
-  return {
+const addPortion = (foodItem: FoodItem, fdcFoodPortion: FdcFoodPortion) => {
+  const portion: Portion = {
+    units: fdcFoodPortion.amount,
+    unitOfMeasure: findUnitOfMeasure(fdcFoodPortion.measureUnit.abbreviation),
+    grams: fdcFoodPortion.gramWeight,
+    calories: Number(((foodItem.calories * fdcFoodPortion.gramWeight) / 100).toFixed(2)),
+    protein: Number(((foodItem.protein * fdcFoodPortion.gramWeight) / 100).toFixed(2)),
+    fat: Number(((foodItem.fat * fdcFoodPortion.gramWeight) / 100).toFixed(2)),
+    carbs: Number(((foodItem.carbs * fdcFoodPortion.gramWeight) / 100).toFixed(2)),
+    sugar: Number(((foodItem.sugar * fdcFoodPortion.gramWeight) / 100).toFixed(2)),
+    sodium: Number(((foodItem.sodium * fdcFoodPortion.gramWeight) / 100).toFixed(2)),
+  };
+  foodItem.alternativePortions.push(portion);
+};
+
+export const fromFdcToFoodItem = (fdcFoodItem: FdcFoodItem): FoodItem => {
+  const foodItem: FoodItem = {
     fdcId: fdcFoodItem.fdcId,
     name: fdcFoodItem.description,
     category: fdcCategoryCodeToCategory(fdcFoodItem.foodCategory.code),
-    servingSize: 100,
-    unitOfMeasure: { id: 'g', name: 'Gram', type: 'weight', system: 'metric' },
-    grams: 100,
     calories: lookupNutrient(fdcFoodItem, '208') ?? 0,
     protein: lookupNutrient(fdcFoodItem, '203') ?? 0,
     fat: lookupNutrient(fdcFoodItem, '204') ?? 0,
     carbs: lookupNutrient(fdcFoodItem, '205') ?? 0,
     sugar: lookupNutrient(fdcFoodItem, '269.3') ?? 0,
     sodium: lookupNutrient(fdcFoodItem, '307') ?? 0,
+    alternativePortions: [],
   };
-};
 
-export const useConverters = () => ({
-  fromFdcToFoodItem,
-});
+  fdcFoodItem.foodPortions
+    .filter((portion) => portion.measureUnit.abbreviation !== 'RACC')
+    .forEach((fdcPortion) => addPortion(foodItem, fdcPortion));
+
+  return foodItem;
+};

@@ -1,17 +1,15 @@
 import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
-import { useFdcData } from '../usda-fdc-data';
 import type { FdcFoodItem } from '@/models';
+import { fetchFoodItem, searchFdcData } from '../usda-fdc-data';
 
 global.fetch = vi.fn();
 
-describe('useFdcData', () => {
+describe('USDA FDC Data', () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
 
   describe('searchFdcData', () => {
-    const { searchFdcData } = useFdcData();
-
     it('makes a GET request to USDA FDC API with correct parameters', async () => {
       const mockResponse = {
         foods: [
@@ -195,8 +193,6 @@ describe('useFdcData', () => {
   });
 
   describe('fetchFoodItem', () => {
-    const { fetchFoodItem } = useFdcData();
-
     it('makes a GET request to USDA FDC API with correct parameters', async () => {
       (fetch as Mock).mockResolvedValueOnce({
         ok: true,
@@ -237,24 +233,32 @@ describe('useFdcData', () => {
         json: async () => TEST_FDC_FOOD_ITEM,
       });
 
-      const { item, portions } = await fetchFoodItem(748967);
+      const item = await fetchFoodItem(748967);
 
       expect(item).toEqual({
         fdcId: 748967,
         name: 'Eggs, Grade A, Large, egg whole',
         category: 'Dairy',
-        servingSize: 100,
-        unitOfMeasure: { id: 'g', name: 'Gram', type: 'weight', system: 'metric' },
-        grams: 100,
         calories: 148,
         protein: 12.4,
         fat: 9.96,
         carbs: 0.96,
         sugar: 0.2,
         sodium: 129,
+        alternativePortions: [
+          {
+            units: 1,
+            unitOfMeasure: { id: 'item', name: 'Item', type: 'quantity', system: 'none' },
+            grams: 50.3,
+            calories: 74.44,
+            protein: 6.24,
+            fat: 5.01,
+            carbs: 0.48,
+            sugar: 0.1,
+            sodium: 64.89,
+          },
+        ],
       });
-
-      expect(portions).toEqual(TEST_FDC_FOOD_ITEM.foodPortions);
     });
   });
 });
