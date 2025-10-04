@@ -77,7 +77,6 @@ export default defineConfig({
       ],
     },
     clearMocks: true,
-    globals: true,
     environment: 'jsdom',
     server: {
       deps: {
