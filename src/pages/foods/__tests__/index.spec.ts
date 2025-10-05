@@ -14,5 +14,5 @@ const mountPage = () => mount(IndexPage, { global: { plugins: [vuetify] } });
 it('renders', () => {
   const wrapper = mountPage();
   expect(wrapper.exists()).toBe(true);
-  expect(wrapper.text()).toBe('This is the foods page');
+  expect(wrapper.text()).toContain('This is the foods page');
 });
