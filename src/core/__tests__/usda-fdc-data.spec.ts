@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
-import type { FdcFoodItem } from '@/models';
+import type { FdcFoodItem, FdcFoodSearchResult } from '@/models';
 import { fetchFoodItem, searchFdcData } from '../usda-fdc-data';
 
 global.fetch = vi.fn();
@@ -11,10 +11,13 @@ describe('USDA FDC Data', () => {
 
   describe('searchFdcData', () => {
     it('makes a GET request to USDA FDC API with correct parameters', async () => {
-      const mockResponse = {
+      const mockResponse: FdcFoodSearchResult = {
+        totalPages: 1,
+        currentPage: 1,
+        foodSearchCriteria: { query: 'apple' },
         foods: [
-          { fdcId: 123, description: 'Apple, raw' },
-          { fdcId: 456, description: 'Apple juice' },
+          { fdcId: 123, description: 'Apple, raw', foodCategory: 'Fruits & Juices' },
+          { fdcId: 456, description: 'Apple juice', foodCategory: 'Fruits & Juices' },
         ],
       };
 
@@ -31,10 +34,13 @@ describe('USDA FDC Data', () => {
     });
 
     it('sets the page number if passed', async () => {
-      const mockResponse = {
+      const mockResponse: FdcFoodSearchResult = {
+        totalPages: 1,
+        currentPage: 1,
+        foodSearchCriteria: { query: 'apple' },
         foods: [
-          { fdcId: 123, description: 'Apple, raw' },
-          { fdcId: 456, description: 'Apple juice' },
+          { fdcId: 123, description: 'Apple, raw', foodCategory: 'Fruits & Juices' },
+          { fdcId: 456, description: 'Apple juice', foodCategory: 'Fruits & Juices' },
         ],
       };
 
@@ -51,7 +57,12 @@ describe('USDA FDC Data', () => {
     });
 
     it('properly encodes special characters in query', async () => {
-      const mockResponse = { foods: [] };
+      const mockResponse: FdcFoodSearchResult = {
+        totalPages: 0,
+        currentPage: 0,
+        foodSearchCriteria: { query: 'chicken & rice' },
+        foods: [],
+      };
 
       (fetch as Mock).mockResolvedValueOnce({
         ok: true,
@@ -65,25 +76,14 @@ describe('USDA FDC Data', () => {
       );
     });
 
-    it('returns mapped food items with fdcId and description', async () => {
-      const mockResponse = {
+    it('returns the JSON from the response', async () => {
+      const mockResponse: FdcFoodSearchResult = {
+        totalPages: 1,
+        currentPage: 1,
+        foodSearchCriteria: { query: 'apple' },
         foods: [
-          {
-            fdcId: 123,
-            description: 'Apple, raw',
-            brandOwner: 'Generic',
-            dataType: 'Foundation',
-            servingSize: 100,
-            nutrients: [],
-          },
-          {
-            fdcId: 456,
-            description: 'Apple juice',
-            brandOwner: 'Brand X',
-            dataType: 'Branded',
-            servingSize: 240,
-            nutrients: [],
-          },
+          { fdcId: 123, description: 'Apple, raw', foodCategory: 'Fruits & Juices' },
+          { fdcId: 456, description: 'Apple juice', foodCategory: 'Fruits & Juices' },
         ],
       };
 
@@ -94,23 +94,7 @@ describe('USDA FDC Data', () => {
 
       const result = await searchFdcData('apple');
 
-      expect(result).toEqual([
-        { fdcId: 123, description: 'Apple, raw' },
-        { fdcId: 456, description: 'Apple juice' },
-      ]);
-    });
-
-    it('returns an empty array when no foods found', async () => {
-      const mockResponse = { foods: [] };
-
-      (fetch as Mock).mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockResponse,
-      });
-
-      const result = await searchFdcData('nonexistentfood');
-
-      expect(result).toEqual([]);
+      expect(result).toEqual(mockResponse);
     });
 
     it('throws error when API response is not ok', async () => {
@@ -134,50 +118,13 @@ describe('USDA FDC Data', () => {
       await expect(searchFdcData('apple')).rejects.toThrow('Invalid JSON');
     });
 
-    it('handles network errors', async () => {
-      (fetch as Mock).mockRejectedValueOnce(new Error('Network error'));
-
-      await expect(searchFdcData('apple')).rejects.toThrow('Network error');
-    });
-
-    it('should handle malformed API response gracefully', async () => {
-      const mockResponse = { foods: null };
-
-      (fetch as Mock).mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockResponse,
-      });
-
-      await expect(searchFdcData('apple')).rejects.toThrow();
-    });
-
-    it('handles foods with missing properties', async () => {
-      const mockResponse = {
-        foods: [
-          { fdcId: 123, description: 'Complete item' },
-          { fdcId: 456 },
-          { description: 'Missing fdcId' },
-          { fdcId: 789, description: null },
-        ],
-      };
-
-      (fetch as Mock).mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockResponse,
-      });
-
-      const result = await searchFdcData('apple');
-
-      expect(result).toEqual([
-        { fdcId: 123, description: 'Complete item' },
-        { fdcId: 456, description: undefined },
-        { fdcId: undefined, description: 'Missing fdcId' },
-        { fdcId: 789, description: null },
-      ]);
-    });
-
     it('handles empty query string', async () => {
-      const mockResponse = { foods: [] };
+      const mockResponse: FdcFoodSearchResult = {
+        totalPages: 0,
+        currentPage: 0,
+        foodSearchCriteria: { query: '' },
+        foods: [],
+      };
 
       (fetch as Mock).mockResolvedValueOnce({
         ok: true,

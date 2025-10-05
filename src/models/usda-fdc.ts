@@ -1,6 +1,19 @@
 // Note: The USDA FDC API returns objects with a lot potential properties. These definitions only
 //       cover data points that are likely to be used.
 
+export interface FdcFoodSearchResult {
+  currentPage: number;
+  totalPages: number;
+  foodSearchCriteria: {
+    query: string;
+  };
+  foods: {
+    fdcId: number;
+    description: string;
+    foodCategory: string;
+  }[];
+}
+
 export interface FdcFoodCategory {
   id: number;
   code: string;
