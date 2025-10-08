@@ -28,18 +28,11 @@ export interface Portion {
   carbs: number;
   sugar: number;
 }
-export interface FoodItem {
+export interface FoodItem extends Portion {
   id?: string;
   fdcId: number;
   name: string;
   brand?: string;
   category: FoodCategory;
-  // These values are stored for the standard 100g portion
-  calories: number;
-  sodium: number;
-  fat: number;
-  protein: number;
-  carbs: number;
-  sugar: number;
   alternativePortions: Portion[];
 }

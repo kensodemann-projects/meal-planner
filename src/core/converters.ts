@@ -80,6 +80,9 @@ export const fromFdcToFoodItem = (fdcFoodItem: FdcFoodItem): FoodItem => {
   const foodItem: FoodItem = {
     fdcId: fdcFoodItem.fdcId,
     name: fdcFoodItem.description,
+    units: 100,
+    unitOfMeasure: findUnitOfMeasure('g'),
+    grams: 100,
     category: fdcCategoryCodeToCategory(fdcFoodItem.foodCategory.code),
     calories: lookupNutrient(fdcFoodItem, '208') ?? 0,
     protein: lookupNutrient(fdcFoodItem, '203') ?? 0,
