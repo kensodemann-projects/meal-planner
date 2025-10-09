@@ -14,6 +14,7 @@ describe('USDA FDC Data', () => {
       const mockResponse: FdcFoodSearchResult = {
         totalPages: 1,
         currentPage: 1,
+        totalHits: 2,
         foodSearchCriteria: { query: 'apple' },
         foods: [
           { fdcId: 123, description: 'Apple, raw', foodCategory: 'Fruits & Juices' },
@@ -37,6 +38,7 @@ describe('USDA FDC Data', () => {
       const mockResponse: FdcFoodSearchResult = {
         totalPages: 1,
         currentPage: 1,
+        totalHits: 2,
         foodSearchCriteria: { query: 'apple' },
         foods: [
           { fdcId: 123, description: 'Apple, raw', foodCategory: 'Fruits & Juices' },
@@ -60,6 +62,7 @@ describe('USDA FDC Data', () => {
       const mockResponse: FdcFoodSearchResult = {
         totalPages: 0,
         currentPage: 0,
+        totalHits: 0,
         foodSearchCriteria: { query: 'chicken & rice' },
         foods: [],
       };
@@ -80,6 +83,7 @@ describe('USDA FDC Data', () => {
       const mockResponse: FdcFoodSearchResult = {
         totalPages: 1,
         currentPage: 1,
+        totalHits: 2,
         foodSearchCriteria: { query: 'apple' },
         foods: [
           { fdcId: 123, description: 'Apple, raw', foodCategory: 'Fruits & Juices' },
@@ -122,6 +126,7 @@ describe('USDA FDC Data', () => {
       const mockResponse: FdcFoodSearchResult = {
         totalPages: 0,
         currentPage: 0,
+        totalHits: 2,
         foodSearchCriteria: { query: '' },
         foods: [],
       };

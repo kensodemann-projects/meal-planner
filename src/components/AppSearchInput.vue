@@ -15,7 +15,7 @@
           @click="performSearch"
           :disabled="!searchText?.trim() || isSearching"
           :loading="isSearching"
-          class="search-button"
+          class="ml-2"
         >
           {{ buttonLabel }}
         </v-btn>
@@ -42,9 +42,3 @@ function performSearch() {
   emits('search', searchText.value.trim());
 }
 </script>
-
-<style scoped>
-.search-button {
-  margin-left: 1rem;
-}
-</style>
