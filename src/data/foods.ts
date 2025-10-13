@@ -7,8 +7,9 @@ export const useFoodsData = () => {
   const path = `foods`;
   const foodsCollection = collection(db, path);
 
-  const addFood = async (food: FoodItem): Promise<void> => {
-    await addDoc(foodsCollection, food);
+  const addFood = async (food: FoodItem): Promise<string> => {
+    const item = await addDoc(foodsCollection, food);
+    return item.id;
   };
 
   const removeFood = async (id: string): Promise<void> => {

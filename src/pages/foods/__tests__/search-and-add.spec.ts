@@ -1,12 +1,17 @@
-import { mount } from '@vue/test-utils';
-import { beforeEach, describe, it, expect, vi, type Mock } from 'vitest';
+import { fetchFoodItem, searchFdcData } from '@/core/usda-fdc-data';
+import { useFoodsData } from '@/data/foods';
+import type { FoodItem } from '@/models';
+import { flushPromises, mount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+import { useRouter } from 'vue-router';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import SearchAndAddPage from '../search-and-add.vue';
-import { fetchFoodItem, searchFdcData } from '@/core/usda-fdc-data';
 
+vi.mock('vue-router');
 vi.mock('@/core/usda-fdc-data');
+vi.mock('@/data/foods');
 
 const vuetify = createVuetify({
   components,
@@ -23,6 +28,12 @@ const createWrapper = (props = {}) => {
 };
 
 describe('SearchAndAddPage', () => {
+  beforeEach(() => {
+    (useRouter as Mock).mockReturnValue({
+      push: vi.fn(),
+    });
+  });
+
   it('renders the page correctly', () => {
     const wrapper = createWrapper();
 
@@ -74,7 +85,7 @@ describe('SearchAndAddPage', () => {
       const searchInput = wrapper.findComponent({ name: 'AppSearchInput' });
       const testQuery = 'unknown food';
       await searchInput.vm.$emit('search', testQuery);
-      await wrapper.vm.$nextTick();
+      await flushPromises();
 
       const noResults = wrapper.find('[data-testid="no-results"]');
       expect(noResults.exists()).toBe(true);
@@ -92,7 +103,7 @@ describe('SearchAndAddPage', () => {
       const searchInput = wrapper.findComponent({ name: 'AppSearchInput' });
       const testQuery = 'apple';
       await searchInput.vm.$emit('search', testQuery);
-      await wrapper.vm.$nextTick();
+      await flushPromises();
 
       const resultsContainer = wrapper.find('[data-testid="results-container"]');
       expect(resultsContainer.exists()).toBe(true);
@@ -110,7 +121,7 @@ describe('SearchAndAddPage', () => {
       const searchInput = wrapper.findComponent({ name: 'AppSearchInput' });
       const testQuery = 'apple';
       await searchInput.vm.$emit('search', testQuery);
-      await wrapper.vm.$nextTick();
+      await flushPromises();
 
       const resultsContainer = wrapper.find('[data-testid="results-container"]');
       const resultsHeader = resultsContainer.find('h2');
@@ -132,7 +143,7 @@ describe('SearchAndAddPage', () => {
       const searchInput = wrapper.findComponent({ name: 'AppSearchInput' });
       const testQuery = 'fruit';
       await searchInput.vm.$emit('search', testQuery);
-      await wrapper.vm.$nextTick();
+      await flushPromises();
 
       const listItems = wrapper.findAllComponents({ name: 'AppFdcFoodListItem' });
       expect(listItems).toHaveLength(2);
@@ -153,6 +164,9 @@ describe('SearchAndAddPage', () => {
     describe('when "add" is clicked in a food item', () => {
       let wrapper: ReturnType<typeof createWrapper>;
       beforeEach(async () => {
+        const { addFood } = useFoodsData();
+        (addFood as Mock).mockResolvedValueOnce('fiif8e88fe9');
+
         (searchFdcData as Mock).mockResolvedValue({
           foods: [
             { fdcId: 1, description: 'Apple', dataType: 'Foundation', foodCategory: 'Fruits & Juices' },
@@ -167,10 +181,10 @@ describe('SearchAndAddPage', () => {
         const searchInput = wrapper.findComponent({ name: 'AppSearchInput' });
         const testQuery = 'fruit';
         await searchInput.vm.$emit('search', testQuery);
-        await wrapper.vm.$nextTick();
+        await flushPromises();
       });
 
-      it('fetches the specified food item when "add" is clicked', async () => {
+      it('fetches the specified food item', async () => {
         const listItems = wrapper.findAllComponents({ name: 'AppFdcFoodListItem' });
         listItems[1]!.vm.$emit('add', {
           fdcId: 2,
@@ -179,6 +193,34 @@ describe('SearchAndAddPage', () => {
           foodCategory: 'Fruits & Juices',
         });
         expect(fetchFoodItem).toHaveBeenCalledExactlyOnceWith(2);
+      });
+
+      it('adds the food item', async () => {
+        const { addFood } = useFoodsData();
+        (fetchFoodItem as Mock).mockResolvedValue(BANANA);
+        const listItems = wrapper.findAllComponents({ name: 'AppFdcFoodListItem' });
+        listItems[1]!.vm.$emit('add', {
+          fdcId: 2,
+          description: 'Banana',
+          dataType: 'Foundation',
+          foodCategory: 'Fruits & Juices',
+        });
+        await flushPromises();
+        expect(addFood).toHaveBeenCalledExactlyOnceWith(BANANA);
+      });
+
+      it('navigates to the edit page for the food', async () => {
+        const router = useRouter();
+        (fetchFoodItem as Mock).mockResolvedValue(BANANA);
+        const listItems = wrapper.findAllComponents({ name: 'AppFdcFoodListItem' });
+        listItems[1]!.vm.$emit('add', {
+          fdcId: 2,
+          description: 'Banana',
+          dataType: 'Foundation',
+          foodCategory: 'Fruits & Juices',
+        });
+        await flushPromises();
+        expect(router.push).toHaveBeenCalledExactlyOnceWith('/foods/fiif8e88fe9');
       });
     });
 
@@ -201,7 +243,7 @@ describe('SearchAndAddPage', () => {
         const searchInput = wrapper.findComponent({ name: 'AppSearchInput' });
         const testQuery = 'fruit';
         await searchInput.vm.$emit('search', testQuery);
-        await wrapper.vm.$nextTick();
+        await flushPromises();
         vi.clearAllMocks();
       });
 
@@ -209,9 +251,37 @@ describe('SearchAndAddPage', () => {
         const pagination = wrapper.findComponent(components.VPagination);
         const buttons = pagination.findAll('.v-btn');
         await buttons[3]!.trigger('click');
-        await wrapper.vm.$nextTick();
+        await flushPromises();
         expect(searchFdcData).toHaveBeenCalledExactlyOnceWith('fruit', 3);
       });
     });
   });
 });
+
+const BANANA: FoodItem = {
+  name: 'banana',
+  fdcId: 1105314,
+  category: 'Produce',
+  grams: 100,
+  unitOfMeasure: { id: 'g', name: 'Grams', type: 'weight', system: 'metric' },
+  units: 100,
+  calories: 98,
+  carbs: 23,
+  sugar: 15.8,
+  sodium: 4,
+  fat: 0,
+  protein: 0.75,
+  alternativePortions: [
+    {
+      grams: 115,
+      unitOfMeasure: { id: 'each', name: 'Each', type: 'quantity', system: 'none' },
+      units: 1,
+      calories: 113,
+      carbs: 24.4,
+      sugar: 18.2,
+      sodium: 4,
+      fat: 0,
+      protein: 0.851,
+    },
+  ],
+};

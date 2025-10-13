@@ -16,8 +16,8 @@
     >
       <h2 class="text-h5 mb-4 flex-grow-0">Search Results ({{ searchResults.totalHits }} items found)</h2>
 
-      <v-container v-if="changingPage" class="text-center flex-grow-1 mt-8">
-        Getting more foods...
+      <v-container v-if="isChangingPage || isCreatingFood" class="text-center flex-grow-1 mt-8">
+        {{ isChangingPage ? 'Getting more foods...' : 'Creating selected food item...' }}
         <v-progress-linear class="mt-4" color="primary" height="6" indeterminate rounded></v-progress-linear>
       </v-container>
 
@@ -38,14 +38,20 @@
 
 <script lang="ts" setup>
 import { fetchFoodItem, searchFdcData } from '@/core/usda-fdc-data';
+import { useFoodsData } from '@/data/foods';
 import type { FdcFoodSearchFoodItem, FdcFoodSearchResult } from '@/models';
 import { ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 
 const searchResults = ref<FdcFoodSearchResult>();
-const changingPage = ref(false);
+const isChangingPage = ref(false);
+const isCreatingFood = ref(false);
 const isSearching = ref(false);
 const hasSearched = ref(false);
 const page = ref(1);
+
+const { addFood } = useFoodsData();
+const router = useRouter();
 
 const performSearch = async (query: string): Promise<void> => {
   searchResults.value = undefined;
@@ -58,14 +64,18 @@ const performSearch = async (query: string): Promise<void> => {
 
 watch(page, async (newPage, oldPage) => {
   if (newPage !== oldPage && !isSearching.value) {
-    changingPage.value = true;
+    isChangingPage.value = true;
     searchResults.value = await searchFdcData(searchResults.value?.foodSearchCriteria.query || '', newPage);
-    changingPage.value = false;
+    isChangingPage.value = false;
   }
 });
 
 const addFoodItem = async (foodItem: FdcFoodSearchFoodItem) => {
-  await fetchFoodItem(foodItem.fdcId);
+  isCreatingFood.value = true;
+  const food = await fetchFoodItem(foodItem.fdcId);
+  const id = await addFood(food);
+  isCreatingFood.value = false;
+  router.push(`/foods/${id}`);
 };
 </script>
 

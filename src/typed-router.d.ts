@@ -21,6 +21,7 @@ declare module 'vue-router/auto-routes' {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
     '/dashboard': RouteRecordInfo<'/dashboard', '/dashboard', Record<never, never>, Record<never, never>>,
     '/foods/': RouteRecordInfo<'/foods/', '/foods', Record<never, never>, Record<never, never>>,
+    '/foods/[id]': RouteRecordInfo<'/foods/[id]', '/foods/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     '/foods/search-and-add': RouteRecordInfo<'/foods/search-and-add', '/foods/search-and-add', Record<never, never>, Record<never, never>>,
     '/login': RouteRecordInfo<'/login', '/login', Record<never, never>, Record<never, never>>,
     '/planning/': RouteRecordInfo<'/planning/', '/planning', Record<never, never>, Record<never, never>>,
@@ -50,6 +51,10 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/foods/index.vue': {
       routes: '/foods/'
+      views: never
+    }
+    'src/pages/foods/[id].vue': {
+      routes: '/foods/[id]'
       views: never
     }
     'src/pages/foods/search-and-add.vue': {

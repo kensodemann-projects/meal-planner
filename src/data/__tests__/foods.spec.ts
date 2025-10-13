@@ -8,7 +8,7 @@ vi.mock('firebase/firestore', async () => {
   const actual = (await vi.importActual('firebase/firestore')) as any;
   return {
     ...actual,
-    addDoc: vi.fn(),
+    addDoc: vi.fn().mockResolvedValue({ id: '123' }),
     collection: vi.fn().mockImplementation((db: any, path: string) => db.id.toString() + ':col:' + path),
     query: vi
       .fn()
@@ -50,6 +50,12 @@ describe('use foods', () => {
       addFood(TEST_FOOD);
       expect(addDoc).toHaveBeenCalledOnce();
       expect(addDoc).toHaveBeenCalledWith('42:col:foods', TEST_FOOD);
+    });
+
+    it('resolves the food ID', async () => {
+      const { addFood } = useFoodsData();
+      (addDoc as Mock).mockResolvedValueOnce({ id: 'Hiir00r93999430ddkf' });
+      expect(await addFood(TEST_FOOD)).toBe('Hiir00r93999430ddkf');
     });
   });
 
