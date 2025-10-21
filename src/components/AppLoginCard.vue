@@ -9,13 +9,18 @@
         instructional email with a password reset link. Use that link to reset your password.
       </div>
       <v-form ref="loginForm" v-model="valid" lazy-validation>
-        <v-text-field v-model="email" label="Email" :rules="[rules.required, rules.email]" required></v-text-field>
+        <v-text-field
+          v-model="email"
+          label="Email"
+          :rules="[validationRules.required, validationRules.email]"
+          required
+        ></v-text-field>
         <v-text-field
           v-if="!resetMode"
           class="mt-4"
           v-model="password"
           label="Password"
-          :rules="[rules.required]"
+          :rules="[validationRules.required]"
           type="password"
           required
         ></v-text-field>
@@ -32,6 +37,7 @@
 </template>
 
 <script setup lang="ts">
+import { validationRules } from '@/core/validation-rules';
 import { ref } from 'vue';
 
 const email = ref('');
@@ -41,11 +47,6 @@ const resetMode = ref(false);
 
 defineProps({ loading: Boolean });
 const emit = defineEmits(['login', 'resetPassword']);
-
-const rules = {
-  required: (value: string) => !!value || 'Required.',
-  email: (value: string) => /.+@.+\..+/.test(value) || 'E-mail must be valid.',
-};
 
 const login = async () => {
   if (resetMode.value) {

@@ -1,5 +1,5 @@
-import { fetchFoodItem, searchFdcData } from '@/core/usda-fdc-data';
 import { useFoodsData } from '@/data/foods';
+import { fetchFoodItem, searchFdcData } from '@/data/usda-fdc-data';
 import type { FoodItem } from '@/models';
 import { flushPromises, mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
@@ -10,7 +10,7 @@ import * as directives from 'vuetify/directives';
 import SearchAndAddPage from '../search-and-add.vue';
 
 vi.mock('vue-router');
-vi.mock('@/core/usda-fdc-data');
+vi.mock('@/data/usda-fdc-data');
 vi.mock('@/data/foods');
 
 const vuetify = createVuetify({

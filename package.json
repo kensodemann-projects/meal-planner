@@ -60,7 +60,8 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,vue,md,json}": [
-      "prettier --write"
+      "prettier --write",
+      "eslint"
     ]
   },
   "prettier": "@ionic/prettier-config"

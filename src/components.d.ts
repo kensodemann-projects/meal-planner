@@ -9,6 +9,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppFdcFoodListItem: typeof import('./components/AppFdcFoodListItem.vue')['default']
+    AppFoodEditor: typeof import('./components/AppFoodEditor.vue')['default']
     AppLoginCard: typeof import('./components/AppLoginCard.vue')['default']
     AppSearchInput: typeof import('./components/AppSearchInput.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

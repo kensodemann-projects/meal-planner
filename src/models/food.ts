@@ -6,16 +6,34 @@ export type FoodCategory =
   | 'Beverages'
   | 'Dairy'
   | 'Fats & Oils'
+  | 'Grains'
   | 'Juices'
+  | 'Meats'
   | 'Mixed Foods'
   | 'Nuts & Seeds'
   | 'Produce'
-  | 'Grains'
-  | 'Meats'
   | 'Snacks'
   | 'Spices'
   | 'Sweets'
   | 'Unknown';
+
+export const foodCategories: FoodCategory[] = [
+  'Bakery',
+  'Beans',
+  'Beverages',
+  'Dairy',
+  'Fats & Oils',
+  'Grains',
+  'Juices',
+  'Meats',
+  'Mixed Foods',
+  'Nuts & Seeds',
+  'Produce',
+  'Snacks',
+  'Spices',
+  'Sweets',
+  'Unknown',
+];
 
 export interface Portion {
   units: number;
@@ -30,9 +48,9 @@ export interface Portion {
 }
 export interface FoodItem extends Portion {
   id?: string;
-  fdcId: number;
+  fdcId?: number | null;
   name: string;
-  brand?: string;
+  brand?: string | null;
   category: FoodCategory;
   alternativePortions: Portion[];
 }

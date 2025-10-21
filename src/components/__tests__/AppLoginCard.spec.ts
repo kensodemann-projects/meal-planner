@@ -92,7 +92,7 @@ describe('AppLoginCard', () => {
     const { emailInput } = getInputs(wrapper);
     await emailInput.setValue('invalid-email');
     await emailInput.trigger('blur');
-    expect(wrapper.text()).toContain('E-mail must be valid');
+    expect(wrapper.text()).toContain('Invalid e-mail');
   });
 
   it('validates email is required', async () => {

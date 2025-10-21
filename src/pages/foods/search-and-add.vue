@@ -37,8 +37,8 @@
 </template>
 
 <script lang="ts" setup>
-import { fetchFoodItem, searchFdcData } from '@/core/usda-fdc-data';
 import { useFoodsData } from '@/data/foods';
+import { fetchFoodItem, searchFdcData } from '@/data/usda-fdc-data';
 import type { FdcFoodSearchFoodItem, FdcFoodSearchResult } from '@/models';
 import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';

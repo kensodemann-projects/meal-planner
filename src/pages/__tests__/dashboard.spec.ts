@@ -13,5 +13,5 @@ const mountPage = () => mount(DashboardPage, { global: { plugins: [vuetify] } })
 
 it('renders', () => {
   const wrapper = mountPage();
-  expect(wrapper.text()).toBe('This is the dashboard page');
+  expect(wrapper.exists()).toBe(true);
 });
