@@ -12,6 +12,7 @@ declare module 'vue' {
     AppFoodEditor: typeof import('./components/AppFoodEditor.vue')['default']
     AppLoginCard: typeof import('./components/AppLoginCard.vue')['default']
     AppSearchInput: typeof import('./components/AppSearchInput.vue')['default']
+    FoodListItem: typeof import('./components/FoodListItem.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

@@ -1,11 +1,12 @@
 import type { FoodItem } from '@/models';
 import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import { useFirestore } from 'vuefire';
+import { useCollection, useFirestore } from 'vuefire';
 
 export const useFoodsData = () => {
   const db = useFirestore();
   const path = `foods`;
   const foodsCollection = collection(db, path);
+  const foods = useCollection(foodsCollection);
 
   const addFood = async (food: FoodItem): Promise<string> => {
     const item = await addDoc(foodsCollection, food);
@@ -21,5 +22,5 @@ export const useFoodsData = () => {
     await updateDoc(doc(db, `${path}/${id}`), fields);
   };
 
-  return { addFood, foodsCollection, removeFood, updateFood };
+  return { addFood, foods, removeFood, updateFood };
 };

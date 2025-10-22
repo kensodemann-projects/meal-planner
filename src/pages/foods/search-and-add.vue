@@ -80,25 +80,8 @@ const addFoodItem = async (foodItem: FdcFoodSearchFoodItem) => {
 </script>
 
 <style scoped>
-.search-page {
-  max-width: 1024px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
 .app-search-input {
   max-width: 600px;
   width: 100%;
-}
-
-.search-results-list {
-  background: transparent;
-}
-
-/* Responsive design */
-@media (max-width: 600px) {
-  .search-page {
-    padding: 1rem;
-  }
 }
 </style>

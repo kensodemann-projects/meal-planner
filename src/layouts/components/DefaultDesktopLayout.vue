@@ -20,7 +20,9 @@
     </v-navigation-drawer>
 
     <v-main class="full">
-      <router-view />
+      <div class="main-page">
+        <router-view />
+      </div>
     </v-main>
   </v-layout>
 </template>
@@ -37,5 +39,17 @@ defineEmits(['logout']);
 <style scoped>
 .full {
   height: 100vh;
+}
+
+.main-page {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+@media (max-width: 600px) {
+  .main-page {
+    padding: 1rem;
+  }
 }
 </style>
