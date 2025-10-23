@@ -8,6 +8,7 @@ import VueRouter from 'unplugin-vue-router/vite';
 import { defineConfig } from 'vite';
 import Layouts from 'vite-plugin-vue-layouts-next';
 import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
+import { configDefaults } from 'vitest/config';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -64,6 +65,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       exclude: [
+        ...configDefaults.exclude,
         '**/*.d.ts',
         '**/*.config.*',
         'dist/',
