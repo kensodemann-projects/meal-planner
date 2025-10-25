@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import AppSearchInput from '../AppSearchInput.vue';
+import SearchInput from '../SearchInput.vue';
 
 const vuetify = createVuetify({
   components,
@@ -11,7 +11,7 @@ const vuetify = createVuetify({
 });
 
 const createWrapper = (props = {}) => {
-  return mount(AppSearchInput, {
+  return mount(SearchInput, {
     props,
     global: {
       plugins: [vuetify],
@@ -19,13 +19,13 @@ const createWrapper = (props = {}) => {
   });
 };
 
-describe('AppSearchInput', () => {
+describe('SearchInput', () => {
   it('renders with default props', () => {
     const wrapper = createWrapper();
     const textField = wrapper.findComponent({ name: 'VTextField' });
 
     expect(wrapper.exists()).toBe(true);
-    expect(wrapper.find('.app-search-input').exists()).toBe(true);
+    expect(wrapper.find('.search-input').exists()).toBe(true);
 
     expect(textField.props('label')).toBe('Search');
     expect(textField.props('placeholder')).toBe('Search...');
@@ -151,7 +151,7 @@ describe('AppSearchInput', () => {
 
   it('applies correct CSS classes', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find('.app-search-input').exists()).toBe(true);
+    expect(wrapper.find('.search-input').exists()).toBe(true);
   });
 
   it('handles multiple search operations correctly', async () => {

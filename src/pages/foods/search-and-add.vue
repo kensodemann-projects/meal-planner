@@ -1,7 +1,7 @@
 <template>
   <div class="search-page d-flex flex-column h-100">
     <div class="search-container d-flex justify-center mb-5">
-      <app-search-input
+      <SearchInput
         label="Search for food"
         placeholder="Search for a food to add..."
         :isSearching="isSearching"
@@ -22,7 +22,7 @@
       </v-container>
 
       <v-list v-else class="search-results-list flex-grow-1">
-        <app-fdc-food-list-item v-for="food in searchResults.foods" :key="food.fdcId" :food="food" @add="addFoodItem" />
+        <FdcFoodListItem v-for="food in searchResults.foods" :key="food.fdcId" :food="food" @add="addFoodItem" />
       </v-list>
 
       <v-container class="max-width">
@@ -80,7 +80,7 @@ const addFoodItem = async (foodItem: FdcFoodSearchFoodItem) => {
 </script>
 
 <style scoped>
-.app-search-input {
+.search-input {
   max-width: 600px;
   width: 100%;
 }

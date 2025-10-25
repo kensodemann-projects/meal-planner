@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import AppFoodEditor from '../AppFoodEditor.vue';
+import FoodEditor from '../FoodEditor.vue';
 
 const vuetify = createVuetify({
   components,
@@ -12,7 +12,7 @@ const vuetify = createVuetify({
 });
 
 const createWrapper = (props = {}) => {
-  return mount(AppFoodEditor, {
+  return mount(FoodEditor, {
     props,
     global: {
       plugins: [vuetify],
@@ -35,7 +35,7 @@ const getInputs = (wrapper: ReturnType<typeof createWrapper>) => ({
   proteinInput: wrapper.findComponent('[data-testid="protein-input"]').find('input'),
 });
 
-describe('AppFoodEditor', () => {
+describe('FoodEditor', () => {
   it('renders ', () => {
     const wrapper = createWrapper();
     expect(wrapper.exists()).toBe(true);

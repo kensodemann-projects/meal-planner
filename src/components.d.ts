@@ -11,12 +11,12 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AppFdcFoodListItem: typeof import('./components/AppFdcFoodListItem.vue')['default']
-    AppFoodEditor: typeof import('./components/AppFoodEditor.vue')['default']
-    AppLoginCard: typeof import('./components/AppLoginCard.vue')['default']
-    AppSearchInput: typeof import('./components/AppSearchInput.vue')['default']
+    FdcFoodListItem: typeof import('./components/FdcFoodListItem.vue')['default']
+    FoodEditor: typeof import('./components/FoodEditor.vue')['default']
     FoodListItem: typeof import('./components/FoodListItem.vue')['default']
+    LoginCard: typeof import('./components/LoginCard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SearchInput: typeof import('./components/SearchInput.vue')['default']
   }
 }

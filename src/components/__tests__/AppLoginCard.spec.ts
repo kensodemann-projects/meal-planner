@@ -3,7 +3,7 @@ import { beforeEach, describe, it, expect } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import AppLoginCard from '../AppLoginCard.vue';
+import LoginCard from '../LoginCard.vue';
 
 const vuetify = createVuetify({
   components,
@@ -13,13 +13,13 @@ const vuetify = createVuetify({
 const createWrapper = (props = {}) => {
   return mount(
     {
-      template: '<v-layout><app-login-card v-bind="$attrs" @login="() => null"></app-login-card></v-layout>',
+      template: '<v-layout><LoginCard v-bind="$attrs" @login="() => null"></LoginCard></v-layout>',
     },
     {
       props,
       global: {
         components: {
-          AppLoginCard,
+          LoginCard,
         },
         plugins: [vuetify],
       },
@@ -42,7 +42,7 @@ const getInputs = (wrapper: ReturnType<typeof createWrapper>) => {
   return { emailInput, passwordInput };
 };
 
-describe('AppLoginCard', () => {
+describe('LoginCard', () => {
   it('renders the login form with correct title', () => {
     const wrapper = createWrapper();
     const title = wrapper.findComponent(components.VCardTitle);
@@ -123,7 +123,7 @@ describe('AppLoginCard', () => {
 
   it('emits login event when login is clicked', async () => {
     const wrapper = createWrapper();
-    const loginCard = wrapper.findComponent(AppLoginCard);
+    const loginCard = wrapper.findComponent(LoginCard);
     const { emailInput, passwordInput } = getInputs(wrapper);
     const { loginButton } = getButtons(wrapper);
 
@@ -170,7 +170,7 @@ describe('AppLoginCard', () => {
     });
 
     it('emits resetPassword event when send reset instructions is clicked', async () => {
-      const loginCard = wrapper.findComponent(AppLoginCard);
+      const loginCard = wrapper.findComponent(LoginCard);
       const { emailInput } = getInputs(wrapper);
       const { sendResetButton } = getButtons(wrapper);
 

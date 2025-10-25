@@ -31,7 +31,7 @@ describe('LoginPage', () => {
     it('calls the login method', () => {
       const { login } = useAuthentication();
       const wrapper = mountPage();
-      const loginCard = wrapper.findComponent({ name: 'AppLoginCard' });
+      const loginCard = wrapper.findComponent({ name: 'LoginCard' });
       loginCard.vm.$emit('login', {
         email: 'test@example.com',
         password: 'password123',
@@ -42,7 +42,7 @@ describe('LoginPage', () => {
     it('navigates to dashboard', async () => {
       const router = useRouter();
       const wrapper = mountPage();
-      const loginCard = wrapper.findComponent({ name: 'AppLoginCard' });
+      const loginCard = wrapper.findComponent({ name: 'LoginCard' });
 
       await loginCard.vm.$emit('login', {
         email: 'test@example.com',
@@ -56,7 +56,7 @@ describe('LoginPage', () => {
     it('shows error message on login failure', async () => {
       const { login } = useAuthentication();
       const wrapper = mountPage();
-      const loginCard = wrapper.findComponent({ name: 'AppLoginCard' });
+      const loginCard = wrapper.findComponent({ name: 'LoginCard' });
 
       (login as Mock).mockRejectedValue(new Error('Invalid credentials'));
 
@@ -76,7 +76,7 @@ describe('LoginPage', () => {
     it('calls the sendPasswordReset method', () => {
       const { sendPasswordReset } = useAuthentication();
       const wrapper = mountPage();
-      const loginCard = wrapper.findComponent({ name: 'AppLoginCard' });
+      const loginCard = wrapper.findComponent({ name: 'LoginCard' });
       loginCard.vm.$emit('resetPassword', {
         email: 'test@example.com',
       });
@@ -85,7 +85,7 @@ describe('LoginPage', () => {
 
     it('alerts the user on password reset', async () => {
       const wrapper = mountPage();
-      const loginCard = wrapper.findComponent({ name: 'AppLoginCard' });
+      const loginCard = wrapper.findComponent({ name: 'LoginCard' });
       loginCard.vm.$emit('resetPassword', {
         email: 'test@example.com',
       });
@@ -101,7 +101,7 @@ describe('LoginPage', () => {
     it('shows error message on password reset failure', async () => {
       const { sendPasswordReset } = useAuthentication();
       const wrapper = mountPage();
-      const loginCard = wrapper.findComponent({ name: 'AppLoginCard' });
+      const loginCard = wrapper.findComponent({ name: 'LoginCard' });
 
       (sendPasswordReset as Mock).mockRejectedValue(new Error('Email not found'));
 

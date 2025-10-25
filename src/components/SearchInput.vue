@@ -1,5 +1,5 @@
 <template>
-  <div class="app-search-input">
+  <div class="search-input">
     <v-text-field
       v-model="searchText"
       :label="label"

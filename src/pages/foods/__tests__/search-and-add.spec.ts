@@ -44,7 +44,7 @@ describe('SearchAndAddPage', () => {
   it('renders a search input', () => {
     const wrapper = createWrapper();
 
-    const searchInput = wrapper.findComponent({ name: 'AppSearchInput' });
+    const searchInput = wrapper.findComponent({ name: 'SearchInput' });
     expect(searchInput.exists()).toBe(true);
     expect(searchInput.props('label')).toBe('Search for food');
     expect(searchInput.props('placeholder')).toBe('Search for a food to add...');
@@ -67,7 +67,7 @@ describe('SearchAndAddPage', () => {
   describe('on search', () => {
     it('calls the FDC search API with the correct query', async () => {
       const wrapper = createWrapper();
-      const searchInput = wrapper.findComponent({ name: 'AppSearchInput' });
+      const searchInput = wrapper.findComponent({ name: 'SearchInput' });
       const testQuery = 'apple';
       await searchInput.vm.$emit('search', testQuery);
       expect(searchFdcData).toHaveBeenCalledExactlyOnceWith(testQuery);
@@ -82,7 +82,7 @@ describe('SearchAndAddPage', () => {
       });
 
       const wrapper = createWrapper();
-      const searchInput = wrapper.findComponent({ name: 'AppSearchInput' });
+      const searchInput = wrapper.findComponent({ name: 'SearchInput' });
       const testQuery = 'unknown food';
       await searchInput.vm.$emit('search', testQuery);
       await flushPromises();
@@ -100,7 +100,7 @@ describe('SearchAndAddPage', () => {
       });
 
       const wrapper = createWrapper();
-      const searchInput = wrapper.findComponent({ name: 'AppSearchInput' });
+      const searchInput = wrapper.findComponent({ name: 'SearchInput' });
       const testQuery = 'apple';
       await searchInput.vm.$emit('search', testQuery);
       await flushPromises();
@@ -118,7 +118,7 @@ describe('SearchAndAddPage', () => {
       });
 
       const wrapper = createWrapper();
-      const searchInput = wrapper.findComponent({ name: 'AppSearchInput' });
+      const searchInput = wrapper.findComponent({ name: 'SearchInput' });
       const testQuery = 'apple';
       await searchInput.vm.$emit('search', testQuery);
       await flushPromises();
@@ -128,7 +128,7 @@ describe('SearchAndAddPage', () => {
       expect(resultsHeader.text()).toContain('42 items found');
     });
 
-    it('displays an AppFdcFoodListItem for each search result', async () => {
+    it('displays an FdcFoodListItem for each search result', async () => {
       (searchFdcData as ReturnType<typeof vi.fn>).mockResolvedValue({
         foods: [
           { fdcId: 1, description: 'Apple', dataType: 'Foundation', foodCategory: 'Fruits & Juices' },
@@ -140,12 +140,12 @@ describe('SearchAndAddPage', () => {
       });
 
       const wrapper = createWrapper();
-      const searchInput = wrapper.findComponent({ name: 'AppSearchInput' });
+      const searchInput = wrapper.findComponent({ name: 'SearchInput' });
       const testQuery = 'fruit';
       await searchInput.vm.$emit('search', testQuery);
       await flushPromises();
 
-      const listItems = wrapper.findAllComponents({ name: 'AppFdcFoodListItem' });
+      const listItems = wrapper.findAllComponents({ name: 'FdcFoodListItem' });
       expect(listItems).toHaveLength(2);
       expect(listItems[0]?.props('food')).toEqual({
         fdcId: 1,
@@ -178,14 +178,14 @@ describe('SearchAndAddPage', () => {
         });
 
         wrapper = createWrapper();
-        const searchInput = wrapper.findComponent({ name: 'AppSearchInput' });
+        const searchInput = wrapper.findComponent({ name: 'SearchInput' });
         const testQuery = 'fruit';
         await searchInput.vm.$emit('search', testQuery);
         await flushPromises();
       });
 
       it('fetches the specified food item', async () => {
-        const listItems = wrapper.findAllComponents({ name: 'AppFdcFoodListItem' });
+        const listItems = wrapper.findAllComponents({ name: 'FdcFoodListItem' });
         listItems[1]!.vm.$emit('add', {
           fdcId: 2,
           description: 'Banana',
@@ -198,7 +198,7 @@ describe('SearchAndAddPage', () => {
       it('adds the food item', async () => {
         const { addFood } = useFoodsData();
         (fetchFoodItem as Mock).mockResolvedValue(BANANA);
-        const listItems = wrapper.findAllComponents({ name: 'AppFdcFoodListItem' });
+        const listItems = wrapper.findAllComponents({ name: 'FdcFoodListItem' });
         listItems[1]!.vm.$emit('add', {
           fdcId: 2,
           description: 'Banana',
@@ -212,7 +212,7 @@ describe('SearchAndAddPage', () => {
       it('navigates to the edit page for the food', async () => {
         const router = useRouter();
         (fetchFoodItem as Mock).mockResolvedValue(BANANA);
-        const listItems = wrapper.findAllComponents({ name: 'AppFdcFoodListItem' });
+        const listItems = wrapper.findAllComponents({ name: 'FdcFoodListItem' });
         listItems[1]!.vm.$emit('add', {
           fdcId: 2,
           description: 'Banana',
@@ -240,7 +240,7 @@ describe('SearchAndAddPage', () => {
         });
 
         wrapper = createWrapper();
-        const searchInput = wrapper.findComponent({ name: 'AppSearchInput' });
+        const searchInput = wrapper.findComponent({ name: 'SearchInput' });
         const testQuery = 'fruit';
         await searchInput.vm.$emit('search', testQuery);
         await flushPromises();

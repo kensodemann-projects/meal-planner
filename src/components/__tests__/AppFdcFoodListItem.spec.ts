@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import AppFdcFoodListItem from '../AppFdcFoodListItem.vue';
+import FdcFoodListItem from '../FdcFoodListItem.vue';
 
 const vuetify = createVuetify({
   components,
@@ -17,7 +17,7 @@ const mockFood = {
 };
 
 const createWrapper = (props = {}) => {
-  return mount(AppFdcFoodListItem, {
+  return mount(FdcFoodListItem, {
     props: {
       food: mockFood,
       ...props,
@@ -28,12 +28,12 @@ const createWrapper = (props = {}) => {
   });
 };
 
-describe('AppFdcFoodListItem', () => {
+describe('FdcFoodListItem', () => {
   it('renders the component correctly', () => {
     const wrapper = createWrapper();
 
     expect(wrapper.exists()).toBe(true);
-    expect(wrapper.find('.app-fdc-food-list-item').exists()).toBe(true);
+    expect(wrapper.find('.fdc-food-list-item').exists()).toBe(true);
   });
 
   it('displays food description as title', () => {
@@ -120,7 +120,7 @@ describe('AppFdcFoodListItem', () => {
   it('has proper component structure', () => {
     const wrapper = createWrapper();
 
-    expect(wrapper.find('.app-fdc-food-list-item').exists()).toBe(true);
+    expect(wrapper.find('.fdc-food-list-item').exists()).toBe(true);
 
     const listItem = wrapper.findComponent({ name: 'VListItem' });
     expect(listItem.exists()).toBe(true);

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <app-login-card :loading="loading" @login="onLogin" @resetPassword="onResetPassword" />
+    <LoginCard :loading="loading" @login="onLogin" @resetPassword="onResetPassword" />
     <v-alert v-if="message" :type="messageType" class="error-message mt-4" @click="clearMessage">
       {{ message }}
     </v-alert>
