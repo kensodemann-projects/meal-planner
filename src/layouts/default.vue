@@ -25,9 +25,3 @@ const performLogout = async () => {
   router.replace('/login');
 };
 </script>
-
-<style scoped>
-.full {
-  height: 100vh;
-}
-</style>

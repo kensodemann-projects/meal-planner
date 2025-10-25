@@ -1,5 +1,5 @@
 <template>
-  <div class="search-page d-flex flex-column h-100">
+  <div class="search-page d-flex flex-column">
     <div class="search-container d-flex justify-center mb-5">
       <SearchInput
         label="Search for food"
@@ -11,7 +11,7 @@
 
     <div
       v-if="!!searchResults?.totalHits"
-      class="d-flex overflow-y-auto flex-column h-100 w-100 mt-8"
+      class="search-results d-flex overflow-y-auto flex-column w-100 mt-8"
       data-testid="results-container"
     >
       <h2 class="text-h5 mb-4 flex-grow-0">Search Results ({{ searchResults.totalHits }} items found)</h2>
@@ -83,5 +83,15 @@ const addFoodItem = async (foodItem: FdcFoodSearchFoodItem) => {
 .search-input {
   max-width: 600px;
   width: 100%;
+}
+
+.search-page {
+  height: 90vh;
+}
+
+@media (min-width: 1280px) {
+  .search-page {
+    height: 95vh;
+  }
 }
 </style>
