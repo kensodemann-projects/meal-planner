@@ -1,12 +1,14 @@
-import { sampleFoodItems } from '@/data/__mocks__/foods';
+import { TEST_FOODS } from '@/data/__tests__/test-data';
 import { useFoodsData } from '@/data/foods';
 import { mount } from '@vue/test-utils';
-import { expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+import { useRouter } from 'vue-router';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import IndexPage from '../index.vue';
 
+vi.mock('vue-router');
 vi.mock('@/data/foods');
 
 const vuetify = createVuetify({
@@ -15,26 +17,45 @@ const vuetify = createVuetify({
 });
 const mountPage = () => mount(IndexPage, { global: { plugins: [vuetify] } });
 
-it('renders', () => {
-  const wrapper = mountPage();
-  expect(wrapper.exists()).toBe(true);
-});
+describe('Foods List Page', () => {
+  beforeEach(() => {
+    (useRouter as Mock).mockReturnValue({
+      push: vi.fn(),
+    });
+  });
 
-it('has a title', () => {
-  const wrapper = mountPage();
-  const title = wrapper.find('h1');
-  expect(title.text()).toBe('My Foods');
-});
+  it('renders', () => {
+    const wrapper = mountPage();
+    expect(wrapper.exists()).toBe(true);
+  });
 
-it('uses the food data', () => {
-  mountPage();
-  expect(useFoodsData).toHaveBeenCalledExactlyOnceWith();
-});
+  it('has a title', () => {
+    const wrapper = mountPage();
+    const title = wrapper.find('h1');
+    expect(title.text()).toBe('My Foods');
+  });
 
-it('displays each food item', () => {
-  const { foods } = useFoodsData();
-  foods.value = sampleFoodItems;
-  const wrapper = mountPage();
-  const listItems = wrapper.findAllComponents('.food-list-item');
-  expect(listItems.length).toBe(sampleFoodItems.length);
+  it('uses the food data', () => {
+    mountPage();
+    expect(useFoodsData).toHaveBeenCalledExactlyOnceWith();
+  });
+
+  it('displays each food item', () => {
+    const { foods } = useFoodsData();
+    foods.value = TEST_FOODS;
+    const wrapper = mountPage();
+    const listItems = wrapper.findAllComponents('.food-list-item');
+    expect(listItems.length).toBe(TEST_FOODS.length);
+  });
+
+  it('navigates to the given food on click', async () => {
+    const router = useRouter();
+    const { foods } = useFoodsData();
+    foods.value = TEST_FOODS;
+    const wrapper = mountPage();
+    const listItems = wrapper.findAllComponents('.food-list-item');
+    const listItem = listItems[2]?.findComponent({ name: 'VListItem' });
+    await listItem?.trigger('click');
+    expect(router.push).toHaveBeenCalledOnce();
+  });
 });

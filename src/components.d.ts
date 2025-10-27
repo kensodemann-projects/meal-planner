@@ -11,10 +11,12 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    ConfirmDialog: typeof import('./components/ConfirmDialog.vue')['default']
     FdcFoodListItem: typeof import('./components/FdcFoodListItem.vue')['default']
     FoodEditor: typeof import('./components/FoodEditor.vue')['default']
     FoodListItem: typeof import('./components/FoodListItem.vue')['default']
     LoginCard: typeof import('./components/LoginCard.vue')['default']
+    NutritionalInformation: typeof import('./components/NutritionalInformation.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SearchInput: typeof import('./components/SearchInput.vue')['default']

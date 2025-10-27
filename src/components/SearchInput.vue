@@ -12,6 +12,7 @@
       <template #append-inner>
         <v-btn
           color="primary"
+          variant="outlined"
           @click="performSearch"
           :disabled="!searchText?.trim() || isSearching"
           :loading="isSearching"

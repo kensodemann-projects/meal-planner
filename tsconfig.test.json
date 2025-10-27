@@ -4,6 +4,6 @@
   "exclude": [],
   "compilerOptions": {
     "composite": false,
-    "types": ["vitest/globals", "node"]
+    "types": ["node"]
   }
 }

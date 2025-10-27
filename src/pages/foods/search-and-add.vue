@@ -1,5 +1,5 @@
 <template>
-  <div class="search-page d-flex flex-column">
+  <div class="search-page">
     <div class="search-container d-flex justify-center mb-5">
       <SearchInput
         label="Search for food"
@@ -9,24 +9,25 @@
       />
     </div>
 
-    <div
-      v-if="!!searchResults?.totalHits"
-      class="search-results d-flex overflow-y-auto flex-column w-100 mt-8"
-      data-testid="results-container"
-    >
-      <h2 class="text-h5 mb-4 flex-grow-0">Search Results ({{ searchResults.totalHits }} items found)</h2>
+    <div v-if="!!searchResults?.totalHits" class="search-results w-100 mt-8" data-testid="results-container">
+      <h2 class="text-h5 mb-4">Search Results ({{ searchResults.totalHits }} items found)</h2>
 
-      <v-container v-if="isChangingPage || isCreatingFood" class="text-center flex-grow-1 mt-8">
+      <v-container v-if="isChangingPage || isCreatingFood" class="text-center mt-8">
         {{ isChangingPage ? 'Getting more foods...' : 'Creating selected food item...' }}
         <v-progress-linear class="mt-4" color="primary" height="6" indeterminate rounded></v-progress-linear>
       </v-container>
 
-      <v-list v-else class="search-results-list flex-grow-1">
+      <v-list v-else class="search-results-list">
         <FdcFoodListItem v-for="food in searchResults.foods" :key="food.fdcId" :food="food" @add="addFoodItem" />
       </v-list>
 
       <v-container class="max-width">
-        <v-pagination v-model="page" :length="searchResults.totalPages" class="my-4"></v-pagination>
+        <v-pagination
+          v-if="!isCreatingFood"
+          v-model="page"
+          :length="searchResults.totalPages"
+          class="my-4"
+        ></v-pagination>
       </v-container>
     </div>
 

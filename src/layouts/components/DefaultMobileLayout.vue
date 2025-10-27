@@ -52,6 +52,8 @@ const drawer = ref(false);
   max-width: 1024px;
   margin: 0 auto;
   padding: 2rem;
+  overflow-y: auto;
+  height: 92vh;
 }
 
 @media (max-width: 600px) {

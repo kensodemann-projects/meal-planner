@@ -31,7 +31,9 @@
         resetMode ? 'Send Reset Instructions' : 'Login'
       }}</v-btn>
       <v-spacer></v-spacer>
-      <v-btn text @click="forgotPassword" :disabled="loading">{{ resetMode ? 'Cancel' : 'Forgot Password?' }}</v-btn>
+      <v-btn color="secondary" @click="forgotPassword" :disabled="loading">{{
+        resetMode ? 'Cancel' : 'Forgot Password?'
+      }}</v-btn>
     </v-card-actions>
   </v-card>
 </template>

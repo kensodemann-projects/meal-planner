@@ -1,8 +1,9 @@
-import type { FoodItem } from '@/models';
-import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest';
-import { useFirestore } from 'vuefire';
+import { addDoc, collection, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { type Mock, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { ref } from 'vue';
+import { useCollection, useFirestore } from 'vuefire';
 import { useFoodsData } from '../foods';
+import { TEST_FOOD, TEST_FOODS } from './test-data';
 
 vi.mock('firebase/firestore', async () => {
   const actual = (await vi.importActual('firebase/firestore')) as any;
@@ -21,7 +22,8 @@ vi.mock('firebase/firestore', async () => {
     deleteDoc: vi.fn(),
     updateDoc: vi.fn(),
     getDocs: vi.fn().mockResolvedValue([]),
-    doc: vi.fn().mockImplementation((db: any, path: string) => db.id.toString() + ':doc:' + path),
+    getDoc: vi.fn().mockResolvedValue({ exists: vi.fn().mockResolvedValue(false) }),
+    doc: vi.fn().mockImplementation((db: any, ...paths: string[]) => db.id.toString() + ':doc:' + paths.join(':')),
   };
 });
 vi.mock('vuefire', async () => {
@@ -37,6 +39,8 @@ describe('use foods', () => {
   beforeEach(() => {
     (useFirestore as Mock).mockReturnValue({ id: 42, name: 'my fake fire store' });
   });
+
+  afterEach(() => vi.clearAllMocks());
 
   it('uses the foods collection', () => {
     useFoodsData();
@@ -56,6 +60,32 @@ describe('use foods', () => {
       const { addFood } = useFoodsData();
       (addDoc as Mock).mockResolvedValueOnce({ id: 'Hiir00r93999430ddkf' });
       expect(await addFood(TEST_FOOD)).toBe('Hiir00r93999430ddkf');
+    });
+  });
+
+  describe('get food', () => {
+    it('finds the food in the list', async () => {
+      (useCollection as Mock).mockReturnValueOnce(ref(TEST_FOODS));
+      const { getFood } = useFoodsData();
+      expect(await getFood(TEST_FOODS[2]?.id || '')).toEqual(TEST_FOODS[2]);
+    });
+
+    it('goes to the database if the food is not in the list', async () => {
+      (useCollection as Mock).mockReturnValueOnce(ref(TEST_FOODS));
+      const { getFood } = useFoodsData();
+      expect(await getFood('4885298slasdfk')).toBeNull();
+      expect(doc).toHaveBeenCalledExactlyOnceWith({ id: 42, name: 'my fake fire store' }, 'foods', '4885298slasdfk');
+      expect(getDoc).toHaveBeenCalledExactlyOnceWith('42:doc:foods:4885298slasdfk');
+    });
+
+    it('resolves the food from the database if found', async () => {
+      (useCollection as Mock).mockReturnValueOnce(ref(TEST_FOODS));
+      (getDoc as Mock).mockResolvedValueOnce({
+        exists: vi.fn().mockReturnValue(true),
+        data: vi.fn().mockReturnValue(TEST_FOOD),
+      });
+      const { getFood } = useFoodsData();
+      expect(await getFood('4885298slasdfk')).toEqual({ ...TEST_FOOD, id: '4885298slasdfk' });
     });
   });
 
@@ -105,20 +135,3 @@ describe('use foods', () => {
     });
   });
 });
-
-const TEST_FOOD: FoodItem = {
-  name: 'Hot Dog',
-  brand: "Jimmy's",
-  fdcId: 429930,
-  category: 'Meats',
-  grams: 100,
-  unitOfMeasure: { id: 'g', name: 'Grams', type: 'weight', system: 'metric' },
-  units: 100,
-  calories: 450,
-  sodium: 1243,
-  sugar: 6,
-  carbs: 12,
-  protein: 0,
-  fat: 16,
-  alternativePortions: [],
-};
