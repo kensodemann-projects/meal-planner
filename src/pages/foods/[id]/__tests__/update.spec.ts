@@ -46,6 +46,15 @@ describe('Food Update Page', () => {
   });
 
   describe('on cancel', () => {
+    it('does not save the food item', async () => {
+      const { updateFood } = useFoodsData();
+      const wrapper = mountPage();
+      await flushPromises();
+      const editor = wrapper.findComponent(FoodEditor);
+      editor.vm.$emit('cancel');
+      expect(updateFood).not.toHaveBeenCalled();
+    });
+
     it('navigates to the view page', async () => {
       const router = useRouter();
       const wrapper = mountPage();
