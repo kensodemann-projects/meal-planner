@@ -132,8 +132,17 @@
 
     <v-container>
       <v-row class="pa-4" justify="end">
-        <v-btn color="secondary" class="mr-4" @click="$emit('cancel')" data-testid="cancel-button">Cancel</v-btn>
-        <v-btn color="primary" :disabled="!(valid && isModified())" @click="save" data-testid="save-button">Save</v-btn>
+        <v-btn color="secondary" class="mr-4" variant="text" @click="$emit('cancel')" data-testid="cancel-button"
+          >Cancel</v-btn
+        >
+        <v-btn
+          color="primary"
+          variant="text"
+          :disabled="!(valid && isModified())"
+          @click="save"
+          data-testid="save-button"
+          >Save</v-btn
+        >
       </v-row>
     </v-container>
   </v-form>

@@ -9,7 +9,7 @@
 
     <hr class="mt-4" />
 
-    <v-container class="pa-0">
+    <v-container class="pa-0" fluid>
       <v-row no-gutters>
         <v-col class="mt-4" cols="12" sm="6" md="4">
           <h2>Standard Portion</h2>

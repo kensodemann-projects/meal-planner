@@ -1,11 +1,26 @@
 <template>
-  <h2>This is where the editor for update will go</h2>
-  <div>For: {{ id }}</div>
+  <FoodEditor v-if="food" :food="food" @cancel="onCancel" @save="onSave" />
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
+import FoodEditor from '@/components/FoodEditor.vue';
+import { useFoodsData } from '@/data/foods';
+import type { FoodItem } from '@/models';
+import { ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
+const router = useRouter();
 const { params } = useRoute();
 const id = (params as { id: string }).id;
+const food = ref<FoodItem | null>();
+
+const { getFood, updateFood } = useFoodsData();
+getFood(id).then((f) => (food.value = f));
+
+const onCancel = () => router.replace(`/foods/${food.value?.id}`);
+
+const onSave = async (item: FoodItem) => {
+  await updateFood(item);
+  router.replace(`/foods/${item.id}`);
+};
 </script>
