@@ -1,5 +1,5 @@
 <template>
-  <v-btn color="secondary" variant="text" data-testid="cancel-button">Cancel</v-btn>
+  <SecondaryButton data-testid="cancel-button">Cancel</SecondaryButton>
 </template>
 
 <script setup lang="ts"></script>

@@ -1,5 +1,5 @@
 <template>
-  <v-btn color="primary" variant="text" data-testid="save-button">Save</v-btn>
+  <PrimaryButton data-testid="save-button">Save</PrimaryButton>
 </template>
 
 <script setup lang="ts"></script>

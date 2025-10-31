@@ -1,5 +1,5 @@
 <template>
-  <v-btn color="primary" variant="text" data-testid="modify-button">Modify</v-btn>
+  <PrimaryButton data-testid="modify-button">Modify</PrimaryButton>
 </template>
 
 <script setup lang="ts"></script>

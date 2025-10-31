@@ -1,5 +1,5 @@
 <template>
-  <v-btn color="error" variant="text" data-testid="delete-button">Delete</v-btn>
+  <DangerButton data-testid="delete-button">Delete</DangerButton>
 </template>
 
 <script setup lang="ts"></script>
