@@ -4,6 +4,15 @@
     <v-list>
       <food-list-item v-for="food in foods" :key="food.fdcId" :food="food as FoodItem" @click="viewFoodItem" />
     </v-list>
+    <v-fab
+      color="primary"
+      icon="mdi-plus"
+      variant="tonal"
+      location="bottom end"
+      absolute
+      @click="router.push('foods/search-and-add')"
+      data-testid="add-button"
+    ></v-fab>
   </div>
 </template>
 
