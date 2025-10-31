@@ -189,7 +189,6 @@ const isModified = (): boolean =>
 
 const save = () => {
   const food: Omit<FoodItem, 'alternativePortions'> = {
-    id: props.food?.id || undefined,
     fdcId: props.food?.fdcId || null,
     name: name.value || '',
     brand: brand.value || null,
@@ -204,6 +203,6 @@ const save = () => {
     fat: fat.value || 0,
     protein: protein.value || 0,
   };
-  emit('save', { ...food, alternativePortions });
+  emit('save', props.food?.id ? { ...food, alternativePortions, id: props.food.id } : { ...food, alternativePortions });
 };
 </script>

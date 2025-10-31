@@ -58,6 +58,13 @@ declare module 'vue-router/auto-routes' {
       { id: ParamValue<false> },
       | never
     >,
+    '/foods/add': RouteRecordInfo<
+      '/foods/add',
+      '/foods/add',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     '/foods/search-and-add': RouteRecordInfo<
       '/foods/search-and-add',
       '/foods/search-and-add',
@@ -140,6 +147,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/foods/[id]/update.vue': {
       routes:
         | '/foods/[id]/update'
+      views:
+        | never
+    }
+    'src/pages/foods/add.vue': {
+      routes:
+        | '/foods/add'
       views:
         | never
     }
