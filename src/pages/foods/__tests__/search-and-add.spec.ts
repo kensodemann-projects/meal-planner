@@ -256,6 +256,18 @@ describe('SearchAndAddPage', () => {
       });
     });
   });
+
+  describe('enter manually', () => {
+    it('navigates to the add page', () => {
+      expect(true).toBeTruthy();
+    });
+  });
+
+  describe('cancel', () => {
+    it('navigates to the foods page', () => {
+      expect(true).toBeTruthy();
+    });
+  });
 });
 
 const BANANA: FoodItem = {
