@@ -1,12 +1,18 @@
 <template>
   <div class="search-page">
-    <div class="search-container d-flex justify-center mb-5">
-      <SearchInput
-        label="Search for food"
-        placeholder="Search for a food to add..."
-        :isSearching="isSearching"
-        @search="performSearch"
-      />
+    <div class="d-flex justify-center mb-5">
+      <div class="search-container">
+        <SearchInput
+          label="Search for food"
+          placeholder="Search for a food to add..."
+          :isSearching="isSearching"
+          @search="performSearch"
+        />
+        <div class="d-flex justify-space-between mt-2">
+          <PrimaryButton>Enter Manually</PrimaryButton>
+          <CancelButton />
+        </div>
+      </div>
     </div>
 
     <div v-if="!!searchResults?.totalHits" class="search-results w-100 mt-8" data-testid="results-container">
@@ -81,9 +87,12 @@ const addFoodItem = async (foodItem: FdcFoodSearchFoodItem) => {
 </script>
 
 <style scoped>
-.search-input {
+.search-container {
   max-width: 600px;
   width: 100%;
+}
+
+.search-input {
 }
 
 .search-page {

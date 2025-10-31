@@ -11,14 +11,22 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    CancelButton: typeof import('./components/buttons/CancelButton.vue')['default']
+    CloseButton: typeof import('./components/buttons/CloseButton.vue')['default']
     ConfirmDialog: typeof import('./components/ConfirmDialog.vue')['default']
+    DangerButton: typeof import('./components/buttons/DangerButton.vue')['default']
+    DeleteButton: typeof import('./components/buttons/DeleteButton.vue')['default']
     FdcFoodListItem: typeof import('./components/FdcFoodListItem.vue')['default']
     FoodEditor: typeof import('./components/FoodEditor.vue')['default']
     FoodListItem: typeof import('./components/FoodListItem.vue')['default']
     LoginCard: typeof import('./components/LoginCard.vue')['default']
+    ModifyButton: typeof import('./components/buttons/ModifyButton.vue')['default']
     NutritionalInformation: typeof import('./components/NutritionalInformation.vue')['default']
+    PrimaryButton: typeof import('./components/buttons/PrimaryButton.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SaveButton: typeof import('./components/buttons/SaveButton.vue')['default']
     SearchInput: typeof import('./components/SearchInput.vue')['default']
+    SecondaryButton: typeof import('./components/buttons/SecondaryButton.vue')['default']
   }
 }
