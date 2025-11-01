@@ -2,17 +2,13 @@
 name: Task
 about: Just do it!
 title: ''
-labels: task
+type: task
 assignees: ''
 ---
 
-# Area(s)
+# User Story Synopsis
 
-Modules, pages, services, etc. that will primarily be affected by this task.
-
-# User Story
-
-As a developer, I would like to...
+As a user, I would like to...
 
 # Details
 

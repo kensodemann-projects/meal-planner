@@ -1,14 +1,12 @@
 ---
-name: Feature request
+name: Feature
 about: I have an awesome idea
 title: ''
-labels: enhancement
+type: feature
 assignees: ''
 ---
 
 # Synopsis
-
-A clear and concise summary of what is needed.
 
 # User stories
 
