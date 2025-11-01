@@ -2,7 +2,7 @@
 name: Bug report
 about: Houston, we have a problem
 title: ''
-labels: bug
+type: bug
 assignees: ''
 ---
 
