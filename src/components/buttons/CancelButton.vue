@@ -1,3 +1,3 @@
 <template>
-  <SecondaryButton data-testid="cancel-button">Cancel</SecondaryButton>
+  <SecondaryButton data-testid="cancel-button" v-bind="$attrs">Cancel</SecondaryButton>
 </template>
