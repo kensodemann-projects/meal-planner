@@ -17,7 +17,7 @@
 <script setup lang="ts">
 import type { Portion } from '@/models';
 
-defineProps<{ value: Portion }>();
+defineProps<{ value: Portion; compact?: boolean }>();
 </script>
 
 <style scoped></style>
