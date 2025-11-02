@@ -255,8 +255,12 @@ describe('SearchAndAddPage', () => {
   });
 
   describe('enter manually', () => {
-    it('navigates to the add page', () => {
-      expect(true).toBeTruthy();
+    it('navigates to the add page', async () => {
+      const router = useRouter();
+      const wrapper = createWrapper();
+      const button = wrapper.findComponent('[data-testid="enter-manually-button"]');
+      await button.trigger('click');
+      expect(router.push).toHaveBeenCalledExactlyOnceWith('/foods/add');
     });
   });
 

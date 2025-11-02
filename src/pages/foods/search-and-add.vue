@@ -9,7 +9,9 @@
           @search="performSearch"
         />
         <div class="d-flex justify-space-between mt-2">
-          <PrimaryButton>Enter Manually</PrimaryButton>
+          <PrimaryButton @click="router.push('/foods/add')" data-testid="enter-manually-button"
+            >Enter Manually</PrimaryButton
+          >
           <CancelButton @click="router.replace('/foods')" />
         </div>
       </div>
