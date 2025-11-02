@@ -1,3 +1,3 @@
 <template>
-  <v-btn color="primary" variant="text"><slot></slot></v-btn>
+  <v-btn color="primary" variant="text" v-bind="$attrs"><slot></slot></v-btn>
 </template>
