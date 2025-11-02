@@ -31,19 +31,18 @@ describe('SearchAndAddPage', () => {
   beforeEach(() => {
     (useRouter as Mock).mockReturnValue({
       push: vi.fn(),
+      replace: vi.fn(),
     });
   });
 
   it('renders the page correctly', () => {
     const wrapper = createWrapper();
-
     expect(wrapper.exists()).toBe(true);
     expect(wrapper.find('.search-page').exists()).toBe(true);
   });
 
   it('renders a search input', () => {
     const wrapper = createWrapper();
-
     const searchInput = wrapper.findComponent({ name: 'SearchInput' });
     expect(searchInput.exists()).toBe(true);
     expect(searchInput.props('label')).toBe('Search for food');
@@ -52,14 +51,12 @@ describe('SearchAndAddPage', () => {
 
   it('does not show results container initially', () => {
     const wrapper = createWrapper();
-
     const resultsContainer = wrapper.find('[data-testid="results-container"]');
     expect(resultsContainer.exists()).toBe(false);
   });
 
   it('does not show no results message initially', () => {
     const wrapper = createWrapper();
-
     const noResults = wrapper.find('[data-testid="no-results"]');
     expect(noResults.exists()).toBe(false);
   });
@@ -264,8 +261,12 @@ describe('SearchAndAddPage', () => {
   });
 
   describe('cancel', () => {
-    it('navigates to the foods page', () => {
-      expect(true).toBeTruthy();
+    it('navigates to the foods page', async () => {
+      const router = useRouter();
+      const wrapper = createWrapper();
+      const button = wrapper.findComponent('[data-testid="cancel-button"]');
+      await button.trigger('click');
+      expect(router.replace).toHaveBeenCalledExactlyOnceWith('/foods');
     });
   });
 });

@@ -10,7 +10,7 @@
         />
         <div class="d-flex justify-space-between mt-2">
           <PrimaryButton>Enter Manually</PrimaryButton>
-          <CancelButton />
+          <CancelButton @click="router.replace('/foods')" />
         </div>
       </div>
     </div>
