@@ -46,6 +46,7 @@ defineEmits(['logout']);
   margin: 0 auto;
   padding: 2rem;
   overflow-y: auto;
+  height: 100vh;
 }
 
 @media (max-width: 600px) {
