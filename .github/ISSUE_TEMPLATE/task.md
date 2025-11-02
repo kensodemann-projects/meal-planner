@@ -6,7 +6,7 @@ type: task
 assignees: ''
 ---
 
-# User Story Synopsis
+# User Story
 
 As a user, I would like to...
 
