@@ -1,3 +1,3 @@
 <template>
-  <PrimaryButton data-testid="save-button">Save</PrimaryButton>
+  <PrimaryButton data-testid="save-button" v-bind="$attrs">Save</PrimaryButton>
 </template>
