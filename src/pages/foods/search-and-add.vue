@@ -94,8 +94,6 @@ const addFoodItem = async (foodItem: FdcFoodSearchFoodItem) => {
   width: 100%;
 }
 
-.search-input {
-}
 
 .search-page {
   height: 90vh;
