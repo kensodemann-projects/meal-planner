@@ -6,7 +6,7 @@ const login = vi.fn().mockResolvedValue({});
 const logout = vi.fn().mockResolvedValue(undefined);
 const sendPasswordReset = vi.fn().mockResolvedValue(undefined);
 
-export const useAuthentication = () => {
+export const useAuthentication: () => any = () => {
   return {
     isAuthenticated,
     login,

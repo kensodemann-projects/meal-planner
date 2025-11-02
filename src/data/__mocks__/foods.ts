@@ -7,7 +7,7 @@ const removeFood = vi.fn();
 const updateFood = vi.fn();
 const foods = ref([]);
 
-export const useFoodsData = vi.fn().mockReturnValue({
+export const useFoodsData: () => any = vi.fn().mockReturnValue({
   addFood,
   foods,
   getFood,
