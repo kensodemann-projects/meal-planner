@@ -8,6 +8,7 @@
       @keyup.enter="performSearch"
       :loading="isSearching"
       clearable
+      hide-details
     >
       <template #append-inner>
         <v-btn

@@ -26,18 +26,9 @@
     <hr class="my-4" />
 
     <div class="page-actions mt-4">
-      <v-btn color="primary" variant="text" @click="router?.push('/foods')" data-testid="close-button">Close</v-btn>
-      <v-btn
-        class="ml-8"
-        color="secondary"
-        variant="text"
-        @click="router?.push(`/foods/${id}/update`)"
-        data-testid="modify-button"
-        >Modify</v-btn
-      >
-      <v-btn class="ml-8" color="error" variant="text" @click="showConfirmDialog = true" data-testid="delete-button"
-        >Delete</v-btn
-      >
+      <CloseButton @click="router.push('/foods')" />
+      <ModifyButton class="ml-8" @click="router?.push(`/foods/${id}/update`)" />
+      <DeleteButton class="ml-8" @click="showConfirmDialog = true" />
     </div>
     <v-dialog v-model="showConfirmDialog" max-width="600px" data-testid="confirm-dialog">
       <ConfirmDialog
@@ -51,8 +42,6 @@
 </template>
 
 <script setup lang="ts">
-import ConfirmDialog from '@/components/ConfirmDialog.vue';
-import NutritionalInformation from '@/components/NutritionalInformation.vue';
 import { useFoodsData } from '@/data/foods';
 import type { FoodItem } from '@/models';
 import { ref } from 'vue';
