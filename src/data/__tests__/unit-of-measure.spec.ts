@@ -36,7 +36,7 @@ describe('unit-of-measure utilities', () => {
       expect(findUnitOfMeasure('t')).toEqual({ id: 'tsp', name: 'Teaspoon', type: 'volume', system: 'customary' });
     });
 
-    it('finds based on common forms if the id', () => {
+    it('finds based on common forms of the id', () => {
       expect(findUnitOfMeasure('TBSP')).toEqual({
         id: 'tbsp',
         name: 'Tablespoon',
@@ -58,6 +58,18 @@ describe('unit-of-measure utilities', () => {
       expect(findUnitOfMeasure('TSP')).toEqual({ id: 'tsp', name: 'Teaspoon', type: 'volume', system: 'customary' });
       expect(findUnitOfMeasure('Tsp')).toEqual({ id: 'tsp', name: 'Teaspoon', type: 'volume', system: 'customary' });
       expect(findUnitOfMeasure('tsp')).toEqual({ id: 'tsp', name: 'Teaspoon', type: 'volume', system: 'customary' });
+      expect(findUnitOfMeasure('fl-oz')).toEqual({
+        id: 'floz',
+        name: 'Fluid Ounce',
+        type: 'volume',
+        system: 'customary',
+      });
+      expect(findUnitOfMeasure('floz')).toEqual({
+        id: 'floz',
+        name: 'Fluid Ounce',
+        type: 'volume',
+        system: 'customary',
+      });
     });
 
     it('finds based on common forms of the name', () => {
@@ -89,13 +101,13 @@ describe('unit-of-measure utilities', () => {
 
     it('finds units using poorly hyphenated or spaced names', () => {
       expect(findUnitOfMeasure('fluid  ounce')).toEqual({
-        id: 'fl-oz',
+        id: 'floz',
         name: 'Fluid Ounce',
         type: 'volume',
         system: 'customary',
       });
       expect(findUnitOfMeasure('fluid-ounce')).toEqual({
-        id: 'fl-oz',
+        id: 'floz',
         name: 'Fluid Ounce',
         type: 'volume',
         system: 'customary',
