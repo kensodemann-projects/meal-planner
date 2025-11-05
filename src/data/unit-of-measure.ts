@@ -10,7 +10,7 @@ export const unitsOfMeasure: readonly UnitOfMeasure[] = readonly([
   // American Conventional Volume
   { id: 'tsp', name: 'Teaspoon', type: 'volume', system: 'customary' },
   { id: 'tbsp', name: 'Tablespoon', type: 'volume', system: 'customary' },
-  { id: 'fl-oz', name: 'Fluid Ounce', type: 'volume', system: 'customary' },
+  { id: 'floz', name: 'Fluid Ounce', type: 'volume', system: 'customary' },
   { id: 'cup', name: 'Cup', type: 'volume', system: 'customary' },
   { id: 'pint', name: 'Pint', type: 'volume', system: 'customary' },
   { id: 'quart', name: 'Quart', type: 'volume', system: 'customary' },
