@@ -11,7 +11,7 @@ const milliLiter = findUnitOfMeasure('ml');
 
 const teaSpoon = findUnitOfMeasure('tsp');
 const tableSpoon = findUnitOfMeasure('tbsp');
-const fluidOunces = findUnitOfMeasure('fl-oz');
+const fluidOunces = findUnitOfMeasure('floz');
 const cup = findUnitOfMeasure('cup');
 const pint = findUnitOfMeasure('pint');
 const quart = findUnitOfMeasure('quart');
