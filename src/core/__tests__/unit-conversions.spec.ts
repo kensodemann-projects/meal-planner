@@ -133,31 +133,57 @@ describe('Unit Conversions', () => {
 
   describe('Quantity Conversion Factor', () => {
     it('returns 1 if the units and units of measure are the same', () => {
-      expect(quantityConversionFactor({ units: 3, unitOfMeasure: piece }, { units: 3, unitOfMeasure: piece }));
-      expect(quantityConversionFactor({ units: 2, unitOfMeasure: each }, { units: 2, unitOfMeasure: each }));
-      expect(quantityConversionFactor({ units: 5, unitOfMeasure: item }, { units: 5, unitOfMeasure: item }));
-      expect(quantityConversionFactor({ units: 2, unitOfMeasure: liter }, { units: 2, unitOfMeasure: liter }));
+      expect(quantityConversionFactor({ units: 3, unitOfMeasure: piece }, { units: 3, unitOfMeasure: piece })).toBe(1);
+      expect(quantityConversionFactor({ units: 2, unitOfMeasure: each }, { units: 2, unitOfMeasure: each })).toBe(1);
+      expect(quantityConversionFactor({ units: 5, unitOfMeasure: item }, { units: 5, unitOfMeasure: item })).toBe(1);
+      expect(quantityConversionFactor({ units: 2, unitOfMeasure: liter }, { units: 2, unitOfMeasure: liter })).toBe(1);
       expect(
         quantityConversionFactor({ units: 250, unitOfMeasure: milliLiter }, { units: 250, unitOfMeasure: milliLiter }),
-      );
-      expect(quantityConversionFactor({ units: 3, unitOfMeasure: teaSpoon }, { units: 3, unitOfMeasure: teaSpoon }));
+      ).toBe(1);
+      expect(
+        quantityConversionFactor({ units: 3, unitOfMeasure: teaSpoon }, { units: 3, unitOfMeasure: teaSpoon }),
+      ).toBe(1);
       expect(
         quantityConversionFactor({ units: 4, unitOfMeasure: tableSpoon }, { units: 4, unitOfMeasure: tableSpoon }),
-      );
+      ).toBe(1);
       expect(
         quantityConversionFactor({ units: 8, unitOfMeasure: fluidOunces }, { units: 8, unitOfMeasure: fluidOunces }),
+      ).toBe(1);
+      expect(quantityConversionFactor({ units: 2, unitOfMeasure: cup }, { units: 2, unitOfMeasure: cup })).toBe(1);
+      expect(quantityConversionFactor({ units: 2, unitOfMeasure: pint }, { units: 2, unitOfMeasure: pint })).toBe(1);
+      expect(quantityConversionFactor({ units: 3, unitOfMeasure: quart }, { units: 3, unitOfMeasure: quart })).toBe(1);
+      expect(quantityConversionFactor({ units: 3, unitOfMeasure: gallon }, { units: 3, unitOfMeasure: gallon })).toBe(
+        1,
       );
-      expect(quantityConversionFactor({ units: 2, unitOfMeasure: cup }, { units: 2, unitOfMeasure: cup }));
-      expect(quantityConversionFactor({ units: 2, unitOfMeasure: pint }, { units: 2, unitOfMeasure: pint }));
-      expect(quantityConversionFactor({ units: 3, unitOfMeasure: quart }, { units: 3, unitOfMeasure: quart }));
-      expect(quantityConversionFactor({ units: 3, unitOfMeasure: gallon }, { units: 3, unitOfMeasure: gallon }));
       expect(
         quantityConversionFactor({ units: 30, unitOfMeasure: milliGram }, { units: 30, unitOfMeasure: milliGram }),
+      ).toBe(1);
+      expect(quantityConversionFactor({ units: 100, unitOfMeasure: gram }, { units: 100, unitOfMeasure: gram })).toBe(
+        1,
       );
-      expect(quantityConversionFactor({ units: 100, unitOfMeasure: gram }, { units: 100, unitOfMeasure: gram }));
-      expect(quantityConversionFactor({ units: 10, unitOfMeasure: kiloGram }, { units: 10, unitOfMeasure: kiloGram }));
-      expect(quantityConversionFactor({ units: 4, unitOfMeasure: ounce }, { units: 4, unitOfMeasure: ounce }));
-      expect(quantityConversionFactor({ units: 2, unitOfMeasure: pound }, { units: 2, unitOfMeasure: pound }));
+      expect(
+        quantityConversionFactor({ units: 10, unitOfMeasure: kiloGram }, { units: 10, unitOfMeasure: kiloGram }),
+      ).toBe(1);
+      expect(quantityConversionFactor({ units: 4, unitOfMeasure: ounce }, { units: 4, unitOfMeasure: ounce })).toBe(1);
+      expect(quantityConversionFactor({ units: 2, unitOfMeasure: pound }, { units: 2, unitOfMeasure: pound })).toBe(1);
+    });
+
+    it('returns a simple ratio when the unit of measure matches', () => {
+      expect(quantityConversionFactor({ units: 4, unitOfMeasure: ounce }, { units: 3, unitOfMeasure: ounce })).toBe(
+        3 / 4,
+      );
+      expect(quantityConversionFactor({ units: 3, unitOfMeasure: gram }, { units: 5, unitOfMeasure: gram })).toBe(
+        5 / 3,
+      );
+      expect(quantityConversionFactor({ units: 1, unitOfMeasure: pound }, { units: 7, unitOfMeasure: pound })).toBe(7);
+    });
+
+    it('takes the conversion factor into account', () => {
+      expect(quantityConversionFactor({ units: 4, unitOfMeasure: ounce }, { units: 4, unitOfMeasure: pound })).toBe(16);
+      expect(quantityConversionFactor({ units: 32, unitOfMeasure: ounce }, { units: 1, unitOfMeasure: pound })).toBe(
+        0.5,
+      );
+      expect(quantityConversionFactor({ units: 4, unitOfMeasure: pint }, { units: 2, unitOfMeasure: cup })).toBe(1 / 4);
     });
   });
 });

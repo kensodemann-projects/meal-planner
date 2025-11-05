@@ -87,4 +87,4 @@ export const unitConversionFactor = (from: UnitOfMeasure, to: UnitOfMeasure): nu
 };
 
 export const quantityConversionFactor = (from: Quantity, to: Quantity): number =>
-  unitConversionFactor(from.unitOfMeasure, to.unitOfMeasure);
+  (unitConversionFactor(from.unitOfMeasure, to.unitOfMeasure) * to.units) / from.units;
