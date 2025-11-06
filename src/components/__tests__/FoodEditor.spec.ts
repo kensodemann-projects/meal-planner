@@ -41,6 +41,15 @@ describe('FoodEditor', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
+  it('includes the proper sub-sections', () => {
+    const wrapper = createWrapper();
+    const subheaders = wrapper.findAll('h2');
+    expect(subheaders.length).toBe(3);
+    expect(subheaders[0]!.text()).toBe('Basic Information');
+    expect(subheaders[1]!.text()).toBe('Nutritional Information');
+    expect(subheaders[2]!.text()).toBe('Alternative Portions');
+  });
+
   describe('name', () => {
     it('renders', () => {
       const wrapper = createWrapper();

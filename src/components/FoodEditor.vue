@@ -1,7 +1,7 @@
 <template>
   <v-form v-model="valid">
     <v-container>
-      <v-list-subheader>Basic Information</v-list-subheader>
+      <h2>Basic Information</h2>
       <v-divider class="mb-4"></v-divider>
 
       <v-row>
@@ -36,7 +36,7 @@
         </v-col>
       </v-row>
 
-      <v-list-subheader>Nutritional Information</v-list-subheader>
+      <h2>Nutritional Information</h2>
       <v-divider class="mb-4"></v-divider>
 
       <v-row>
@@ -128,6 +128,14 @@
           ></v-number-input>
         </v-col>
       </v-row>
+
+      <h2>
+        <div class="d-flex justify-space-between">
+          <div>Alternative Portions</div>
+          <v-btn density="compact" variant="text" icon="mdi-plus"></v-btn>
+        </div>
+      </h2>
+      <v-divider class="mb-4"></v-divider>
     </v-container>
 
     <v-container>
