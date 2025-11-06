@@ -7,7 +7,7 @@ import * as directives from 'vuetify/directives';
 import FoodEditor from '../FoodEditor.vue';
 import NutritionalInformation from '../NutritionalInformation.vue';
 import DangerButton from '../buttons/DangerButton.vue';
-import SecondaryButton from '../buttons/SecondaryButton.vue';
+import ModifyButton from '../buttons/ModifyButton.vue';
 
 const vuetify = createVuetify({
   components,
@@ -548,8 +548,7 @@ describe('FoodEditor', () => {
         expect(portions.length).toBe(2);
         portions.forEach((p) => {
           expect(p.findComponent(NutritionalInformation).exists()).toBe(true);
-          expect(p.findComponent(SecondaryButton).exists()).toBe(true);
-          expect(p.findComponent(SecondaryButton).text()).toBe('Update');
+          expect(p.findComponent(ModifyButton).exists()).toBe(true);
           expect(p.findComponent(DangerButton).exists()).toBe(true);
         });
       });

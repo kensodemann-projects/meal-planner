@@ -144,7 +144,7 @@
               <NutritionalInformation :value="portion" compact />
             </v-card-text>
             <v-card-actions>
-              <SecondaryButton>Update</SecondaryButton>
+              <ModifyButton />
               <DeleteButton />
             </v-card-actions>
           </v-card>
