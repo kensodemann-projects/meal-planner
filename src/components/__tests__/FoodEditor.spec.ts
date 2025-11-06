@@ -5,6 +5,9 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import FoodEditor from '../FoodEditor.vue';
+import NutritionalInformation from '../NutritionalInformation.vue';
+import DangerButton from '../buttons/DangerButton.vue';
+import SecondaryButton from '../buttons/SecondaryButton.vue';
 
 const vuetify = createVuetify({
   components,
@@ -464,6 +467,13 @@ describe('FoodEditor', () => {
         ]);
       });
     });
+
+    describe('alternative portions', () => {
+      it('are blank', () => {
+        const portions = wrapper.findAllComponents(NutritionalInformation);
+        expect(portions.length).toBe(0);
+      });
+    });
   });
 
   describe('for update', () => {
@@ -531,6 +541,27 @@ describe('FoodEditor', () => {
         ]);
       });
     });
+
+    describe('alternative portions', () => {
+      it('are each displayed in a card', () => {
+        const portions = wrapper.findAllComponents(components.VCard);
+        expect(portions.length).toBe(2);
+        portions.forEach((p) => {
+          expect(p.findComponent(NutritionalInformation).exists()).toBe(true);
+          expect(p.findComponent(SecondaryButton).exists()).toBe(true);
+          expect(p.findComponent(SecondaryButton).text()).toBe('Update');
+          expect(p.findComponent(DangerButton).exists()).toBe(true);
+        });
+      });
+
+      it('displays the proper data in each card', () => {
+        const portions = wrapper.findAllComponents(components.VCard);
+        expect(portions[0]!.text()).toContain('Serving Size: 1 Each (115g)');
+        expect(portions[0]!.text()).toContain('Calories: 113');
+        expect(portions[1]!.text()).toContain('Serving Size: 4 Ounce (112g)');
+        expect(portions[1]!.text()).toContain('Calories: 110');
+      });
+    });
   });
 });
 
@@ -560,6 +591,17 @@ const BANANA: FoodItem = {
       sodium: 4,
       fat: 1.2,
       protein: 0.851,
+    },
+    {
+      grams: 112,
+      unitOfMeasure: { id: 'oz', name: 'Ounce', type: 'weight', system: 'customary' },
+      units: 4,
+      calories: 110,
+      carbs: 24.3,
+      sugar: 18.1,
+      sodium: 3,
+      fat: 1.1,
+      protein: 0.845,
     },
   ],
 };

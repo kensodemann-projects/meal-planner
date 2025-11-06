@@ -136,6 +136,20 @@
         </div>
       </h2>
       <v-divider class="mb-4"></v-divider>
+
+      <v-row v-for="(portion, index) in alternativePortions" :key="index">
+        <v-col cols="12">
+          <v-card>
+            <v-card-text>
+              <NutritionalInformation :value="portion" compact />
+            </v-card-text>
+            <v-card-actions>
+              <SecondaryButton>Update</SecondaryButton>
+              <DeleteButton />
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
     </v-container>
 
     <v-container>
