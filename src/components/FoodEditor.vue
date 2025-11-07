@@ -134,6 +134,16 @@
 
     <h2>
       <div class="d-flex justify-space-between">
+        <div>New Form</div>
+        <v-btn density="compact" variant="text" icon="mdi-plus"></v-btn>
+      </div>
+    </h2>
+    <v-divider class="mb-4"></v-divider>
+
+    <NutritionalInformationEditGrid v-if="food" v-model:portion="portion" />
+
+    <h2>
+      <div class="d-flex justify-space-between">
         <div>Alternative Portions</div>
         <v-btn density="compact" variant="text" icon="mdi-plus"></v-btn>
       </div>
@@ -166,9 +176,11 @@ import { validationRules } from '@/core/validation-rules';
 import { findUnitOfMeasure, unitOfMeasureOptions } from '@/data/unit-of-measure';
 import { foodCategories, type FoodItem } from '@/models';
 import { ref } from 'vue';
+import NutritionalInformationEditGrid from './NutritionalInformationEditGrid.vue';
 
 const props = defineProps<{ food?: FoodItem }>();
 const emit = defineEmits<{ (event: 'save', payload: FoodItem): void; (event: 'cancel'): void }>();
+const portion = ref(props.food);
 
 const valid = ref(false);
 const name = ref(props.food?.name);

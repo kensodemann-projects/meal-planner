@@ -4,12 +4,16 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import NutritionalInformationEditGrid from '../NutritionalInformationEditGrid.vue';
+import { TEST_FOOD } from '@/data/__tests__/test-data';
+import { ref } from 'vue';
 
 const vuetify = createVuetify({
   components,
   directives,
 });
-const mountComponent = () => mount(NutritionalInformationEditGrid, { global: { plugins: [vuetify] } });
+
+const mountComponent = () =>
+  mount(NutritionalInformationEditGrid, { props: { portion: TEST_FOOD }, global: { plugins: [vuetify] } });
 
 describe('Nutritional Information Edit Grid', () => {
   it('renders', () => {
