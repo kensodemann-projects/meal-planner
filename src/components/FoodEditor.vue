@@ -1,9 +1,9 @@
 <template>
   <v-form v-model="valid">
-    <v-container>
-      <h2>Basic Information</h2>
-      <v-divider class="mb-4"></v-divider>
+    <h2>Basic Information</h2>
+    <v-divider class="mb-4"></v-divider>
 
+    <v-container fluid>
       <v-row>
         <v-col cols="12" md="6">
           <v-text-field
@@ -35,10 +35,12 @@
           ></v-autocomplete>
         </v-col>
       </v-row>
+    </v-container>
 
-      <h2>Nutritional Information</h2>
-      <v-divider class="mb-4"></v-divider>
+    <h2>Nutritional Information</h2>
+    <v-divider class="mb-4"></v-divider>
 
+    <v-container fluid>
       <v-row>
         <v-col cols="12" md="4">
           <v-number-input
@@ -128,31 +130,29 @@
           ></v-number-input>
         </v-col>
       </v-row>
-
-      <h2>
-        <div class="d-flex justify-space-between">
-          <div>Alternative Portions</div>
-          <v-btn density="compact" variant="text" icon="mdi-plus"></v-btn>
-        </div>
-      </h2>
-      <v-divider class="mb-4"></v-divider>
-
-      <v-row v-for="(portion, index) in alternativePortions" :key="index">
-        <v-col cols="12">
-          <v-card>
-            <v-card-text>
-              <NutritionalInformation :value="portion" compact />
-            </v-card-text>
-            <v-card-actions>
-              <ModifyButton />
-              <DeleteButton />
-            </v-card-actions>
-          </v-card>
-        </v-col>
-      </v-row>
     </v-container>
 
-    <v-container>
+    <h2>
+      <div class="d-flex justify-space-between">
+        <div>Alternative Portions</div>
+        <v-btn density="compact" variant="text" icon="mdi-plus"></v-btn>
+      </div>
+    </h2>
+    <v-divider class="mb-4"></v-divider>
+
+    <div class="pa-3" v-for="(portion, index) in alternativePortions" :key="index">
+      <v-card>
+        <v-card-text>
+          <NutritionalInformation :value="portion" compact />
+        </v-card-text>
+        <v-card-actions>
+          <ModifyButton />
+          <DeleteButton />
+        </v-card-actions>
+      </v-card>
+    </div>
+
+    <v-container fluid>
       <v-row class="pa-4" justify="end">
         <CancelButton class="mr-4" @click="$emit('cancel')" />
         <SaveButton :disabled="!(valid && isModified())" @click="save" />
