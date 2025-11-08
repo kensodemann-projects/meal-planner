@@ -4,7 +4,7 @@
       <v-col cols="12" md="4">
         <v-number-input
           label="Units"
-          v-model="portion.units"
+          v-model="units"
           :rules="[validationRules.required]"
           data-testid="units-input"
         ></v-number-input>
@@ -12,7 +12,7 @@
       <v-col cols="12" md="4">
         <v-autocomplete
           label="Unit of Measure"
-          v-model="portion.unitOfMeasure.id"
+          v-model="unitOfMeasureId"
           :items="unitOfMeasureOptions"
           :rules="[validationRules.required]"
           data-testid="unit-of-measure-input"
@@ -22,7 +22,7 @@
         <v-number-input
           label="Grams"
           placeholder="Equivalent grams..."
-          v-model="portion.grams"
+          v-model="grams"
           :precision="null"
           :rules="[validationRules.required]"
           data-testid="grams-input"
@@ -30,7 +30,7 @@
       </v-col>
     </v-row>
 
-    <v-row>
+    <!-- <v-row>
       <v-col cols="12" md="4">
         <v-number-input
           label="Calories"
@@ -88,15 +88,42 @@
           data-testid="protein-input"
         ></v-number-input>
       </v-col>
-    </v-row>
+</v-row> -->
   </v-container>
 </template>
 
 <script setup lang="ts">
 import { validationRules } from '@/core/validation-rules';
-import { unitOfMeasureOptions } from '@/data/unit-of-measure';
+import { findUnitOfMeasure, unitOfMeasureOptions } from '@/data/unit-of-measure';
 import type { Portion } from '@/models';
+import { computed } from 'vue';
 
-const portion = defineModel<{ portion: Portion }>();
-console.log('the portion:', portion.value);
+const portion = defineModel<Partial<Portion>>();
+
+const units = computed({
+  get: () => portion.value?.units,
+  set: (units: number) =>
+    (portion.value = {
+      ...portion.value,
+      units,
+    }),
+});
+
+const unitOfMeasureId = computed({
+  get: () => portion.value?.unitOfMeasure?.id,
+  set: (id: string) =>
+    (portion.value = {
+      ...portion.value,
+      unitOfMeasure: findUnitOfMeasure(id || ''),
+    }),
+});
+
+const grams = computed({
+  get: () => portion.value?.grams,
+  set: (grams: number) =>
+    (portion.value = {
+      ...portion.value,
+      grams,
+    }),
+});
 </script>
