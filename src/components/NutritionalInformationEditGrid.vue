@@ -60,11 +60,11 @@
       </v-col>
     </v-row>
 
-    <!-- <v-row>
+    <v-row>
       <v-col cols="12" md="4">
         <v-number-input
           label="Total Carbs (g)"
-          v-model="portion.carbs"
+          v-model="carbs"
           :precision="null"
           :rules="[validationRules.required]"
           data-testid="carbs-input"
@@ -73,7 +73,7 @@
       <v-col cols="12" md="4">
         <v-number-input
           label="Fat (g)"
-          v-model="portion.fat"
+          v-model="fat"
           :precision="null"
           :rules="[validationRules.required]"
           data-testid="fat-input"
@@ -82,13 +82,13 @@
       <v-col cols="12" md="4">
         <v-number-input
           label="Protein (g)"
-          v-model="portion.protein"
+          v-model="protein"
           :precision="null"
           :rules="[validationRules.required]"
           data-testid="protein-input"
         ></v-number-input>
       </v-col>
-</v-row> -->
+    </v-row>
   </v-container>
 </template>
 
@@ -151,6 +151,33 @@ const sugar = computed({
     (portion.value = {
       ...portion.value,
       sugar,
+    }),
+});
+
+const carbs = computed({
+  get: () => portion.value?.carbs,
+  set: (carbs: number) =>
+    (portion.value = {
+      ...portion.value,
+      carbs,
+    }),
+});
+
+const fat = computed({
+  get: () => portion.value?.fat,
+  set: (fat: number) =>
+    (portion.value = {
+      ...portion.value,
+      fat,
+    }),
+});
+
+const protein = computed({
+  get: () => portion.value?.protein,
+  set: (protein: number) =>
+    (portion.value = {
+      ...portion.value,
+      protein,
     }),
 });
 </script>

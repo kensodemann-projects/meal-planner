@@ -57,7 +57,6 @@ describe('Nutritional Information Edit Grid', () => {
       const input = unitsInput.find('input');
       await input.trigger('focus');
       await input.setValue(73);
-      await input.trigger('blur');
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
       expect((emitted![0]![0] as Portion).units).toBe(73);
@@ -130,7 +129,6 @@ describe('Nutritional Information Edit Grid', () => {
       const input = gramsInput.find('input');
       await input.trigger('focus');
       await input.setValue(124);
-      await input.trigger('blur');
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
       expect((emitted![0]![0] as Portion).grams).toBe(124);
@@ -173,7 +171,6 @@ describe('Nutritional Information Edit Grid', () => {
       const input = calsInput.find('input');
       await input.trigger('focus');
       await input.setValue(173);
-      await input.trigger('blur');
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
       expect((emitted![0]![0] as Portion).calories).toBe(173);
@@ -216,7 +213,6 @@ describe('Nutritional Information Edit Grid', () => {
       const input = sodiumInput.find('input');
       await input.trigger('focus');
       await input.setValue(267);
-      await input.trigger('blur');
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
       expect((emitted![0]![0] as Portion).sodium).toBe(267);
@@ -259,10 +255,143 @@ describe('Nutritional Information Edit Grid', () => {
       const input = sugarInput.find('input');
       await input.trigger('focus');
       await input.setValue(486);
-      await input.trigger('blur');
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
       expect((emitted![0]![0] as Portion).sugar).toBe(486);
+    });
+  });
+
+  describe('carbs', () => {
+    it('renders', () => {
+      const wrapper = mountComponent({});
+      const carbsInput = wrapper.findComponent('[data-testid="carbs-input"]') as VueWrapper<components.VNumberInput>;
+      expect(carbsInput.exists()).toBe(true);
+      expect(carbsInput.props('label')).toBe('Total Carbs (g)');
+    });
+
+    it('is required', async () => {
+      const wrapper = mountComponent({});
+      const carbsInput = wrapper.findComponent('[data-testid="carbs-input"]') as VueWrapper<components.VNumberInput>;
+      const input = carbsInput.find('input');
+
+      expect(wrapper.text()).not.toContain('Required');
+      await input.trigger('focus');
+      await input.setValue('');
+      await input.trigger('blur');
+      expect(wrapper.text()).toContain('Required');
+
+      await input.setValue(2);
+      await input.trigger('blur');
+      expect(wrapper.text()).not.toContain('Required');
+    });
+
+    it('is initialized properly', () => {
+      const wrapper = mountComponent({ ...TEST_FOOD, carbs: 18 });
+      const carbsInput = wrapper.findComponent('[data-testid="carbs-input"]') as VueWrapper<components.VNumberInput>;
+      expect(carbsInput.find('input').element.value).toBe('18');
+    });
+
+    it('is emitted on change', async () => {
+      const wrapper = mountComponent({ ...TEST_FOOD, carbs: 13 });
+      const carbsInput = wrapper.findComponent('[data-testid="carbs-input"]') as VueWrapper<components.VNumberInput>;
+      const input = carbsInput.find('input');
+      await input.trigger('focus');
+      await input.setValue(27);
+      const emitted = wrapper.emitted('update:modelValue');
+      expect(emitted?.length).toBe(1);
+      expect((emitted![0]![0] as Portion).carbs).toBe(27);
+    });
+  });
+
+  describe('fat', () => {
+    it('renders', () => {
+      const wrapper = mountComponent({});
+      const fatInput = wrapper.findComponent('[data-testid="fat-input"]') as VueWrapper<components.VNumberInput>;
+      expect(fatInput.exists()).toBe(true);
+      expect(fatInput.props('label')).toBe('Fat (g)');
+    });
+
+    it('is required', async () => {
+      const wrapper = mountComponent({});
+      const fatInput = wrapper.findComponent('[data-testid="fat-input"]') as VueWrapper<components.VNumberInput>;
+      const input = fatInput.find('input');
+
+      expect(wrapper.text()).not.toContain('Required');
+      await input.trigger('focus');
+      await input.setValue('');
+      await input.trigger('blur');
+      expect(wrapper.text()).toContain('Required');
+
+      await input.setValue(2);
+      await input.trigger('blur');
+      expect(wrapper.text()).not.toContain('Required');
+    });
+
+    it('is initialized properly', () => {
+      const wrapper = mountComponent({ ...TEST_FOOD, fat: 8 });
+      const fatInput = wrapper.findComponent('[data-testid="fat-input"]') as VueWrapper<components.VNumberInput>;
+      expect(fatInput.find('input').element.value).toBe('8');
+    });
+
+    it('is emitted on change', async () => {
+      const wrapper = mountComponent({ ...TEST_FOOD, fat: 4 });
+      const fatInput = wrapper.findComponent('[data-testid="fat-input"]') as VueWrapper<components.VNumberInput>;
+      const input = fatInput.find('input');
+      await input.trigger('focus');
+      await input.setValue(19);
+      const emitted = wrapper.emitted('update:modelValue');
+      expect(emitted?.length).toBe(1);
+      expect((emitted![0]![0] as Portion).fat).toBe(19);
+    });
+  });
+
+  describe('protein', () => {
+    it('renders', () => {
+      const wrapper = mountComponent({});
+      const proteinInput = wrapper.findComponent(
+        '[data-testid="protein-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(proteinInput.exists()).toBe(true);
+      expect(proteinInput.props('label')).toBe('Protein (g)');
+    });
+
+    it('is required', async () => {
+      const wrapper = mountComponent({});
+      const proteinInput = wrapper.findComponent(
+        '[data-testid="protein-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const input = proteinInput.find('input');
+
+      expect(wrapper.text()).not.toContain('Required');
+      await input.trigger('focus');
+      await input.setValue('');
+      await input.trigger('blur');
+      expect(wrapper.text()).toContain('Required');
+
+      await input.setValue(2);
+      await input.trigger('blur');
+      expect(wrapper.text()).not.toContain('Required');
+    });
+
+    it('is initialized properly', () => {
+      const wrapper = mountComponent({ ...TEST_FOOD, protein: 12 });
+      const proteinInput = wrapper.findComponent(
+        '[data-testid="protein-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(proteinInput.find('input').element.value).toBe('12');
+    });
+
+    it('is emitted on change', async () => {
+      const wrapper = mountComponent({ ...TEST_FOOD, protein: 14 });
+      const proteinInput = wrapper.findComponent(
+        '[data-testid="protein-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const input = proteinInput.find('input');
+      await input.trigger('focus');
+      await input.setValue(23);
+      const emitted = wrapper.emitted('update:modelValue');
+      expect(emitted?.length).toBe(1);
+      expect((emitted![0]![0] as Portion).protein).toBe(23);
     });
   });
 });
