@@ -8,6 +8,7 @@ import FoodEditor from '../FoodEditor.vue';
 import NutritionalInformation from '../NutritionalInformation.vue';
 import DangerButton from '../buttons/DangerButton.vue';
 import ModifyButton from '../buttons/ModifyButton.vue';
+import { findUnitOfMeasure } from '@/data/unit-of-measure';
 
 const vuetify = createVuetify({
   components,
@@ -420,7 +421,7 @@ describe('FoodEditor', () => {
         await inputs.categoryInput.setValue('Produce');
         (wrapper.vm as any).category = 'Produce';
         await inputs.unitsInput.setValue(1);
-        (wrapper.vm as any).unitOfMeasure = 'each';
+        (wrapper.vm as any).portion.unitOfMeasure = findUnitOfMeasure('each');
         await inputs.gramsInput.setValue(56);
         expect(saveButton.attributes('disabled')).toBeDefined();
         await inputs.caloriesInput.setValue(75);
@@ -434,7 +435,7 @@ describe('FoodEditor', () => {
         await inputs.categoryInput.setValue('Produce');
         (wrapper.vm as any).category = 'Produce';
         await inputs.unitsInput.setValue(1);
-        (wrapper.vm as any).unitOfMeasure = 'each';
+        (wrapper.vm as any).portion.unitOfMeasure = findUnitOfMeasure('each');
         await inputs.gramsInput.setValue(56);
         await inputs.caloriesInput.setValue(75);
         await inputs.sugarInput.setValue(4);
@@ -484,7 +485,7 @@ describe('FoodEditor', () => {
       expect(inputs.brandInput.element.value).toBe('dole');
       expect((wrapper.vm as any).category).toBe('Produce');
       expect(inputs.unitsInput.element.value).toBe('100');
-      expect((wrapper.vm as any).unitOfMeasure).toBe('g');
+      expect((wrapper.vm as any).portion.unitOfMeasure).toEqual(findUnitOfMeasure('g'));
       expect(inputs.gramsInput.element.value).toBe('100');
       expect(inputs.caloriesInput.element.value).toBe('98');
       expect(inputs.sodiumInput.element.value).toBe('4');
