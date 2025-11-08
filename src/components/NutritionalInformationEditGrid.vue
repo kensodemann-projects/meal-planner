@@ -30,11 +30,11 @@
       </v-col>
     </v-row>
 
-    <!-- <v-row>
+    <v-row>
       <v-col cols="12" md="4">
         <v-number-input
           label="Calories"
-          v-model="portion.calories"
+          v-model="calories"
           :precision="null"
           :rules="[validationRules.required]"
           data-testid="calories-input"
@@ -43,7 +43,7 @@
       <v-col cols="12" md="4">
         <v-number-input
           label="Sodium (mg)"
-          v-model="portion.sodium"
+          v-model="sodium"
           :precision="null"
           :rules="[validationRules.required]"
           data-testid="sodium-input"
@@ -52,7 +52,7 @@
       <v-col cols="12" md="4">
         <v-number-input
           label="Sugar (g)"
-          v-model="portion.sugar"
+          v-model="sugar"
           :precision="null"
           :rules="[validationRules.required]"
           data-testid="sugar-input"
@@ -60,7 +60,7 @@
       </v-col>
     </v-row>
 
-    <v-row>
+    <!-- <v-row>
       <v-col cols="12" md="4">
         <v-number-input
           label="Total Carbs (g)"
@@ -124,6 +124,33 @@ const grams = computed({
     (portion.value = {
       ...portion.value,
       grams,
+    }),
+});
+
+const calories = computed({
+  get: () => portion.value?.calories,
+  set: (calories: number) =>
+    (portion.value = {
+      ...portion.value,
+      calories,
+    }),
+});
+
+const sodium = computed({
+  get: () => portion.value?.sodium,
+  set: (sodium: number) =>
+    (portion.value = {
+      ...portion.value,
+      sodium,
+    }),
+});
+
+const sugar = computed({
+  get: () => portion.value?.sugar,
+  set: (sugar: number) =>
+    (portion.value = {
+      ...portion.value,
+      sugar,
     }),
 });
 </script>

@@ -125,7 +125,7 @@ describe('Nutritional Information Edit Grid', () => {
     });
 
     it('is emitted on change', async () => {
-      const wrapper = mountComponent({ ...TEST_FOOD });
+      const wrapper = mountComponent(TEST_FOOD);
       const gramsInput = wrapper.findComponent('[data-testid="grams-input"]') as VueWrapper<components.VNumberInput>;
       const input = gramsInput.find('input');
       await input.trigger('focus');
@@ -134,6 +134,135 @@ describe('Nutritional Information Edit Grid', () => {
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
       expect((emitted![0]![0] as Portion).grams).toBe(124);
+    });
+  });
+
+  describe('calories', () => {
+    it('renders', () => {
+      const wrapper = mountComponent({});
+      const calsInput = wrapper.findComponent('[data-testid="calories-input"]') as VueWrapper<components.VNumberInput>;
+      expect(calsInput.exists()).toBe(true);
+      expect(calsInput.props('label')).toBe('Calories');
+    });
+
+    it('is required', async () => {
+      const wrapper = mountComponent({});
+      const calsInput = wrapper.findComponent('[data-testid="calories-input"]') as VueWrapper<components.VNumberInput>;
+      const input = calsInput.find('input');
+
+      expect(wrapper.text()).not.toContain('Required');
+      await input.trigger('focus');
+      await input.setValue('');
+      await input.trigger('blur');
+      expect(wrapper.text()).toContain('Required');
+
+      await input.setValue(2);
+      await input.trigger('blur');
+      expect(wrapper.text()).not.toContain('Required');
+    });
+
+    it('is initialized properly', () => {
+      const wrapper = mountComponent({ ...TEST_FOOD, calories: 143 });
+      const calsInput = wrapper.findComponent('[data-testid="calories-input"]') as VueWrapper<components.VNumberInput>;
+      expect(calsInput.find('input').element.value).toBe('143');
+    });
+
+    it('is emitted on change', async () => {
+      const wrapper = mountComponent({ ...TEST_FOOD, calories: 42 });
+      const calsInput = wrapper.findComponent('[data-testid="calories-input"]') as VueWrapper<components.VNumberInput>;
+      const input = calsInput.find('input');
+      await input.trigger('focus');
+      await input.setValue(173);
+      await input.trigger('blur');
+      const emitted = wrapper.emitted('update:modelValue');
+      expect(emitted?.length).toBe(1);
+      expect((emitted![0]![0] as Portion).calories).toBe(173);
+    });
+  });
+
+  describe('sodium', () => {
+    it('renders', () => {
+      const wrapper = mountComponent({});
+      const sodiumInput = wrapper.findComponent('[data-testid="sodium-input"]') as VueWrapper<components.VNumberInput>;
+      expect(sodiumInput.exists()).toBe(true);
+      expect(sodiumInput.props('label')).toBe('Sodium (mg)');
+    });
+
+    it('is required', async () => {
+      const wrapper = mountComponent({});
+      const sodiumInput = wrapper.findComponent('[data-testid="sodium-input"]') as VueWrapper<components.VNumberInput>;
+      const input = sodiumInput.find('input');
+
+      expect(wrapper.text()).not.toContain('Required');
+      await input.trigger('focus');
+      await input.setValue('');
+      await input.trigger('blur');
+      expect(wrapper.text()).toContain('Required');
+
+      await input.setValue(2);
+      await input.trigger('blur');
+      expect(wrapper.text()).not.toContain('Required');
+    });
+
+    it('is initialized properly', () => {
+      const wrapper = mountComponent({ ...TEST_FOOD, sodium: 19 });
+      const sodiumInput = wrapper.findComponent('[data-testid="sodium-input"]') as VueWrapper<components.VNumberInput>;
+      expect(sodiumInput.find('input').element.value).toBe('19');
+    });
+
+    it('is emitted on change', async () => {
+      const wrapper = mountComponent({ ...TEST_FOOD, sodium: 42 });
+      const sodiumInput = wrapper.findComponent('[data-testid="sodium-input"]') as VueWrapper<components.VNumberInput>;
+      const input = sodiumInput.find('input');
+      await input.trigger('focus');
+      await input.setValue(267);
+      await input.trigger('blur');
+      const emitted = wrapper.emitted('update:modelValue');
+      expect(emitted?.length).toBe(1);
+      expect((emitted![0]![0] as Portion).sodium).toBe(267);
+    });
+  });
+
+  describe('sugar', () => {
+    it('renders', () => {
+      const wrapper = mountComponent({});
+      const sugarInput = wrapper.findComponent('[data-testid="sugar-input"]') as VueWrapper<components.VNumberInput>;
+      expect(sugarInput.exists()).toBe(true);
+      expect(sugarInput.props('label')).toBe('Sugar (g)');
+    });
+
+    it('is required', async () => {
+      const wrapper = mountComponent({});
+      const sugarInput = wrapper.findComponent('[data-testid="sugar-input"]') as VueWrapper<components.VNumberInput>;
+      const input = sugarInput.find('input');
+
+      expect(wrapper.text()).not.toContain('Required');
+      await input.trigger('focus');
+      await input.setValue('');
+      await input.trigger('blur');
+      expect(wrapper.text()).toContain('Required');
+
+      await input.setValue(2);
+      await input.trigger('blur');
+      expect(wrapper.text()).not.toContain('Required');
+    });
+
+    it('is initialized properly', () => {
+      const wrapper = mountComponent({ ...TEST_FOOD, sugar: 143 });
+      const sugarInput = wrapper.findComponent('[data-testid="sugar-input"]') as VueWrapper<components.VNumberInput>;
+      expect(sugarInput.find('input').element.value).toBe('143');
+    });
+
+    it('is emitted on change', async () => {
+      const wrapper = mountComponent({ ...TEST_FOOD, sugar: 92 });
+      const sugarInput = wrapper.findComponent('[data-testid="sugar-input"]') as VueWrapper<components.VNumberInput>;
+      const input = sugarInput.find('input');
+      await input.trigger('focus');
+      await input.setValue(486);
+      await input.trigger('blur');
+      const emitted = wrapper.emitted('update:modelValue');
+      expect(emitted?.length).toBe(1);
+      expect((emitted![0]![0] as Portion).sugar).toBe(486);
     });
   });
 });
