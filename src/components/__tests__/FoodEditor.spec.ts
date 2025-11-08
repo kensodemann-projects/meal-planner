@@ -166,7 +166,7 @@ describe('FoodEditor', () => {
       const wrapper = createWrapper();
       const unitOfMeasureInput = wrapper.findComponent(
         '[data-testid="unit-of-measure-input"]',
-      ) as VueWrapper<components.VNumberInput>;
+      ) as VueWrapper<components.VAutocomplete>;
       const input = unitOfMeasureInput.find('input');
 
       expect(wrapper.text()).not.toContain('Required');

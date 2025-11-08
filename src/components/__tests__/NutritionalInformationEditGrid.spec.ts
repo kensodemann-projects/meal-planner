@@ -64,6 +64,36 @@ describe('Nutritional Information Edit Grid', () => {
     });
   });
 
+  describe('unit of measure', () => {
+    it('renders', () => {
+      const wrapper = mountComponent({});
+      const uomInput = wrapper.findComponent(
+        '[data-testid="unit-of-measure-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      expect(uomInput.exists()).toBe(true);
+      expect(uomInput.props('label')).toBe('Unit of Measure');
+    });
+
+    it('is required', async () => {
+      const wrapper = mountComponent({});
+      const uomInput = wrapper.findComponent(
+        '[data-testid="unit-of-measure-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      const input = uomInput.find('input');
+
+      expect(wrapper.text()).not.toContain('Required');
+      await input.trigger('focus');
+      await input.setValue('');
+      await input.trigger('blur');
+      expect(wrapper.text()).toContain('Required');
+    });
+
+    it('is initialized properly', () => {
+      const wrapper = mountComponent(TEST_FOOD);
+      expect((wrapper.vm as any).unitOfMeasureId).toBe(TEST_FOOD.unitOfMeasure.id);
+    });
+  });
+
   describe('grams', () => {
     it('renders', () => {
       const wrapper = mountComponent({});
