@@ -7,6 +7,7 @@ global.fetch = vi.fn();
 describe('USDA FDC Data', () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    vi.stubEnv('VITE_USDA_FDC_API_KEY', '469327b2-8ec3-4bfb-93f8-60790dc53fae');
   });
 
   describe('searchFdcData', () => {
@@ -30,7 +31,7 @@ describe('USDA FDC Data', () => {
       await searchFdcData('apple');
 
       expect(fetch).toHaveBeenCalledWith(
-        'https://api.nal.usda.gov/fdc/v1/foods/search?query=apple&dataType=Foundation&pageSize=25&pageNumber=1&sortBy=dataType.keyword&sortOrder=asc&api_key=lH3yRDraY43gGXZUbP6bGbdidhAHNetvtPvZNDum',
+        'https://api.nal.usda.gov/fdc/v1/foods/search?query=apple&dataType=Foundation&pageSize=25&pageNumber=1&sortBy=dataType.keyword&sortOrder=asc&api_key=469327b2-8ec3-4bfb-93f8-60790dc53fae',
       );
     });
 
@@ -54,7 +55,7 @@ describe('USDA FDC Data', () => {
       await searchFdcData('apple', 2);
 
       expect(fetch).toHaveBeenCalledWith(
-        'https://api.nal.usda.gov/fdc/v1/foods/search?query=apple&dataType=Foundation&pageSize=25&pageNumber=2&sortBy=dataType.keyword&sortOrder=asc&api_key=lH3yRDraY43gGXZUbP6bGbdidhAHNetvtPvZNDum',
+        'https://api.nal.usda.gov/fdc/v1/foods/search?query=apple&dataType=Foundation&pageSize=25&pageNumber=2&sortBy=dataType.keyword&sortOrder=asc&api_key=469327b2-8ec3-4bfb-93f8-60790dc53fae',
       );
     });
 
@@ -75,7 +76,7 @@ describe('USDA FDC Data', () => {
       await searchFdcData('chicken & rice');
 
       expect(fetch).toHaveBeenCalledWith(
-        'https://api.nal.usda.gov/fdc/v1/foods/search?query=chicken%20%26%20rice&dataType=Foundation&pageSize=25&pageNumber=1&sortBy=dataType.keyword&sortOrder=asc&api_key=lH3yRDraY43gGXZUbP6bGbdidhAHNetvtPvZNDum',
+        'https://api.nal.usda.gov/fdc/v1/foods/search?query=chicken%20%26%20rice&dataType=Foundation&pageSize=25&pageNumber=1&sortBy=dataType.keyword&sortOrder=asc&api_key=469327b2-8ec3-4bfb-93f8-60790dc53fae',
       );
     });
 
@@ -139,7 +140,7 @@ describe('USDA FDC Data', () => {
       await searchFdcData('');
 
       expect(fetch).toHaveBeenCalledWith(
-        'https://api.nal.usda.gov/fdc/v1/foods/search?query=&dataType=Foundation&pageSize=25&pageNumber=1&sortBy=dataType.keyword&sortOrder=asc&api_key=lH3yRDraY43gGXZUbP6bGbdidhAHNetvtPvZNDum',
+        'https://api.nal.usda.gov/fdc/v1/foods/search?query=&dataType=Foundation&pageSize=25&pageNumber=1&sortBy=dataType.keyword&sortOrder=asc&api_key=469327b2-8ec3-4bfb-93f8-60790dc53fae',
       );
     });
   });
@@ -154,7 +155,7 @@ describe('USDA FDC Data', () => {
       await fetchFoodItem(748967);
 
       expect(fetch).toHaveBeenCalledWith(
-        'https://api.nal.usda.gov/fdc/v1/food/748967?api_key=lH3yRDraY43gGXZUbP6bGbdidhAHNetvtPvZNDum&nutrients=203&nutrients=204&nutrients=205&nutrients=208&nutrients=269.3&nutrients=307',
+        'https://api.nal.usda.gov/fdc/v1/food/748967?api_key=469327b2-8ec3-4bfb-93f8-60790dc53fae&nutrients=203&nutrients=204&nutrients=205&nutrients=208&nutrients=269.3&nutrients=307',
       );
     });
 
