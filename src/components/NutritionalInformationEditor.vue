@@ -18,7 +18,7 @@ import { ref } from 'vue';
 
 const props = defineProps<{ portion?: Portion }>();
 const valid = ref(false);
-const editPortion = ref(
+const editPortion = ref<Partial<Portion>>(
   props.portion || {
     sodium: 0,
     sugar: 0,
@@ -28,5 +28,15 @@ const editPortion = ref(
   },
 );
 
-const isModified = () => !props.portion;
+const isModified = () =>
+  !props.portion ||
+  editPortion.value.units !== props.portion.units ||
+  editPortion.value.unitOfMeasure?.id !== props.portion.unitOfMeasure.id ||
+  editPortion.value.grams !== props.portion.grams ||
+  editPortion.value.calories !== props.portion.calories ||
+  editPortion.value.sodium !== props.portion.sodium ||
+  editPortion.value.sugar !== props.portion.sugar ||
+  editPortion.value.carbs !== props.portion.carbs ||
+  editPortion.value.fat !== props.portion.fat ||
+  editPortion.value.protein !== props.portion.protein;
 </script>
