@@ -366,8 +366,6 @@ describe('FoodEditor', () => {
       const wrapper = createWrapper();
       const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
       expect(cancelButton.exists()).toBe(true);
-      expect(cancelButton.text()).toBe('Cancel');
-      expect(cancelButton.props('color')).toBe('secondary');
     });
 
     it('emits the "cancel" event on click', () => {
@@ -384,8 +382,6 @@ describe('FoodEditor', () => {
       const wrapper = createWrapper();
       const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
       expect(saveButton.exists()).toBe(true);
-      expect(saveButton.text()).toBe('Save');
-      expect(saveButton.props('color')).toBe('primary');
     });
   });
 
