@@ -154,17 +154,8 @@
 
     <v-container>
       <v-row class="pa-4" justify="end">
-        <v-btn color="secondary" class="mr-4" variant="text" @click="$emit('cancel')" data-testid="cancel-button"
-          >Cancel</v-btn
-        >
-        <v-btn
-          color="primary"
-          variant="text"
-          :disabled="!(valid && isModified())"
-          @click="save"
-          data-testid="save-button"
-          >Save</v-btn
-        >
+        <CancelButton class="mr-4" @click="$emit('cancel')" />
+        <SaveButton :disabled="!(valid && isModified())" @click="save" />
       </v-row>
     </v-container>
   </v-form>
@@ -175,6 +166,8 @@ import { validationRules } from '@/core/validation-rules';
 import { findUnitOfMeasure, unitOfMeasureOptions } from '@/data/unit-of-measure';
 import { foodCategories, type FoodItem } from '@/models';
 import { ref } from 'vue';
+import CancelButton from './buttons/CancelButton.vue';
+import SaveButton from './buttons/SaveButton.vue';
 
 const props = defineProps<{ food?: FoodItem }>();
 const emit = defineEmits<{ (event: 'save', payload: FoodItem): void; (event: 'cancel'): void }>();
