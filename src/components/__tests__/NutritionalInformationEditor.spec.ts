@@ -6,6 +6,7 @@ import * as directives from 'vuetify/directives';
 import NutritionalInformationEditor from '../NutritionalInformationEditor.vue';
 import type { Portion } from '@/models';
 import { TEST_PORTION } from '@/data/__tests__/test-data';
+import { findUnitOfMeasure } from '@/data/unit-of-measure';
 
 const vuetify = createVuetify({
   components,
@@ -55,6 +56,17 @@ describe('Nutritional Information Editor', () => {
       it('begins disabled', () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
         expect(saveButton.attributes('disabled')).toBeDefined();
+      });
+
+      it('is disabled until all required fields are filled in', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const inputs = getInputs(wrapper);
+        await inputs.unitsInput.setValue(1);
+        (wrapper.vm as any).editPortion.unitOfMeasure = findUnitOfMeasure('each');
+        await inputs.gramsInput.setValue(56);
+        expect(saveButton.attributes('disabled')).toBeDefined();
+        await inputs.caloriesInput.setValue(75);
+        expect(saveButton.attributes('disabled')).toBeUndefined();
       });
     });
   });
