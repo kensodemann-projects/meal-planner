@@ -100,14 +100,25 @@ import { computed } from 'vue';
 
 const portion = defineModel<Partial<Portion>>();
 
-const units = computed({
-  get: () => portion.value?.units,
-  set: (units: number) =>
-    (portion.value = {
-      ...portion.value,
-      units,
-    }),
-});
+const createPortionField = <K extends keyof Partial<Portion>>(key: K) =>
+  computed({
+    get: () => portion.value?.[key],
+    set: (value: Partial<Portion>[K]) => {
+      portion.value = {
+        ...portion.value,
+        [key]: value,
+      };
+    },
+  });
+
+const units = createPortionField('units');
+const grams = createPortionField('grams');
+const calories = createPortionField('calories');
+const sodium = createPortionField('sodium');
+const sugar = createPortionField('sugar');
+const carbs = createPortionField('carbs');
+const fat = createPortionField('fat');
+const protein = createPortionField('protein');
 
 const unitOfMeasureId = computed({
   get: () => portion.value?.unitOfMeasure?.id,
@@ -115,69 +126,6 @@ const unitOfMeasureId = computed({
     (portion.value = {
       ...portion.value,
       unitOfMeasure: findUnitOfMeasure(id || ''),
-    }),
-});
-
-const grams = computed({
-  get: () => portion.value?.grams,
-  set: (grams: number) =>
-    (portion.value = {
-      ...portion.value,
-      grams,
-    }),
-});
-
-const calories = computed({
-  get: () => portion.value?.calories,
-  set: (calories: number) =>
-    (portion.value = {
-      ...portion.value,
-      calories,
-    }),
-});
-
-const sodium = computed({
-  get: () => portion.value?.sodium,
-  set: (sodium: number) =>
-    (portion.value = {
-      ...portion.value,
-      sodium,
-    }),
-});
-
-const sugar = computed({
-  get: () => portion.value?.sugar,
-  set: (sugar: number) =>
-    (portion.value = {
-      ...portion.value,
-      sugar,
-    }),
-});
-
-const carbs = computed({
-  get: () => portion.value?.carbs,
-  set: (carbs: number) =>
-    (portion.value = {
-      ...portion.value,
-      carbs,
-    }),
-});
-
-const fat = computed({
-  get: () => portion.value?.fat,
-  set: (fat: number) =>
-    (portion.value = {
-      ...portion.value,
-      fat,
-    }),
-});
-
-const protein = computed({
-  get: () => portion.value?.protein,
-  set: (protein: number) =>
-    (portion.value = {
-      ...portion.value,
-      protein,
     }),
 });
 </script>
