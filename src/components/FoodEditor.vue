@@ -166,8 +166,6 @@ import { validationRules } from '@/core/validation-rules';
 import { findUnitOfMeasure, unitOfMeasureOptions } from '@/data/unit-of-measure';
 import { foodCategories, type FoodItem } from '@/models';
 import { ref } from 'vue';
-import CancelButton from './buttons/CancelButton.vue';
-import SaveButton from './buttons/SaveButton.vue';
 
 const props = defineProps<{ food?: FoodItem }>();
 const emit = defineEmits<{ (event: 'save', payload: FoodItem): void; (event: 'cancel'): void }>();
