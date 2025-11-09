@@ -5,8 +5,8 @@
         <NutritionalInformationEditGrid v-model="editPortion" />
       </v-card-text>
       <v-card-actions>
-        <CancelButton />
-        <SaveButton :disabled="!(isModified() && valid)" />
+        <CancelButton @click="$emit('cancel')" />
+        <SaveButton :disabled="!(isModified() && valid)" @click="$emit('save', editPortion as Portion)" />
       </v-card-actions>
     </v-card>
   </v-form>
@@ -17,6 +17,7 @@ import { type Portion } from '@/models';
 import { ref } from 'vue';
 
 const props = defineProps<{ portion?: Portion }>();
+defineEmits<{ (event: 'save', payload: Portion): void; (event: 'cancel'): void }>();
 const valid = ref(false);
 const editPortion = ref<Partial<Portion>>(
   props.portion || {
