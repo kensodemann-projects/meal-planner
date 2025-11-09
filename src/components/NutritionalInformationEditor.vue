@@ -29,15 +29,21 @@ const editPortion = ref<Partial<Portion>>(
   },
 );
 
-const isModified = () =>
-  !props.portion ||
-  editPortion.value.units !== props.portion.units ||
-  editPortion.value.unitOfMeasure?.id !== props.portion.unitOfMeasure.id ||
-  editPortion.value.grams !== props.portion.grams ||
-  editPortion.value.calories !== props.portion.calories ||
-  editPortion.value.sodium !== props.portion.sodium ||
-  editPortion.value.sugar !== props.portion.sugar ||
-  editPortion.value.carbs !== props.portion.carbs ||
-  editPortion.value.fat !== props.portion.fat ||
-  editPortion.value.protein !== props.portion.protein;
+const isModified = () => {
+  if (!props.portion) return true;
+  const fields: (keyof Portion)[] = [
+    'units',
+    'grams',
+    'calories',
+    'sodium',
+    'sugar',
+    'carbs',
+    'fat',
+    'protein',
+  ];
+  if (editPortion.value.unitOfMeasure?.id !== props.portion.unitOfMeasure.id) {
+    return true;
+  }
+  return fields.some(field => editPortion.value[field] !== props.portion[field]);
+};
 </script>
