@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -33,8 +33,12 @@ describe('Nutritional Information Editor', () => {
   });
 
   describe('for add', () => {
+    let wrapper: ReturnType<typeof mountComponent>;
+    beforeEach(() => {
+      wrapper = mountComponent();
+    });
+
     it('defaults the nutrients to zero', () => {
-      const wrapper = mountComponent();
       const inputs = getInputs(wrapper);
       expect(inputs.unitsInput.element.value).toBe('');
       expect(inputs.unitOfMeasureInput.element.value).toBe('');
@@ -46,11 +50,22 @@ describe('Nutritional Information Editor', () => {
       expect(inputs.fatInput.element.value).toBe('0');
       expect(inputs.proteinInput.element.value).toBe('0');
     });
+
+    describe('the save button', () => {
+      it('begins disabled', () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        expect(saveButton.attributes('disabled')).toBeDefined();
+      });
+    });
   });
 
   describe('for update', () => {
+    let wrapper: ReturnType<typeof mountComponent>;
+    beforeEach(() => {
+      wrapper = mountComponent({ portion: TEST_PORTION });
+    });
+
     it('initializes the data to the portion values', () => {
-      const wrapper = mountComponent({ portion: TEST_PORTION });
       const inputs = getInputs(wrapper);
       expect(inputs.unitsInput.element.value).toBe(TEST_PORTION.units.toString());
       expect(inputs.gramsInput.element.value).toBe(TEST_PORTION.grams.toString());
@@ -60,6 +75,13 @@ describe('Nutritional Information Editor', () => {
       expect(inputs.carbsInput.element.value).toBe(TEST_PORTION.carbs.toString());
       expect(inputs.fatInput.element.value).toBe(TEST_PORTION.fat.toString());
       expect(inputs.proteinInput.element.value).toBe(TEST_PORTION.protein.toString());
+    });
+
+    describe('the save button', () => {
+      it('begins disabled', () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        expect(saveButton.attributes('disabled')).toBeDefined();
+      });
     });
   });
 });

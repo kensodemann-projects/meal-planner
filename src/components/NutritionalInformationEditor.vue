@@ -4,8 +4,8 @@
       <NutritionalInformationEditGrid v-model="editPortion" />
     </v-card-text>
     <v-card-actions>
-      <ModifyButton />
-      <DeleteButton />
+      <CancelButton />
+      <SaveButton :disabled="true" />
     </v-card-actions>
   </v-card>
 </template>
