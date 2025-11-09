@@ -1,5 +1,13 @@
 <template>
-  <NutritionalInformationEditGrid v-model="editPortion" />
+  <v-card>
+    <v-card-text>
+      <NutritionalInformationEditGrid v-model="editPortion" />
+    </v-card-text>
+    <v-card-actions>
+      <ModifyButton />
+      <DeleteButton />
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script setup lang="ts">
