@@ -73,7 +73,7 @@
 
 <script setup lang="ts">
 import { validationRules } from '@/core/validation-rules';
-import { foodCategories, type FoodItem } from '@/models';
+import { foodCategories, type FoodItem, type Portion } from '@/models';
 import { ref } from 'vue';
 
 const props = defineProps<{ food?: FoodItem }>();
@@ -96,20 +96,21 @@ const portion = ref({
 });
 const alternativePortions = props.food?.alternativePortions || [];
 
-const isModified = (): boolean =>
-  !props.food ||
-  props.food.name !== name.value ||
-  props.food.brand !== brand.value ||
-  props.food.category !== category.value ||
-  props.food.units !== portion.value.units ||
-  props.food.unitOfMeasure.id !== portion.value.unitOfMeasure?.id ||
-  props.food.grams !== portion.value.grams ||
-  props.food.calories !== portion.value.calories ||
-  props.food.sodium !== portion.value.sodium ||
-  props.food.sugar !== portion.value.sugar ||
-  props.food.carbs !== portion.value.carbs ||
-  props.food.fat !== portion.value.fat ||
-  props.food.protein !== portion.value.protein;
+const isModified = (): boolean => {
+  if (!props.food) return true;
+
+  if (props.food.name !== name.value || props.food.brand !== brand.value || props.food.category !== category.value) {
+    return true;
+  }
+
+  const portionFields = ['units', 'grams', 'calories', 'sodium', 'sugar', 'carbs', 'fat', 'protein'] as const;
+
+  if (props.food.unitOfMeasure.id !== portion.value.unitOfMeasure?.id) {
+    return true;
+  }
+
+  return portionFields.some((field) => props.food![field as keyof Portion] !== portion.value[field]);
+};
 
 const save = () => {
   const food: Omit<FoodItem, 'alternativePortions'> = {
