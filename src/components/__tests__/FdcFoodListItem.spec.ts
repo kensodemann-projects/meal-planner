@@ -153,13 +153,14 @@ describe('FdcFoodListItem', () => {
     ];
 
     for (const food of foods) {
-      wrapper = createWrapper({ food });
+      const wrapper = createWrapper({ food });
       const button = wrapper.findComponent({ name: 'VBtn' });
 
       await button.trigger('click');
 
       expect(wrapper.emitted('add')).toBeTruthy();
       expect(wrapper.emitted('add')?.[0]).toEqual([food]);
+      wrapper.unmount();
     }
   });
 
