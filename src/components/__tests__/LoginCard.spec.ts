@@ -1,5 +1,5 @@
 import { flushPromises, mount } from '@vue/test-utils';
-import { beforeEach, describe, it, expect } from 'vitest';
+import { beforeEach, describe, it, expect, afterEach } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -43,14 +43,20 @@ const getInputs = (wrapper: ReturnType<typeof createWrapper>) => {
 };
 
 describe('LoginCard', () => {
+  let wrapper: ReturnType<typeof createWrapper>;
+
+  afterEach(() => {
+    wrapper?.unmount();
+  });
+
   it('renders the login form with correct title', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const title = wrapper.findComponent(components.VCardTitle);
     expect(title.text()).toBe('Login to Your Account');
   });
 
   it('renders email and password fields', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const inputs = wrapper.findAllComponents(components.VTextField);
     expect(inputs).toHaveLength(2);
     expect(inputs[0]?.props('label')).toBe('Email');
@@ -58,7 +64,7 @@ describe('LoginCard', () => {
   });
 
   it('renders login and forgot password buttons', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const buttons = wrapper.findAllComponents(components.VBtn);
     expect(buttons).toHaveLength(2);
     expect(buttons[0]?.text()).toBe('Login');
@@ -66,13 +72,13 @@ describe('LoginCard', () => {
   });
 
   it('disables login button when form is invalid', async () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const { loginButton } = getButtons(wrapper);
     expect(loginButton.attributes('disabled')).toBeDefined();
   });
 
   it('enables login button when form is valid', async () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const { loginButton } = getButtons(wrapper);
     const { emailInput, passwordInput } = getInputs(wrapper);
 
@@ -88,7 +94,7 @@ describe('LoginCard', () => {
   });
 
   it('validates email format', async () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const { emailInput } = getInputs(wrapper);
     await emailInput.setValue('invalid-email');
     await emailInput.trigger('blur');
@@ -96,7 +102,7 @@ describe('LoginCard', () => {
   });
 
   it('validates email is required', async () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const { emailInput } = getInputs(wrapper);
 
     await emailInput.trigger('focus');
@@ -109,7 +115,7 @@ describe('LoginCard', () => {
   });
 
   it('validates password is required', async () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const { passwordInput } = getInputs(wrapper);
 
     await passwordInput.trigger('focus');
@@ -122,7 +128,7 @@ describe('LoginCard', () => {
   });
 
   it('emits login event when login is clicked', async () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const loginCard = wrapper.findComponent(LoginCard);
     const { emailInput, passwordInput } = getInputs(wrapper);
     const { loginButton } = getButtons(wrapper);
@@ -144,7 +150,6 @@ describe('LoginCard', () => {
   });
 
   describe('clicking the forgot password button', () => {
-    let wrapper: ReturnType<typeof createWrapper>;
     beforeEach(async () => {
       wrapper = createWrapper();
       const { forgotPasswordButton } = getButtons(wrapper);
@@ -203,7 +208,7 @@ describe('LoginCard', () => {
   });
 
   it('applies correct CSS classes', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const card = wrapper.find('.auth-card');
     expect(card.exists()).toBe(true);
     expect(card.classes()).toContain('pa-5');

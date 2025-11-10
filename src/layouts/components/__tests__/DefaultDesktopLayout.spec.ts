@@ -1,7 +1,5 @@
-// @vitest-environment jsdom
-
 import { mount } from '@vue/test-utils';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -16,8 +14,14 @@ const mountComponent = (menuItems: MenuItem[]) =>
   mount(DefaultDesktopLayout, { props: { menuItems }, global: { plugins: [vuetify], stubs: { 'router-view': true } } });
 
 describe('default desktop layout', () => {
+  let wrapper: ReturnType<typeof mountComponent>;
+
+  afterEach(() => {
+    wrapper?.unmount();
+  });
+
   it('always includes logout and settings menu items', () => {
-    const wrapper = mountComponent([]);
+    wrapper = mountComponent([]);
     const items = wrapper.findAllComponents(components.VListItem);
     expect(items.length).toBe(2);
     expect(items[0]?.text()).toBe('Settings');
@@ -25,7 +29,7 @@ describe('default desktop layout', () => {
   });
 
   it('renders each menu item', () => {
-    const wrapper = mountComponent([
+    wrapper = mountComponent([
       { icon: 'mdi-folder', title: 'My Files', value: 'myfiles', path: '/' },
       { icon: 'mdi-account-multiple', title: 'Shared with me', value: 'shared', path: '/planning' },
       { icon: 'mdi-star', title: 'Starred', value: 'starred', path: '/recipes' },

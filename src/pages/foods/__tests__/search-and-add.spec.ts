@@ -2,7 +2,7 @@ import { useFoodsData } from '@/data/foods';
 import { fetchFoodItem, searchFdcData } from '@/data/usda-fdc-data';
 import type { FoodItem } from '@/models';
 import { flushPromises, mount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { useRouter } from 'vue-router';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
@@ -28,6 +28,12 @@ const createWrapper = (props = {}) => {
 };
 
 describe('SearchAndAddPage', () => {
+  let wrapper: ReturnType<typeof createWrapper>;
+
+  afterEach(() => {
+    wrapper?.unmount();
+  });
+
   beforeEach(() => {
     (useRouter as Mock).mockReturnValue({
       push: vi.fn(),
@@ -36,13 +42,13 @@ describe('SearchAndAddPage', () => {
   });
 
   it('renders the page correctly', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     expect(wrapper.exists()).toBe(true);
     expect(wrapper.find('.search-page').exists()).toBe(true);
   });
 
   it('renders a search input', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const searchInput = wrapper.findComponent({ name: 'SearchInput' });
     expect(searchInput.exists()).toBe(true);
     expect(searchInput.props('label')).toBe('Search for food');
@@ -50,20 +56,20 @@ describe('SearchAndAddPage', () => {
   });
 
   it('does not show results container initially', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const resultsContainer = wrapper.find('[data-testid="results-container"]');
     expect(resultsContainer.exists()).toBe(false);
   });
 
   it('does not show no results message initially', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const noResults = wrapper.find('[data-testid="no-results"]');
     expect(noResults.exists()).toBe(false);
   });
 
   describe('on search', () => {
     it('calls the FDC search API with the correct query', async () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const searchInput = wrapper.findComponent({ name: 'SearchInput' });
       const testQuery = 'apple';
       await searchInput.vm.$emit('search', testQuery);
@@ -78,7 +84,7 @@ describe('SearchAndAddPage', () => {
         totalPages: 1,
       });
 
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const searchInput = wrapper.findComponent({ name: 'SearchInput' });
       const testQuery = 'unknown food';
       await searchInput.vm.$emit('search', testQuery);
@@ -96,7 +102,7 @@ describe('SearchAndAddPage', () => {
         totalPages: 1,
       });
 
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const searchInput = wrapper.findComponent({ name: 'SearchInput' });
       const testQuery = 'apple';
       await searchInput.vm.$emit('search', testQuery);
@@ -114,7 +120,7 @@ describe('SearchAndAddPage', () => {
         totalPages: 1,
       });
 
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const searchInput = wrapper.findComponent({ name: 'SearchInput' });
       const testQuery = 'apple';
       await searchInput.vm.$emit('search', testQuery);
@@ -136,7 +142,7 @@ describe('SearchAndAddPage', () => {
         totalPages: 1,
       });
 
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const searchInput = wrapper.findComponent({ name: 'SearchInput' });
       const testQuery = 'fruit';
       await searchInput.vm.$emit('search', testQuery);
@@ -159,7 +165,6 @@ describe('SearchAndAddPage', () => {
     });
 
     describe('when "add" is clicked in a food item', () => {
-      let wrapper: ReturnType<typeof createWrapper>;
       beforeEach(async () => {
         const { addFood } = useFoodsData();
         (addFood as Mock).mockResolvedValueOnce('fiif8e88fe9');
@@ -222,7 +227,6 @@ describe('SearchAndAddPage', () => {
     });
 
     describe('when changing the diplayed page of results', () => {
-      let wrapper: ReturnType<typeof createWrapper>;
       beforeEach(async () => {
         (searchFdcData as Mock).mockResolvedValue({
           foods: [
@@ -257,7 +261,7 @@ describe('SearchAndAddPage', () => {
   describe('enter manually', () => {
     it('navigates to the add page', async () => {
       const router = useRouter();
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const button = wrapper.findComponent('[data-testid="enter-manually-button"]');
       await button.trigger('click');
       expect(router.push).toHaveBeenCalledExactlyOnceWith('/foods/add');
@@ -267,7 +271,7 @@ describe('SearchAndAddPage', () => {
   describe('cancel', () => {
     it('navigates to the foods page', async () => {
       const router = useRouter();
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const button = wrapper.findComponent('[data-testid="cancel-button"]');
       await button.trigger('click');
       expect(router.replace).toHaveBeenCalledExactlyOnceWith('/foods');

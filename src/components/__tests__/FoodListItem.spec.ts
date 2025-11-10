@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -52,39 +52,45 @@ const createWrapper = (props = {}) => {
 };
 
 describe('Food List Item Component', () => {
+  let wrapper: ReturnType<typeof createWrapper>;
+
+  afterEach(() => {
+    wrapper?.unmount();
+  });
+
   it('renders', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     expect(wrapper.exists()).toBe(true);
     expect(wrapper.find('.food-list-item').exists()).toBe(true);
   });
 
   it('displays food description as title', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const title = wrapper.findComponent({ name: 'VListItemTitle' });
     expect(title.text()).toBe(BANANA.name);
   });
 
   it('displays the food category in the subtitle', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const subtitle = wrapper.findComponent({ name: 'VListItemSubtitle' });
     expect(subtitle.text()).toContain(BANANA.category);
   });
 
   it('displays the "no specific brand" if a brand is not specified', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const subtitle = wrapper.findComponent({ name: 'VListItemSubtitle' });
     expect(subtitle.text()).toContain('No specific brand');
   });
 
   it('displays the brand if a brand is specified', () => {
-    const wrapper = createWrapper({ food: { ...BANANA, brand: 'Dole' } });
+    wrapper = createWrapper({ food: { ...BANANA, brand: 'Dole' } });
     const subtitle = wrapper.findComponent({ name: 'VListItemSubtitle' });
     expect(subtitle.text()).toContain('Dole');
     expect(subtitle.text()).not.toContain('No specific brand');
   });
 
   it('emits click event when the item is clicked', async () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const updateButton = wrapper.findComponent({ name: 'VListItem' });
     await updateButton.trigger('click');
     expect(wrapper.emitted('click')).toBeTruthy();

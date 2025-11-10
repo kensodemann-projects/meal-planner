@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -12,13 +12,19 @@ const vuetify = createVuetify({
 const mountComponent = () => mount(PrimaryButton, { global: { plugins: [vuetify] } });
 
 describe('Primary Button', () => {
+  let wrapper: ReturnType<typeof mountComponent>;
+
+  afterEach(() => {
+    wrapper?.unmount();
+  });
+
   it('renders', () => {
-    const wrapper = mountComponent();
+    wrapper = mountComponent();
     expect(wrapper.exists()).toBe(true);
   });
 
   it('contains no text by default', () => {
-    const wrapper = mountComponent();
+    wrapper = mountComponent();
     expect(wrapper.text()).toBe('');
   });
 });

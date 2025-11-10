@@ -1,6 +1,7 @@
+import { findUnitOfMeasure } from '@/data/unit-of-measure';
 import type { FoodItem } from '@/models';
 import { mount, VueWrapper } from '@vue/test-utils';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -8,7 +9,6 @@ import FoodEditor from '../FoodEditor.vue';
 import NutritionalInformation from '../NutritionalInformation.vue';
 import DangerButton from '../buttons/DangerButton.vue';
 import ModifyButton from '../buttons/ModifyButton.vue';
-import { findUnitOfMeasure } from '@/data/unit-of-measure';
 
 const vuetify = createVuetify({
   components,
@@ -40,13 +40,19 @@ const getInputs = (wrapper: ReturnType<typeof createWrapper>) => ({
 });
 
 describe('FoodEditor', () => {
+  let wrapper: ReturnType<typeof createWrapper>;
+
+  afterEach(() => {
+    wrapper?.unmount();
+  });
+
   it('renders ', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     expect(wrapper.exists()).toBe(true);
   });
 
   it('includes the proper sub-sections', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const subheaders = wrapper.findAll('h2');
     expect(subheaders.length).toBe(3);
     expect(subheaders[0]!.text()).toBe('Basic Information');
@@ -56,7 +62,7 @@ describe('FoodEditor', () => {
 
   describe('name', () => {
     it('renders', () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const nameInput = wrapper.findComponent('[data-testid="name-input"]') as VueWrapper<components.VTextField>;
       expect(nameInput.exists()).toBe(true);
       expect(nameInput.props('label')).toBe('Name');
@@ -64,7 +70,7 @@ describe('FoodEditor', () => {
     });
 
     it('is required', async () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const nameInput = wrapper.findComponent('[data-testid="name-input"]') as VueWrapper<components.VTextField>;
       const input = nameInput.find('input');
 
@@ -82,7 +88,7 @@ describe('FoodEditor', () => {
 
   describe('brand', () => {
     it('renders', () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const brandInput = wrapper.findComponent('[data-testid="brand-input"]') as VueWrapper<components.VTextField>;
       expect(brandInput.exists()).toBe(true);
       expect(brandInput.props('label')).toBe('Brand');
@@ -90,7 +96,7 @@ describe('FoodEditor', () => {
     });
 
     it('is not required', async () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const brandInput = wrapper.findComponent('[data-testid="brand-input"]') as VueWrapper<components.VTextField>;
       const input = brandInput.find('input');
 
@@ -103,7 +109,7 @@ describe('FoodEditor', () => {
 
   describe('food category', () => {
     it('renders', () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const categoryInput = wrapper.findComponent(
         '[data-testid="food-category-input"]',
       ) as VueWrapper<components.VAutocomplete>;
@@ -112,7 +118,7 @@ describe('FoodEditor', () => {
     });
 
     it('is required', async () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const categoryInput = wrapper.findComponent('[data-testid="name-input"]') as VueWrapper<components.VTextField>;
       const input = categoryInput.find('input');
 
@@ -130,14 +136,14 @@ describe('FoodEditor', () => {
 
   describe('units', () => {
     it('renders', () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const unitsInput = wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
       expect(unitsInput.exists()).toBe(true);
       expect(unitsInput.props('label')).toBe('Units');
     });
 
     it('is required', async () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const unitsInput = wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
       const input = unitsInput.find('input');
 
@@ -155,7 +161,7 @@ describe('FoodEditor', () => {
 
   describe('unit of measure', () => {
     it('renders', () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const unitOfMeasureInput = wrapper.findComponent(
         '[data-testid="unit-of-measure-input"]',
       ) as VueWrapper<components.VAutocomplete>;
@@ -164,7 +170,7 @@ describe('FoodEditor', () => {
     });
 
     it('is required', async () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const unitOfMeasureInput = wrapper.findComponent(
         '[data-testid="unit-of-measure-input"]',
       ) as VueWrapper<components.VAutocomplete>;
@@ -180,7 +186,7 @@ describe('FoodEditor', () => {
 
   describe('equivalent grams', () => {
     it('renders', () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const gramsInput = wrapper.findComponent('[data-testid="grams-input"]') as VueWrapper<components.VNumberInput>;
       expect(gramsInput.exists()).toBe(true);
       expect(gramsInput.props('label')).toBe('Grams');
@@ -188,7 +194,7 @@ describe('FoodEditor', () => {
     });
 
     it('is required', async () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const gramsInput = wrapper.findComponent('[data-testid="grams-input"]') as VueWrapper<components.VNumberInput>;
       const input = gramsInput.find('input');
 
@@ -206,7 +212,7 @@ describe('FoodEditor', () => {
 
   describe('calories', () => {
     it('renders', () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const caloriesInput = wrapper.findComponent(
         '[data-testid="calories-input"]',
       ) as VueWrapper<components.VNumberInput>;
@@ -215,7 +221,7 @@ describe('FoodEditor', () => {
     });
 
     it('is required', async () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const caloriesInput = wrapper.findComponent(
         '[data-testid="calories-input"]',
       ) as VueWrapper<components.VNumberInput>;
@@ -235,14 +241,14 @@ describe('FoodEditor', () => {
 
   describe('sodium', () => {
     it('renders', () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const sodiumInput = wrapper.findComponent('[data-testid="sodium-input"]') as VueWrapper<components.VNumberInput>;
       expect(sodiumInput.exists()).toBe(true);
       expect(sodiumInput.props('label')).toBe('Sodium (mg)');
     });
 
     it('is required', async () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const sodiumInput = wrapper.findComponent('[data-testid="sodium-input"]') as VueWrapper<components.VNumberInput>;
       const input = sodiumInput.find('input');
 
@@ -260,14 +266,14 @@ describe('FoodEditor', () => {
 
   describe('sugar', () => {
     it('renders', () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const sugarInput = wrapper.findComponent('[data-testid="sugar-input"]') as VueWrapper<components.VNumberInput>;
       expect(sugarInput.exists()).toBe(true);
       expect(sugarInput.props('label')).toBe('Sugar (g)');
     });
 
     it('is required', async () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const sugarInput = wrapper.findComponent('[data-testid="sugar-input"]') as VueWrapper<components.VNumberInput>;
       const input = sugarInput.find('input');
 
@@ -285,14 +291,14 @@ describe('FoodEditor', () => {
 
   describe('carbs', () => {
     it('renders', () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const carbsInput = wrapper.findComponent('[data-testid="carbs-input"]') as VueWrapper<components.VNumberInput>;
       expect(carbsInput.exists()).toBe(true);
       expect(carbsInput.props('label')).toBe('Total Carbs (g)');
     });
 
     it('is required', async () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const carbsInput = wrapper.findComponent('[data-testid="carbs-input"]') as VueWrapper<components.VNumberInput>;
       const input = carbsInput.find('input');
 
@@ -310,14 +316,14 @@ describe('FoodEditor', () => {
 
   describe('fat', () => {
     it('renders', () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const fatInput = wrapper.findComponent('[data-testid="fat-input"]') as VueWrapper<components.VNumberInput>;
       expect(fatInput.exists()).toBe(true);
       expect(fatInput.props('label')).toBe('Fat (g)');
     });
 
     it('is required', async () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const fatInput = wrapper.findComponent('[data-testid="fat-input"]') as VueWrapper<components.VNumberInput>;
       const input = fatInput.find('input');
 
@@ -335,7 +341,7 @@ describe('FoodEditor', () => {
 
   describe('protein', () => {
     it('renders', () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const proteinInput = wrapper.findComponent(
         '[data-testid="protein-input"]',
       ) as VueWrapper<components.VNumberInput>;
@@ -344,7 +350,7 @@ describe('FoodEditor', () => {
     });
 
     it('is required', async () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const proteinInput = wrapper.findComponent(
         '[data-testid="protein-input"]',
       ) as VueWrapper<components.VNumberInput>;
@@ -364,15 +370,15 @@ describe('FoodEditor', () => {
 
   describe('cancel button', () => {
     it('renders', () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
       expect(cancelButton.exists()).toBe(true);
     });
 
-    it('emits the "cancel" event on click', () => {
-      const wrapper = createWrapper();
+    it('emits the "cancel" event on click', async () => {
+      wrapper = createWrapper();
       const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
-      cancelButton.trigger('click');
+      await cancelButton.trigger('click');
       expect(wrapper.emitted('cancel')).toBeTruthy();
       expect(wrapper.emitted('cancel')).toHaveLength(1);
     });
@@ -380,14 +386,13 @@ describe('FoodEditor', () => {
 
   describe('save button', () => {
     it('renders', () => {
-      const wrapper = createWrapper();
+      wrapper = createWrapper();
       const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
       expect(saveButton.exists()).toBe(true);
     });
   });
 
   describe('for create', () => {
-    let wrapper: ReturnType<typeof createWrapper>;
     beforeEach(() => {
       wrapper = createWrapper();
     });
@@ -474,7 +479,6 @@ describe('FoodEditor', () => {
   });
 
   describe('for update', () => {
-    let wrapper: ReturnType<typeof createWrapper>;
     beforeEach(() => {
       wrapper = createWrapper({ food: BANANA });
     });

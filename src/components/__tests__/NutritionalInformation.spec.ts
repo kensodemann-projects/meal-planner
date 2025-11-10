@@ -1,6 +1,6 @@
 import { TEST_FOOD, TEST_PORTION } from '@/data/__tests__/test-data';
 import { mount } from '@vue/test-utils';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -14,13 +14,19 @@ const mountComponent = (props = {}) =>
   mount(NutritionalInformation, { props: { value: TEST_PORTION, ...props }, global: { plugins: [vuetify] } });
 
 describe('Nutritional Information', () => {
+  let wrapper: ReturnType<typeof mountComponent>;
+
+  afterEach(() => {
+    wrapper?.unmount();
+  });
+
   it('renders', () => {
-    const wrapper = mountComponent();
+    wrapper = mountComponent();
     expect(wrapper.exists()).toBe(true);
   });
 
   it('displays the data from the test portion', () => {
-    const wrapper = mountComponent();
+    wrapper = mountComponent();
     expect(wrapper.text()).toContain('Serving Size: 2 Each (240g)');
     expect(wrapper.text()).toContain(`Calories: ${TEST_PORTION.calories}`);
     expect(wrapper.text()).toContain(`Sodium: ${TEST_PORTION.sodium}mg`);
@@ -31,7 +37,7 @@ describe('Nutritional Information', () => {
   });
 
   it('displays the data from the test food', () => {
-    const wrapper = mountComponent({ value: TEST_FOOD });
+    wrapper = mountComponent({ value: TEST_FOOD });
     expect(wrapper.text()).toContain('Serving Size: 100 Gram (100g)');
     expect(wrapper.text()).toContain(`Calories: ${TEST_FOOD.calories}`);
     expect(wrapper.text()).toContain(`Sodium: ${TEST_FOOD.sodium}mg`);
@@ -43,7 +49,7 @@ describe('Nutritional Information', () => {
 
   describe('when compact', () => {
     it('only displays the serving size and calories', () => {
-      const wrapper = mountComponent({ compact: true });
+      wrapper = mountComponent({ compact: true });
       expect(wrapper.text()).toContain('Serving Size: 2 Each (240g)');
       expect(wrapper.text()).toContain(`Calories: ${TEST_PORTION.calories}`);
       expect(wrapper.text()).not.toContain(`Sodium: ${TEST_PORTION.sodium}mg`);

@@ -1,6 +1,6 @@
 import { useAuthentication } from '@/core/authentication';
 import { mount } from '@vue/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -36,6 +36,12 @@ const mountComponent = () =>
   );
 
 describe('DefaultLayout', () => {
+  let wrapper: ReturnType<typeof mountComponent>;
+
+  afterEach(() => {
+    wrapper?.unmount();
+  });
+
   beforeEach(() => {
     (useRouter as Mock).mockReturnValue({
       replace: vi.fn(),
@@ -43,7 +49,7 @@ describe('DefaultLayout', () => {
   });
 
   it('displays the menu items for this application', () => {
-    const wrapper = mountComponent();
+    wrapper = mountComponent();
     const items = wrapper.findAllComponents(components.VListItem);
     expect(items.length).toBe(7);
     expect(items[0]?.text()).toBe('Dashboard');
@@ -57,7 +63,7 @@ describe('DefaultLayout', () => {
 
   it('calls the logout if logout is clicked', async () => {
     const { logout } = useAuthentication();
-    const wrapper = mountComponent();
+    wrapper = mountComponent();
     const items = wrapper.findAllComponents(components.VListItem);
     await items[items.length - 1]?.trigger('click');
     expect(logout).toHaveBeenCalledExactlyOnceWith();
@@ -65,7 +71,7 @@ describe('DefaultLayout', () => {
 
   it('navigates to the login page if logout is successful', async () => {
     const router = useRouter();
-    const wrapper = mountComponent();
+    wrapper = mountComponent();
     const items = wrapper.findAllComponents(components.VListItem);
     await items[items.length - 1]?.trigger('click');
     expect(router.replace).toHaveBeenCalledExactlyOnceWith('/login');

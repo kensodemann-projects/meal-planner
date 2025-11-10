@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -29,15 +29,21 @@ const createWrapper = (props = {}) => {
 };
 
 describe('FdcFoodListItem', () => {
+  let wrapper: ReturnType<typeof createWrapper>;
+
+  afterEach(() => {
+    wrapper?.unmount();
+  });
+
   it('renders the component correctly', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
 
     expect(wrapper.exists()).toBe(true);
     expect(wrapper.find('.fdc-food-list-item').exists()).toBe(true);
   });
 
   it('displays food description as title', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
 
     const title = wrapper.findComponent({ name: 'VListItemTitle' });
     expect(title.exists()).toBe(true);
@@ -45,7 +51,7 @@ describe('FdcFoodListItem', () => {
   });
 
   it('displays food category as subtitle', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
 
     const subtitle = wrapper.findComponent({ name: 'VListItemSubtitle' });
     expect(subtitle.exists()).toBe(true);
@@ -53,7 +59,7 @@ describe('FdcFoodListItem', () => {
   });
 
   it('renders the Add Item button', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
 
     const button = wrapper.findComponent({ name: 'VBtn' });
     expect(button.exists()).toBe(true);
@@ -61,7 +67,7 @@ describe('FdcFoodListItem', () => {
   });
 
   it('emits add event when Add Item button is clicked', async () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
 
     const button = wrapper.findComponent({ name: 'VBtn' });
     await button.trigger('click');
@@ -78,7 +84,7 @@ describe('FdcFoodListItem', () => {
       foodCategory: 'Poultry Products',
     };
 
-    const wrapper = createWrapper({ food: customFood });
+    wrapper = createWrapper({ food: customFood });
 
     const title = wrapper.findComponent({ name: 'VListItemTitle' });
     const subtitle = wrapper.findComponent({ name: 'VListItemSubtitle' });
@@ -95,7 +101,7 @@ describe('FdcFoodListItem', () => {
       foodCategory: 'Test Category',
     };
 
-    const wrapper = createWrapper({ food: longDescriptionFood });
+    wrapper = createWrapper({ food: longDescriptionFood });
 
     const title = wrapper.findComponent({ name: 'VListItemTitle' });
     expect(title.text()).toBe(longDescriptionFood.description);
@@ -108,7 +114,7 @@ describe('FdcFoodListItem', () => {
       foodCategory: 'Beverages & Desserts',
     };
 
-    const wrapper = createWrapper({ food: specialCharFood });
+    wrapper = createWrapper({ food: specialCharFood });
 
     const title = wrapper.findComponent({ name: 'VListItemTitle' });
     const subtitle = wrapper.findComponent({ name: 'VListItemSubtitle' });
@@ -118,7 +124,7 @@ describe('FdcFoodListItem', () => {
   });
 
   it('has proper component structure', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
 
     expect(wrapper.find('.fdc-food-list-item').exists()).toBe(true);
 
@@ -154,11 +160,12 @@ describe('FdcFoodListItem', () => {
 
       expect(wrapper.emitted('add')).toBeTruthy();
       expect(wrapper.emitted('add')?.[0]).toEqual([food]);
+      wrapper.unmount();
     }
   });
 
   it('does not emit add event on list item click, only button click', async () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
 
     const listItem = wrapper.findComponent({ name: 'VListItem' });
     await listItem.trigger('click');
@@ -178,7 +185,7 @@ describe('FdcFoodListItem', () => {
       foodCategory: 'Complex Category',
     };
 
-    const wrapper = createWrapper({ food: complexFood });
+    wrapper = createWrapper({ food: complexFood });
     const button = wrapper.findComponent({ name: 'VBtn' });
 
     await button.trigger('click');

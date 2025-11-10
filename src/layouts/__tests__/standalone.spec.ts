@@ -31,4 +31,5 @@ const mountComponent = () =>
 it('renders', () => {
   const wrapper = mountComponent();
   expect(wrapper.exists()).toBe(true);
+  wrapper.unmount();
 });
