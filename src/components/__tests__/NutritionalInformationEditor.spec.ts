@@ -1,5 +1,5 @@
 import { mount, VueWrapper } from '@vue/test-utils';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -28,13 +28,18 @@ const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
 });
 
 describe('Nutritional Information Editor', () => {
+  let wrapper: ReturnType<typeof mountComponent>;
+
+  afterEach(() => {
+    wrapper?.unmount();
+  });
+
   it('renders', () => {
-    const wrapper = mountComponent();
+    wrapper = mountComponent();
     expect(wrapper.exists()).toBe(true);
   });
 
   describe('for add', () => {
-    let wrapper: ReturnType<typeof mountComponent>;
     beforeEach(() => {
       wrapper = mountComponent();
     });
@@ -115,7 +120,6 @@ describe('Nutritional Information Editor', () => {
   });
 
   describe('for update', () => {
-    let wrapper: ReturnType<typeof mountComponent>;
     beforeEach(() => {
       wrapper = mountComponent({ portion: TEST_PORTION });
     });

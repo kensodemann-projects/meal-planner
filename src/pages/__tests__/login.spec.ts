@@ -1,6 +1,6 @@
 import { useAuthentication } from '@/core/authentication';
 import { flushPromises, mount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -17,6 +17,12 @@ const vuetify = createVuetify({
 const mountPage = () => mount(LoginPage, { global: { plugins: [vuetify] } });
 
 describe('LoginPage', () => {
+  let wrapper: ReturnType<typeof mountPage>;
+
+  afterEach(() => {
+    wrapper?.unmount();
+  });
+
   beforeEach(() => {
     (useRouter as Mock).mockReturnValue({
       replace: vi.fn(),
@@ -24,13 +30,14 @@ describe('LoginPage', () => {
   });
 
   it('renders', () => {
-    expect(mountPage().exists()).toBe(true);
+    wrapper = mountPage();
+    expect(wrapper.exists()).toBe(true);
   });
 
   describe('on login', () => {
     it('calls the login method', () => {
       const { login } = useAuthentication();
-      const wrapper = mountPage();
+      wrapper = mountPage();
       const loginCard = wrapper.findComponent({ name: 'LoginCard' });
       loginCard.vm.$emit('login', {
         email: 'test@example.com',
@@ -41,7 +48,7 @@ describe('LoginPage', () => {
 
     it('navigates to dashboard', async () => {
       const router = useRouter();
-      const wrapper = mountPage();
+      wrapper = mountPage();
       const loginCard = wrapper.findComponent({ name: 'LoginCard' });
 
       await loginCard.vm.$emit('login', {
@@ -55,7 +62,7 @@ describe('LoginPage', () => {
 
     it('shows error message on login failure', async () => {
       const { login } = useAuthentication();
-      const wrapper = mountPage();
+      wrapper = mountPage();
       const loginCard = wrapper.findComponent({ name: 'LoginCard' });
 
       (login as Mock).mockRejectedValue(new Error('Invalid credentials'));
@@ -75,7 +82,7 @@ describe('LoginPage', () => {
   describe('on reset password ', () => {
     it('calls the sendPasswordReset method', () => {
       const { sendPasswordReset } = useAuthentication();
-      const wrapper = mountPage();
+      wrapper = mountPage();
       const loginCard = wrapper.findComponent({ name: 'LoginCard' });
       loginCard.vm.$emit('resetPassword', {
         email: 'test@example.com',
@@ -84,7 +91,7 @@ describe('LoginPage', () => {
     });
 
     it('alerts the user on password reset', async () => {
-      const wrapper = mountPage();
+      wrapper = mountPage();
       const loginCard = wrapper.findComponent({ name: 'LoginCard' });
       loginCard.vm.$emit('resetPassword', {
         email: 'test@example.com',
@@ -100,7 +107,7 @@ describe('LoginPage', () => {
 
     it('shows error message on password reset failure', async () => {
       const { sendPasswordReset } = useAuthentication();
-      const wrapper = mountPage();
+      wrapper = mountPage();
       const loginCard = wrapper.findComponent({ name: 'LoginCard' });
 
       (sendPasswordReset as Mock).mockRejectedValue(new Error('Email not found'));

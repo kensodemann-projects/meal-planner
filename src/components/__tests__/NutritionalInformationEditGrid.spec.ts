@@ -1,7 +1,7 @@
 import { TEST_FOOD } from '@/data/__tests__/test-data';
 import type { Portion } from '@/models';
 import { mount, VueWrapper } from '@vue/test-utils';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -16,21 +16,27 @@ const mountComponent = (modelValue: Partial<Portion>) =>
   mount(NutritionalInformationEditGrid, { props: { modelValue }, global: { plugins: [vuetify] } });
 
 describe('Nutritional Information Edit Grid', () => {
+  let wrapper: ReturnType<typeof mountComponent>;
+
+  afterEach(() => {
+    wrapper?.unmount();
+  });
+
   it('renders', () => {
-    const wrapper = mountComponent({});
+    wrapper = mountComponent({});
     expect(wrapper.exists()).toBe(true);
   });
 
   describe('units', () => {
     it('renders', () => {
-      const wrapper = mountComponent({});
+      wrapper = mountComponent({});
       const unitsInput = wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
       expect(unitsInput.exists()).toBe(true);
       expect(unitsInput.props('label')).toBe('Units');
     });
 
     it('is required', async () => {
-      const wrapper = mountComponent({});
+      wrapper = mountComponent({});
       const unitsInput = wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
       const input = unitsInput.find('input');
 
@@ -46,13 +52,13 @@ describe('Nutritional Information Edit Grid', () => {
     });
 
     it('is initialized properly', () => {
-      const wrapper = mountComponent({ ...TEST_FOOD, units: 42 });
+      wrapper = mountComponent({ ...TEST_FOOD, units: 42 });
       const unitsInput = wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
       expect(unitsInput.find('input').element.value).toBe('42');
     });
 
     it('is emitted on change', async () => {
-      const wrapper = mountComponent({ ...TEST_FOOD, units: 42 });
+      wrapper = mountComponent({ ...TEST_FOOD, units: 42 });
       const unitsInput = wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
       const input = unitsInput.find('input');
       await input.trigger('focus');
@@ -65,7 +71,7 @@ describe('Nutritional Information Edit Grid', () => {
 
   describe('unit of measure', () => {
     it('renders', () => {
-      const wrapper = mountComponent({});
+      wrapper = mountComponent({});
       const uomInput = wrapper.findComponent(
         '[data-testid="unit-of-measure-input"]',
       ) as VueWrapper<components.VAutocomplete>;
@@ -74,7 +80,7 @@ describe('Nutritional Information Edit Grid', () => {
     });
 
     it('is required', async () => {
-      const wrapper = mountComponent({});
+      wrapper = mountComponent({});
       const uomInput = wrapper.findComponent(
         '[data-testid="unit-of-measure-input"]',
       ) as VueWrapper<components.VAutocomplete>;
@@ -88,21 +94,21 @@ describe('Nutritional Information Edit Grid', () => {
     });
 
     it('is initialized properly', () => {
-      const wrapper = mountComponent(TEST_FOOD);
+      wrapper = mountComponent(TEST_FOOD);
       expect((wrapper.vm as any).unitOfMeasureId).toBe(TEST_FOOD.unitOfMeasure.id);
     });
   });
 
   describe('grams', () => {
     it('renders', () => {
-      const wrapper = mountComponent({});
+      wrapper = mountComponent({});
       const gramsInput = wrapper.findComponent('[data-testid="grams-input"]') as VueWrapper<components.VNumberInput>;
       expect(gramsInput.exists()).toBe(true);
       expect(gramsInput.props('label')).toBe('Grams');
     });
 
     it('is required', async () => {
-      const wrapper = mountComponent({});
+      wrapper = mountComponent({});
       const gramsInput = wrapper.findComponent('[data-testid="grams-input"]') as VueWrapper<components.VNumberInput>;
       const input = gramsInput.find('input');
 
@@ -118,13 +124,13 @@ describe('Nutritional Information Edit Grid', () => {
     });
 
     it('is initialized properly', () => {
-      const wrapper = mountComponent({ ...TEST_FOOD, grams: 420 });
+      wrapper = mountComponent({ ...TEST_FOOD, grams: 420 });
       const gramsInput = wrapper.findComponent('[data-testid="grams-input"]') as VueWrapper<components.VNumberInput>;
       expect(gramsInput.find('input').element.value).toBe('420');
     });
 
     it('is emitted on change', async () => {
-      const wrapper = mountComponent(TEST_FOOD);
+      wrapper = mountComponent(TEST_FOOD);
       const gramsInput = wrapper.findComponent('[data-testid="grams-input"]') as VueWrapper<components.VNumberInput>;
       const input = gramsInput.find('input');
       await input.trigger('focus');
@@ -137,14 +143,14 @@ describe('Nutritional Information Edit Grid', () => {
 
   describe('calories', () => {
     it('renders', () => {
-      const wrapper = mountComponent({});
+      wrapper = mountComponent({});
       const calsInput = wrapper.findComponent('[data-testid="calories-input"]') as VueWrapper<components.VNumberInput>;
       expect(calsInput.exists()).toBe(true);
       expect(calsInput.props('label')).toBe('Calories');
     });
 
     it('is required', async () => {
-      const wrapper = mountComponent({});
+      wrapper = mountComponent({});
       const calsInput = wrapper.findComponent('[data-testid="calories-input"]') as VueWrapper<components.VNumberInput>;
       const input = calsInput.find('input');
 
@@ -160,13 +166,13 @@ describe('Nutritional Information Edit Grid', () => {
     });
 
     it('is initialized properly', () => {
-      const wrapper = mountComponent({ ...TEST_FOOD, calories: 143 });
+      wrapper = mountComponent({ ...TEST_FOOD, calories: 143 });
       const calsInput = wrapper.findComponent('[data-testid="calories-input"]') as VueWrapper<components.VNumberInput>;
       expect(calsInput.find('input').element.value).toBe('143');
     });
 
     it('is emitted on change', async () => {
-      const wrapper = mountComponent({ ...TEST_FOOD, calories: 42 });
+      wrapper = mountComponent({ ...TEST_FOOD, calories: 42 });
       const calsInput = wrapper.findComponent('[data-testid="calories-input"]') as VueWrapper<components.VNumberInput>;
       const input = calsInput.find('input');
       await input.trigger('focus');
@@ -179,14 +185,14 @@ describe('Nutritional Information Edit Grid', () => {
 
   describe('sodium', () => {
     it('renders', () => {
-      const wrapper = mountComponent({});
+      wrapper = mountComponent({});
       const sodiumInput = wrapper.findComponent('[data-testid="sodium-input"]') as VueWrapper<components.VNumberInput>;
       expect(sodiumInput.exists()).toBe(true);
       expect(sodiumInput.props('label')).toBe('Sodium (mg)');
     });
 
     it('is required', async () => {
-      const wrapper = mountComponent({});
+      wrapper = mountComponent({});
       const sodiumInput = wrapper.findComponent('[data-testid="sodium-input"]') as VueWrapper<components.VNumberInput>;
       const input = sodiumInput.find('input');
 
@@ -202,13 +208,13 @@ describe('Nutritional Information Edit Grid', () => {
     });
 
     it('is initialized properly', () => {
-      const wrapper = mountComponent({ ...TEST_FOOD, sodium: 19 });
+      wrapper = mountComponent({ ...TEST_FOOD, sodium: 19 });
       const sodiumInput = wrapper.findComponent('[data-testid="sodium-input"]') as VueWrapper<components.VNumberInput>;
       expect(sodiumInput.find('input').element.value).toBe('19');
     });
 
     it('is emitted on change', async () => {
-      const wrapper = mountComponent({ ...TEST_FOOD, sodium: 42 });
+      wrapper = mountComponent({ ...TEST_FOOD, sodium: 42 });
       const sodiumInput = wrapper.findComponent('[data-testid="sodium-input"]') as VueWrapper<components.VNumberInput>;
       const input = sodiumInput.find('input');
       await input.trigger('focus');
@@ -221,14 +227,14 @@ describe('Nutritional Information Edit Grid', () => {
 
   describe('sugar', () => {
     it('renders', () => {
-      const wrapper = mountComponent({});
+      wrapper = mountComponent({});
       const sugarInput = wrapper.findComponent('[data-testid="sugar-input"]') as VueWrapper<components.VNumberInput>;
       expect(sugarInput.exists()).toBe(true);
       expect(sugarInput.props('label')).toBe('Sugar (g)');
     });
 
     it('is required', async () => {
-      const wrapper = mountComponent({});
+      wrapper = mountComponent({});
       const sugarInput = wrapper.findComponent('[data-testid="sugar-input"]') as VueWrapper<components.VNumberInput>;
       const input = sugarInput.find('input');
 
@@ -244,13 +250,13 @@ describe('Nutritional Information Edit Grid', () => {
     });
 
     it('is initialized properly', () => {
-      const wrapper = mountComponent({ ...TEST_FOOD, sugar: 143 });
+      wrapper = mountComponent({ ...TEST_FOOD, sugar: 143 });
       const sugarInput = wrapper.findComponent('[data-testid="sugar-input"]') as VueWrapper<components.VNumberInput>;
       expect(sugarInput.find('input').element.value).toBe('143');
     });
 
     it('is emitted on change', async () => {
-      const wrapper = mountComponent({ ...TEST_FOOD, sugar: 92 });
+      wrapper = mountComponent({ ...TEST_FOOD, sugar: 92 });
       const sugarInput = wrapper.findComponent('[data-testid="sugar-input"]') as VueWrapper<components.VNumberInput>;
       const input = sugarInput.find('input');
       await input.trigger('focus');
@@ -263,14 +269,14 @@ describe('Nutritional Information Edit Grid', () => {
 
   describe('carbs', () => {
     it('renders', () => {
-      const wrapper = mountComponent({});
+      wrapper = mountComponent({});
       const carbsInput = wrapper.findComponent('[data-testid="carbs-input"]') as VueWrapper<components.VNumberInput>;
       expect(carbsInput.exists()).toBe(true);
       expect(carbsInput.props('label')).toBe('Total Carbs (g)');
     });
 
     it('is required', async () => {
-      const wrapper = mountComponent({});
+      wrapper = mountComponent({});
       const carbsInput = wrapper.findComponent('[data-testid="carbs-input"]') as VueWrapper<components.VNumberInput>;
       const input = carbsInput.find('input');
 
@@ -286,13 +292,13 @@ describe('Nutritional Information Edit Grid', () => {
     });
 
     it('is initialized properly', () => {
-      const wrapper = mountComponent({ ...TEST_FOOD, carbs: 18 });
+      wrapper = mountComponent({ ...TEST_FOOD, carbs: 18 });
       const carbsInput = wrapper.findComponent('[data-testid="carbs-input"]') as VueWrapper<components.VNumberInput>;
       expect(carbsInput.find('input').element.value).toBe('18');
     });
 
     it('is emitted on change', async () => {
-      const wrapper = mountComponent({ ...TEST_FOOD, carbs: 13 });
+      wrapper = mountComponent({ ...TEST_FOOD, carbs: 13 });
       const carbsInput = wrapper.findComponent('[data-testid="carbs-input"]') as VueWrapper<components.VNumberInput>;
       const input = carbsInput.find('input');
       await input.trigger('focus');
@@ -305,14 +311,14 @@ describe('Nutritional Information Edit Grid', () => {
 
   describe('fat', () => {
     it('renders', () => {
-      const wrapper = mountComponent({});
+      wrapper = mountComponent({});
       const fatInput = wrapper.findComponent('[data-testid="fat-input"]') as VueWrapper<components.VNumberInput>;
       expect(fatInput.exists()).toBe(true);
       expect(fatInput.props('label')).toBe('Fat (g)');
     });
 
     it('is required', async () => {
-      const wrapper = mountComponent({});
+      wrapper = mountComponent({});
       const fatInput = wrapper.findComponent('[data-testid="fat-input"]') as VueWrapper<components.VNumberInput>;
       const input = fatInput.find('input');
 
@@ -328,13 +334,13 @@ describe('Nutritional Information Edit Grid', () => {
     });
 
     it('is initialized properly', () => {
-      const wrapper = mountComponent({ ...TEST_FOOD, fat: 8 });
+      wrapper = mountComponent({ ...TEST_FOOD, fat: 8 });
       const fatInput = wrapper.findComponent('[data-testid="fat-input"]') as VueWrapper<components.VNumberInput>;
       expect(fatInput.find('input').element.value).toBe('8');
     });
 
     it('is emitted on change', async () => {
-      const wrapper = mountComponent({ ...TEST_FOOD, fat: 4 });
+      wrapper = mountComponent({ ...TEST_FOOD, fat: 4 });
       const fatInput = wrapper.findComponent('[data-testid="fat-input"]') as VueWrapper<components.VNumberInput>;
       const input = fatInput.find('input');
       await input.trigger('focus');
@@ -347,7 +353,7 @@ describe('Nutritional Information Edit Grid', () => {
 
   describe('protein', () => {
     it('renders', () => {
-      const wrapper = mountComponent({});
+      wrapper = mountComponent({});
       const proteinInput = wrapper.findComponent(
         '[data-testid="protein-input"]',
       ) as VueWrapper<components.VNumberInput>;
@@ -356,7 +362,7 @@ describe('Nutritional Information Edit Grid', () => {
     });
 
     it('is required', async () => {
-      const wrapper = mountComponent({});
+      wrapper = mountComponent({});
       const proteinInput = wrapper.findComponent(
         '[data-testid="protein-input"]',
       ) as VueWrapper<components.VNumberInput>;
@@ -374,7 +380,7 @@ describe('Nutritional Information Edit Grid', () => {
     });
 
     it('is initialized properly', () => {
-      const wrapper = mountComponent({ ...TEST_FOOD, protein: 12 });
+      wrapper = mountComponent({ ...TEST_FOOD, protein: 12 });
       const proteinInput = wrapper.findComponent(
         '[data-testid="protein-input"]',
       ) as VueWrapper<components.VNumberInput>;
@@ -382,7 +388,7 @@ describe('Nutritional Information Edit Grid', () => {
     });
 
     it('is emitted on change', async () => {
-      const wrapper = mountComponent({ ...TEST_FOOD, protein: 14 });
+      wrapper = mountComponent({ ...TEST_FOOD, protein: 14 });
       const proteinInput = wrapper.findComponent(
         '[data-testid="protein-input"]',
       ) as VueWrapper<components.VNumberInput>;

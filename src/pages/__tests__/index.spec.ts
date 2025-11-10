@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { useRouter } from 'vue-router';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
@@ -15,6 +15,12 @@ const vuetify = createVuetify({
 const mountPage = () => mount(IndexPage, { global: { plugins: [vuetify] } });
 
 describe('IndexPage', () => {
+  let wrapper: ReturnType<typeof mountPage>;
+
+  afterEach(() => {
+    wrapper?.unmount();
+  });
+
   beforeEach(() => {
     (useRouter as Mock).mockReturnValue({
       replace: vi.fn(),
@@ -22,12 +28,13 @@ describe('IndexPage', () => {
   });
 
   it('renders', () => {
-    expect(mountPage()).toBeDefined();
+    wrapper = mountPage();
+    expect(wrapper.exists()).toBe(true);
   });
 
   it('redirects to the dashboard page', () => {
     const router = useRouter();
-    mountPage();
+    wrapper = mountPage();
     expect(router.replace).toHaveBeenCalledWith('/dashboard');
   });
 });

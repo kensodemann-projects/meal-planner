@@ -14,4 +14,5 @@ const mountPage = () => mount(IndexPage, { global: { plugins: [vuetify] } });
 it('renders', () => {
   const wrapper = mountPage();
   expect(wrapper.text()).toBe('This is the recipe list page');
+  wrapper.unmount();
 });

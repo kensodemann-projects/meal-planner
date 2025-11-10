@@ -1,6 +1,6 @@
 import FoodEditor from '@/components/FoodEditor.vue';
 import { flushPromises, mount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -19,17 +19,23 @@ const vuetify = createVuetify({
 const mountPage = () => mount(AddPage, { global: { plugins: [vuetify] } });
 
 describe('Food Add Page', () => {
+  let wrapper: ReturnType<typeof mountPage>;
+
+  afterEach(() => {
+    wrapper?.unmount();
+  });
+
   beforeEach(() => {
     (useRouter as Mock).mockReturnValue({ replace: vi.fn() });
   });
 
   it('renders', () => {
-    const wrapper = mountPage();
+    wrapper = mountPage();
     expect(wrapper.exists()).toBe(true);
   });
 
   it('renders the editor', () => {
-    const wrapper = mountPage();
+    wrapper = mountPage();
     const editor = wrapper.findComponent(FoodEditor);
     expect(editor.exists()).toBe(true);
   });
@@ -37,7 +43,7 @@ describe('Food Add Page', () => {
   describe('on cancel', () => {
     it('does not create a new food item', () => {
       const { addFood } = useFoodsData();
-      const wrapper = mountPage();
+      wrapper = mountPage();
       const editor = wrapper.findComponent(FoodEditor);
       editor.vm.$emit('cancel');
       expect(addFood).not.toHaveBeenCalled();
@@ -45,7 +51,7 @@ describe('Food Add Page', () => {
 
     it('navigates to the search and add page page', () => {
       const { replace } = useRouter();
-      const wrapper = mountPage();
+      wrapper = mountPage();
       const editor = wrapper.findComponent(FoodEditor);
       editor.vm.$emit('cancel');
       expect(replace).toHaveBeenCalledExactlyOnceWith('/foods/search-and-add');
@@ -55,7 +61,7 @@ describe('Food Add Page', () => {
   describe('on save', () => {
     it('creates a new food item', async () => {
       const { addFood } = useFoodsData();
-      const wrapper = mountPage();
+      wrapper = mountPage();
       const editor = wrapper.findComponent(FoodEditor);
       editor.vm.$emit('save', TEST_FOOD);
       await flushPromises();
@@ -64,7 +70,7 @@ describe('Food Add Page', () => {
 
     it('navigates to the food list page', async () => {
       const { replace } = useRouter();
-      const wrapper = mountPage();
+      wrapper = mountPage();
       const editor = wrapper.findComponent(FoodEditor);
       editor.vm.$emit('save', TEST_FOOD);
       await flushPromises();

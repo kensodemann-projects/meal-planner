@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -20,8 +20,14 @@ const createWrapper = (props = {}) => {
 };
 
 describe('SearchInput', () => {
+  let wrapper: ReturnType<typeof createWrapper>;
+
+  afterEach(() => {
+    wrapper?.unmount();
+  });
+
   it('renders with default props', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const textField = wrapper.findComponent({ name: 'VTextField' });
 
     expect(wrapper.exists()).toBe(true);
@@ -42,7 +48,7 @@ describe('SearchInput', () => {
       isSearching: false,
     };
 
-    const wrapper = createWrapper(props);
+    wrapper = createWrapper(props);
 
     const textField = wrapper.findComponent({ name: 'VTextField' });
     expect(textField.props('label')).toBe('Find Items');
@@ -53,7 +59,7 @@ describe('SearchInput', () => {
   });
 
   it('shows loading state when isSearching is true', () => {
-    const wrapper = createWrapper({ isSearching: true });
+    wrapper = createWrapper({ isSearching: true });
 
     const textField = wrapper.findComponent({ name: 'VTextField' });
     expect(textField.props('loading')).toBe(true);
@@ -63,7 +69,7 @@ describe('SearchInput', () => {
   });
 
   it('emits search event when button is clicked', async () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
 
     const textField = wrapper.findComponent({ name: 'VTextField' });
     await textField.setValue('test search');
@@ -77,7 +83,7 @@ describe('SearchInput', () => {
   });
 
   it('emits search event when Enter key is pressed', async () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
 
     const textField = wrapper.findComponent({ name: 'VTextField' });
     await textField.setValue('keyboard search');
@@ -91,7 +97,7 @@ describe('SearchInput', () => {
   });
 
   it('disables button when search text is empty', async () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const button = wrapper.find('button');
     const textField = wrapper.findComponent({ name: 'VTextField' });
 
@@ -105,7 +111,7 @@ describe('SearchInput', () => {
   });
 
   it('disables button when search text contains only whitespace', async () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const textField = wrapper.findComponent({ name: 'VTextField' });
     const button = wrapper.find('button');
 
@@ -117,7 +123,7 @@ describe('SearchInput', () => {
   });
 
   it('does not emit search event when button is disabled', async () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const button = wrapper.find('button');
 
     await button.trigger('click');
@@ -125,7 +131,7 @@ describe('SearchInput', () => {
   });
 
   it('disables interactions when isSearching is true', async () => {
-    const wrapper = createWrapper({ isSearching: true });
+    wrapper = createWrapper({ isSearching: true });
     const button = wrapper.find('button');
     const textField = wrapper.findComponent({ name: 'VTextField' });
 
@@ -136,26 +142,26 @@ describe('SearchInput', () => {
   });
 
   it('has clearable input field', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
 
     const textField = wrapper.findComponent({ name: 'VTextField' });
     expect(textField.props('clearable')).toBe(true);
   });
 
   it('uses outlined variant for text field', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
 
     const textField = wrapper.findComponent({ name: 'VTextField' });
     expect(textField.props('variant')).toBe('outlined');
   });
 
   it('applies correct CSS classes', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     expect(wrapper.find('.search-input').exists()).toBe(true);
   });
 
   it('handles multiple search operations correctly', async () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
 
     const textField = wrapper.findComponent({ name: 'VTextField' });
     const button = wrapper.find('button');
@@ -172,7 +178,7 @@ describe('SearchInput', () => {
   });
 
   it('trims the search text before emitting', async () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const textField = wrapper.findComponent({ name: 'VTextField' });
     const button = wrapper.find('button');
 
@@ -183,14 +189,14 @@ describe('SearchInput', () => {
   });
 
   it('maintains button primary color', () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
 
     const button = wrapper.findComponent({ name: 'VBtn' });
     expect(button.props('color')).toBe('primary');
   });
 
   it('trims whitespace correctly in disabled state logic', async () => {
-    const wrapper = createWrapper();
+    wrapper = createWrapper();
     const textField = wrapper.findComponent({ name: 'VTextField' });
     const button = wrapper.find('button');
     const whitespaceValues = ['', ' ', '  ', '\t', '\n', '   \t\n  '];

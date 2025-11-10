@@ -1,7 +1,7 @@
 import { TEST_FOODS } from '@/data/__tests__/test-data';
 import { useFoodsData } from '@/data/foods';
 import { mount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { useRouter } from 'vue-router';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
@@ -18,6 +18,12 @@ const vuetify = createVuetify({
 const mountPage = () => mount(IndexPage, { global: { plugins: [vuetify] } });
 
 describe('Foods List Page', () => {
+  let wrapper: ReturnType<typeof mountPage>;
+
+  afterEach(() => {
+    wrapper?.unmount();
+  });
+
   beforeEach(() => {
     (useRouter as Mock).mockReturnValue({
       push: vi.fn(),
@@ -25,25 +31,25 @@ describe('Foods List Page', () => {
   });
 
   it('renders', () => {
-    const wrapper = mountPage();
+    wrapper = mountPage();
     expect(wrapper.exists()).toBe(true);
   });
 
   it('has a title', () => {
-    const wrapper = mountPage();
+    wrapper = mountPage();
     const title = wrapper.find('h1');
     expect(title.text()).toBe('My Foods');
   });
 
   it('uses the food data', () => {
-    mountPage();
+    wrapper = mountPage();
     expect(useFoodsData).toHaveBeenCalledExactlyOnceWith();
   });
 
   it('displays each food item', () => {
     const { foods } = useFoodsData();
     foods.value = TEST_FOODS;
-    const wrapper = mountPage();
+    wrapper = mountPage();
     const listItems = wrapper.findAllComponents('.food-list-item');
     expect(listItems.length).toBe(TEST_FOODS.length);
   });
@@ -52,7 +58,7 @@ describe('Foods List Page', () => {
     const router = useRouter();
     const { foods } = useFoodsData();
     foods.value = TEST_FOODS;
-    const wrapper = mountPage();
+    wrapper = mountPage();
     const listItems = wrapper.findAllComponents('.food-list-item');
     const listItem = listItems[2]?.findComponent({ name: 'VListItem' });
     await listItem?.trigger('click');
@@ -64,7 +70,7 @@ describe('Foods List Page', () => {
       const router = useRouter();
       const { foods } = useFoodsData();
       foods.value = TEST_FOODS;
-      const wrapper = mountPage();
+      wrapper = mountPage();
       const btn = wrapper.findComponent('[data-testid="add-button"]');
       await btn.trigger('click');
       expect(router.push).toHaveBeenCalledExactlyOnceWith('foods/search-and-add');
