@@ -6,16 +6,15 @@ import * as directives from 'vuetify/directives';
 import ConfirmDialog from '../ConfirmDialog.vue';
 
 describe('Confirm Dialog', () => {
+  const vuetify = createVuetify({ components, directives });
+  const mountComponent = (question: string) =>
+    mount(ConfirmDialog, { global: { plugins: [vuetify] }, props: { question } });
+
   let wrapper: ReturnType<typeof mountComponent>;
 
   afterEach(() => {
     wrapper?.unmount();
   });
-
-  const vuetify = createVuetify({ components, directives });
-  const mountComponent = (question: string) =>
-    mount(ConfirmDialog, { global: { plugins: [vuetify] }, props: { question } });
-
   it('displays the question', () => {
     const question = 'This is the question that I will ask?';
     wrapper = mountComponent(question);
