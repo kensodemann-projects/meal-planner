@@ -138,9 +138,9 @@ describe('Nutritional Information Editor', () => {
         expect(cancelButton.exists()).toBe(true);
       });
 
-      it('emits the "cancel" event on click', () => {
+      it('emits the "cancel" event on click', async () => {
         const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
-        cancelButton.trigger('click');
+        await cancelButton.trigger('click');
         expect(wrapper.emitted('cancel')).toBeTruthy();
         expect(wrapper.emitted('cancel')).toHaveLength(1);
       });
