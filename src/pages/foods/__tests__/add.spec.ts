@@ -41,19 +41,21 @@ describe('Food Add Page', () => {
   });
 
   describe('on cancel', () => {
-    it('does not create a new food item', () => {
+    it('does not create a new food item', async () => {
       const { addFood } = useFoodsData();
       wrapper = mountPage();
       const editor = wrapper.findComponent(FoodEditor);
       editor.vm.$emit('cancel');
+      await flushPromises();
       expect(addFood).not.toHaveBeenCalled();
     });
 
-    it('navigates to the search and add page page', () => {
+    it('navigates to the search and add page page', async () => {
       const { replace } = useRouter();
       wrapper = mountPage();
       const editor = wrapper.findComponent(FoodEditor);
       editor.vm.$emit('cancel');
+      await flushPromises();
       expect(replace).toHaveBeenCalledExactlyOnceWith('/foods/search-and-add');
     });
   });

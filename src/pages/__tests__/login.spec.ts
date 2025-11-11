@@ -35,7 +35,7 @@ describe('LoginPage', () => {
   });
 
   describe('on login', () => {
-    it('calls the login method', () => {
+    it('calls the login method', async () => {
       const { login } = useAuthentication();
       wrapper = mountPage();
       const loginCard = wrapper.findComponent({ name: 'LoginCard' });
@@ -43,6 +43,7 @@ describe('LoginPage', () => {
         email: 'test@example.com',
         password: 'password123',
       });
+      await flushPromises();
       expect(login).toHaveBeenCalledExactlyOnceWith('test@example.com', 'password123');
     });
 
@@ -55,6 +56,7 @@ describe('LoginPage', () => {
         email: 'test@example.com',
         password: 'password123',
       });
+      await flushPromises();
 
       expect(router.replace).toHaveBeenCalledWith('/dashboard');
       expect(router.replace).toHaveBeenCalledTimes(1);
@@ -80,13 +82,14 @@ describe('LoginPage', () => {
   });
 
   describe('on reset password ', () => {
-    it('calls the sendPasswordReset method', () => {
+    it('calls the sendPasswordReset method', async () => {
       const { sendPasswordReset } = useAuthentication();
       wrapper = mountPage();
       const loginCard = wrapper.findComponent({ name: 'LoginCard' });
       loginCard.vm.$emit('resetPassword', {
         email: 'test@example.com',
       });
+      await flushPromises();
       expect(sendPasswordReset).toHaveBeenCalledExactlyOnceWith('test@example.com');
     });
 

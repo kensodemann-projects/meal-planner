@@ -73,6 +73,7 @@ describe('SearchAndAddPage', () => {
       const searchInput = wrapper.findComponent({ name: 'SearchInput' });
       const testQuery = 'apple';
       await searchInput.vm.$emit('search', testQuery);
+      await flushPromises();
       expect(searchFdcData).toHaveBeenCalledExactlyOnceWith(testQuery);
     });
 
@@ -194,6 +195,7 @@ describe('SearchAndAddPage', () => {
           dataType: 'Foundation',
           foodCategory: 'Fruits & Juices',
         });
+        await flushPromises();
         expect(fetchFoodItem).toHaveBeenCalledExactlyOnceWith(2);
       });
 

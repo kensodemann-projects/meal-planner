@@ -58,6 +58,7 @@ describe('Food Update Page', () => {
       await flushPromises();
       const editor = wrapper.findComponent(FoodEditor);
       editor.vm.$emit('cancel');
+      await flushPromises();
       expect(updateFood).not.toHaveBeenCalled();
     });
 
@@ -67,6 +68,7 @@ describe('Food Update Page', () => {
       await flushPromises();
       const editor = wrapper.findComponent(FoodEditor);
       editor.vm.$emit('cancel');
+      await flushPromises();
       expect(router.replace).toHaveBeenCalledExactlyOnceWith('/foods/88f933fiieo');
     });
   });
@@ -78,6 +80,7 @@ describe('Food Update Page', () => {
       await flushPromises();
       const editor = wrapper.findComponent(FoodEditor);
       editor.vm.$emit('save', { ...TEST_FOOD, name: 'this is a modified name', id: '88f933fiieo' });
+      await flushPromises();
       expect(updateFood).toHaveBeenCalledExactlyOnceWith({
         ...TEST_FOOD,
         name: 'this is a modified name',
