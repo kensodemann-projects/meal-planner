@@ -1,16 +1,15 @@
 import { findUnitOfMeasure } from '@/data/unit-of-measure';
 import type { FoodItem } from '@/models';
-import { mount, VueWrapper } from '@vue/test-utils';
+import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import FoodEditor from '../FoodEditor.vue';
 import NutritionalInformation from '../NutritionalInformation.vue';
+import NutritionalInformationEditor from '../NutritionalInformationEditor.vue';
 import DangerButton from '../buttons/DangerButton.vue';
 import ModifyButton from '../buttons/ModifyButton.vue';
-import NutritionalInformationEditor from '../NutritionalInformationEditor.vue';
-import CancelButton from '../buttons/CancelButton.vue';
 
 const vuetify = createVuetify({
   components,
@@ -502,8 +501,8 @@ describe('FoodEditor', () => {
             const button = wrapper.findComponent('[data-testid="add-portion-button"]');
             await button.trigger('click');
             const editor = wrapper.findComponent(NutritionalInformationEditor);
-            const cancel = editor.findComponent(CancelButton);
-            await cancel.trigger('click');
+            editor.vm.$emit('cancel');
+            await flushPromises();
             expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
             expect(button.attributes('disabled')).toBeUndefined();
           });
@@ -512,8 +511,8 @@ describe('FoodEditor', () => {
             const button = wrapper.findComponent('[data-testid="add-portion-button"]');
             await button.trigger('click');
             const editor = wrapper.findComponent(NutritionalInformationEditor);
-            const cancel = editor.findComponent(CancelButton);
-            await cancel.trigger('click');
+            editor.vm.$emit('cancel');
+            await flushPromises();
             const portions = wrapper.findAllComponents(components.VCard);
             expect(portions.length).toBe(0);
           });
@@ -630,8 +629,8 @@ describe('FoodEditor', () => {
             const button = wrapper.findComponent('[data-testid="add-portion-button"]');
             await button.trigger('click');
             const editor = wrapper.findComponent(NutritionalInformationEditor);
-            const cancel = editor.findComponent(CancelButton);
-            await cancel.trigger('click');
+            editor.vm.$emit('cancel');
+            await flushPromises();
             expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
             expect(button.attributes('disabled')).toBeUndefined();
           });
@@ -640,8 +639,8 @@ describe('FoodEditor', () => {
             const button = wrapper.findComponent('[data-testid="add-portion-button"]');
             await button.trigger('click');
             const editor = wrapper.findComponent(NutritionalInformationEditor);
-            const cancel = editor.findComponent(CancelButton);
-            await cancel.trigger('click');
+            editor.vm.$emit('cancel');
+            await flushPromises();
             const portions = wrapper.findAllComponents(components.VCard);
             expect(portions.length).toBe(2);
           });
