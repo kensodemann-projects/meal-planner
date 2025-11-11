@@ -10,6 +10,7 @@ import NutritionalInformation from '../NutritionalInformation.vue';
 import NutritionalInformationEditor from '../NutritionalInformationEditor.vue';
 import DangerButton from '../buttons/DangerButton.vue';
 import ModifyButton from '../buttons/ModifyButton.vue';
+import { TEST_PORTION } from '@/data/__tests__/test-data';
 
 const vuetify = createVuetify({
   components,
@@ -517,6 +518,18 @@ describe('FoodEditor', () => {
             expect(portions.length).toBe(0);
           });
         });
+
+        describe('save', () => {
+          it('hides the portion editor', async () => {
+            const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+            await button.trigger('click');
+            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            editor.vm.$emit('save', TEST_PORTION);
+            await flushPromises();
+            expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
+            expect(button.attributes('disabled')).toBeUndefined();
+          });
+        });
       });
     });
   });
@@ -643,6 +656,18 @@ describe('FoodEditor', () => {
             await flushPromises();
             const portions = wrapper.findAllComponents(components.VCard);
             expect(portions.length).toBe(2);
+          });
+        });
+
+        describe('save', () => {
+          it('hides the portion editor', async () => {
+            const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+            await button.trigger('click');
+            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            editor.vm.$emit('save', TEST_PORTION);
+            await flushPromises();
+            expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
+            expect(button.attributes('disabled')).toBeUndefined();
           });
         });
       });

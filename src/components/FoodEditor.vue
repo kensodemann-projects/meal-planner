@@ -61,6 +61,7 @@
       v-if="addPortion"
       class="pa-3"
       @cancel="() => (addPortion = false)"
+      @save="() => (addPortion = false)"
       data-testid="new-portion-editor"
     />
 
