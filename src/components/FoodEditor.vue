@@ -49,6 +49,7 @@
           density="compact"
           variant="text"
           icon="mdi-plus"
+          :disabled="addPortion"
           @click="() => (addPortion = true)"
           data-testid="add-portion-button"
         ></v-btn>
@@ -56,7 +57,12 @@
     </h2>
     <v-divider class="mb-4"></v-divider>
 
-    <NutritionalInformationEditor v-if="addPortion" class="pa-3" data-testid="new-portion-editor" />
+    <NutritionalInformationEditor
+      v-if="addPortion"
+      class="pa-3"
+      @cancel="() => (addPortion = false)"
+      data-testid="new-portion-editor"
+    />
 
     <div class="pa-3" v-for="(portion, index) in alternativePortions" :key="index">
       <v-card>

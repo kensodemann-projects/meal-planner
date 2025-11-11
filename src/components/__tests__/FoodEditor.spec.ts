@@ -10,6 +10,7 @@ import NutritionalInformation from '../NutritionalInformation.vue';
 import DangerButton from '../buttons/DangerButton.vue';
 import ModifyButton from '../buttons/ModifyButton.vue';
 import NutritionalInformationEditor from '../NutritionalInformationEditor.vue';
+import CancelButton from '../buttons/CancelButton.vue';
 
 const vuetify = createVuetify({
   components,
@@ -489,6 +490,34 @@ describe('FoodEditor', () => {
           await button.trigger('click');
           expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(true);
         });
+
+        it('is disabled once the editor is opened', async () => {
+          const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+          await button.trigger('click');
+          expect(button.attributes('disabled')).toBeDefined();
+        });
+
+        describe('cancel', () => {
+          it('hides the portion editor', async () => {
+            const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+            await button.trigger('click');
+            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            const cancel = editor.findComponent(CancelButton);
+            await cancel.trigger('click');
+            expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
+            expect(button.attributes('disabled')).toBeUndefined();
+          });
+
+          it('does not add a portion', async () => {
+            const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+            await button.trigger('click');
+            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            const cancel = editor.findComponent(CancelButton);
+            await cancel.trigger('click');
+            const portions = wrapper.findAllComponents(components.VCard);
+            expect(portions.length).toBe(0);
+          });
+        });
       });
     });
   });
@@ -588,6 +617,34 @@ describe('FoodEditor', () => {
           expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
           await button.trigger('click');
           expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(true);
+        });
+
+        it('is disabled once the editor is opened', async () => {
+          const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+          await button.trigger('click');
+          expect(button.attributes('disabled')).toBeDefined();
+        });
+
+        describe('cancel', () => {
+          it('hides the portion editor', async () => {
+            const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+            await button.trigger('click');
+            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            const cancel = editor.findComponent(CancelButton);
+            await cancel.trigger('click');
+            expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
+            expect(button.attributes('disabled')).toBeUndefined();
+          });
+
+          it('does not add a portion', async () => {
+            const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+            await button.trigger('click');
+            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            const cancel = editor.findComponent(CancelButton);
+            await cancel.trigger('click');
+            const portions = wrapper.findAllComponents(components.VCard);
+            expect(portions.length).toBe(2);
+          });
         });
       });
     });
