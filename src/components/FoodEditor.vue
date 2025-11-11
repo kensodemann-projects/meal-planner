@@ -45,10 +45,18 @@
     <h2>
       <div class="d-flex justify-space-between">
         <div>Alternative Portions</div>
-        <v-btn density="compact" variant="text" icon="mdi-plus"></v-btn>
+        <v-btn
+          density="compact"
+          variant="text"
+          icon="mdi-plus"
+          @click="() => (addPortion = true)"
+          data-testid="add-portion-button"
+        ></v-btn>
       </div>
     </h2>
     <v-divider class="mb-4"></v-divider>
+
+    <NutritionalInformationEditor v-if="addPortion" class="pa-3" data-testid="new-portion-editor" />
 
     <div class="pa-3" v-for="(portion, index) in alternativePortions" :key="index">
       <v-card>
@@ -75,6 +83,7 @@
 import { validationRules } from '@/core/validation-rules';
 import { foodCategories, type FoodItem, type Portion } from '@/models';
 import { ref } from 'vue';
+import NutritionalInformationEditor from './NutritionalInformationEditor.vue';
 
 const props = defineProps<{ food?: FoodItem }>();
 const emit = defineEmits<{ (event: 'save', payload: FoodItem): void; (event: 'cancel'): void }>();
@@ -94,6 +103,7 @@ const portion = ref({
   fat: props.food?.fat || 0,
   protein: props.food?.protein || 0,
 });
+const addPortion = ref(false);
 const alternativePortions = props.food?.alternativePortions || [];
 
 const isModified = (): boolean => {

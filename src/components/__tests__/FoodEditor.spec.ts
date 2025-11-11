@@ -9,6 +9,7 @@ import FoodEditor from '../FoodEditor.vue';
 import NutritionalInformation from '../NutritionalInformation.vue';
 import DangerButton from '../buttons/DangerButton.vue';
 import ModifyButton from '../buttons/ModifyButton.vue';
+import NutritionalInformationEditor from '../NutritionalInformationEditor.vue';
 
 const vuetify = createVuetify({
   components,
@@ -475,6 +476,20 @@ describe('FoodEditor', () => {
         const portions = wrapper.findAllComponents(NutritionalInformation);
         expect(portions.length).toBe(0);
       });
+
+      describe('add button', () => {
+        it('is enabled', () => {
+          const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+          expect(button.attributes('disabled')).toBeUndefined();
+        });
+
+        it('displays the portion editor for add', async () => {
+          const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+          expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
+          await button.trigger('click');
+          expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(true);
+        });
+      });
     });
   });
 
@@ -560,6 +575,20 @@ describe('FoodEditor', () => {
         expect(portions[0]!.text()).toContain('Calories: 113');
         expect(portions[1]!.text()).toContain('Serving Size: 4 Ounce (112g)');
         expect(portions[1]!.text()).toContain('Calories: 110');
+      });
+
+      describe('add button', () => {
+        it('is enabled', () => {
+          const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+          expect(button.attributes('disabled')).toBeUndefined();
+        });
+
+        it('displays the portion editor for add', async () => {
+          const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+          expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
+          await button.trigger('click');
+          expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(true);
+        });
       });
     });
   });
