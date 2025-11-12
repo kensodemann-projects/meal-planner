@@ -530,7 +530,7 @@ describe('FoodEditor', () => {
             expect(button.attributes('disabled')).toBeUndefined();
           });
 
-          it('adds the saved portion to the front of the list ', async () => {
+          it('adds the saved portion to the front of the list', async () => {
             const button = wrapper.findComponent('[data-testid="add-portion-button"]');
             await button.trigger('click');
             const editor = wrapper.findComponent(NutritionalInformationEditor);
