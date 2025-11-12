@@ -17,11 +17,11 @@ describe('default mobile layout', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
   afterEach(() => {
-    wrapper?.unmount();
     vi.clearAllTimers();
     try {
       vi.useRealTimers();
     } catch {}
+    wrapper?.unmount();
   });
 
   it('always includes logout and settings menu items', () => {
