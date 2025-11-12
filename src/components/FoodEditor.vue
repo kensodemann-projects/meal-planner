@@ -112,11 +112,11 @@ const portion = ref({
 });
 const addPortion = ref(false);
 const alternativePortions = ref(props.food?.alternativePortions || []);
-let portionsModifed = false;
+let portionsModified = false;
 
 const isModified = (): boolean => {
   if (!props.food) return true;
-  if (portionsModifed) return true;
+  if (portionsModified) return true;
 
   if (props.food.name !== name.value || props.food.brand !== brand.value || props.food.category !== category.value) {
     return true;
@@ -155,7 +155,7 @@ const save = () => {
 };
 
 const saveNewPortion = (portion: Portion) => {
-  portionsModifed = true;
+  portionsModified = true;
   addPortion.value = false;
   alternativePortions.value = [portion, ...alternativePortions.value];
 };
