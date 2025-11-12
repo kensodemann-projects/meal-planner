@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -14,6 +14,10 @@ describe('Confirm Dialog', () => {
 
   afterEach(() => {
     wrapper?.unmount();
+    vi.clearAllTimers();
+    try {
+      vi.useRealTimers();
+    } catch {}
   });
   it('displays the question', () => {
     const question = 'This is the question that I will ask?';

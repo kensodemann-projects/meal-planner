@@ -19,6 +19,10 @@ describe('IndexPage', () => {
 
   afterEach(() => {
     wrapper?.unmount();
+    vi.clearAllTimers();
+    try {
+      vi.useRealTimers();
+    } catch {}
   });
 
   beforeEach(() => {
