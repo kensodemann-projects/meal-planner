@@ -19,7 +19,6 @@ describe('Confirm Dialog', () => {
       vi.useRealTimers();
     } catch {}
   });
-
   it('displays the question', () => {
     const question = 'This is the question that I will ask?';
     wrapper = mountComponent(question);
