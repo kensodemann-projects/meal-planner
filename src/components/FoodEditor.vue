@@ -61,7 +61,7 @@
       v-if="addPortion"
       class="pa-3"
       @cancel="() => (addPortion = false)"
-      @save="() => (addPortion = false)"
+      @save="saveNewPortion"
       data-testid="new-portion-editor"
     />
 
@@ -111,7 +111,7 @@ const portion = ref({
   protein: props.food?.protein || 0,
 });
 const addPortion = ref(false);
-const alternativePortions = props.food?.alternativePortions || [];
+const alternativePortions = ref(props.food?.alternativePortions || []);
 
 const isModified = (): boolean => {
   if (!props.food) return true;
@@ -145,6 +145,16 @@ const save = () => {
     fat: portion.value.fat || 0,
     protein: portion.value.protein || 0,
   };
-  emit('save', props.food?.id ? { ...food, alternativePortions, id: props.food.id } : { ...food, alternativePortions });
+  emit(
+    'save',
+    props.food?.id
+      ? { ...food, alternativePortions: alternativePortions.value, id: props.food.id }
+      : { ...food, alternativePortions: alternativePortions.value },
+  );
+};
+
+const saveNewPortion = (portion: Portion) => {
+  addPortion.value = false;
+  alternativePortions.value = [portion, ...alternativePortions.value];
 };
 </script>

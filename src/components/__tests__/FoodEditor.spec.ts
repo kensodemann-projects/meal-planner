@@ -529,6 +529,19 @@ describe('FoodEditor', () => {
             expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
             expect(button.attributes('disabled')).toBeUndefined();
           });
+
+          it('adds the saved portion to the front of the list ', async () => {
+            const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+            await button.trigger('click');
+            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            editor.vm.$emit('save', TEST_PORTION);
+            await flushPromises();
+            const portions = wrapper.findAllComponents(components.VCard);
+            expect(portions.length).toBe(1);
+            portions.forEach((p) => expect(p.findComponent(NutritionalInformation).exists()).toBe(true));
+            expect(portions[0]!.text()).toContain('Serving Size: 2 Each (240g)');
+            expect(portions[0]!.text()).toContain('Calories: 940');
+          });
         });
       });
     });
@@ -668,6 +681,19 @@ describe('FoodEditor', () => {
             await flushPromises();
             expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
             expect(button.attributes('disabled')).toBeUndefined();
+          });
+
+          it('adds the saved portion to the front of the list ', async () => {
+            const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+            await button.trigger('click');
+            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            editor.vm.$emit('save', TEST_PORTION);
+            await flushPromises();
+            const portions = wrapper.findAllComponents(components.VCard);
+            expect(portions.length).toBe(3);
+            portions.forEach((p) => expect(p.findComponent(NutritionalInformation).exists()).toBe(true));
+            expect(portions[0]!.text()).toContain('Serving Size: 2 Each (240g)');
+            expect(portions[0]!.text()).toContain('Calories: 940');
           });
         });
       });
