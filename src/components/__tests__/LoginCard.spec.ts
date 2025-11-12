@@ -1,5 +1,5 @@
 import { flushPromises, mount } from '@vue/test-utils';
-import { beforeEach, describe, it, expect, afterEach } from 'vitest';
+import { beforeEach, describe, it, expect, afterEach, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -47,6 +47,10 @@ describe('LoginCard', () => {
 
   afterEach(() => {
     wrapper?.unmount();
+    vi.clearAllTimers();
+    try {
+      vi.useRealTimers();
+    } catch {}
   });
 
   it('renders the login form with correct title', () => {

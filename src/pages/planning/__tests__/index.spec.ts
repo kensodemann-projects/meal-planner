@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { expect, it } from 'vitest';
+import { expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -15,4 +15,8 @@ it('renders', () => {
   const wrapper = mountPage();
   expect(wrapper.text()).toBe('This is the meal planning page');
   wrapper.unmount();
+  vi.clearAllTimers();
+  try {
+    vi.useRealTimers();
+  } catch {}
 });

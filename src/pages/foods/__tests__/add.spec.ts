@@ -23,6 +23,10 @@ describe('Food Add Page', () => {
 
   afterEach(() => {
     wrapper?.unmount();
+    vi.clearAllTimers();
+    try {
+      vi.useRealTimers();
+    } catch {}
   });
 
   beforeEach(() => {

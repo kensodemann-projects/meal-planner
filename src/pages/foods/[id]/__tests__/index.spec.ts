@@ -22,6 +22,10 @@ describe('Food View Page', () => {
 
   afterEach(() => {
     wrapper?.unmount();
+    vi.clearAllTimers();
+    try {
+      vi.useRealTimers();
+    } catch {}
   });
 
   beforeEach(() => {

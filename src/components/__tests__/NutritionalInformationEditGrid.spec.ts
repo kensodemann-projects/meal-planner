@@ -1,7 +1,7 @@
 import { TEST_FOOD } from '@/data/__tests__/test-data';
 import type { Portion } from '@/models';
 import { mount, VueWrapper } from '@vue/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -20,6 +20,10 @@ describe('Nutritional Information Edit Grid', () => {
 
   afterEach(() => {
     wrapper?.unmount();
+    vi.clearAllTimers();
+    try {
+      vi.useRealTimers();
+    } catch {}
   });
 
   it('renders', () => {

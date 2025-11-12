@@ -1,7 +1,7 @@
 import { findUnitOfMeasure } from '@/data/unit-of-measure';
 import type { FoodItem } from '@/models';
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -46,6 +46,10 @@ describe('FoodEditor', () => {
 
   afterEach(() => {
     wrapper?.unmount();
+    vi.clearAllTimers();
+    try {
+      vi.useRealTimers();
+    } catch {}
   });
 
   it('renders ', () => {
