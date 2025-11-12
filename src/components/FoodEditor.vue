@@ -45,10 +45,25 @@
     <h2>
       <div class="d-flex justify-space-between">
         <div>Alternative Portions</div>
-        <v-btn density="compact" variant="text" icon="mdi-plus"></v-btn>
+        <v-btn
+          density="compact"
+          variant="text"
+          icon="mdi-plus"
+          :disabled="addPortion"
+          @click="() => (addPortion = true)"
+          data-testid="add-portion-button"
+        ></v-btn>
       </div>
     </h2>
     <v-divider class="mb-4"></v-divider>
+
+    <NutritionalInformationEditor
+      v-if="addPortion"
+      class="pa-3"
+      @cancel="() => (addPortion = false)"
+      @save="saveNewPortion"
+      data-testid="new-portion-editor"
+    />
 
     <div class="pa-3" v-for="(portion, index) in alternativePortions" :key="index">
       <v-card>
@@ -75,6 +90,7 @@
 import { validationRules } from '@/core/validation-rules';
 import { foodCategories, type FoodItem, type Portion } from '@/models';
 import { ref } from 'vue';
+import NutritionalInformationEditor from './NutritionalInformationEditor.vue';
 
 const props = defineProps<{ food?: FoodItem }>();
 const emit = defineEmits<{ (event: 'save', payload: FoodItem): void; (event: 'cancel'): void }>();
@@ -94,22 +110,24 @@ const portion = ref({
   fat: props.food?.fat || 0,
   protein: props.food?.protein || 0,
 });
-const alternativePortions = props.food?.alternativePortions || [];
+const addPortion = ref(false);
+const alternativePortions = ref(props.food?.alternativePortions || []);
+const portionsModified = ref(false);
 
 const isModified = (): boolean => {
   if (!props.food) return true;
+  if (portionsModified.value) return true;
 
   if (props.food.name !== name.value || props.food.brand !== brand.value || props.food.category !== category.value) {
     return true;
   }
 
-  const portionFields = ['units', 'grams', 'calories', 'sodium', 'sugar', 'carbs', 'fat', 'protein'] as const;
-
   if (props.food.unitOfMeasure.id !== portion.value.unitOfMeasure?.id) {
     return true;
   }
 
-  return portionFields.some((field) => props.food![field as keyof Portion] !== portion.value[field]);
+  const portionFields = ['units', 'grams', 'calories', 'sodium', 'sugar', 'carbs', 'fat', 'protein'] as const;
+  return portionFields.some((field) => props.food![field as keyof FoodItem] !== portion.value[field]);
 };
 
 const save = () => {
@@ -128,6 +146,17 @@ const save = () => {
     fat: portion.value.fat || 0,
     protein: portion.value.protein || 0,
   };
-  emit('save', props.food?.id ? { ...food, alternativePortions, id: props.food.id } : { ...food, alternativePortions });
+  emit(
+    'save',
+    props.food?.id
+      ? { ...food, alternativePortions: alternativePortions.value, id: props.food.id }
+      : { ...food, alternativePortions: alternativePortions.value },
+  );
+};
+
+const saveNewPortion = (portion: Portion) => {
+  portionsModified.value = true;
+  addPortion.value = false;
+  alternativePortions.value = [portion, ...alternativePortions.value];
 };
 </script>

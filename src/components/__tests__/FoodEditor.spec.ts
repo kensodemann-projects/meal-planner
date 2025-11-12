@@ -1,14 +1,16 @@
 import { findUnitOfMeasure } from '@/data/unit-of-measure';
 import type { FoodItem } from '@/models';
-import { mount, VueWrapper } from '@vue/test-utils';
+import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import FoodEditor from '../FoodEditor.vue';
 import NutritionalInformation from '../NutritionalInformation.vue';
+import NutritionalInformationEditor from '../NutritionalInformationEditor.vue';
 import DangerButton from '../buttons/DangerButton.vue';
 import ModifyButton from '../buttons/ModifyButton.vue';
+import { TEST_PORTION } from '@/data/__tests__/test-data';
 
 const vuetify = createVuetify({
   components,
@@ -479,6 +481,73 @@ describe('FoodEditor', () => {
         const portions = wrapper.findAllComponents(NutritionalInformation);
         expect(portions.length).toBe(0);
       });
+
+      describe('add button', () => {
+        it('is enabled', () => {
+          const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+          expect(button.attributes('disabled')).toBeUndefined();
+        });
+
+        it('displays the portion editor for add', async () => {
+          const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+          expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
+          await button.trigger('click');
+          expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(true);
+        });
+
+        it('is disabled once the editor is opened', async () => {
+          const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+          await button.trigger('click');
+          expect(button.attributes('disabled')).toBeDefined();
+        });
+
+        describe('cancel', () => {
+          it('hides the portion editor', async () => {
+            const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+            await button.trigger('click');
+            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            editor.vm.$emit('cancel');
+            await flushPromises();
+            expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
+            expect(button.attributes('disabled')).toBeUndefined();
+          });
+
+          it('does not add a portion', async () => {
+            const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+            await button.trigger('click');
+            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            editor.vm.$emit('cancel');
+            await flushPromises();
+            const portions = wrapper.findAllComponents(components.VCard);
+            expect(portions.length).toBe(0);
+          });
+        });
+
+        describe('save', () => {
+          it('hides the portion editor', async () => {
+            const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+            await button.trigger('click');
+            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            editor.vm.$emit('save', TEST_PORTION);
+            await flushPromises();
+            expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
+            expect(button.attributes('disabled')).toBeUndefined();
+          });
+
+          it('adds the saved portion to the front of the list', async () => {
+            const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+            await button.trigger('click');
+            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            editor.vm.$emit('save', TEST_PORTION);
+            await flushPromises();
+            const portions = wrapper.findAllComponents(components.VCard);
+            expect(portions.length).toBe(1);
+            portions.forEach((p) => expect(p.findComponent(NutritionalInformation).exists()).toBe(true));
+            expect(portions[0]!.text()).toContain('Serving Size: 2 Each (240g)');
+            expect(portions[0]!.text()).toContain('Calories: 940');
+          });
+        });
+      });
     });
   });
 
@@ -564,6 +633,84 @@ describe('FoodEditor', () => {
         expect(portions[0]!.text()).toContain('Calories: 113');
         expect(portions[1]!.text()).toContain('Serving Size: 4 Ounce (112g)');
         expect(portions[1]!.text()).toContain('Calories: 110');
+      });
+
+      describe('add button', () => {
+        it('is enabled', () => {
+          const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+          expect(button.attributes('disabled')).toBeUndefined();
+        });
+
+        it('displays the portion editor for add', async () => {
+          const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+          expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
+          await button.trigger('click');
+          expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(true);
+        });
+
+        it('is disabled once the editor is opened', async () => {
+          const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+          await button.trigger('click');
+          expect(button.attributes('disabled')).toBeDefined();
+        });
+
+        describe('cancel', () => {
+          it('hides the portion editor', async () => {
+            const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+            await button.trigger('click');
+            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            editor.vm.$emit('cancel');
+            await flushPromises();
+            expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
+            expect(button.attributes('disabled')).toBeUndefined();
+          });
+
+          it('does not add a portion', async () => {
+            const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+            await button.trigger('click');
+            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            editor.vm.$emit('cancel');
+            await flushPromises();
+            const portions = wrapper.findAllComponents(components.VCard);
+            expect(portions.length).toBe(2);
+          });
+        });
+
+        describe('save', () => {
+          it('hides the portion editor', async () => {
+            const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+            await button.trigger('click');
+            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            editor.vm.$emit('save', TEST_PORTION);
+            await flushPromises();
+            expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
+            expect(button.attributes('disabled')).toBeUndefined();
+          });
+
+          it('adds the saved portion to the front of the list', async () => {
+            const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+            await button.trigger('click');
+            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            editor.vm.$emit('save', TEST_PORTION);
+            await flushPromises();
+            const portions = wrapper.findAllComponents(components.VCard);
+            expect(portions.length).toBe(3);
+            portions.forEach((p) => expect(p.findComponent(NutritionalInformation).exists()).toBe(true));
+            expect(portions[0]!.text()).toContain('Serving Size: 2 Each (240g)');
+            expect(portions[0]!.text()).toContain('Calories: 940');
+          });
+
+          it('enables the food item save button', async () => {
+            const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+            const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+            await button.trigger('click');
+            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            expect(saveButton.attributes('disabled')).toBeDefined();
+            editor.vm.$emit('save', TEST_PORTION);
+            await flushPromises();
+            expect(saveButton.attributes('disabled')).toBeUndefined();
+          });
+        });
       });
     });
   });
