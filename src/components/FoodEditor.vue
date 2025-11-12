@@ -112,21 +112,22 @@ const portion = ref({
 });
 const addPortion = ref(false);
 const alternativePortions = ref(props.food?.alternativePortions || []);
+let portionsModifed = false;
 
 const isModified = (): boolean => {
   if (!props.food) return true;
+  if (portionsModifed) return true;
 
   if (props.food.name !== name.value || props.food.brand !== brand.value || props.food.category !== category.value) {
     return true;
   }
 
-  const portionFields = ['units', 'grams', 'calories', 'sodium', 'sugar', 'carbs', 'fat', 'protein'] as const;
-
   if (props.food.unitOfMeasure.id !== portion.value.unitOfMeasure?.id) {
     return true;
   }
 
-  return portionFields.some((field) => props.food![field as keyof Portion] !== portion.value[field]);
+  const portionFields = ['units', 'grams', 'calories', 'sodium', 'sugar', 'carbs', 'fat', 'protein'] as const;
+  return portionFields.some((field) => props.food![field as keyof FoodItem] !== portion.value[field]);
 };
 
 const save = () => {
@@ -154,6 +155,7 @@ const save = () => {
 };
 
 const saveNewPortion = (portion: Portion) => {
+  portionsModifed = true;
   addPortion.value = false;
   alternativePortions.value = [portion, ...alternativePortions.value];
 };

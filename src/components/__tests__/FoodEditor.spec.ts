@@ -695,6 +695,17 @@ describe('FoodEditor', () => {
             expect(portions[0]!.text()).toContain('Serving Size: 2 Each (240g)');
             expect(portions[0]!.text()).toContain('Calories: 940');
           });
+
+          it('enables the food item save button', async () => {
+            const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+            const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+            await button.trigger('click');
+            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            expect(saveButton.attributes('disabled')).toBeDefined();
+            editor.vm.$emit('save', TEST_PORTION);
+            await flushPromises();
+            expect(saveButton.attributes('disabled')).toBeUndefined();
+          });
         });
       });
     });
