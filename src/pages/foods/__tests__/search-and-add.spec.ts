@@ -32,6 +32,10 @@ describe('SearchAndAddPage', () => {
 
   afterEach(() => {
     wrapper?.unmount();
+    vi.clearAllTimers();
+    try {
+      vi.useRealTimers();
+    } catch {}
   });
 
   beforeEach(() => {

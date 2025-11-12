@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { expect, it } from 'vitest';
+import { expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -32,4 +32,8 @@ it('renders', () => {
   const wrapper = mountComponent();
   expect(wrapper.exists()).toBe(true);
   wrapper.unmount();
+  vi.clearAllTimers();
+  try {
+    vi.useRealTimers();
+  } catch {}
 });
