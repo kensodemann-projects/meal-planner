@@ -72,7 +72,7 @@
         </v-card-text>
         <v-card-actions>
           <ModifyButton />
-          <DeleteButton />
+          <DeleteButton @click="deletePortion(index)" />
         </v-card-actions>
       </v-card>
     </div>
@@ -84,6 +84,14 @@
       </v-row>
     </v-container>
   </v-form>
+  <v-dialog v-model="showConfirmDelete" max-width="600px" data-testid="confirm-dialog">
+    <ConfirmDialog
+      question="Are you sure you want to delete this portion?"
+      icon-color="error"
+      @confirm="confirmDelete(true)"
+      @cancel="confirmDelete(false)"
+    />
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
@@ -113,6 +121,8 @@ const portion = ref({
 const addPortion = ref(false);
 const alternativePortions = ref(props.food?.alternativePortions || []);
 const portionsModified = ref(false);
+const showConfirmDelete = ref(false);
+const confirmDelete = ref<(x: boolean) => void>(() => null);
 
 const isModified = (): boolean => {
   if (!props.food) return true;
@@ -158,5 +168,17 @@ const saveNewPortion = (portion: Portion) => {
   portionsModified.value = true;
   addPortion.value = false;
   alternativePortions.value = [portion, ...alternativePortions.value];
+};
+
+const deletePortion = async (idx: number) => {
+  showConfirmDelete.value = true;
+  const remove = await new Promise<boolean>((resolve) => (confirmDelete.value = resolve));
+  if (remove) {
+    const newPortions = [...alternativePortions.value];
+    newPortions.splice(idx, 1);
+    alternativePortions.value = newPortions;
+    portionsModified.value = true;
+  }
+  showConfirmDelete.value = false;
 };
 </script>
