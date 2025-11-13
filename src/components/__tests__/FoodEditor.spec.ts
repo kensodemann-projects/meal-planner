@@ -1,3 +1,4 @@
+import { TEST_PORTION } from '@/data/__tests__/test-data';
 import { findUnitOfMeasure } from '@/data/unit-of-measure';
 import type { FoodItem } from '@/models';
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
@@ -6,11 +7,8 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import FoodEditor from '../FoodEditor.vue';
-import PortionData from '../PortionData.vue';
+import PortionDataCard from '../PortionDataCard.vue';
 import PortionEditorCard from '../PortionEditorCard.vue';
-import DangerButton from '../buttons/DangerButton.vue';
-import ModifyButton from '../buttons/ModifyButton.vue';
-import { TEST_PORTION } from '@/data/__tests__/test-data';
 
 const vuetify = createVuetify({
   components,
@@ -478,7 +476,7 @@ describe('FoodEditor', () => {
 
     describe('alternative portions', () => {
       it('are blank', () => {
-        const portions = wrapper.findAllComponents(PortionData);
+        const portions = wrapper.findAllComponents(PortionDataCard);
         expect(portions.length).toBe(0);
       });
 
@@ -540,9 +538,8 @@ describe('FoodEditor', () => {
             const editor = wrapper.findComponent(PortionEditorCard);
             editor.vm.$emit('save', TEST_PORTION);
             await flushPromises();
-            const portions = wrapper.findAllComponents(components.VCard);
+            const portions = wrapper.findAllComponents(PortionDataCard);
             expect(portions.length).toBe(1);
-            portions.forEach((p) => expect(p.findComponent(PortionData).exists()).toBe(true));
             expect(portions[0]!.text()).toContain('Serving Size: 2 Each (240g)');
             expect(portions[0]!.text()).toContain('Calories: 940');
           });
@@ -618,17 +615,12 @@ describe('FoodEditor', () => {
 
     describe('alternative portions', () => {
       it('are each displayed in a card', () => {
-        const portions = wrapper.findAllComponents(components.VCard);
+        const portions = wrapper.findAllComponents(PortionDataCard);
         expect(portions.length).toBe(2);
-        portions.forEach((p) => {
-          expect(p.findComponent(PortionData).exists()).toBe(true);
-          expect(p.findComponent(ModifyButton).exists()).toBe(true);
-          expect(p.findComponent(DangerButton).exists()).toBe(true);
-        });
       });
 
       it('displays the proper data in each card', () => {
-        const portions = wrapper.findAllComponents(components.VCard);
+        const portions = wrapper.findAllComponents(PortionDataCard);
         expect(portions[0]!.text()).toContain('Serving Size: 1 Each (115g)');
         expect(portions[0]!.text()).toContain('Calories: 113');
         expect(portions[1]!.text()).toContain('Serving Size: 4 Ounce (112g)');
@@ -693,9 +685,8 @@ describe('FoodEditor', () => {
             const editor = wrapper.findComponent(PortionEditorCard);
             editor.vm.$emit('save', TEST_PORTION);
             await flushPromises();
-            const portions = wrapper.findAllComponents(components.VCard);
+            const portions = wrapper.findAllComponents(PortionDataCard);
             expect(portions.length).toBe(3);
-            portions.forEach((p) => expect(p.findComponent(PortionData).exists()).toBe(true));
             expect(portions[0]!.text()).toContain('Serving Size: 2 Each (240g)');
             expect(portions[0]!.text()).toContain('Calories: 940');
           });

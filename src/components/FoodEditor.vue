@@ -66,15 +66,7 @@
     />
 
     <div class="pa-3" v-for="(portion, index) in alternativePortions" :key="index">
-      <v-card>
-        <v-card-text>
-          <PortionData :value="portion" compact />
-        </v-card-text>
-        <v-card-actions>
-          <ModifyButton />
-          <DeleteButton @click="deletePortion(index)" />
-        </v-card-actions>
-      </v-card>
+      <PortionDataCard :value="portion" @delete="deletePortion(index)" />
     </div>
 
     <v-container fluid>
@@ -98,6 +90,7 @@
 import { validationRules } from '@/core/validation-rules';
 import { foodCategories, type FoodItem, type Portion } from '@/models';
 import { ref, watch } from 'vue';
+import PortionDataCard from './PortionDataCard.vue';
 
 const props = defineProps<{ food?: FoodItem }>();
 const emit = defineEmits<{ (event: 'save', payload: FoodItem): void; (event: 'cancel'): void }>();
