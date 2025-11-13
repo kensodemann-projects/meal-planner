@@ -6,7 +6,7 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import FoodEditor from '../FoodEditor.vue';
-import NutritionalInformation from '../NutritionalInformation.vue';
+import PortionData from '../PortionData.vue';
 import NutritionalInformationEditor from '../NutritionalInformationEditor.vue';
 import DangerButton from '../buttons/DangerButton.vue';
 import ModifyButton from '../buttons/ModifyButton.vue';
@@ -478,7 +478,7 @@ describe('FoodEditor', () => {
 
     describe('alternative portions', () => {
       it('are blank', () => {
-        const portions = wrapper.findAllComponents(NutritionalInformation);
+        const portions = wrapper.findAllComponents(PortionData);
         expect(portions.length).toBe(0);
       });
 
@@ -542,7 +542,7 @@ describe('FoodEditor', () => {
             await flushPromises();
             const portions = wrapper.findAllComponents(components.VCard);
             expect(portions.length).toBe(1);
-            portions.forEach((p) => expect(p.findComponent(NutritionalInformation).exists()).toBe(true));
+            portions.forEach((p) => expect(p.findComponent(PortionData).exists()).toBe(true));
             expect(portions[0]!.text()).toContain('Serving Size: 2 Each (240g)');
             expect(portions[0]!.text()).toContain('Calories: 940');
           });
@@ -621,7 +621,7 @@ describe('FoodEditor', () => {
         const portions = wrapper.findAllComponents(components.VCard);
         expect(portions.length).toBe(2);
         portions.forEach((p) => {
-          expect(p.findComponent(NutritionalInformation).exists()).toBe(true);
+          expect(p.findComponent(PortionData).exists()).toBe(true);
           expect(p.findComponent(ModifyButton).exists()).toBe(true);
           expect(p.findComponent(DangerButton).exists()).toBe(true);
         });
@@ -695,7 +695,7 @@ describe('FoodEditor', () => {
             await flushPromises();
             const portions = wrapper.findAllComponents(components.VCard);
             expect(portions.length).toBe(3);
-            portions.forEach((p) => expect(p.findComponent(NutritionalInformation).exists()).toBe(true));
+            portions.forEach((p) => expect(p.findComponent(PortionData).exists()).toBe(true));
             expect(portions[0]!.text()).toContain('Serving Size: 2 Each (240g)');
             expect(portions[0]!.text()).toContain('Calories: 940');
           });

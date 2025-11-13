@@ -4,16 +4,16 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import NutritionalInformation from '../NutritionalInformation.vue';
+import PortionData from '../PortionData.vue';
 
 const vuetify = createVuetify({
   components,
   directives,
 });
 const mountComponent = (props = {}) =>
-  mount(NutritionalInformation, { props: { value: TEST_PORTION, ...props }, global: { plugins: [vuetify] } });
+  mount(PortionData, { props: { value: TEST_PORTION, ...props }, global: { plugins: [vuetify] } });
 
-describe('Nutritional Information', () => {
+describe('Portion Data', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
   afterEach(() => {

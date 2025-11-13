@@ -13,12 +13,12 @@
       <v-row no-gutters>
         <v-col class="mt-4" cols="12" sm="6" md="4">
           <h2>Standard Portion</h2>
-          <NutritionalInformation :value="food" />
+          <PortionData :value="food" />
         </v-col>
 
         <v-col class="mt-4" cols="12" sm="6" md="4" v-for="(portion, index) in food.alternativePortions" :key="index">
           <h2>Alternative Portion</h2>
-          <NutritionalInformation :value="portion" />
+          <PortionData :value="portion" />
         </v-col>
       </v-row>
     </v-container>

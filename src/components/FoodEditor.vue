@@ -68,7 +68,7 @@
     <div class="pa-3" v-for="(portion, index) in alternativePortions" :key="index">
       <v-card>
         <v-card-text>
-          <NutritionalInformation :value="portion" compact />
+          <PortionData :value="portion" compact />
         </v-card-text>
         <v-card-actions>
           <ModifyButton />
@@ -98,7 +98,6 @@
 import { validationRules } from '@/core/validation-rules';
 import { foodCategories, type FoodItem, type Portion } from '@/models';
 import { ref, watch } from 'vue';
-import NutritionalInformationEditor from './NutritionalInformationEditor.vue';
 
 const props = defineProps<{ food?: FoodItem }>();
 const emit = defineEmits<{ (event: 'save', payload: FoodItem): void; (event: 'cancel'): void }>();
