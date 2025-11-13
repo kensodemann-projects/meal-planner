@@ -97,7 +97,7 @@
 <script setup lang="ts">
 import { validationRules } from '@/core/validation-rules';
 import { foodCategories, type FoodItem, type Portion } from '@/models';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import NutritionalInformationEditor from './NutritionalInformationEditor.vue';
 
 const props = defineProps<{ food?: FoodItem }>();
