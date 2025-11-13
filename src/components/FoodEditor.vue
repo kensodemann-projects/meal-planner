@@ -122,7 +122,7 @@ const addPortion = ref(false);
 const alternativePortions = ref(props.food?.alternativePortions || []);
 const portionsModified = ref(false);
 const showConfirmDelete = ref(false);
-const confirmDelete = ref<(x: boolean) => void>(() => null);
+const confirmDelete = ref<(x: boolean) => void>(() => {});
 
 const isModified = (): boolean => {
   if (!props.food) return true;
