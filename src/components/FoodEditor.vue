@@ -172,7 +172,16 @@ const saveNewPortion = (portion: Portion) => {
 
 const deletePortion = async (idx: number) => {
   showConfirmDelete.value = true;
-  const remove = await new Promise<boolean>((resolve) => (confirmDelete.value = resolve));
+  const remove = await new Promise<boolean>((resolve) => {
+    confirmDelete.value = resolve;
+    // Watch for dialog being closed externally (e.g., ESC or click outside)
+    const unwatch = watch(showConfirmDelete, (newVal) => {
+      if (!newVal) {
+        resolve(false);
+        unwatch();
+      }
+    });
+  });
   if (remove) {
     const newPortions = [...alternativePortions.value];
     newPortions.splice(idx, 1);
