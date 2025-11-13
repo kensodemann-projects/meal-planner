@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import NutritionalInformationEditGrid from '../NutritionalInformationEditGrid.vue';
+import PortionEditGrid from '../PortionEditGrid.vue';
 
 const vuetify = createVuetify({
   components,
@@ -13,9 +13,9 @@ const vuetify = createVuetify({
 });
 
 const mountComponent = (modelValue: Partial<Portion>) =>
-  mount(NutritionalInformationEditGrid, { props: { modelValue }, global: { plugins: [vuetify] } });
+  mount(PortionEditGrid, { props: { modelValue }, global: { plugins: [vuetify] } });
 
-describe('Nutritional Information Edit Grid', () => {
+describe('Portion Edit Grid', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
   afterEach(() => {
