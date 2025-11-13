@@ -7,7 +7,7 @@ import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import FoodEditor from '../FoodEditor.vue';
 import PortionData from '../PortionData.vue';
-import NutritionalInformationEditor from '../NutritionalInformationEditor.vue';
+import PortionEditorCard from '../PortionEditorCard.vue';
 import DangerButton from '../buttons/DangerButton.vue';
 import ModifyButton from '../buttons/ModifyButton.vue';
 import { TEST_PORTION } from '@/data/__tests__/test-data';
@@ -490,9 +490,9 @@ describe('FoodEditor', () => {
 
         it('displays the portion editor for add', async () => {
           const button = wrapper.findComponent('[data-testid="add-portion-button"]');
-          expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
+          expect(wrapper.findComponent(PortionEditorCard).exists()).toBe(false);
           await button.trigger('click');
-          expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(true);
+          expect(wrapper.findComponent(PortionEditorCard).exists()).toBe(true);
         });
 
         it('is disabled once the editor is opened', async () => {
@@ -505,17 +505,17 @@ describe('FoodEditor', () => {
           it('hides the portion editor', async () => {
             const button = wrapper.findComponent('[data-testid="add-portion-button"]');
             await button.trigger('click');
-            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            const editor = wrapper.findComponent(PortionEditorCard);
             editor.vm.$emit('cancel');
             await flushPromises();
-            expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
+            expect(wrapper.findComponent(PortionEditorCard).exists()).toBe(false);
             expect(button.attributes('disabled')).toBeUndefined();
           });
 
           it('does not add a portion', async () => {
             const button = wrapper.findComponent('[data-testid="add-portion-button"]');
             await button.trigger('click');
-            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            const editor = wrapper.findComponent(PortionEditorCard);
             editor.vm.$emit('cancel');
             await flushPromises();
             const portions = wrapper.findAllComponents(components.VCard);
@@ -527,17 +527,17 @@ describe('FoodEditor', () => {
           it('hides the portion editor', async () => {
             const button = wrapper.findComponent('[data-testid="add-portion-button"]');
             await button.trigger('click');
-            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            const editor = wrapper.findComponent(PortionEditorCard);
             editor.vm.$emit('save', TEST_PORTION);
             await flushPromises();
-            expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
+            expect(wrapper.findComponent(PortionEditorCard).exists()).toBe(false);
             expect(button.attributes('disabled')).toBeUndefined();
           });
 
           it('adds the saved portion to the front of the list', async () => {
             const button = wrapper.findComponent('[data-testid="add-portion-button"]');
             await button.trigger('click');
-            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            const editor = wrapper.findComponent(PortionEditorCard);
             editor.vm.$emit('save', TEST_PORTION);
             await flushPromises();
             const portions = wrapper.findAllComponents(components.VCard);
@@ -643,9 +643,9 @@ describe('FoodEditor', () => {
 
         it('displays the portion editor for add', async () => {
           const button = wrapper.findComponent('[data-testid="add-portion-button"]');
-          expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
+          expect(wrapper.findComponent(PortionEditorCard).exists()).toBe(false);
           await button.trigger('click');
-          expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(true);
+          expect(wrapper.findComponent(PortionEditorCard).exists()).toBe(true);
         });
 
         it('is disabled once the editor is opened', async () => {
@@ -658,17 +658,17 @@ describe('FoodEditor', () => {
           it('hides the portion editor', async () => {
             const button = wrapper.findComponent('[data-testid="add-portion-button"]');
             await button.trigger('click');
-            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            const editor = wrapper.findComponent(PortionEditorCard);
             editor.vm.$emit('cancel');
             await flushPromises();
-            expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
+            expect(wrapper.findComponent(PortionEditorCard).exists()).toBe(false);
             expect(button.attributes('disabled')).toBeUndefined();
           });
 
           it('does not add a portion', async () => {
             const button = wrapper.findComponent('[data-testid="add-portion-button"]');
             await button.trigger('click');
-            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            const editor = wrapper.findComponent(PortionEditorCard);
             editor.vm.$emit('cancel');
             await flushPromises();
             const portions = wrapper.findAllComponents(components.VCard);
@@ -680,17 +680,17 @@ describe('FoodEditor', () => {
           it('hides the portion editor', async () => {
             const button = wrapper.findComponent('[data-testid="add-portion-button"]');
             await button.trigger('click');
-            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            const editor = wrapper.findComponent(PortionEditorCard);
             editor.vm.$emit('save', TEST_PORTION);
             await flushPromises();
-            expect(wrapper.findComponent(NutritionalInformationEditor).exists()).toBe(false);
+            expect(wrapper.findComponent(PortionEditorCard).exists()).toBe(false);
             expect(button.attributes('disabled')).toBeUndefined();
           });
 
           it('adds the saved portion to the front of the list', async () => {
             const button = wrapper.findComponent('[data-testid="add-portion-button"]');
             await button.trigger('click');
-            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            const editor = wrapper.findComponent(PortionEditorCard);
             editor.vm.$emit('save', TEST_PORTION);
             await flushPromises();
             const portions = wrapper.findAllComponents(components.VCard);
@@ -704,7 +704,7 @@ describe('FoodEditor', () => {
             const saveButton = wrapper.getComponent('[data-testid="save-button"]');
             const button = wrapper.findComponent('[data-testid="add-portion-button"]');
             await button.trigger('click');
-            const editor = wrapper.findComponent(NutritionalInformationEditor);
+            const editor = wrapper.findComponent(PortionEditorCard);
             expect(saveButton.attributes('disabled')).toBeDefined();
             editor.vm.$emit('save', TEST_PORTION);
             await flushPromises();

@@ -57,7 +57,7 @@
     </h2>
     <v-divider class="mb-4"></v-divider>
 
-    <NutritionalInformationEditor
+    <PortionEditorCard
       v-if="addPortion"
       class="pa-3"
       @cancel="() => (addPortion = false)"

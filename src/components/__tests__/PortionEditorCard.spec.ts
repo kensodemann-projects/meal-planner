@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import NutritionalInformationEditor from '../NutritionalInformationEditor.vue';
+import PortionEditorCard from '../PortionEditorCard.vue';
 import type { Portion } from '@/models';
 import { TEST_PORTION } from '@/data/__tests__/test-data';
 import { findUnitOfMeasure } from '@/data/unit-of-measure';
@@ -13,7 +13,7 @@ const vuetify = createVuetify({
   directives,
 });
 const mountComponent = (props: { portion?: Portion } = {}) =>
-  mount(NutritionalInformationEditor, { props, global: { plugins: [vuetify] } });
+  mount(PortionEditorCard, { props, global: { plugins: [vuetify] } });
 
 const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
   unitsInput: wrapper.findComponent('[data-testid="units-input"]').find('input'),
@@ -27,7 +27,7 @@ const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
   proteinInput: wrapper.findComponent('[data-testid="protein-input"]').find('input'),
 });
 
-describe('Nutritional Information Editor', () => {
+describe('Portion Editor', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
   afterEach(() => {
