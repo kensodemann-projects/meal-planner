@@ -9,6 +9,7 @@ import * as directives from 'vuetify/directives';
 import FoodEditor from '../FoodEditor.vue';
 import PortionDataCard from '../PortionDataCard.vue';
 import PortionEditorCard from '../PortionEditorCard.vue';
+import PortionEditorCard from '../PortionEditorCard.vue';
 
 const vuetify = createVuetify({
   components,
@@ -625,6 +626,20 @@ describe('FoodEditor', () => {
         expect(portions[0]!.text()).toContain('Calories: 113');
         expect(portions[1]!.text()).toContain('Serving Size: 4 Ounce (112g)');
         expect(portions[1]!.text()).toContain('Calories: 110');
+      });
+
+      describe('modify event', () => {
+        it('switches from the card to the editor', async () => {
+          let portions = wrapper.findAllComponents(PortionDataCard);
+          let editors = wrapper.findAllComponents(PortionEditorCard);
+          expect(editors.length).toBe(0);
+          portions[0]?.vm.$emit('modify');
+          await flushPromises();
+          portions = wrapper.findAllComponents(PortionDataCard);
+          expect(portions.length).toBe(1);
+          editors = wrapper.findAllComponents(PortionEditorCard);
+          expect(editors.length).toBe(1);
+        });
       });
 
       describe('add button', () => {
