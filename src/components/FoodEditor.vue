@@ -65,8 +65,19 @@
       data-testid="new-portion-editor"
     />
 
-    <div class="pa-3" v-for="(portion, index) in alternativePortions" :key="index">
-      <PortionDataCard :value="portion" @delete="deletePortion(index)" />
+    <div class="pa-3" v-for="(wrapper, index) in alternativePortions" :key="index">
+      <PortionDataCard
+        v-if="wrapper.status === 'view'"
+        :value="wrapper.portion"
+        @modify="modifyPortion(index)"
+        @delete="deletePortion(index)"
+      />
+      <PortionEditorCard
+        v-else
+        :portion="wrapper.portion"
+        @cancel="cancelModifyPortion(index)"
+        @save="(p) => saveExistingPortion(p, index)"
+      />
     </div>
 
     <v-container fluid>
@@ -92,6 +103,11 @@ import { foodCategories, type FoodItem, type Portion } from '@/models';
 import { ref, watch } from 'vue';
 import PortionDataCard from './PortionDataCard.vue';
 
+interface WrappedPortion {
+  portion: Portion;
+  status: 'view' | 'modify';
+}
+
 const props = defineProps<{ food?: FoodItem }>();
 const emit = defineEmits<{ (event: 'save', payload: FoodItem): void; (event: 'cancel'): void }>();
 
@@ -111,7 +127,9 @@ const portion = ref({
   protein: props.food?.protein || 0,
 });
 const addPortion = ref(false);
-const alternativePortions = ref(props.food?.alternativePortions || []);
+const alternativePortions = ref<WrappedPortion[]>(
+  (props.food?.alternativePortions || []).map((p) => ({ portion: p, status: 'view' })),
+);
 const portionsModified = ref(false);
 const showConfirmDelete = ref(false);
 const confirmDelete = ref<(x: boolean) => void>(() => {});
@@ -151,15 +169,28 @@ const save = () => {
   emit(
     'save',
     props.food?.id
-      ? { ...food, alternativePortions: alternativePortions.value, id: props.food.id }
-      : { ...food, alternativePortions: alternativePortions.value },
+      ? { ...food, alternativePortions: alternativePortions.value.map((p) => p.portion), id: props.food.id }
+      : { ...food, alternativePortions: alternativePortions.value.map((p) => p.portion) },
   );
 };
 
 const saveNewPortion = (portion: Portion) => {
   portionsModified.value = true;
   addPortion.value = false;
-  alternativePortions.value = [portion, ...alternativePortions.value];
+  alternativePortions.value = [{ portion, status: 'view' }, ...alternativePortions.value];
+};
+
+const saveExistingPortion = (portion: Portion, idx: number) => {
+  portionsModified.value = true;
+  alternativePortions.value[idx] = { portion, status: 'view' };
+};
+
+const modifyPortion = (idx: number) => {
+  alternativePortions.value[idx]!.status = 'modify';
+};
+
+const cancelModifyPortion = (idx: number) => {
+  alternativePortions.value[idx]!.status = 'view';
 };
 
 const deletePortion = async (idx: number) => {

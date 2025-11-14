@@ -627,6 +627,55 @@ describe('FoodEditor', () => {
         expect(portions[1]!.text()).toContain('Calories: 110');
       });
 
+      describe('modify event', () => {
+        it('switches from the card to the editor', async () => {
+          let portions = wrapper.findAllComponents(PortionDataCard);
+          let editors = wrapper.findAllComponents(PortionEditorCard);
+          expect(editors.length).toBe(0);
+          portions[0]?.vm.$emit('modify');
+          await flushPromises();
+          portions = wrapper.findAllComponents(PortionDataCard);
+          expect(portions.length).toBe(1);
+          editors = wrapper.findAllComponents(PortionEditorCard);
+          expect(editors.length).toBe(1);
+        });
+
+        it('switches back to the card on cancel', async () => {
+          let portions = wrapper.findAllComponents(PortionDataCard);
+          portions[0]?.vm.$emit('modify');
+          await flushPromises();
+          let editors = wrapper.findAllComponents(PortionEditorCard);
+          editors[0]?.vm.$emit('cancel');
+          await flushPromises();
+          portions = wrapper.findAllComponents(PortionDataCard);
+          expect(portions.length).toBe(2);
+          editors = wrapper.findAllComponents(PortionEditorCard);
+          expect(editors.length).toBe(0);
+        });
+
+        it('does not enable the save on cancel', async () => {
+          const portions = wrapper.findAllComponents(PortionDataCard);
+          portions[0]?.vm.$emit('modify');
+          await flushPromises();
+          const editors = wrapper.findAllComponents(PortionEditorCard);
+          editors[0]?.vm.$emit('cancel');
+          await flushPromises();
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('enables the save if the modification is saved', async () => {
+          const portions = wrapper.findAllComponents(PortionDataCard);
+          portions[0]?.vm.$emit('modify');
+          await flushPromises();
+          const editors = wrapper.findAllComponents(PortionEditorCard);
+          editors[0]?.vm.$emit('save', TEST_PORTION);
+          await flushPromises();
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+      });
+
       describe('add button', () => {
         it('is enabled', () => {
           const button = wrapper.findComponent('[data-testid="add-portion-button"]');
