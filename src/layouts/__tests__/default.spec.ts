@@ -1,5 +1,5 @@
 import { useAuthentication } from '@/core/authentication';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
@@ -38,12 +38,13 @@ const mountComponent = () =>
 describe('DefaultLayout', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
-  afterEach(() => {
-    wrapper?.unmount();
+  afterEach(async () => {
+    await flushPromises();
     vi.clearAllTimers();
     try {
       vi.useRealTimers();
     } catch {}
+    wrapper?.unmount();
   });
 
   beforeEach(() => {
