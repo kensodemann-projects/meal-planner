@@ -72,7 +72,12 @@
         @modify="() => (wrapper.status = 'modify')"
         @delete="deletePortion(index)"
       />
-      <PortionEditorCard v-else :portion="wrapper.portion" @cancel="() => (wrapper.status = 'view')" />
+      <PortionEditorCard
+        v-else
+        :portion="wrapper.portion"
+        @cancel="() => (wrapper.status = 'view')"
+        @save="(p) => saveExistingPortion(p, index)"
+      />
     </div>
 
     <v-container fluid>
@@ -173,6 +178,11 @@ const saveNewPortion = (portion: Portion) => {
   portionsModified.value = true;
   addPortion.value = false;
   alternativePortions.value = [{ portion, status: 'view' }, ...alternativePortions.value];
+};
+
+const saveExistingPortion = (portion: Portion, idx: number) => {
+  portionsModified.value = true;
+  alternativePortions.value[idx] = { portion, status: 'view' };
 };
 
 const deletePortion = async (idx: number) => {

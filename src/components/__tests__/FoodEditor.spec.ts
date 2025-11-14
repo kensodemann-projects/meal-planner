@@ -652,6 +652,28 @@ describe('FoodEditor', () => {
           editors = wrapper.findAllComponents(PortionEditorCard);
           expect(editors.length).toBe(0);
         });
+
+        it('does not enable the save on cancel', async () => {
+          const portions = wrapper.findAllComponents(PortionDataCard);
+          portions[0]?.vm.$emit('modify');
+          await flushPromises();
+          const editors = wrapper.findAllComponents(PortionEditorCard);
+          editors[0]?.vm.$emit('cancel');
+          await flushPromises();
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('enables the save if the modification is saved', async () => {
+          const portions = wrapper.findAllComponents(PortionDataCard);
+          portions[0]?.vm.$emit('modify');
+          await flushPromises();
+          const editors = wrapper.findAllComponents(PortionEditorCard);
+          editors[0]?.vm.$emit('save', TEST_PORTION);
+          await flushPromises();
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
       });
 
       describe('add button', () => {
