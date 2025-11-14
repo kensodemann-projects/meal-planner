@@ -30,12 +30,13 @@ const createWrapper = (props = {}) => {
 describe('SearchAndAddPage', () => {
   let wrapper: ReturnType<typeof createWrapper>;
 
-  afterEach(() => {
-    wrapper?.unmount();
+  afterEach(async () => {
+    await flushPromises();
     vi.clearAllTimers();
     try {
       vi.useRealTimers();
     } catch {}
+    wrapper?.unmount();
   });
 
   beforeEach(() => {
