@@ -69,13 +69,13 @@
       <PortionDataCard
         v-if="wrapper.status === 'view'"
         :value="wrapper.portion"
-        @modify="() => (wrapper.status = 'modify')"
+        @modify="modifyPortion(index)"
         @delete="deletePortion(index)"
       />
       <PortionEditorCard
         v-else
         :portion="wrapper.portion"
-        @cancel="() => (wrapper.status = 'view')"
+        @cancel="cancelModifyPortion(index)"
         @save="(p) => saveExistingPortion(p, index)"
       />
     </div>
@@ -183,6 +183,14 @@ const saveNewPortion = (portion: Portion) => {
 const saveExistingPortion = (portion: Portion, idx: number) => {
   portionsModified.value = true;
   alternativePortions.value[idx] = { portion, status: 'view' };
+};
+
+const modifyPortion = (idx: number) => {
+  alternativePortions.value[idx]!.status = 'modify';
+};
+
+const cancelModifyPortion = (idx: number) => {
+  alternativePortions.value[idx]!.status = 'view';
 };
 
 const deletePortion = async (idx: number) => {
