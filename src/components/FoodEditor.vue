@@ -72,7 +72,7 @@
         @modify="() => (wrapper.status = 'modify')"
         @delete="deletePortion(index)"
       />
-      <PortionEditorCard v-else :portion="wrapper.portion" />
+      <PortionEditorCard v-else :portion="wrapper.portion" @cancel="() => (wrapper.status = 'view')" />
     </div>
 
     <v-container fluid>

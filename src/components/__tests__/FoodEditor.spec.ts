@@ -9,7 +9,6 @@ import * as directives from 'vuetify/directives';
 import FoodEditor from '../FoodEditor.vue';
 import PortionDataCard from '../PortionDataCard.vue';
 import PortionEditorCard from '../PortionEditorCard.vue';
-import PortionEditorCard from '../PortionEditorCard.vue';
 
 const vuetify = createVuetify({
   components,
@@ -639,6 +638,19 @@ describe('FoodEditor', () => {
           expect(portions.length).toBe(1);
           editors = wrapper.findAllComponents(PortionEditorCard);
           expect(editors.length).toBe(1);
+        });
+
+        it('switches back to the card on cancel', async () => {
+          let portions = wrapper.findAllComponents(PortionDataCard);
+          portions[0]?.vm.$emit('modify');
+          await flushPromises();
+          let editors = wrapper.findAllComponents(PortionEditorCard);
+          editors[0]?.vm.$emit('cancel');
+          await flushPromises();
+          portions = wrapper.findAllComponents(PortionDataCard);
+          expect(portions.length).toBe(2);
+          editors = wrapper.findAllComponents(PortionEditorCard);
+          expect(editors.length).toBe(0);
         });
       });
 
