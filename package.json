@@ -8,6 +8,7 @@
     "build-only": "vite build",
     "bump": "changeset version",
     "dev": "vite",
+    "emulate": "firebase emulators:start --import seed-data",
     "lint": "eslint .",
     "prepare": "husky",
     "preview": "vite preview",
@@ -64,8 +65,5 @@
       "eslint"
     ]
   },
-  "prettier": "@ionic/prettier-config",
-  "volta": {
-    "node": "22.21.1"
-  }
+  "prettier": "@ionic/prettier-config"
 }
