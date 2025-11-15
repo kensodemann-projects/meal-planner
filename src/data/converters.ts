@@ -17,14 +17,17 @@ const fdcCategoryCodeToCategory = (code: string): FoodCategory => {
     case '1000':
     case '1300':
     case '1500':
+    case '1700':
       return 'Meats';
 
     case '0600':
     case '2100':
-    case '2500':
+    case '2200':
     case '3500':
+    case '3600':
       return 'Mixed Foods';
 
+    case '0800':
     case '2000':
       return 'Grains';
 
@@ -36,19 +39,19 @@ const fdcCategoryCodeToCategory = (code: string): FoodCategory => {
       return 'Nuts & Seeds';
 
     case '1400':
+    case '1410':
       return 'Beverages';
 
     case '1600':
       return 'Beans';
 
-    case '1700':
     case '1800':
       return 'Bakery';
 
     case '1900':
       return 'Sweets';
 
-    case '2200':
+    case '2500':
       return 'Snacks';
 
     default:
