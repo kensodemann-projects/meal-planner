@@ -1,6 +1,6 @@
+import { type AutocompleteOption, unitsOfMeasure } from '@meal-planner/common';
 import { describe, expect, it } from 'vitest';
-import { findUnitOfMeasure, unitOfMeasureOptions, unitsOfMeasure } from '../unit-of-measure';
-import type { AutocompleteOption } from '@/models';
+import { unitOfMeasureOptions } from '../unit-of-measure';
 
 describe('unit-of-measure utilities', () => {
   describe('unit of measure autocomplete items', () => {
@@ -27,102 +27,6 @@ describe('unit-of-measure utilities', () => {
       for (let i = quantityUofMStartIdx + 2; i < 2 + quantityUofMStartIdx + quantityUofM.length; i++) {
         expect(quantityUofM.find((x) => x.id === (unitOfMeasureOptions[i] as AutocompleteOption).value)).toBeTruthy();
       }
-    });
-  });
-
-  describe('find unit of measure', () => {
-    it('finds units using single-letter abbreviations', () => {
-      expect(findUnitOfMeasure('T')).toEqual({ id: 'tbsp', name: 'Tablespoon', type: 'volume', system: 'customary' });
-      expect(findUnitOfMeasure('t')).toEqual({ id: 'tsp', name: 'Teaspoon', type: 'volume', system: 'customary' });
-    });
-
-    it('finds based on common forms of the id', () => {
-      expect(findUnitOfMeasure('TBSP')).toEqual({
-        id: 'tbsp',
-        name: 'Tablespoon',
-        type: 'volume',
-        system: 'customary',
-      });
-      expect(findUnitOfMeasure('Tbsp')).toEqual({
-        id: 'tbsp',
-        name: 'Tablespoon',
-        type: 'volume',
-        system: 'customary',
-      });
-      expect(findUnitOfMeasure('tbsp')).toEqual({
-        id: 'tbsp',
-        name: 'Tablespoon',
-        type: 'volume',
-        system: 'customary',
-      });
-      expect(findUnitOfMeasure('TSP')).toEqual({ id: 'tsp', name: 'Teaspoon', type: 'volume', system: 'customary' });
-      expect(findUnitOfMeasure('Tsp')).toEqual({ id: 'tsp', name: 'Teaspoon', type: 'volume', system: 'customary' });
-      expect(findUnitOfMeasure('tsp')).toEqual({ id: 'tsp', name: 'Teaspoon', type: 'volume', system: 'customary' });
-      expect(findUnitOfMeasure('fl-oz')).toEqual({
-        id: 'floz',
-        name: 'Fluid Ounce',
-        type: 'volume',
-        system: 'customary',
-      });
-      expect(findUnitOfMeasure('floz')).toEqual({
-        id: 'floz',
-        name: 'Fluid Ounce',
-        type: 'volume',
-        system: 'customary',
-      });
-    });
-
-    it('finds based on common forms of the name', () => {
-      expect(findUnitOfMeasure('Tablespoon')).toEqual({
-        id: 'tbsp',
-        name: 'Tablespoon',
-        type: 'volume',
-        system: 'customary',
-      });
-      expect(findUnitOfMeasure('tablespoon')).toEqual({
-        id: 'tbsp',
-        name: 'Tablespoon',
-        type: 'volume',
-        system: 'customary',
-      });
-      expect(findUnitOfMeasure('Teaspoon')).toEqual({
-        id: 'tsp',
-        name: 'Teaspoon',
-        type: 'volume',
-        system: 'customary',
-      });
-      expect(findUnitOfMeasure('teaspoon')).toEqual({
-        id: 'tsp',
-        name: 'Teaspoon',
-        type: 'volume',
-        system: 'customary',
-      });
-    });
-
-    it('finds units using poorly hyphenated or spaced names', () => {
-      expect(findUnitOfMeasure('fluid  ounce')).toEqual({
-        id: 'floz',
-        name: 'Fluid Ounce',
-        type: 'volume',
-        system: 'customary',
-      });
-      expect(findUnitOfMeasure('fluid-ounce')).toEqual({
-        id: 'floz',
-        name: 'Fluid Ounce',
-        type: 'volume',
-        system: 'customary',
-      });
-      expect(findUnitOfMeasure('milli-liter')).toEqual({
-        id: 'ml',
-        name: 'Milliliter',
-        type: 'volume',
-        system: 'metric',
-      });
-    });
-
-    it('returns the generic item when no match is found', () => {
-      expect(findUnitOfMeasure('xyz')).toEqual({ id: 'item', name: 'Item', type: 'quantity', system: 'none' });
-      expect(findUnitOfMeasure('unknown unit')).toEqual({ id: 'item', name: 'Item', type: 'quantity', system: 'none' });
     });
   });
 });

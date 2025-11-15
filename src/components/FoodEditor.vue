@@ -99,7 +99,7 @@
 
 <script setup lang="ts">
 import { validationRules } from '@/core/validation-rules';
-import { foodCategories, type FoodItem, type Portion } from '@/models';
+import { foodCategories, type FoodItem, type Portion } from '@meal-planner/common';
 import { ref, watch } from 'vue';
 import PortionDataCard from './PortionDataCard.vue';
 

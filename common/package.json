@@ -1,0 +1,14 @@
+{
+  "name": "@meal-planner/common",
+  "version": "1.0.0",
+  "description": "Shared models and types for the meal planner app.",
+  "main": "index.ts",
+  "types": "index.ts",
+  "scripts": {
+    "test": "vitest run",
+    "test:dev": "vitest"
+  },
+  "devDependencies": {
+    "vitest": "^4.0.6"
+  }
+}

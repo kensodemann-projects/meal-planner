@@ -26,7 +26,7 @@ export interface FdcFoodCategory {
 export interface FdcFoodPortion {
   gramWeight: number;
   amount: number;
-  measureUnit: { name: string; abbreviation: string };
+  measureUnit: { id: number; name: string; abbreviation: string };
 }
 
 export interface FdcFoodNutrient {

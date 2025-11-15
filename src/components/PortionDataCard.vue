@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Portion } from '@/models';
+import type { Portion } from '@meal-planner/common';
 
 defineProps<{ value: Portion }>();
 defineEmits(['modify', 'delete']);

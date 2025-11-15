@@ -48,7 +48,7 @@
 <script lang="ts" setup>
 import { useFoodsData } from '@/data/foods';
 import { fetchFoodItem, searchFdcData } from '@/data/usda-fdc-data';
-import type { FdcFoodSearchFoodItem, FdcFoodSearchResult } from '@/models';
+import type { FdcFoodSearchFoodItem, FdcFoodSearchResult } from '@meal-planner/common';
 import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -93,7 +93,6 @@ const addFoodItem = async (foodItem: FdcFoodSearchFoodItem) => {
   max-width: 600px;
   width: 100%;
 }
-
 
 .search-page {
   height: 90vh;

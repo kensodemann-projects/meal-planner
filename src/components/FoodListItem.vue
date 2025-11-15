@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { FoodItem } from '@/models';
+import type { FoodItem } from '@meal-planner/common';
 
 defineProps<{
   food: FoodItem;
