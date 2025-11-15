@@ -64,5 +64,8 @@
       "eslint"
     ]
   },
-  "prettier": "@ionic/prettier-config"
+  "prettier": "@ionic/prettier-config",
+  "volta": {
+    "node": "22.21.1"
+  }
 }

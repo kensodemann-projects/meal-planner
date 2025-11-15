@@ -1,6 +1,11 @@
+packages:
+  - .
+  - functions
+
 onlyBuiltDependencies:
   - '@firebase/util'
   - '@parcel/watcher'
   - esbuild
   - protobufjs
+  - unrs-resolver
   - vue-demi

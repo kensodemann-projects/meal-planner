@@ -1,0 +1,29 @@
+{
+  "kind": "identitytoolkit#DownloadAccountResponse",
+  "users": [
+    {
+      "localId": "3Y3aYbfJgARBU3OAXiiELWD2ZY1R",
+      "lastLoginAt": "1763233447263",
+      "displayName": "Tester Ken",
+      "photoUrl": "",
+      "emailVerified": false,
+      "email": "ken.sodemann@gmail.com",
+      "salt": "fakeSaltN2tUH9O3sNQ84tGTHAHb",
+      "passwordHash": "fakeHash:salt=fakeSaltN2tUH9O3sNQ84tGTHAHb:password=tester",
+      "passwordUpdatedAt": 1763233447263,
+      "validSince": "1763233447",
+      "mfaInfo": [],
+      "createdAt": "1763233447263",
+      "providerUserInfo": [
+        {
+          "providerId": "password",
+          "email": "ken.sodemann@gmail.com",
+          "federatedId": "ken.sodemann@gmail.com",
+          "rawId": "ken.sodemann@gmail.com",
+          "displayName": "Tester Ken",
+          "photoUrl": ""
+        }
+      ]
+    }
+  ]
+}
