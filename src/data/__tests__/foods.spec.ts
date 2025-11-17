@@ -63,6 +63,22 @@ describe('use foods', () => {
     });
   });
 
+  describe('FDC food item exists', () => {
+    beforeEach(() => {
+      (useCollection as Mock).mockReturnValueOnce(ref(TEST_FOODS));
+    });
+
+    it('returns true if the food already exists in the list', () => {
+      const { fdcFoodItemExists } = useFoodsData();
+      expect(fdcFoodItemExists(1100002)).toBe(true);
+    });
+
+    it('returns false if the food does not exist in the list', () => {
+      const { fdcFoodItemExists } = useFoodsData();
+      expect(fdcFoodItemExists(1234)).toBe(false);
+    });
+  });
+
   describe('get food', () => {
     it('finds the food in the list', async () => {
       (useCollection as Mock).mockReturnValueOnce(ref(TEST_FOODS));
