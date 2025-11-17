@@ -86,10 +86,16 @@ const addFoodItem = async (foodItem: FdcFoodSearchFoodItem) => {
     messageColor.value = 'error';
     showMessage.value = true;
   } else {
-    message.value = 'The food item is being added to your food list.';
-    messageColor.value = 'success';
-    showMessage.value = true;
-    await addFood({ fdcId: foodItem.fdcId });
+    try {
+      await addFood({ fdcId: foodItem.fdcId });
+      message.value = 'The food item has been added to your food list.';
+      messageColor.value = 'success';
+      showMessage.value = true;
+    } catch (error) {
+      message.value = 'Failed to add food item. Please try again.';
+      messageColor.value = 'error';
+      showMessage.value = true;
+    }
   }
 };
 </script>
