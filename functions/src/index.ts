@@ -27,6 +27,9 @@ export const expandFoodItem = onDocumentCreated(
       const apiResponse = await fetch(
         `${API_URL}/food/${fdcId}?api_key=${process.env.USDA_FDC_API_KEY}&nutrients=203&nutrients=204&nutrients=205&nutrients=208&nutrients=269.3&nutrients=307`,
       );
+      if (!apiResponse.ok) {
+        throw new Error(`USDA FDC API returned status ${apiResponse.status}`);
+      }
       rawFoodItem = await apiResponse.json();
       foodItem = convertFdcFoodItem(rawFoodItem);
     } catch (err: unknown) {
