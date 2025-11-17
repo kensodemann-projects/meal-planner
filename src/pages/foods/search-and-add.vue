@@ -20,8 +20,8 @@
     <div v-if="!!searchResults?.totalHits" class="search-results w-100 mt-8" data-testid="results-container">
       <h2 class="text-h5 mb-4">Search Results ({{ searchResults.totalHits }} items found)</h2>
 
-      <v-container v-if="isChangingPage || isCreatingFood" class="text-center mt-8">
-        {{ isChangingPage ? 'Getting more foods...' : 'Creating selected food item...' }}
+      <v-container v-if="isChangingPage" class="text-center mt-8">
+        Getting more foods...
         <v-progress-linear class="mt-4" color="primary" height="6" indeterminate rounded></v-progress-linear>
       </v-container>
 
@@ -30,12 +30,7 @@
       </v-list>
 
       <v-container class="max-width">
-        <v-pagination
-          v-if="!isCreatingFood"
-          v-model="page"
-          :length="searchResults.totalPages"
-          class="my-4"
-        ></v-pagination>
+        <v-pagination v-model="page" :length="searchResults.totalPages" class="my-4"></v-pagination>
       </v-container>
     </div>
 
@@ -47,19 +42,18 @@
 
 <script lang="ts" setup>
 import { useFoodsData } from '@/data/foods';
-import { fetchFoodItem, searchFdcData } from '@/data/usda-fdc-data';
+import { searchFdcData } from '@/data/usda-fdc-data';
 import type { FdcFoodSearchFoodItem, FdcFoodSearchResult } from '@meal-planner/common';
 import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 const searchResults = ref<FdcFoodSearchResult>();
 const isChangingPage = ref(false);
-const isCreatingFood = ref(false);
 const isSearching = ref(false);
 const hasSearched = ref(false);
 const page = ref(1);
 
-const { addFood } = useFoodsData();
+const { addFood, fdcFoodItemExists } = useFoodsData();
 const router = useRouter();
 
 const performSearch = async (query: string): Promise<void> => {
@@ -80,11 +74,9 @@ watch(page, async (newPage, oldPage) => {
 });
 
 const addFoodItem = async (foodItem: FdcFoodSearchFoodItem) => {
-  isCreatingFood.value = true;
-  const food = await fetchFoodItem(foodItem.fdcId);
-  const id = await addFood(food);
-  isCreatingFood.value = false;
-  router.push(`/foods/${id}`);
+  if (!fdcFoodItemExists(foodItem.fdcId)) {
+    await addFood({ fdcId: foodItem.fdcId });
+  }
 };
 </script>
 

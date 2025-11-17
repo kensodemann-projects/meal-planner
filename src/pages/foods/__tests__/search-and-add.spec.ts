@@ -1,6 +1,5 @@
 import { useFoodsData } from '@/data/foods';
-import { fetchFoodItem, searchFdcData } from '@/data/usda-fdc-data';
-import type { FoodItem } from '@meal-planner/common';
+import { searchFdcData } from '@/data/usda-fdc-data';
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { useRouter } from 'vue-router';
@@ -192,7 +191,8 @@ describe('SearchAndAddPage', () => {
         await flushPromises();
       });
 
-      it('fetches the specified food item', async () => {
+      it('determines if the specified food item already exists', async () => {
+        const { fdcFoodItemExists } = useFoodsData();
         const listItems = wrapper.findAllComponents({ name: 'FdcFoodListItem' });
         listItems[1]!.vm.$emit('add', {
           fdcId: 2,
@@ -201,12 +201,12 @@ describe('SearchAndAddPage', () => {
           foodCategory: 'Fruits & Juices',
         });
         await flushPromises();
-        expect(fetchFoodItem).toHaveBeenCalledExactlyOnceWith(2);
+        expect(fdcFoodItemExists).toHaveBeenCalledExactlyOnceWith(2);
       });
 
-      it('adds the food item', async () => {
-        const { addFood } = useFoodsData();
-        (fetchFoodItem as Mock).mockResolvedValue(BANANA);
+      it('adds the fdc ID item if a food item does not exist', async () => {
+        const { addFood, fdcFoodItemExists } = useFoodsData();
+        (fdcFoodItemExists as Mock).mockReturnValue(false);
         const listItems = wrapper.findAllComponents({ name: 'FdcFoodListItem' });
         listItems[1]!.vm.$emit('add', {
           fdcId: 2,
@@ -215,12 +215,12 @@ describe('SearchAndAddPage', () => {
           foodCategory: 'Fruits & Juices',
         });
         await flushPromises();
-        expect(addFood).toHaveBeenCalledExactlyOnceWith(BANANA);
+        expect(addFood).toHaveBeenCalledExactlyOnceWith({ fdcId: 2 });
       });
 
-      it('navigates to the edit page for the food', async () => {
-        const router = useRouter();
-        (fetchFoodItem as Mock).mockResolvedValue(BANANA);
+      it('does not add the fdc ID item if a food item exists with the same fdc ID', async () => {
+        const { addFood, fdcFoodItemExists } = useFoodsData();
+        (fdcFoodItemExists as Mock).mockReturnValue(true);
         const listItems = wrapper.findAllComponents({ name: 'FdcFoodListItem' });
         listItems[1]!.vm.$emit('add', {
           fdcId: 2,
@@ -229,7 +229,7 @@ describe('SearchAndAddPage', () => {
           foodCategory: 'Fruits & Juices',
         });
         await flushPromises();
-        expect(router.push).toHaveBeenCalledExactlyOnceWith('/foods/fiif8e88fe9');
+        expect(addFood).not.toHaveBeenCalled();
       });
     });
 
@@ -285,31 +285,3 @@ describe('SearchAndAddPage', () => {
     });
   });
 });
-
-const BANANA: FoodItem = {
-  name: 'banana',
-  fdcId: 1105314,
-  category: 'Produce',
-  grams: 100,
-  unitOfMeasure: { id: 'g', name: 'Grams', type: 'weight', system: 'metric' },
-  units: 100,
-  calories: 98,
-  carbs: 23,
-  sugar: 15.8,
-  sodium: 4,
-  fat: 0,
-  protein: 0.75,
-  alternativePortions: [
-    {
-      grams: 115,
-      unitOfMeasure: { id: 'each', name: 'Each', type: 'quantity', system: 'none' },
-      units: 1,
-      calories: 113,
-      carbs: 24.4,
-      sugar: 18.2,
-      sodium: 4,
-      fat: 0,
-      protein: 0.851,
-    },
-  ],
-};
