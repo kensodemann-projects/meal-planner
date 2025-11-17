@@ -57,7 +57,7 @@ const isSearching = ref(false);
 const hasSearched = ref(false);
 const showMessage = ref(false);
 const message = ref('');
-const messageColor = ref('Success');
+const messageColor = ref('success');
 const page = ref(1);
 
 const { addFood, fdcFoodItemExists } = useFoodsData();
