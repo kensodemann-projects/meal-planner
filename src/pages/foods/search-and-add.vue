@@ -80,21 +80,27 @@ watch(page, async (newPage, oldPage) => {
   }
 });
 
+const displayError = (msg: string) => {
+  message.value = msg;
+  messageColor.value = 'error';
+  showMessage.value = true;
+};
+
+const displaySuccess = (msg: string) => {
+  message.value = msg;
+  messageColor.value = 'success';
+  showMessage.value = true;
+};
+
 const addFoodItem = async (foodItem: FdcFoodSearchFoodItem) => {
   if (fdcFoodItemExists(foodItem.fdcId)) {
-    message.value = 'This food item already exists.';
-    messageColor.value = 'error';
-    showMessage.value = true;
+    displayError('This food item already exists.');
   } else {
     try {
       await addFood({ fdcId: foodItem.fdcId });
-      message.value = 'The food item has been added to your food list.';
-      messageColor.value = 'success';
-      showMessage.value = true;
-    } catch (error) {
-      message.value = 'Failed to add food item. Please try again.';
-      messageColor.value = 'error';
-      showMessage.value = true;
+      displaySuccess('The food item has been added to your food list.');
+    } catch {
+      displayError('Failed to add food item. Please try again.');
     }
   }
 };
