@@ -1,6 +1,5 @@
 import { TEST_PORTION } from '@/data/__tests__/test-data';
-import { findUnitOfMeasure } from '@/data/unit-of-measure';
-import type { FoodItem } from '@/models';
+import { findUnitOfMeasure, type FoodItem } from '@meal-planner/common';
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
@@ -774,7 +773,7 @@ const BANANA: FoodItem = {
   alternativePortions: [
     {
       grams: 115,
-      unitOfMeasure: { id: 'each', name: 'Each', type: 'quantity', system: 'none' },
+      unitOfMeasure: { id: 'each', name: 'Each', type: 'quantity', system: 'none', fdcId: 9999 },
       units: 1,
       calories: 113,
       carbs: 24.4,
@@ -785,7 +784,7 @@ const BANANA: FoodItem = {
     },
     {
       grams: 112,
-      unitOfMeasure: { id: 'oz', name: 'Ounce', type: 'weight', system: 'customary' },
+      unitOfMeasure: { id: 'oz', name: 'Ounce', type: 'weight', system: 'customary', fdcId: 1038 },
       units: 4,
       calories: 110,
       carbs: 24.3,

@@ -1,5 +1,6 @@
-import type { FdcFoodItem, FdcFoodPortion, FoodCategory, FoodItem, Portion } from '@/models';
-import { findUnitOfMeasure } from './unit-of-measure';
+import type { FoodCategory, FoodItem, Portion } from '../models/food';
+import type { FdcFoodItem, FdcFoodPortion } from '../models/usda-fdc';
+import { findUnitOfMeasure } from './find-unit-of-measure';
 
 const fdcCategoryCodeToCategory = (code: string): FoodCategory => {
   switch (code) {
@@ -67,7 +68,7 @@ const lookupNutrient = (fdcFoodItem: FdcFoodItem, nutrientNumber: string): numbe
 const addPortion = (foodItem: FoodItem, fdcFoodPortion: FdcFoodPortion) => {
   const portion: Portion = {
     units: fdcFoodPortion.amount,
-    unitOfMeasure: findUnitOfMeasure(fdcFoodPortion.measureUnit.abbreviation),
+    unitOfMeasure: findUnitOfMeasure(fdcFoodPortion.measureUnit.id),
     grams: fdcFoodPortion.gramWeight,
     calories: Number(((foodItem.calories * fdcFoodPortion.gramWeight) / 100).toFixed(2)),
     protein: Number(((foodItem.protein * fdcFoodPortion.gramWeight) / 100).toFixed(2)),
@@ -79,7 +80,7 @@ const addPortion = (foodItem: FoodItem, fdcFoodPortion: FdcFoodPortion) => {
   foodItem.alternativePortions.push(portion);
 };
 
-export const fromFdcToFoodItem = (fdcFoodItem: FdcFoodItem): FoodItem => {
+export const convertFdcFoodItem = (fdcFoodItem: FdcFoodItem): FoodItem => {
   const foodItem: FoodItem = {
     fdcId: fdcFoodItem.fdcId,
     name: fdcFoodItem.description,

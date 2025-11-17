@@ -1,5 +1,4 @@
-import type { FdcFoodSearchResult, FoodItem } from '@/models';
-import { fromFdcToFoodItem } from './converters';
+import { convertFdcFoodItem, type FdcFoodSearchResult, type FoodItem } from '@meal-planner/common';
 
 const API_URL = 'https://api.nal.usda.gov/fdc/v1';
 
@@ -20,5 +19,5 @@ export const fetchFoodItem = async (fdcId: number): Promise<FoodItem> => {
   if (!response.ok) {
     throw new Error('Failed to fetch USDA FDC data');
   }
-  return fromFdcToFoodItem(await response.json());
+  return convertFdcFoodItem(await response.json());
 };

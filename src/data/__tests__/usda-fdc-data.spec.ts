@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
-import type { FdcFoodItem, FdcFoodSearchResult } from '@/models';
+import type { FdcFoodItem, FdcFoodSearchResult } from '@meal-planner/common';
 import { fetchFoodItem, searchFdcData } from '../usda-fdc-data';
 
 global.fetch = vi.fn();
@@ -206,7 +206,7 @@ describe('USDA FDC Data', () => {
         alternativePortions: [
           {
             units: 1,
-            unitOfMeasure: { id: 'item', name: 'Item', type: 'quantity', system: 'none' },
+            unitOfMeasure: { id: 'item', name: 'Item', type: 'quantity', system: 'none', fdcId: 9999 },
             grams: 50.3,
             calories: 74.44,
             protein: 6.24,
@@ -254,12 +254,12 @@ const TEST_FDC_FOOD_ITEM: FdcFoodItem = {
     {
       gramWeight: 50.3,
       amount: 1.0,
-      measureUnit: { name: 'egg', abbreviation: 'egg' },
+      measureUnit: { id: 1099, name: 'egg', abbreviation: 'egg' },
     },
     {
       gramWeight: 50.0,
       amount: 1.0,
-      measureUnit: { name: 'RACC', abbreviation: 'RACC' },
+      measureUnit: { id: 1121, name: 'RACC', abbreviation: 'RACC' },
     },
   ],
   foodCategory: { id: 1, code: '0100', description: 'Dairy and Egg Products' },

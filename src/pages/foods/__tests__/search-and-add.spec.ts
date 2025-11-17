@@ -1,6 +1,6 @@
 import { useFoodsData } from '@/data/foods';
 import { fetchFoodItem, searchFdcData } from '@/data/usda-fdc-data';
-import type { FoodItem } from '@/models';
+import type { FoodItem } from '@meal-planner/common';
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { useRouter } from 'vue-router';

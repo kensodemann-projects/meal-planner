@@ -1,6 +1,6 @@
+import { findUnitOfMeasure } from '@meal-planner/common';
 import { describe, expect, it } from 'vitest';
 import { quantityConversionFactor, unitConversionFactor } from '../unit-conversion';
-import { findUnitOfMeasure } from '@/data/unit-of-measure';
 
 const item = findUnitOfMeasure('item');
 const each = findUnitOfMeasure('each');
