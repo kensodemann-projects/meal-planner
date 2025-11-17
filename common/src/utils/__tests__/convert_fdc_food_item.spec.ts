@@ -2,7 +2,7 @@ import type { FdcFoodItem, FoodItem } from '@meal-planner/common';
 import { describe, expect, it } from 'vitest';
 import { convertFdcFoodItem } from '../convert_fdc_food_item';
 
-describe('Convert FDC Food ~item', () => {
+describe('Convert FDC Food item', () => {
   it.each([
     {
       testCase: 'egg product',
