@@ -20,8 +20,8 @@
     <div v-if="!!searchResults?.totalHits" class="search-results w-100 mt-8" data-testid="results-container">
       <h2 class="text-h5 mb-4">Search Results ({{ searchResults.totalHits }} items found)</h2>
 
-      <v-container v-if="isChangingPage || isCreatingFood" class="text-center mt-8">
-        {{ isChangingPage ? 'Getting more foods...' : 'Creating selected food item...' }}
+      <v-container v-if="isChangingPage" class="text-center mt-8">
+        Getting more foods...
         <v-progress-linear class="mt-4" color="primary" height="6" indeterminate rounded></v-progress-linear>
       </v-container>
 
@@ -30,36 +30,37 @@
       </v-list>
 
       <v-container class="max-width">
-        <v-pagination
-          v-if="!isCreatingFood"
-          v-model="page"
-          :length="searchResults.totalPages"
-          class="my-4"
-        ></v-pagination>
+        <v-pagination v-model="page" :length="searchResults.totalPages" class="my-4"></v-pagination>
       </v-container>
     </div>
 
     <div v-else-if="hasSearched && !isSearching" class="d-flex justify-center mt-8" data-testid="no-results">
       <v-alert type="info" class="text-center"> No food items found. </v-alert>
     </div>
+
+    <v-snackbar v-model="showMessage" :color="messageColor" :timeout="2000">
+      {{ message }}
+    </v-snackbar>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { useFoodsData } from '@/data/foods';
-import { fetchFoodItem, searchFdcData } from '@/data/usda-fdc-data';
+import { searchFdcData } from '@/data/usda-fdc-data';
 import type { FdcFoodSearchFoodItem, FdcFoodSearchResult } from '@meal-planner/common';
 import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 const searchResults = ref<FdcFoodSearchResult>();
 const isChangingPage = ref(false);
-const isCreatingFood = ref(false);
 const isSearching = ref(false);
 const hasSearched = ref(false);
+const showMessage = ref(false);
+const message = ref('');
+const messageColor = ref('success');
 const page = ref(1);
 
-const { addFood } = useFoodsData();
+const { addFood, fdcFoodItemExists } = useFoodsData();
 const router = useRouter();
 
 const performSearch = async (query: string): Promise<void> => {
@@ -79,12 +80,29 @@ watch(page, async (newPage, oldPage) => {
   }
 });
 
+const displayError = (msg: string) => {
+  message.value = msg;
+  messageColor.value = 'error';
+  showMessage.value = true;
+};
+
+const displaySuccess = (msg: string) => {
+  message.value = msg;
+  messageColor.value = 'success';
+  showMessage.value = true;
+};
+
 const addFoodItem = async (foodItem: FdcFoodSearchFoodItem) => {
-  isCreatingFood.value = true;
-  const food = await fetchFoodItem(foodItem.fdcId);
-  const id = await addFood(food);
-  isCreatingFood.value = false;
-  router.push(`/foods/${id}`);
+  if (fdcFoodItemExists(foodItem.fdcId)) {
+    displayError('This food item already exists.');
+  } else {
+    try {
+      await addFood({ fdcId: foodItem.fdcId });
+      displaySuccess('The food item has been added to your food list.');
+    } catch {
+      displayError('Failed to add food item. Please try again.');
+    }
+  }
 };
 </script>
 

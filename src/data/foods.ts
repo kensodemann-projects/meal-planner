@@ -8,7 +8,7 @@ export const useFoodsData = () => {
   const foodsCollection = collection(db, path);
   const foods = useCollection(foodsCollection);
 
-  const addFood = async (food: FoodItem): Promise<string> => {
+  const addFood = async (food: FoodItem | Pick<FoodItem, 'fdcId'>): Promise<string> => {
     const item = await addDoc(foodsCollection, food);
     return item.id;
   };
@@ -34,5 +34,7 @@ export const useFoodsData = () => {
   const getFood = async (id: string): Promise<FoodItem | null> =>
     (foods.value.find((f) => f.id === id) as FoodItem) || getFoodFromDatabase(id);
 
-  return { addFood, foods, getFood, removeFood, updateFood };
+  const fdcFoodItemExists = (fdcId: number): boolean => !!foods.value.find((f) => f.fdcId === fdcId);
+
+  return { addFood, fdcFoodItemExists, foods, getFood, removeFood, updateFood };
 };
