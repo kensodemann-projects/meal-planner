@@ -37,6 +37,10 @@
     <div v-else-if="hasSearched && !isSearching" class="d-flex justify-center mt-8" data-testid="no-results">
       <v-alert type="info" class="text-center"> No food items found. </v-alert>
     </div>
+
+    <v-snackbar v-model="showMessage" :color="messageColor" :timeout="2000">
+      {{ message }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -51,6 +55,9 @@ const searchResults = ref<FdcFoodSearchResult>();
 const isChangingPage = ref(false);
 const isSearching = ref(false);
 const hasSearched = ref(false);
+const showMessage = ref(false);
+const message = ref('');
+const messageColor = ref('Success');
 const page = ref(1);
 
 const { addFood, fdcFoodItemExists } = useFoodsData();
@@ -74,7 +81,14 @@ watch(page, async (newPage, oldPage) => {
 });
 
 const addFoodItem = async (foodItem: FdcFoodSearchFoodItem) => {
-  if (!fdcFoodItemExists(foodItem.fdcId)) {
+  if (fdcFoodItemExists(foodItem.fdcId)) {
+    message.value = 'This food item already exists.';
+    messageColor.value = 'error';
+    showMessage.value = true;
+  } else {
+    message.value = 'The food item is being added to your food list.';
+    messageColor.value = 'success';
+    showMessage.value = true;
     await addFood({ fdcId: foodItem.fdcId });
   }
 };

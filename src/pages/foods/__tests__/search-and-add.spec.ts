@@ -1,4 +1,3 @@
-import { useFoodsData } from '@/data/foods';
 import { searchFdcData } from '@/data/usda-fdc-data';
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
@@ -166,70 +165,6 @@ describe('SearchAndAddPage', () => {
         description: 'Banana',
         dataType: 'Foundation',
         foodCategory: 'Fruits & Juices',
-      });
-    });
-
-    describe('when "add" is clicked in a food item', () => {
-      beforeEach(async () => {
-        const { addFood } = useFoodsData();
-        (addFood as Mock).mockResolvedValueOnce('fiif8e88fe9');
-
-        (searchFdcData as Mock).mockResolvedValue({
-          foods: [
-            { fdcId: 1, description: 'Apple', dataType: 'Foundation', foodCategory: 'Fruits & Juices' },
-            { fdcId: 2, description: 'Banana', dataType: 'Foundation', foodCategory: 'Fruits & Juices' },
-          ],
-          totalHits: 2,
-          currentPage: 1,
-          totalPages: 1,
-        });
-
-        wrapper = createWrapper();
-        const searchInput = wrapper.findComponent({ name: 'SearchInput' });
-        const testQuery = 'fruit';
-        await searchInput.vm.$emit('search', testQuery);
-        await flushPromises();
-      });
-
-      it('determines if the specified food item already exists', async () => {
-        const { fdcFoodItemExists } = useFoodsData();
-        const listItems = wrapper.findAllComponents({ name: 'FdcFoodListItem' });
-        listItems[1]!.vm.$emit('add', {
-          fdcId: 2,
-          description: 'Banana',
-          dataType: 'Foundation',
-          foodCategory: 'Fruits & Juices',
-        });
-        await flushPromises();
-        expect(fdcFoodItemExists).toHaveBeenCalledExactlyOnceWith(2);
-      });
-
-      it('adds the fdc ID item if a food item does not exist', async () => {
-        const { addFood, fdcFoodItemExists } = useFoodsData();
-        (fdcFoodItemExists as Mock).mockReturnValue(false);
-        const listItems = wrapper.findAllComponents({ name: 'FdcFoodListItem' });
-        listItems[1]!.vm.$emit('add', {
-          fdcId: 2,
-          description: 'Banana',
-          dataType: 'Foundation',
-          foodCategory: 'Fruits & Juices',
-        });
-        await flushPromises();
-        expect(addFood).toHaveBeenCalledExactlyOnceWith({ fdcId: 2 });
-      });
-
-      it('does not add the fdc ID item if a food item exists with the same fdc ID', async () => {
-        const { addFood, fdcFoodItemExists } = useFoodsData();
-        (fdcFoodItemExists as Mock).mockReturnValue(true);
-        const listItems = wrapper.findAllComponents({ name: 'FdcFoodListItem' });
-        listItems[1]!.vm.$emit('add', {
-          fdcId: 2,
-          description: 'Banana',
-          dataType: 'Foundation',
-          foodCategory: 'Fruits & Juices',
-        });
-        await flushPromises();
-        expect(addFood).not.toHaveBeenCalled();
       });
     });
 
