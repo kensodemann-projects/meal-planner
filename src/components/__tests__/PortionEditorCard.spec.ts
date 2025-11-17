@@ -4,9 +4,8 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import PortionEditorCard from '../PortionEditorCard.vue';
-import type { Portion } from '@/models';
+import { findUnitOfMeasure, type Portion } from '@meal-planner/common';
 import { TEST_PORTION } from '@/data/__tests__/test-data';
-import { findUnitOfMeasure } from '@/data/unit-of-measure';
 
 const vuetify = createVuetify({
   components,

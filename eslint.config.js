@@ -31,6 +31,6 @@ export default [
     },
   },
   {
-    ignores: ['.DS_Store', 'coverage/', 'dist/', '.env.*', '*.log*', 'src/*.d.ts'],
+    ignores: ['.DS_Store', 'coverage/', 'dist/', 'functions/lib/', '.env.*', '*.log*', 'src/*.d.ts'],
   },
 ];

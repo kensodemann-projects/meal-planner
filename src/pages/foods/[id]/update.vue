@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import FoodEditor from '@/components/FoodEditor.vue';
 import { useFoodsData } from '@/data/foods';
-import type { FoodItem } from '@/models';
+import type { FoodItem } from '@meal-planner/common';
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 

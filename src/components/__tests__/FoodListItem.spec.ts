@@ -4,7 +4,7 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import FoodListItem from '../FoodListItem.vue';
-import type { FoodItem } from '@/models';
+import type { FoodItem } from '@meal-planner/common';
 
 const vuetify = createVuetify({
   components,

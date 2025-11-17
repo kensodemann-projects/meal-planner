@@ -94,8 +94,8 @@
 
 <script setup lang="ts">
 import { validationRules } from '@/core/validation-rules';
-import { findUnitOfMeasure, unitOfMeasureOptions } from '@/data/unit-of-measure';
-import type { Portion } from '@/models';
+import { unitOfMeasureOptions } from '@/data/unit-of-measure';
+import { findUnitOfMeasure, type Portion } from '@meal-planner/common';
 import { computed } from 'vue';
 
 const portion = defineModel<Partial<Portion>>();

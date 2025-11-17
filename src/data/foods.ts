@@ -1,4 +1,4 @@
-import type { FoodItem } from '@/models';
+import type { FoodItem } from '@meal-planner/common';
 import { addDoc, collection, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { useCollection, useFirestore } from 'vuefire';
 
