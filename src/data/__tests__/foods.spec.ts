@@ -73,7 +73,7 @@ describe('use foods', () => {
       expect(fdcFoodItemExists(1100002)).toBe(true);
     });
 
-    it('returns false if the food does not exists in the list', () => {
+    it('returns false if the food does not exist in the list', () => {
       const { fdcFoodItemExists } = useFoodsData();
       expect(fdcFoodItemExists(1234)).toBe(false);
     });
