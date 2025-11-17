@@ -168,7 +168,7 @@ describe('SearchAndAddPage', () => {
       });
     });
 
-    describe('when changing the diplayed page of results', () => {
+    describe('when changing the displayed page of results', () => {
       beforeEach(async () => {
         (searchFdcData as Mock).mockResolvedValue({
           foods: [
