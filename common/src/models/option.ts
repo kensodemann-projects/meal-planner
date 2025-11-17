@@ -3,7 +3,7 @@ export interface AutocompleteOption {
   title: string;
 }
 
-export interface AutcompleteOptionDivider {
+export interface AutocompleteOptionDivider {
   type: 'divider';
   text?: string;
 }

@@ -1,11 +1,11 @@
 import {
   unitsOfMeasure,
-  type AutcompleteOptionDivider,
+  type AutocompleteOptionDivider,
   type AutocompleteOption,
   type AutocompleteOptionSubheader,
 } from '@meal-planner/common';
 
-export const unitOfMeasureOptions: Array<AutocompleteOption | AutcompleteOptionDivider | AutocompleteOptionSubheader> =
+export const unitOfMeasureOptions: Array<AutocompleteOption | AutocompleteOptionDivider | AutocompleteOptionSubheader> =
   [
     { type: 'subheader', title: 'Volume' },
     ...unitsOfMeasure.filter((x) => x.type === 'volume').map((x) => ({ title: x.name, value: x.id })),
