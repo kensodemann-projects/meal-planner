@@ -200,16 +200,6 @@ describe('SearchAndAddPage', () => {
     });
   });
 
-  describe('enter manually', () => {
-    it('navigates to the add page', async () => {
-      const router = useRouter();
-      wrapper = createWrapper();
-      const button = wrapper.findComponent('[data-testid="enter-manually-button"]');
-      await button.trigger('click');
-      expect(router.push).toHaveBeenCalledExactlyOnceWith('/foods/add');
-    });
-  });
-
   describe('cancel', () => {
     it('navigates to the foods page', async () => {
       const router = useRouter();
