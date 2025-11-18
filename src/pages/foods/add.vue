@@ -11,11 +11,8 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const { addFood } = useFoodsData();
 
-const onCancel = () => router.replace('/foods/search-and-add');
-const onSave = async (f: FoodItem) => {
-  await addFood(f);
-  router.replace('/foods');
-};
+const onCancel = () => router.replace('/foods');
+const onSave = (f: FoodItem) => addFood(f);
 </script>
 
 <style scoped></style>

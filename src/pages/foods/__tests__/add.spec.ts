@@ -60,7 +60,7 @@ describe('Food Add Page', () => {
       const editor = wrapper.findComponent(FoodEditor);
       editor.vm.$emit('cancel');
       await flushPromises();
-      expect(replace).toHaveBeenCalledExactlyOnceWith('/foods/search-and-add');
+      expect(replace).toHaveBeenCalledExactlyOnceWith('/foods');
     });
   });
 
@@ -74,13 +74,13 @@ describe('Food Add Page', () => {
       expect(addFood).toHaveBeenCalledExactlyOnceWith(TEST_FOOD);
     });
 
-    it('navigates to the food list page', async () => {
+    it('does not navigate', async () => {
       const { replace } = useRouter();
       wrapper = mountPage();
       const editor = wrapper.findComponent(FoodEditor);
       editor.vm.$emit('save', TEST_FOOD);
       await flushPromises();
-      expect(replace).toHaveBeenCalledExactlyOnceWith('/foods');
+      expect(replace).not.toHaveBeenCalled();
     });
   });
 });
