@@ -42,11 +42,10 @@ export const expandFoodItem = onDocumentCreated(
 
     logger.info(`Attempting to expand ${fdcId}`);
 
-    let rawFoodItem: any;
     try {
       await performFoodItemExpansion(fdcId, event.params.documentId);
     } catch (err: unknown) {
-      logger.error(`error expanding fdcId: ${fdcId}`, rawFoodItem, err);
+      logger.error(`error expanding fdcId: ${fdcId}`, err);
       await removeFoodItem(event.params.documentId);
     }
   },
