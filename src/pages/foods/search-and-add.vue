@@ -8,10 +8,7 @@
           :isSearching="isSearching"
           @search="performSearch"
         />
-        <div class="d-flex justify-space-between mt-2">
-          <PrimaryButton @click="router.push('/foods/add')" data-testid="enter-manually-button"
-            >Enter Manually</PrimaryButton
-          >
+        <div class="mt-2 pr-4 text-right">
           <CancelButton @click="router.replace('/foods')" />
         </div>
       </div>
