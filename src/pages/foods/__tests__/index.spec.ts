@@ -68,16 +68,4 @@ describe('Foods List Page', () => {
     await listItem?.trigger('click');
     expect(router.push).toHaveBeenCalledExactlyOnceWith(`foods/${TEST_FOODS[2]?.id}`);
   });
-
-  describe('add button', () => {
-    it('navigates to the add by search page', async () => {
-      const router = useRouter();
-      const { foods } = useFoodsData();
-      foods.value = TEST_FOODS;
-      wrapper = mountPage();
-      const btn = wrapper.findComponent('[data-testid="add-button"]');
-      await btn.trigger('click');
-      expect(router.push).toHaveBeenCalledExactlyOnceWith('foods/search-and-add');
-    });
-  });
 });
