@@ -4,7 +4,7 @@
     <v-list>
       <food-list-item v-for="food in foods" :key="food.fdcId" :food="food as FoodItem" @click="viewFoodItem" />
     </v-list>
-    <v-fab color="primary" variant="flat" location="bottom end" absolute>
+    <v-fab color="primary" size="48" variant="flat" location="bottom end" absolute>
       <v-icon>{{ open ? 'mdi-close' : 'mdi-plus' }}</v-icon>
       <v-speed-dial v-model="open" location="top center" transition="fade-transition" activator="parent">
         <v-btn key="1" color="secondary" variant="tonal" @click="router.push('foods/search-and-add')" icon>
