@@ -181,7 +181,9 @@ const save = () => {
       ? { ...food, alternativePortions: alternativePortions.value.map((p) => p.portion), id: props.food.id }
       : { ...food, alternativePortions: alternativePortions.value.map((p) => p.portion) },
   );
-  initialize();
+  if (!props.food) {
+    initialize();
+  }
 };
 
 const saveNewPortion = (portion: Portion) => {
