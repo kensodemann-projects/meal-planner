@@ -31,7 +31,8 @@ const onSave = async (f: FoodItem) => {
     if (editor.value) {
       editor.value.reset();
     }
-  } catch {
+  } catch (error) {
+    console.error('Failed to add food:', error);
     message.value = 'Failed to add food. Please try again.';
     messageColor.value = 'error';
     showMessage.value = true;
