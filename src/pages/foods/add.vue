@@ -12,7 +12,14 @@ const router = useRouter();
 const { addFood } = useFoodsData();
 
 const onCancel = () => router.replace('/foods');
-const onSave = (f: FoodItem) => addFood(f);
+const onSave = async (f: FoodItem) => {
+  try {
+    await addFood(f);
+  } catch (error) {
+    // Handle error - show message to user
+    console.error('Failed to add food:', error);
+  }
+};
 </script>
 
 <style scoped></style>
