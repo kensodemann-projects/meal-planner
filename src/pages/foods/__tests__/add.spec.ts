@@ -121,5 +121,28 @@ describe('Food Add Page', () => {
       await flushPromises();
       expect(replace).not.toHaveBeenCalled();
     });
+
+    it('resets the editor after successful save', async () => {
+      const { addFood } = useFoodsData();
+      (addFood as Mock).mockResolvedValue(undefined);
+      wrapper = mountPage();
+
+      // Get the editor component
+      const editor = wrapper.findComponent(FoodEditor);
+
+      // The parent accesses the editor through a template ref
+      // We need to spy on the actual instance that the parent component uses
+      const parentVm = wrapper.vm as any;
+      const resetSpy = vi.spyOn(parentVm.editor, 'reset');
+
+      // Trigger the save event
+      await editor.vm.$emit('save', TEST_FOOD);
+
+      // Wait for all promises to resolve
+      await flushPromises();
+
+      // Verify reset was called
+      expect(resetSpy).toHaveBeenCalledOnce();
+    });
   });
 });
