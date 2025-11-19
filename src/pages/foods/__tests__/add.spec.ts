@@ -21,16 +21,31 @@ const mountPage = () => mount(AddPage, { global: { plugins: [vuetify] } });
 describe('Food Add Page', () => {
   let wrapper: ReturnType<typeof mountPage>;
 
+  beforeEach(() => {
+    // Polyfill visualViewport for Vuetify overlays/snackbars in jsdom
+    if (!window.visualViewport) {
+      // @ts-expect-error Polyfill for Vuetify overlay in jsdom
+      window.visualViewport = {
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        width: window.innerWidth,
+        height: window.innerHeight,
+        scale: 1,
+        offsetLeft: 0,
+        offsetTop: 0,
+        pageLeft: 0,
+        pageTop: 0,
+      };
+    }
+    (useRouter as Mock).mockReturnValue({ replace: vi.fn() });
+  });
+
   afterEach(() => {
     wrapper?.unmount();
     vi.clearAllTimers();
     try {
       vi.useRealTimers();
     } catch {}
-  });
-
-  beforeEach(() => {
-    (useRouter as Mock).mockReturnValue({ replace: vi.fn() });
   });
 
   it('renders', () => {
@@ -60,7 +75,7 @@ describe('Food Add Page', () => {
       const editor = wrapper.findComponent(FoodEditor);
       editor.vm.$emit('cancel');
       await flushPromises();
-      expect(replace).toHaveBeenCalledExactlyOnceWith('/foods/search-and-add');
+      expect(replace).toHaveBeenCalledExactlyOnceWith('/foods');
     });
   });
 
@@ -74,13 +89,60 @@ describe('Food Add Page', () => {
       expect(addFood).toHaveBeenCalledExactlyOnceWith(TEST_FOOD);
     });
 
-    it('navigates to the food list page', async () => {
+    it('shows success if adding the food resolves', async () => {
+      const { addFood } = useFoodsData();
+      (addFood as Mock).mockResolvedValueOnce(undefined);
+      wrapper = mountPage();
+      const editor = wrapper.findComponent(FoodEditor);
+      editor.vm.$emit('save', TEST_FOOD);
+      await flushPromises();
+      const snackbar = document.body.querySelector('.v-snackbar');
+      expect(snackbar).not.toBeNull();
+      expect(snackbar!.textContent).toContain('The food has been added to your food list.');
+    });
+
+    it('shows error if addFood throws', async () => {
+      const { addFood } = useFoodsData();
+      (addFood as Mock).mockRejectedValueOnce(new Error('fail'));
+      wrapper = mountPage();
+      const editor = wrapper.findComponent(FoodEditor);
+      editor.vm.$emit('save', TEST_FOOD);
+      await flushPromises();
+      const snackbar = document.body.querySelector('.v-snackbar');
+      expect(snackbar).not.toBeNull();
+      expect(snackbar!.textContent).toContain('Failed to add food. Please try again.');
+    });
+
+    it('does not navigate', async () => {
       const { replace } = useRouter();
       wrapper = mountPage();
       const editor = wrapper.findComponent(FoodEditor);
       editor.vm.$emit('save', TEST_FOOD);
       await flushPromises();
-      expect(replace).toHaveBeenCalledExactlyOnceWith('/foods');
+      expect(replace).not.toHaveBeenCalled();
+    });
+
+    it('resets the editor after successful save', async () => {
+      const { addFood } = useFoodsData();
+      (addFood as Mock).mockResolvedValue(undefined);
+      wrapper = mountPage();
+
+      // Get the editor component
+      const editor = wrapper.findComponent(FoodEditor);
+
+      // The parent accesses the editor through a template ref
+      // We need to spy on the actual instance that the parent component uses
+      const parentVm = wrapper.vm as any;
+      const resetSpy = vi.spyOn(parentVm.editor, 'reset');
+
+      // Trigger the save event
+      await editor.vm.$emit('save', TEST_FOOD);
+
+      // Wait for all promises to resolve
+      await flushPromises();
+
+      // Verify reset was called
+      expect(resetSpy).toHaveBeenCalledOnce();
     });
   });
 });
