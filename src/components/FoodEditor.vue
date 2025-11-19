@@ -141,6 +141,11 @@ const reset = () => {
     protein: props.food?.protein || 0,
   };
   alternativePortions.value = (props.food?.alternativePortions || []).map((p) => ({ portion: p, status: 'view' }));
+  portionsModified.value = false;
+  addPortion.value = false;
+  valid.value = false;
+  showConfirmDelete.value = false;
+  confirmDelete.value = () => {};
 };
 
 defineExpose({ reset });
