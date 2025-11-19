@@ -125,7 +125,7 @@ const portionsModified = ref(false);
 const showConfirmDelete = ref(false);
 const confirmDelete = ref<(x: boolean) => void>(() => {});
 
-const initialize = () => {
+const reset = () => {
   name.value = props.food?.name || '';
   brand.value = props.food?.brand || null;
   category.value = props.food?.category;
@@ -142,6 +142,8 @@ const initialize = () => {
   };
   alternativePortions.value = (props.food?.alternativePortions || []).map((p) => ({ portion: p, status: 'view' }));
 };
+
+defineExpose({ reset });
 
 const isModified = (): boolean => {
   if (!props.food) return true;
@@ -181,9 +183,6 @@ const save = () => {
       ? { ...food, alternativePortions: alternativePortions.value.map((p) => p.portion), id: props.food.id }
       : { ...food, alternativePortions: alternativePortions.value.map((p) => p.portion) },
   );
-  if (!props.food) {
-    initialize();
-  }
 };
 
 const saveNewPortion = (portion: Portion) => {
@@ -226,5 +225,5 @@ const deletePortion = async (idx: number) => {
   showConfirmDelete.value = false;
 };
 
-initialize();
+reset();
 </script>

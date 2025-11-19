@@ -21,16 +21,31 @@ const mountPage = () => mount(AddPage, { global: { plugins: [vuetify] } });
 describe('Food Add Page', () => {
   let wrapper: ReturnType<typeof mountPage>;
 
+  beforeEach(() => {
+    // Polyfill visualViewport for Vuetify overlays/snackbars in jsdom
+    if (!window.visualViewport) {
+      // @ts-expect-error Polyfill for Vuetify overlay in jsdom
+      window.visualViewport = {
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        width: window.innerWidth,
+        height: window.innerHeight,
+        scale: 1,
+        offsetLeft: 0,
+        offsetTop: 0,
+        pageLeft: 0,
+        pageTop: 0,
+      };
+    }
+    (useRouter as Mock).mockReturnValue({ replace: vi.fn() });
+  });
+
   afterEach(() => {
     wrapper?.unmount();
     vi.clearAllTimers();
     try {
       vi.useRealTimers();
     } catch {}
-  });
-
-  beforeEach(() => {
-    (useRouter as Mock).mockReturnValue({ replace: vi.fn() });
   });
 
   it('renders', () => {
@@ -72,6 +87,30 @@ describe('Food Add Page', () => {
       editor.vm.$emit('save', TEST_FOOD);
       await flushPromises();
       expect(addFood).toHaveBeenCalledExactlyOnceWith(TEST_FOOD);
+    });
+
+    it('shows success if adding the food resolves', async () => {
+      const { addFood } = useFoodsData();
+      (addFood as Mock).mockResolvedValueOnce(undefined);
+      wrapper = mountPage();
+      const editor = wrapper.findComponent(FoodEditor);
+      editor.vm.$emit('save', TEST_FOOD);
+      await flushPromises();
+      const snackbar = document.body.querySelector('.v-snackbar');
+      expect(snackbar).not.toBeNull();
+      expect(snackbar!.textContent).toContain('The food has been added to your food list.');
+    });
+
+    it('shows error if addFood throws', async () => {
+      const { addFood } = useFoodsData();
+      (addFood as Mock).mockRejectedValueOnce(new Error('fail'));
+      wrapper = mountPage();
+      const editor = wrapper.findComponent(FoodEditor);
+      editor.vm.$emit('save', TEST_FOOD);
+      await flushPromises();
+      const snackbar = document.body.querySelector('.v-snackbar');
+      expect(snackbar).not.toBeNull();
+      expect(snackbar!.textContent).toContain('Failed to add food. Please try again.');
     });
 
     it('does not navigate', async () => {

@@ -489,33 +489,6 @@ describe('FoodEditor', () => {
           },
         ]);
       });
-
-      it('resets the form values', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
-        await inputs.nameInput.setValue('Apple');
-        await inputs.categoryInput.setValue('Produce');
-        (wrapper.vm as any).category = 'Produce';
-        await inputs.unitsInput.setValue(1);
-        (wrapper.vm as any).portion.unitOfMeasure = findUnitOfMeasure('each');
-        await inputs.gramsInput.setValue(56);
-        await inputs.caloriesInput.setValue(75);
-        await inputs.sugarInput.setValue(4);
-        await inputs.fatInput.setValue(9);
-        await inputs.carbsInput.setValue(15);
-        await inputs.sodiumInput.setValue(24);
-        await inputs.proteinInput.setValue(7.45);
-        await saveButton.trigger('click');
-        expect(inputs.nameInput.element.value).toBe('');
-        expect(inputs.unitsInput.element.value).toBe('');
-        expect(inputs.gramsInput.element.value).toBe('');
-        expect(inputs.caloriesInput.element.value).toBe('');
-        expect(inputs.sugarInput.element.value).toBe('0');
-        expect(inputs.carbsInput.element.value).toBe('0');
-        expect(inputs.proteinInput.element.value).toBe('0');
-        expect(inputs.fatInput.element.value).toBe('0');
-        expect(inputs.sodiumInput.element.value).toBe('0');
-      });
     });
 
     describe('alternative portions', () => {
@@ -654,33 +627,6 @@ describe('FoodEditor', () => {
             calories: 90,
           },
         ]);
-      });
-
-      it('does not reset the form values', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
-        await inputs.nameInput.setValue('Apple');
-        await inputs.categoryInput.setValue('Produce');
-        (wrapper.vm as any).category = 'Produce';
-        await inputs.unitsInput.setValue(1);
-        (wrapper.vm as any).portion.unitOfMeasure = findUnitOfMeasure('each');
-        await inputs.gramsInput.setValue(56);
-        await inputs.caloriesInput.setValue(75);
-        await inputs.sugarInput.setValue(4);
-        await inputs.fatInput.setValue(9);
-        await inputs.carbsInput.setValue(15);
-        await inputs.sodiumInput.setValue(24);
-        await inputs.proteinInput.setValue(7.45);
-        await saveButton.trigger('click');
-        expect(inputs.nameInput.element.value).toBe('Apple');
-        expect(inputs.unitsInput.element.value).toBe('1');
-        expect(inputs.gramsInput.element.value).toBe('56');
-        expect(inputs.caloriesInput.element.value).toBe('75');
-        expect(inputs.sugarInput.element.value).toBe('4');
-        expect(inputs.carbsInput.element.value).toBe('15');
-        expect(inputs.proteinInput.element.value).toBe('7.45');
-        expect(inputs.fatInput.element.value).toBe('9');
-        expect(inputs.sodiumInput.element.value).toBe('24');
       });
     });
 
