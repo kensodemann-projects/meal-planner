@@ -38,6 +38,21 @@ describe('SearchAndAddPage', () => {
   });
 
   beforeEach(() => {
+    // Polyfill visualViewport for Vuetify overlays/snackbars in jsdom
+    if (!window.visualViewport) {
+      // @ts-expect-error Polyfill for Vuetify overlay in jsdom
+      window.visualViewport = {
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        width: window.innerWidth,
+        height: window.innerHeight,
+        scale: 1,
+        offsetLeft: 0,
+        offsetTop: 0,
+        pageLeft: 0,
+        pageTop: 0,
+      };
+    }
     (useRouter as Mock).mockReturnValue({
       push: vi.fn(),
       replace: vi.fn(),
@@ -71,6 +86,63 @@ describe('SearchAndAddPage', () => {
   });
 
   describe('on search', () => {
+    describe('addFoodItem', () => {
+      const foodItem = { fdcId: 123, description: 'Test Food', dataType: 'Branded', foodCategory: 'Snacks' };
+      let addFood: Mock, fdcFoodItemExists: Mock;
+
+      beforeEach(async () => {
+        (searchFdcData as Mock).mockResolvedValue({
+          foods: [foodItem],
+          totalHits: 1,
+          currentPage: 1,
+          totalPages: 1,
+        });
+        wrapper = createWrapper();
+        const searchInput = wrapper.findComponent({ name: 'SearchInput' });
+        await searchInput.vm.$emit('search', 'test');
+        await flushPromises();
+        // Get the mocks
+        const foodsData = (await import('@/data/foods')).useFoodsData();
+        addFood = foodsData.addFood as Mock;
+        fdcFoodItemExists = foodsData.fdcFoodItemExists as Mock;
+      });
+
+      it('shows error if food already exists', async () => {
+        fdcFoodItemExists.mockReturnValue(true);
+        const listItem = wrapper.findComponent({ name: 'FdcFoodListItem' });
+        await listItem.vm.$emit('add', foodItem);
+        await flushPromises();
+        expect(addFood).not.toHaveBeenCalled();
+        const snackbar = document.body.querySelector('.v-snackbar');
+        expect(snackbar).not.toBeNull();
+        expect(snackbar!.textContent).toContain('This food item already exists.');
+      });
+
+      it('calls addFood and shows success if not exists', async () => {
+        fdcFoodItemExists.mockReturnValue(false);
+        addFood.mockResolvedValueOnce(undefined);
+        const listItem = wrapper.findComponent({ name: 'FdcFoodListItem' });
+        await listItem.vm.$emit('add', foodItem);
+        await flushPromises();
+        expect(addFood).toHaveBeenCalledWith({ fdcId: foodItem.fdcId });
+        const snackbar = document.body.querySelector('.v-snackbar');
+        expect(snackbar).not.toBeNull();
+        expect(snackbar!.textContent).toContain('The food item has been added to your food list.');
+      });
+
+      it('shows error if addFood throws', async () => {
+        fdcFoodItemExists.mockReturnValue(false);
+        addFood.mockRejectedValueOnce(new Error('fail'));
+        const listItem = wrapper.findComponent({ name: 'FdcFoodListItem' });
+        await listItem.vm.$emit('add', foodItem);
+        await flushPromises();
+        expect(addFood).toHaveBeenCalledWith({ fdcId: foodItem.fdcId });
+        const snackbar = document.body.querySelector('.v-snackbar');
+        expect(snackbar).not.toBeNull();
+        expect(snackbar!.textContent).toContain('Failed to add food item. Please try again.');
+      });
+    });
+
     it('calls the FDC search API with the correct query', async () => {
       wrapper = createWrapper();
       const searchInput = wrapper.findComponent({ name: 'SearchInput' });

@@ -99,7 +99,7 @@
 
 <script setup lang="ts">
 import { validationRules } from '@/core/validation-rules';
-import { foodCategories, type FoodItem, type Portion } from '@meal-planner/common';
+import { foodCategories, type FoodCategory, type FoodItem, type Portion } from '@meal-planner/common';
 import { ref, watch } from 'vue';
 import PortionDataCard from './PortionDataCard.vue';
 
@@ -111,28 +111,44 @@ interface WrappedPortion {
 const props = defineProps<{ food?: FoodItem }>();
 const emit = defineEmits<{ (event: 'save', payload: FoodItem): void; (event: 'cancel'): void }>();
 
+// Reactive properties bound to form inputs
+const name = ref<string>();
+const brand = ref<string | null>();
+const category = ref<FoodCategory | undefined>();
+const portion = ref<Partial<Portion>>({});
+const alternativePortions = ref<WrappedPortion[]>([]);
+
+// Reactive properties to control the editor
 const valid = ref(false);
-const name = ref(props.food?.name);
-const brand = ref(props.food?.brand);
-const category = ref(props.food?.category);
-const portion = ref({
-  units: props.food?.units,
-  unitOfMeasure: props.food?.unitOfMeasure,
-  grams: props.food?.grams,
-  calories: props.food?.calories,
-  sodium: props.food?.sodium || 0,
-  sugar: props.food?.sugar || 0,
-  carbs: props.food?.carbs || 0,
-  fat: props.food?.fat || 0,
-  protein: props.food?.protein || 0,
-});
 const addPortion = ref(false);
-const alternativePortions = ref<WrappedPortion[]>(
-  (props.food?.alternativePortions || []).map((p) => ({ portion: p, status: 'view' })),
-);
 const portionsModified = ref(false);
 const showConfirmDelete = ref(false);
 const confirmDelete = ref<(x: boolean) => void>(() => {});
+
+const reset = () => {
+  name.value = props.food?.name || '';
+  brand.value = props.food?.brand || null;
+  category.value = props.food?.category;
+  portion.value = {
+    units: props.food?.units,
+    unitOfMeasure: props.food?.unitOfMeasure,
+    grams: props.food?.grams,
+    calories: props.food?.calories,
+    sodium: props.food?.sodium || 0,
+    sugar: props.food?.sugar || 0,
+    carbs: props.food?.carbs || 0,
+    fat: props.food?.fat || 0,
+    protein: props.food?.protein || 0,
+  };
+  alternativePortions.value = (props.food?.alternativePortions || []).map((p) => ({ portion: p, status: 'view' }));
+  portionsModified.value = false;
+  addPortion.value = false;
+  valid.value = false;
+  showConfirmDelete.value = false;
+  confirmDelete.value = () => {};
+};
+
+defineExpose({ reset });
 
 const isModified = (): boolean => {
   if (!props.food) return true;
@@ -213,4 +229,6 @@ const deletePortion = async (idx: number) => {
   }
   showConfirmDelete.value = false;
 };
+
+reset();
 </script>
