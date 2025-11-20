@@ -95,10 +95,18 @@ describe('Food List Item Component', () => {
 
   it('emits click event when the item is clicked', async () => {
     wrapper = createWrapper();
-    const updateButton = wrapper.findComponent({ name: 'VListItem' });
-    await updateButton.trigger('click');
+    const listItem = wrapper.findComponent({ name: 'VListItem' });
+    await listItem.trigger('click');
     expect(wrapper.emitted('click')).toBeTruthy();
     expect(wrapper.emitted('click')).toHaveLength(1);
     expect(wrapper.emitted('click')?.[0]).toEqual([BANANA]);
+  });
+
+  describe('when displaying items still being built in the background', () => {
+    it('displays an alternate name', () => {
+      wrapper = createWrapper({ food: { id: '299r0r990293', fdcId: 21249934 } });
+      const title = wrapper.findComponent({ name: 'VListItemTitle' });
+      expect(title.text()).toBe('This food item is being created, please check back later.');
+    });
   });
 });
