@@ -128,7 +128,7 @@ const showConfirmDelete = ref(false);
 const confirmDelete = ref<(x: boolean) => void>(() => {});
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 
-const reset = () => {
+const initialize = () => {
   name.value = props.food?.name || '';
   brand.value = props.food?.brand || null;
   category.value = props.food?.category;
@@ -149,6 +149,10 @@ const reset = () => {
   valid.value = false;
   showConfirmDelete.value = false;
   confirmDelete.value = () => {};
+};
+
+const reset = () => {
+  initialize();
   nameInput.value?.focus();
 };
 
@@ -235,5 +239,5 @@ const deletePortion = async (idx: number) => {
 };
 
 onMounted(() => nameInput.value?.focus());
-reset();
+initialize();
 </script>
