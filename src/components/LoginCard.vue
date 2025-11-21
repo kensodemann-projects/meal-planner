@@ -14,6 +14,7 @@
           label="Email"
           :rules="[validationRules.required, validationRules.email]"
           required
+          ref="emailInput"
         ></v-text-field>
         <v-text-field
           v-if="!resetMode"
@@ -40,12 +41,14 @@
 
 <script setup lang="ts">
 import { validationRules } from '@/core/validation-rules';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import type { VTextField } from 'vuetify/components';
 
 const email = ref('');
 const password = ref('');
 const valid = ref(false);
 const resetMode = ref(false);
+const emailInput = ref<InstanceType<typeof VTextField> | null>(null);
 
 defineProps({ loading: Boolean });
 const emit = defineEmits(['login', 'resetPassword']);
@@ -67,4 +70,6 @@ const login = async () => {
 const forgotPassword = () => {
   resetMode.value = !resetMode.value;
 };
+
+onMounted(() => emailInput.value?.focus());
 </script>
