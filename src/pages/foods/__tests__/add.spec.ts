@@ -102,6 +102,7 @@ describe('Food Add Page', () => {
     });
 
     it('shows error if addFood throws', async () => {
+      console.error = vi.fn();
       const { addFood } = useFoodsData();
       (addFood as Mock).mockRejectedValueOnce(new Error('fail'));
       wrapper = mountPage();
