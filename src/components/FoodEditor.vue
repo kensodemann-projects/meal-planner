@@ -12,6 +12,7 @@
             v-model="name"
             :rules="[validationRules.required]"
             data-testid="name-input"
+            ref="nameInput"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6">
@@ -100,8 +101,9 @@
 <script setup lang="ts">
 import { validationRules } from '@/core/validation-rules';
 import { foodCategories, type FoodCategory, type FoodItem, type Portion } from '@meal-planner/common';
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import PortionDataCard from './PortionDataCard.vue';
+import type { VTextField } from 'vuetify/components';
 
 interface WrappedPortion {
   portion: Portion;
@@ -124,8 +126,9 @@ const addPortion = ref(false);
 const portionsModified = ref(false);
 const showConfirmDelete = ref(false);
 const confirmDelete = ref<(x: boolean) => void>(() => {});
+const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 
-const reset = () => {
+const initialize = () => {
   name.value = props.food?.name || '';
   brand.value = props.food?.brand || null;
   category.value = props.food?.category;
@@ -146,6 +149,11 @@ const reset = () => {
   valid.value = false;
   showConfirmDelete.value = false;
   confirmDelete.value = () => {};
+};
+
+const reset = () => {
+  initialize();
+  nameInput.value?.focus();
 };
 
 defineExpose({ reset });
@@ -230,5 +238,6 @@ const deletePortion = async (idx: number) => {
   showConfirmDelete.value = false;
 };
 
-reset();
+onMounted(() => nameInput.value?.focus());
+initialize();
 </script>
