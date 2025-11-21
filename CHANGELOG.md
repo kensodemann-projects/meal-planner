@@ -1,5 +1,17 @@
 # meal-planner
 
+## 0.3.0
+
+### Minor Changes
+
+- cd2b845: push food items out with just the FDC ID and expand them in the background
+
+### Patch Changes
+
+- fa8e7df: fix the food categories based on the USDA FDC data sheet
+- Updated dependencies [cd2b845]
+  - @meal-planner/common@1.1.0
+
 ## 0.2.0
 
 ### Minor Changes
