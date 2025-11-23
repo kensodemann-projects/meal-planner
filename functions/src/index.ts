@@ -1,9 +1,9 @@
-import { getFirestore } from 'firebase-admin/firestore';
 import { initializeApp } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
 import { setGlobalOptions } from 'firebase-functions';
-import { onDocumentCreated } from 'firebase-functions/v2/firestore';
 import * as logger from 'firebase-functions/logger';
-import { convertFdcFoodItem } from '../../common';
+import { onDocumentCreated } from 'firebase-functions/v2/firestore';
+import { convertFdcFoodItem } from './convert_fdc_food_item';
 
 const API_URL = 'https://api.nal.usda.gov/fdc/v1';
 

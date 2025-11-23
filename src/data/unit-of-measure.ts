@@ -1,9 +1,5 @@
-import {
-  unitsOfMeasure,
-  type AutocompleteOptionDivider,
-  type AutocompleteOption,
-  type AutocompleteOptionSubheader,
-} from '@meal-planner/common';
+import type { AutocompleteOption, AutocompleteOptionDivider, AutocompleteOptionSubheader } from '@/models/option';
+import { unitsOfMeasure } from '@/models/unit-of-measure';
 
 export const unitOfMeasureOptions: Array<AutocompleteOption | AutocompleteOptionDivider | AutocompleteOptionSubheader> =
   [

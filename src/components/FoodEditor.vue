@@ -100,10 +100,10 @@
 
 <script setup lang="ts">
 import { validationRules } from '@/core/validation-rules';
-import { foodCategories, type FoodCategory, type FoodItem, type Portion } from '@meal-planner/common';
+import { foodCategories, type FoodCategory, type FoodItem, type Portion } from '@/models/food';
 import { onMounted, ref, watch } from 'vue';
-import PortionDataCard from './PortionDataCard.vue';
 import type { VTextField } from 'vuetify/components';
+import PortionDataCard from './PortionDataCard.vue';
 
 interface WrappedPortion {
   portion: Portion;

@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Portion } from '@meal-planner/common';
+import type { Portion } from '@/models/food';
 
 defineProps<{ value: Portion; compact?: boolean }>();
 </script>

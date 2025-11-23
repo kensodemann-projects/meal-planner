@@ -1,4 +1,4 @@
-import { convertFdcFoodItem, type FdcFoodSearchResult, type FoodItem } from '@meal-planner/common';
+import type { FdcFoodSearchResult } from '@/models/usda-fdc';
 
 const API_URL = 'https://api.nal.usda.gov/fdc/v1';
 
@@ -10,14 +10,4 @@ export const searchFdcData = async (query: string, page?: number): Promise<FdcFo
     throw new Error('Failed to fetch USDA FDC data');
   }
   return await response.json();
-};
-
-export const fetchFoodItem = async (fdcId: number): Promise<FoodItem> => {
-  const response = await fetch(
-    `${API_URL}/food/${fdcId}?api_key=${import.meta.env.VITE_USDA_FDC_API_KEY}&nutrients=203&nutrients=204&nutrients=205&nutrients=208&nutrients=269.3&nutrients=307`,
-  );
-  if (!response.ok) {
-    throw new Error('Failed to fetch USDA FDC data');
-  }
-  return convertFdcFoodItem(await response.json());
 };

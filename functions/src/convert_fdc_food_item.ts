@@ -1,6 +1,6 @@
-import type { FoodCategory, FoodItem, Portion } from '../models/food';
-import type { FdcFoodItem, FdcFoodPortion } from '../models/usda-fdc';
-import { findUnitOfMeasure } from './find-unit-of-measure';
+import type { FoodCategory, FoodItem, Portion } from './food';
+import { unitsOfMeasure } from './unit-of-measure';
+import type { FdcFoodItem, FdcFoodPortion } from './usda-fdc';
 
 const fdcCategoryCodeToCategory = (code: string): FoodCategory => {
   switch (code) {
@@ -60,6 +60,8 @@ const fdcCategoryCodeToCategory = (code: string): FoodCategory => {
   }
 };
 
+const defaultUnitOfMeasure = unitsOfMeasure.find((x) => x.fdcId === 9999);
+
 const lookupNutrient = (fdcFoodItem: FdcFoodItem, nutrientNumber: string): number | undefined => {
   const nutrient = fdcFoodItem.foodNutrients.find((n) => n.nutrient.number === nutrientNumber);
   return nutrient?.amount;
@@ -68,7 +70,7 @@ const lookupNutrient = (fdcFoodItem: FdcFoodItem, nutrientNumber: string): numbe
 const addPortion = (foodItem: FoodItem, fdcFoodPortion: FdcFoodPortion) => {
   const portion: Portion = {
     units: fdcFoodPortion.amount,
-    unitOfMeasure: findUnitOfMeasure(fdcFoodPortion.measureUnit.id),
+    unitOfMeasure: unitsOfMeasure.find((x) => x.fdcId === fdcFoodPortion.measureUnit.id) || defaultUnitOfMeasure!,
     grams: fdcFoodPortion.gramWeight,
     calories: Number(((foodItem.calories * fdcFoodPortion.gramWeight) / 100).toFixed(2)),
     protein: Number(((foodItem.protein * fdcFoodPortion.gramWeight) / 100).toFixed(2)),
@@ -85,7 +87,7 @@ export const convertFdcFoodItem = (fdcFoodItem: FdcFoodItem): FoodItem => {
     fdcId: fdcFoodItem.fdcId,
     name: fdcFoodItem.description,
     units: 100,
-    unitOfMeasure: findUnitOfMeasure('g'),
+    unitOfMeasure: unitsOfMeasure.find((x) => x.id === 'g')!,
     grams: 100,
     category: fdcCategoryCodeToCategory(fdcFoodItem.foodCategory.code),
     calories: lookupNutrient(fdcFoodItem, '208') ?? 0,

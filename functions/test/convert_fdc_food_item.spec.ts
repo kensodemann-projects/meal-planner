@@ -1,6 +1,7 @@
-import type { FdcFoodItem, FoodItem } from '@meal-planner/common';
 import { describe, expect, it } from 'vitest';
-import { convertFdcFoodItem } from '../convert_fdc_food_item';
+import { convertFdcFoodItem } from '../src/convert_fdc_food_item';
+import type { FdcFoodItem } from '../src/usda-fdc';
+import type { FoodItem } from '../src/food';
 
 describe('Convert FDC Food item', () => {
   it.each([
