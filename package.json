@@ -19,7 +19,7 @@
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
-    "@fontsource/roboto": "5.2.8",
+    "@fontsource/roboto": "5.2.9",
     "@mdi/font": "7.4.47",
     "firebase": "^12.6.0",
     "vue": "^3.5.24",
@@ -34,13 +34,13 @@
     "@tsconfig/node22": "^22.0.5",
     "@types/node": "^24.10.1",
     "@vitejs/plugin-vue": "^6.0.2",
-    "@vitest/coverage-v8": "^4.0.12",
+    "@vitest/coverage-v8": "^4.0.13",
     "@vue/eslint-config-typescript": "^14.6.0",
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.8.1",
     "eslint": "^9.39.1",
     "eslint-config-vuetify": "4.2.1-beta.1",
-    "eslint-plugin-vue": "^10.5.1",
+    "eslint-plugin-vue": "^10.6.0",
     "globals": "^16.5.0",
     "husky": "^9.1.7",
     "jsdom": "^27.2.0",
@@ -56,8 +56,8 @@
     "vite": "^7.2.4",
     "vite-plugin-vue-layouts-next": "^1.2.0",
     "vite-plugin-vuetify": "^2.1.2",
-    "vitest": "^4.0.12",
-    "vue-tsc": "^3.1.4"
+    "vitest": "^4.0.13",
+    "vue-tsc": "^3.1.5"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,vue,md,json}": [
