@@ -1,5 +1,12 @@
 # meal-planner
 
+## 0.3.1
+
+### Patch Changes
+
+- b688d41: update dependencies
+- 480eaae: refactor to make the Firebase function deploy cleaner
+
 ## 0.3.0
 
 ### Minor Changes
