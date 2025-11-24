@@ -16,4 +16,12 @@ describe('Recipe Editor', () => {
     const wrapper = mountComponent();
     expect(wrapper.exists()).toBe(true);
   });
+
+  describe('name input', () => {
+    it('exists', () => {
+      const wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="name-input"]');
+      expect(input.exists()).toBe(true);
+    });
+  });
 });
