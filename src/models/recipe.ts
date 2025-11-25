@@ -15,3 +15,5 @@ export type RecipeCategory =
   | 'Salad'
   | 'Sauce'
   | 'Dessert';
+
+export type RecipeDifficulty = 'Easy' | 'Normal' | 'Advanced';
