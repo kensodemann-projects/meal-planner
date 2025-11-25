@@ -5,15 +5,27 @@
 
     <v-container fluid>
       <v-row>
-        <v-col cols="12" md="6">
+        <v-col cols="12">
           <v-text-field
             label="Name"
-            placeholder="Enter the name of the food..."
+            placeholder="Enter the name of the recipe..."
             v-model="name"
             :rules="[validationRules.required]"
             data-testid="name-input"
             ref="nameInput"
           ></v-text-field>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="12">
+          <v-autocomplete
+            label="Category"
+            v-model="category"
+            :items="recipeCategories"
+            :rules="[validationRules.required]"
+            data-testid="category-input"
+          ></v-autocomplete>
         </v-col>
       </v-row>
     </v-container>
@@ -22,11 +34,14 @@
 
 <script setup lang="ts">
 import { validationRules } from '@/core/validation-rules';
+import { recipeCategories } from '@/data/recipe-categories';
+import type { RecipeCategory } from '@/models/recipe';
 import { onMounted, ref } from 'vue';
 import type { VTextField } from 'vuetify/components';
 
 const valid = ref(false);
-const name = ref('');
+const name = ref<string>('');
+const category = ref<RecipeCategory>();
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 
