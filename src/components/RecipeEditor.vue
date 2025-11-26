@@ -18,13 +18,23 @@
       </v-row>
 
       <v-row>
-        <v-col cols="12">
+        <v-col cols="12" md="6">
           <v-autocomplete
             label="Category"
             v-model="category"
             :items="recipeCategories"
             :rules="[validationRules.required]"
             data-testid="category-input"
+          ></v-autocomplete>
+        </v-col>
+
+        <v-col cols="12" md="6">
+          <v-autocomplete
+            label="Difficulty"
+            v-model="difficulty"
+            :items="recipeDifficulties"
+            :rules="[validationRules.required]"
+            data-testid="difficulty-input"
           ></v-autocomplete>
         </v-col>
       </v-row>
@@ -35,13 +45,15 @@
 <script setup lang="ts">
 import { validationRules } from '@/core/validation-rules';
 import { recipeCategories } from '@/data/recipe-categories';
-import type { RecipeCategory } from '@/models/recipe';
+import { recipeDifficulties } from '@/data/recipe-difficulties';
+import type { RecipeCategory, RecipeDifficulty } from '@/models/recipe';
 import { onMounted, ref } from 'vue';
 import type { VTextField } from 'vuetify/components';
 
 const valid = ref(false);
 const name = ref<string>('');
 const category = ref<RecipeCategory>();
+const difficulty = ref<RecipeDifficulty>();
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 

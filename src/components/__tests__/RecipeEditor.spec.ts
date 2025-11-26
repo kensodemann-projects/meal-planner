@@ -75,4 +75,29 @@ describe('Recipe Editor', () => {
       expect(wrapper.text()).toContain('Required');
     });
   });
+
+  describe('difficulty', () => {
+    it('renders', () => {
+      wrapper = mountComponent();
+      const categoryInput = wrapper.findComponent(
+        '[data-testid="difficulty-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      expect(categoryInput.exists()).toBe(true);
+      expect(categoryInput.props('label')).toBe('Difficulty');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      const difficultyInput = wrapper.findComponent(
+        '[data-testid="difficulty-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      const input = difficultyInput.find('input');
+
+      expect(wrapper.text()).not.toContain('Required');
+      await input.trigger('focus');
+      await input.setValue('');
+      await input.trigger('blur');
+      expect(wrapper.text()).toContain('Required');
+    });
+  });
 });
