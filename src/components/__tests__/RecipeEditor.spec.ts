@@ -198,7 +198,7 @@ describe('Recipe Editor', () => {
     });
 
     describe('the save button', () => {
-      it('begins disalbed', () => {
+      it('begins disabled', () => {
         const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
         expect(saveButton.attributes('disabled')).toBeDefined();
       });
