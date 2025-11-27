@@ -17,24 +17,6 @@ export type FoodCategory =
   | 'Sweets'
   | 'Unknown';
 
-export const foodCategories: FoodCategory[] = [
-  'Bakery',
-  'Beans',
-  'Beverages',
-  'Dairy',
-  'Fats & Oils',
-  'Grains',
-  'Juices',
-  'Meats',
-  'Mixed Foods',
-  'Nuts & Seeds',
-  'Produce',
-  'Snacks',
-  'Spices',
-  'Sweets',
-  'Unknown',
-];
-
 export interface Portion {
   units: number;
   unitOfMeasure: UnitOfMeasure;
