@@ -190,7 +190,7 @@ describe('Recipe Editor', () => {
       wrapper = mountComponent({ recipe: BEER_CHEESE });
     });
 
-    it('initializes the inputs with blank values', () => {
+    it('initializes the inputs with recipe values', () => {
       const inputs = getInputs(wrapper);
       expect(inputs.name.element.value).toBe(BEER_CHEESE.name);
       expect((wrapper.vm as any).category).toBe(BEER_CHEESE.category);
