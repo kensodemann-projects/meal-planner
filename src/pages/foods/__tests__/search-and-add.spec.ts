@@ -1,4 +1,4 @@
-import { searchFdcData } from '@/data/usda-fdc-data';
+import { fetchFoodItem, searchFdcData } from '@/data/usda-fdc-data';
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { useRouter } from 'vue-router';
@@ -6,6 +6,7 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import SearchAndAddPage from '../search-and-add.vue';
+import { TEST_FOOD } from '@/data/__tests__/test-data';
 
 vi.mock('vue-router');
 vi.mock('@/data/usda-fdc-data');
@@ -118,28 +119,55 @@ describe('SearchAndAddPage', () => {
         expect(snackbar!.textContent).toContain('This food item already exists.');
       });
 
-      it('calls addFood and shows success if not exists', async () => {
-        fdcFoodItemExists.mockReturnValue(false);
-        addFood.mockResolvedValueOnce(undefined);
-        const listItem = wrapper.findComponent({ name: 'FdcFoodListItem' });
-        await listItem.vm.$emit('add', foodItem);
-        await flushPromises();
-        expect(addFood).toHaveBeenCalledWith({ fdcId: foodItem.fdcId });
-        const snackbar = document.body.querySelector('.v-snackbar');
-        expect(snackbar).not.toBeNull();
-        expect(snackbar!.textContent).toContain('The food item has been added to your food list.');
-      });
+      describe('if the food does not already exist', () => {
+        beforeEach(() => {
+          fdcFoodItemExists.mockReturnValue(false);
+          (fetchFoodItem as Mock).mockResolvedValue(TEST_FOOD);
+          addFood.mockResolvedValue(undefined);
+        });
 
-      it('shows error if addFood throws', async () => {
-        fdcFoodItemExists.mockReturnValue(false);
-        addFood.mockRejectedValueOnce(new Error('fail'));
-        const listItem = wrapper.findComponent({ name: 'FdcFoodListItem' });
-        await listItem.vm.$emit('add', foodItem);
-        await flushPromises();
-        expect(addFood).toHaveBeenCalledWith({ fdcId: foodItem.fdcId });
-        const snackbar = document.body.querySelector('.v-snackbar');
-        expect(snackbar).not.toBeNull();
-        expect(snackbar!.textContent).toContain('Failed to add food item. Please try again.');
+        it('fetches the food details', async () => {
+          const listItem = wrapper.findComponent({ name: 'FdcFoodListItem' });
+          await listItem.vm.$emit('add', foodItem);
+          await flushPromises();
+          expect(fetchFoodItem).toHaveBeenCalledExactlyOnceWith(foodItem.fdcId);
+        });
+
+        it('calls addFood and shows success if not exists', async () => {
+          const listItem = wrapper.findComponent({ name: 'FdcFoodListItem' });
+          await listItem.vm.$emit('add', foodItem);
+          await flushPromises();
+          expect(addFood).toHaveBeenCalledWith(TEST_FOOD);
+        });
+
+        it('shows success', async () => {
+          const listItem = wrapper.findComponent({ name: 'FdcFoodListItem' });
+          await listItem.vm.$emit('add', foodItem);
+          await flushPromises();
+          const snackbar = document.body.querySelector('.v-snackbar');
+          expect(snackbar).not.toBeNull();
+          expect(snackbar!.textContent).toContain('The food item has been added to your food list.');
+        });
+
+        it('shows error if fetchFoodItem throws', async () => {
+          (fetchFoodItem as Mock).mockRejectedValueOnce(new Error('fail'));
+          const listItem = wrapper.findComponent({ name: 'FdcFoodListItem' });
+          await listItem.vm.$emit('add', foodItem);
+          await flushPromises();
+          const snackbar = document.body.querySelector('.v-snackbar');
+          expect(snackbar).not.toBeNull();
+          expect(snackbar!.textContent).toContain('Failed to add food item. Please try again.');
+        });
+
+        it('shows error if addFood throws', async () => {
+          addFood.mockRejectedValueOnce(new Error('fail'));
+          const listItem = wrapper.findComponent({ name: 'FdcFoodListItem' });
+          await listItem.vm.$emit('add', foodItem);
+          await flushPromises();
+          const snackbar = document.body.querySelector('.v-snackbar');
+          expect(snackbar).not.toBeNull();
+          expect(snackbar!.textContent).toContain('Failed to add food item. Please try again.');
+        });
       });
     });
 
