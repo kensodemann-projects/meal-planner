@@ -23,7 +23,14 @@
       </v-container>
 
       <v-list v-else class="search-results-list">
-        <FdcFoodListItem v-for="food in searchResults.foods" :key="food.fdcId" :food="food" @add="addFoodItem" />
+        <FdcFoodListItem
+          v-for="food in foundFoods"
+          :key="food.item.fdcId"
+          :food="food.item"
+          @add="() => addFoodItem(food)"
+          :disabled="food.exists"
+          :busy="food.isAdding"
+        />
       </v-list>
 
       <v-container class="max-width">
@@ -43,12 +50,19 @@
 
 <script lang="ts" setup>
 import { useFoodsData } from '@/data/foods';
-import { searchFdcData } from '@/data/usda-fdc-data';
-import type { FdcFoodSearchFoodItem, FdcFoodSearchResult } from '@meal-planner/common';
+import { fetchFoodItem, searchFdcData } from '@/data/usda-fdc-data';
+import type { FdcFoodSearchFoodItem, FdcFoodSearchResult } from '@/models/usda-fdc';
 import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
+interface WrappedFdcFoodSearchFoodItem {
+  item: FdcFoodSearchFoodItem;
+  exists: boolean;
+  isAdding: boolean;
+}
+
 const searchResults = ref<FdcFoodSearchResult>();
+const foundFoods = ref<WrappedFdcFoodSearchFoodItem[]>([]);
 const isChangingPage = ref(false);
 const isSearching = ref(false);
 const hasSearched = ref(false);
@@ -66,6 +80,11 @@ const performSearch = async (query: string): Promise<void> => {
   isSearching.value = true;
   page.value = 1;
   searchResults.value = await searchFdcData(query);
+  foundFoods.value = searchResults.value.foods.map((f) => ({
+    item: f,
+    exists: fdcFoodItemExists(f.fdcId),
+    isAdding: false,
+  }));
   isSearching.value = false;
 };
 
@@ -89,16 +108,17 @@ const displaySuccess = (msg: string) => {
   showMessage.value = true;
 };
 
-const addFoodItem = async (foodItem: FdcFoodSearchFoodItem) => {
-  if (fdcFoodItemExists(foodItem.fdcId)) {
-    displayError('This food item already exists.');
-  } else {
-    try {
-      await addFood({ fdcId: foodItem.fdcId });
-      displaySuccess('The food item has been added to your food list.');
-    } catch {
-      displayError('Failed to add food item. Please try again.');
-    }
+const addFoodItem = async (wrappedFood: WrappedFdcFoodSearchFoodItem) => {
+  try {
+    wrappedFood.isAdding = true;
+    const food = await fetchFoodItem(wrappedFood.item.fdcId);
+    await addFood(food);
+    wrappedFood.exists = true;
+    displaySuccess(`${wrappedFood.item.description} has been added to your food list.`);
+  } catch {
+    displayError(`Failed to add ${wrappedFood.item.description}. Please try again.`);
+  } finally {
+    wrappedFood.isAdding = false;
   }
 };
 </script>

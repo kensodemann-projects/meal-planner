@@ -1,4 +1,7 @@
-import { findUnitOfMeasure, type FoodItem, type Portion, type UnitOfMeasure } from '@meal-planner/common';
+import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
+import type { FoodItem, Portion } from '@/models/food';
+import type { UnitOfMeasure } from '@/models/unit-of-measure';
+import type { FdcFoodSearchFoodItem } from '@/models/usda-fdc';
 
 export const TEST_PORTION: Portion = {
   grams: 240,
@@ -179,3 +182,9 @@ export const TEST_FOODS: FoodItem[] = [
     alternativePortions: [makePortion(1, findUnitOfMeasure('c'), 245, 163)],
   },
 ];
+
+export const TEST_FDC_FOODS: FdcFoodSearchFoodItem[] = TEST_FOODS.filter((f) => !!f.fdcId).map((f) => ({
+  fdcId: f.fdcId!,
+  description: f.name,
+  foodCategory: f.category,
+}));

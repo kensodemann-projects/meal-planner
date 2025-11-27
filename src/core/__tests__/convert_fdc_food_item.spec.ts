@@ -1,4 +1,5 @@
-import type { FdcFoodItem, FoodItem } from '@meal-planner/common';
+import type { FoodItem } from '@/models/food';
+import type { FdcFoodItem } from '@/models/usda-fdc';
 import { describe, expect, it } from 'vitest';
 import { convertFdcFoodItem } from '../convert_fdc_food_item';
 

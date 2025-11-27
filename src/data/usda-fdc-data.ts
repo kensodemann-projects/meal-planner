@@ -1,4 +1,6 @@
-import { convertFdcFoodItem, type FdcFoodSearchResult, type FoodItem } from '@meal-planner/common';
+import { convertFdcFoodItem } from '@/core/convert_fdc_food_item';
+import type { FoodItem } from '@/models/food';
+import type { FdcFoodSearchResult } from '@/models/usda-fdc';
 
 const API_URL = 'https://api.nal.usda.gov/fdc/v1';
 

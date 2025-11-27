@@ -1,4 +1,6 @@
-import { findUnitOfMeasure, type Portion, type UnitOfMeasure } from '@meal-planner/common';
+import type { Portion } from '@/models/food';
+import { findUnitOfMeasure } from './find-unit-of-measure';
+import type { UnitOfMeasure } from '@/models/unit-of-measure';
 
 interface UnitConversionFactor {
   id: string;

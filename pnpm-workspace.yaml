@@ -1,8 +1,3 @@
-packages:
-  - .
-  - common
-  - functions
-
 onlyBuiltDependencies:
   - '@firebase/util'
   - '@parcel/watcher'

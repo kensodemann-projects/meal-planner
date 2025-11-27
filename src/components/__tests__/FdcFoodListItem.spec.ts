@@ -78,7 +78,7 @@ describe('FdcFoodListItem', () => {
 
     expect(wrapper.emitted('add')).toBeTruthy();
     expect(wrapper.emitted('add')).toHaveLength(1);
-    expect(wrapper.emitted('add')?.[0]).toEqual([mockFood]);
+    expect(wrapper.emitted('add')?.[0]).toEqual([]);
   });
 
   it('displays different food data correctly', () => {
@@ -142,32 +142,6 @@ describe('FdcFoodListItem', () => {
     expect(subtitle.exists()).toBe(true);
   });
 
-  it('maintains button functionality with different food objects', async () => {
-    const foods = [
-      {
-        description: 'Food 1',
-        fdcId: 1,
-        foodCategory: 'Category 1',
-      },
-      {
-        description: 'Food 2',
-        fdcId: 2,
-        foodCategory: 'Category 2',
-      },
-    ];
-
-    for (const food of foods) {
-      const wrapper = createWrapper({ food });
-      const button = wrapper.findComponent({ name: 'VBtn' });
-
-      await button.trigger('click');
-
-      expect(wrapper.emitted('add')).toBeTruthy();
-      expect(wrapper.emitted('add')?.[0]).toEqual([food]);
-      wrapper.unmount();
-    }
-  });
-
   it('does not emit add event on list item click, only button click', async () => {
     wrapper = createWrapper();
 
@@ -180,22 +154,5 @@ describe('FdcFoodListItem', () => {
     await button.trigger('click');
 
     expect(wrapper.emitted('add')).toBeTruthy();
-  });
-
-  it('emits the complete food object', async () => {
-    const complexFood = {
-      description: 'Complex food item with all properties',
-      fdcId: 987654321,
-      foodCategory: 'Complex Category',
-    };
-
-    wrapper = createWrapper({ food: complexFood });
-    const button = wrapper.findComponent({ name: 'VBtn' });
-
-    await button.trigger('click');
-
-    const emittedEvents = wrapper.emitted('add');
-    expect(emittedEvents).toBeTruthy();
-    expect(emittedEvents?.[0]![0]).toEqual(complexFood);
   });
 });

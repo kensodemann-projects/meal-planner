@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 import { useFoodsData } from '@/data/foods';
-import type { FoodItem } from '@meal-planner/common';
+import type { FoodItem } from '@/models/food';
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 

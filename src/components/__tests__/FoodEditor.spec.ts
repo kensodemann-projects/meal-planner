@@ -1,5 +1,6 @@
+import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import { TEST_PORTION } from '@/data/__tests__/test-data';
-import { findUnitOfMeasure, type FoodItem } from '@meal-planner/common';
+import type { FoodItem } from '@/models/food';
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';

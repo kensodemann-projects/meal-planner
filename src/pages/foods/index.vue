@@ -20,10 +20,10 @@
 </template>
 
 <script lang="ts" setup>
-import { type FoodItem } from '@meal-planner/common';
 import { useFoodsData } from '@/data/foods';
 import { useRouter } from 'vue-router';
 import { shallowRef } from 'vue';
+import type { FoodItem } from '@/models/food';
 
 const { foods } = useFoodsData();
 const router = useRouter();

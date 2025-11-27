@@ -1,5 +1,5 @@
+import type { FdcFoodItem, FdcFoodSearchResult } from '@/models/usda-fdc';
 import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
-import type { FdcFoodItem, FdcFoodSearchResult } from '@meal-planner/common';
 import { fetchFoodItem, searchFdcData } from '../usda-fdc-data';
 
 global.fetch = vi.fn();

@@ -1,4 +1,5 @@
-import { type AutocompleteOption, unitsOfMeasure } from '@meal-planner/common';
+import { type AutocompleteOption } from '@/models/option';
+import { unitsOfMeasure } from '@/models/unit-of-measure';
 import { describe, expect, it } from 'vitest';
 import { unitOfMeasureOptions } from '../unit-of-measure';
 
