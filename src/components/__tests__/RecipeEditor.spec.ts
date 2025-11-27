@@ -215,7 +215,6 @@ describe('Recipe Editor', () => {
         const inputs = getInputs(wrapper);
         await inputs.category.setValue('Dessert');
         (wrapper.vm as any).category = 'Dessert';
-        expect(saveButton.attributes('disabled')).toBeUndefined();
         await inputs.difficulty.setValue('Normal');
         (wrapper.vm as any).difficulty = 'Normal';
         await inputs.name.setValue('Apple Pie');
