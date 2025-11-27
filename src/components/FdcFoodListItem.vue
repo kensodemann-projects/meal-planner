@@ -27,7 +27,7 @@ defineProps<{
     fdcId: number;
     foodCategory: string;
   };
-  adding: boolean;
+  adding?: boolean;
 }>();
 
 defineEmits(['add']);
