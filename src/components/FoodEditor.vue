@@ -84,7 +84,7 @@
     <v-container fluid>
       <v-row class="pa-4" justify="end">
         <CancelButton class="mr-4" @click="$emit('cancel')" />
-        <SaveButton :disabled="!(valid && isModified())" @click="save" />
+        <SaveButton :disabled="!(valid && isModified)" @click="save" />
       </v-row>
     </v-container>
   </v-form>
@@ -102,7 +102,7 @@
 import { validationRules } from '@/core/validation-rules';
 import type { FoodCategory, FoodItem, Portion } from '@/models/food';
 import { foodCategories } from '@/models/food';
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import type { VTextField } from 'vuetify/components';
 import PortionDataCard from './PortionDataCard.vue';
 
@@ -159,7 +159,7 @@ const reset = () => {
 
 defineExpose({ reset });
 
-const isModified = (): boolean => {
+const isModified = computed((): boolean => {
   if (!props.food) return true;
   if (portionsModified.value) return true;
 
@@ -173,7 +173,7 @@ const isModified = (): boolean => {
 
   const portionFields = ['units', 'grams', 'calories', 'sodium', 'sugar', 'carbs', 'fat', 'protein'] as const;
   return portionFields.some((field) => props.food![field as keyof FoodItem] !== portion.value[field]);
-};
+});
 
 const save = () => {
   const food: Omit<FoodItem, 'alternativePortions'> = {
