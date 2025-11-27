@@ -1,6 +1,5 @@
 packages:
   - .
-  - common
   - functions
 
 onlyBuiltDependencies:
