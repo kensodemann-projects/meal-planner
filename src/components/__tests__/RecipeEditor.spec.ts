@@ -1,9 +1,10 @@
 import { mount, VueWrapper } from '@vue/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import RecipeEditor from '../RecipeEditor.vue';
+import type { Recipe } from '@/models/recipe';
 
 const vuetify = createVuetify({
   components,
@@ -11,11 +12,11 @@ const vuetify = createVuetify({
 });
 const mountComponent = (props = {}) => mount(RecipeEditor, { props, global: { plugins: [vuetify] } });
 
-// const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
-//   name: wrapper.findComponent('[data-testid="name-input"]').find('input'),
-//   category: wrapper.findComponent('[data-testid="category-input"]').find('input'),
-//   difficulty: wrapper.findComponent('[data-testid="difficulty-input"]').find('input'),
-// });
+const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
+  name: wrapper.findComponent('[data-testid="name-input"]').find('input'),
+  category: wrapper.findComponent('[data-testid="category-input"]').find('input'),
+  difficulty: wrapper.findComponent('[data-testid="difficulty-input"]').find('input'),
+});
 
 describe('Recipe Editor', () => {
   let wrapper: ReturnType<typeof mountComponent>;
@@ -130,4 +131,48 @@ describe('Recipe Editor', () => {
       expect(saveButton.exists()).toBe(true);
     });
   });
+
+  describe('for create', () => {
+    beforeEach(() => {
+      wrapper = mountComponent();
+    });
+
+    describe('the save button', () => {
+      it('begins disalbed', () => {
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
+        expect(saveButton.attributes('disabled')).toBeDefined();
+      });
+
+      it('is disabled until all required fields are filled in', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const inputs = getInputs(wrapper);
+        await inputs.category.setValue('Dessert');
+        (wrapper.vm as any).category = 'Dessert';
+        expect(saveButton.attributes('disabled')).toBeDefined();
+        await inputs.difficulty.setValue('Easy');
+        (wrapper.vm as any).difficulty = 'Easy';
+        await inputs.name.setValue('Apple Pie');
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+    });
+  });
+
+  describe('for update', () => {
+    beforeEach(() => {
+      wrapper = mountComponent({ recipe: BEER_CHEESE });
+    });
+
+    describe('the save button', () => {
+      it('begins disalbed', () => {
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
+        expect(saveButton.attributes('disabled')).toBeDefined();
+      });
+    });
+  });
 });
+
+const BEER_CHEESE: Recipe = {
+  name: 'Beer Cheese',
+  category: 'Beverage',
+  difficulty: 'Easy',
+};

@@ -69,9 +69,9 @@ const props = defineProps<{ recipe?: Recipe }>();
 
 const isModified = computed((): boolean => {
   if (!props.recipe) return true;
-
   return false;
 });
+
 const save = () => {
   console.log('save clicked');
 };
