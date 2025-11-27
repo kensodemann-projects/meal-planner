@@ -417,7 +417,7 @@ describe('FoodEditor', () => {
       wrapper = mountComponent();
     });
 
-    it('defaults the  non-calorie nutritional information to zero', async () => {
+    it('defaults the non-calorie nutritional information to zero', async () => {
       const inputs = getInputs(wrapper);
       expect(inputs.nameInput.element.value).toBe('');
       expect(inputs.brandInput.element.value).toBe('');

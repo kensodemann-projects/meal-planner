@@ -137,6 +137,13 @@ describe('Recipe Editor', () => {
       wrapper = mountComponent();
     });
 
+    it('initializes the inputs with blank values', () => {
+      const inputs = getInputs(wrapper);
+      expect(inputs.name.element.value).toBe('');
+      expect(inputs.category.element.value).toBe('');
+      expect(inputs.difficulty.element.value).toBe('');
+    });
+
     describe('the save button', () => {
       it('begins disalbed', () => {
         const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
@@ -154,6 +161,27 @@ describe('Recipe Editor', () => {
         await inputs.name.setValue('Apple Pie');
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
+
+      it('emits the entered data in click', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const inputs = getInputs(wrapper);
+        await inputs.category.setValue('Dessert');
+        (wrapper.vm as any).category = 'Dessert';
+        expect(saveButton.attributes('disabled')).toBeDefined();
+        await inputs.difficulty.setValue('Easy');
+        (wrapper.vm as any).difficulty = 'Easy';
+        await inputs.name.setValue('Apple Pie');
+        await saveButton.trigger('click');
+        expect(wrapper.emitted('save')).toBeTruthy();
+        expect(wrapper.emitted('save')).toHaveLength(1);
+        expect(wrapper.emitted('save')?.[0]).toEqual([
+          {
+            name: 'Apple Pie',
+            category: 'Dessert',
+            difficulty: 'Easy',
+          },
+        ]);
+      });
     });
   });
 
@@ -162,16 +190,53 @@ describe('Recipe Editor', () => {
       wrapper = mountComponent({ recipe: BEER_CHEESE });
     });
 
+    it('initializes the inputs with blank values', () => {
+      const inputs = getInputs(wrapper);
+      expect(inputs.name.element.value).toBe(BEER_CHEESE.name);
+      expect((wrapper.vm as any).category).toBe(BEER_CHEESE.category);
+      expect((wrapper.vm as any).difficulty).toBe(BEER_CHEESE.difficulty);
+    });
+
     describe('the save button', () => {
       it('begins disalbed', () => {
         const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
         expect(saveButton.attributes('disabled')).toBeDefined();
+      });
+
+      it('is enabled if a value is changed', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const inputs = getInputs(wrapper);
+        await inputs.name.setValue('Apple Pie');
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('emits the entered data in click', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const inputs = getInputs(wrapper);
+        await inputs.category.setValue('Dessert');
+        (wrapper.vm as any).category = 'Dessert';
+        expect(saveButton.attributes('disabled')).toBeDefined();
+        await inputs.difficulty.setValue('Normal');
+        (wrapper.vm as any).difficulty = 'Normal';
+        await inputs.name.setValue('Apple Pie');
+        await saveButton.trigger('click');
+        expect(wrapper.emitted('save')).toBeTruthy();
+        expect(wrapper.emitted('save')).toHaveLength(1);
+        expect(wrapper.emitted('save')?.[0]).toEqual([
+          {
+            id: 'fie039950912',
+            name: 'Apple Pie',
+            category: 'Dessert',
+            difficulty: 'Normal',
+          },
+        ]);
       });
     });
   });
 });
 
 const BEER_CHEESE: Recipe = {
+  id: 'fie039950912',
   name: 'Beer Cheese',
   category: 'Beverage',
   difficulty: 'Easy',

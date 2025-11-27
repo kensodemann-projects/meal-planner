@@ -57,23 +57,37 @@ import type { Recipe, RecipeCategory, RecipeDifficulty } from '@/models/recipe';
 import { computed, onMounted, ref } from 'vue';
 import type { VTextField } from 'vuetify/components';
 
+const emit = defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'cancel'): void }>();
+const props = defineProps<{ recipe?: Recipe }>();
+
 const valid = ref(false);
-const name = ref<string>('');
-const category = ref<RecipeCategory>();
-const difficulty = ref<RecipeDifficulty>();
+const name = ref<string>(props.recipe?.name || '');
+const category = ref<RecipeCategory | undefined>(props.recipe?.category);
+const difficulty = ref<RecipeDifficulty | undefined>(props.recipe?.difficulty);
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 
-defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'cancel'): void }>();
-const props = defineProps<{ recipe?: Recipe }>();
-
 const isModified = computed((): boolean => {
   if (!props.recipe) return true;
+
+  if (
+    props.recipe.name !== name.value ||
+    props.recipe.category !== category.value ||
+    props.recipe.difficulty !== difficulty.value
+  ) {
+    return true;
+  }
+
   return false;
 });
 
 const save = () => {
-  console.log('save clicked');
+  emit('save', {
+    ...props.recipe,
+    name: name.value,
+    category: category.value!,
+    difficulty: difficulty.value!,
+  });
 };
 
 onMounted(() => nameInput.value?.focus());
