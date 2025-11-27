@@ -113,10 +113,12 @@ const addFoodItem = async (wrappedFood: WrappedFdcFoodSearchFoodItem) => {
     wrappedFood.isAdding = true;
     const food = await fetchFoodItem(wrappedFood.item.fdcId);
     await addFood(food);
-    wrappedFood.isAdding = false;
+    wrappedFood.exists = true;
     displaySuccess('The food item has been added to your food list.');
   } catch {
     displayError('Failed to add food item. Please try again.');
+  } finally {
+    wrappedFood.isAdding = false;
   }
 };
 </script>
