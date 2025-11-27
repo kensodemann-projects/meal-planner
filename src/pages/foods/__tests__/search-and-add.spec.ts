@@ -136,7 +136,9 @@ describe('SearchAndAddPage', () => {
           await flushPromises();
           const snackbar = document.body.querySelector('.v-snackbar');
           expect(snackbar).not.toBeNull();
-          expect(snackbar!.textContent).toContain('The food item has been added to your food list.');
+          expect(snackbar!.textContent).toContain(
+            `${TEST_FDC_FOODS[2]?.description} has been added to your food list.`,
+          );
         });
 
         it('shows error if fetchFoodItem throws', async () => {
@@ -146,18 +148,18 @@ describe('SearchAndAddPage', () => {
           await flushPromises();
           const snackbar = document.body.querySelector('.v-snackbar');
           expect(snackbar).not.toBeNull();
-          expect(snackbar!.textContent).toContain('Failed to add food item. Please try again.');
+          expect(snackbar!.textContent).toContain(`Failed to add ${TEST_FDC_FOODS[2]?.description}. Please try again.`);
         });
 
         it('shows error if addFood throws', async () => {
           const { addFood } = useFoodsData();
           (addFood as Mock).mockRejectedValueOnce(new Error('fail'));
           const listItems = wrapper.findAllComponents({ name: 'FdcFoodListItem' });
-          await listItems[2]!.vm.$emit('add', TEST_FDC_FOODS[2]);
+          await listItems[3]!.vm.$emit('add', TEST_FDC_FOODS[3]);
           await flushPromises();
           const snackbar = document.body.querySelector('.v-snackbar');
           expect(snackbar).not.toBeNull();
-          expect(snackbar!.textContent).toContain('Failed to add food item. Please try again.');
+          expect(snackbar!.textContent).toContain(`Failed to add ${TEST_FDC_FOODS[3]?.description}. Please try again.`);
         });
       });
     });

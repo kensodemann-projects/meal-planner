@@ -114,9 +114,9 @@ const addFoodItem = async (wrappedFood: WrappedFdcFoodSearchFoodItem) => {
     const food = await fetchFoodItem(wrappedFood.item.fdcId);
     await addFood(food);
     wrappedFood.exists = true;
-    displaySuccess('The food item has been added to your food list.');
+    displaySuccess(`${wrappedFood.item.description} has been added to your food list.`);
   } catch {
-    displayError('Failed to add food item. Please try again.');
+    displayError(`Failed to add ${wrappedFood.item.description}. Please try again.`);
   } finally {
     wrappedFood.isAdding = false;
   }
