@@ -69,16 +69,11 @@ const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 
 const isModified = computed((): boolean => {
   if (!props.recipe) return true;
-
-  if (
+  return (
     props.recipe.name !== name.value ||
     props.recipe.category !== category.value ||
     props.recipe.difficulty !== difficulty.value
-  ) {
-    return true;
-  }
-
-  return false;
+  );
 });
 
 const save = () => {
