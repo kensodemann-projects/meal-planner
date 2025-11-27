@@ -11,7 +11,7 @@
           size="small"
           :disabled="disabled || busy"
           :loading="busy"
-          @click="$emit('add', food)"
+          @click="$emit('add')"
         >
           Add Item
         </v-btn>
