@@ -102,7 +102,6 @@
 import { validationRules } from '@/core/validation-rules';
 import { foodCategories } from '@/data/food-categories';
 import type { FoodCategory, FoodItem, Portion } from '@/models/food';
-import { onMounted, ref, watch } from 'vue';
 import { computed, onMounted, ref, watch } from 'vue';
 import type { VTextField } from 'vuetify/components';
 import PortionDataCard from './PortionDataCard.vue';
