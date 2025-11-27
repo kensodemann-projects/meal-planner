@@ -1,3 +1,4 @@
+import { TEST_FOOD } from '@/data/__tests__/test-data';
 import { fetchFoodItem, searchFdcData } from '@/data/usda-fdc-data';
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
@@ -6,7 +7,6 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import SearchAndAddPage from '../search-and-add.vue';
-import { TEST_FOOD } from '@/data/__tests__/test-data';
 
 vi.mock('vue-router');
 vi.mock('@/data/usda-fdc-data');
