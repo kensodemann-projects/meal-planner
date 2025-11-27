@@ -9,8 +9,8 @@
           color="primary"
           variant="text"
           size="small"
-          :disabled="adding"
-          :loading="adding"
+          :disabled="disabled || busy"
+          :loading="busy"
           @click="$emit('add', food)"
         >
           Add Item
@@ -27,7 +27,8 @@ defineProps<{
     fdcId: number;
     foodCategory: string;
   };
-  adding?: boolean;
+  disabled?: boolean;
+  busy?: boolean;
 }>();
 
 defineEmits(['add']);

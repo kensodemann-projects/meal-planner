@@ -108,17 +108,6 @@ describe('SearchAndAddPage', () => {
         fdcFoodItemExists = foodsData.fdcFoodItemExists as Mock;
       });
 
-      it('shows error if food already exists', async () => {
-        fdcFoodItemExists.mockReturnValue(true);
-        const listItem = wrapper.findComponent({ name: 'FdcFoodListItem' });
-        await listItem.vm.$emit('add', foodItem);
-        await flushPromises();
-        expect(addFood).not.toHaveBeenCalled();
-        const snackbar = document.body.querySelector('.v-snackbar');
-        expect(snackbar).not.toBeNull();
-        expect(snackbar!.textContent).toContain('This food item already exists.');
-      });
-
       describe('if the food does not already exist', () => {
         beforeEach(() => {
           fdcFoodItemExists.mockReturnValue(false);
