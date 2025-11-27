@@ -26,6 +26,7 @@ declare module 'vue' {
     PortionEditGrid: typeof import('./components/PortionEditGrid.vue')['default']
     PortionEditorCard: typeof import('./components/PortionEditorCard.vue')['default']
     PrimaryButton: typeof import('./components/buttons/PrimaryButton.vue')['default']
+    RecipeEditor: typeof import('./components/RecipeEditor.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SaveButton: typeof import('./components/buttons/SaveButton.vue')['default']

@@ -80,7 +80,7 @@ const performSearch = async (query: string): Promise<void> => {
   isSearching.value = true;
   page.value = 1;
   searchResults.value = await searchFdcData(query);
-  foundFoods.value = searchResults.value.foods.map((f) => ({
+  foundFoods.value = searchResults.value!.foods.map((f) => ({
     item: f,
     exists: fdcFoodItemExists(f.fdcId),
     isAdding: false,

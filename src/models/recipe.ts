@@ -15,3 +15,12 @@ export type RecipeCategory =
   | 'Salad'
   | 'Sauce'
   | 'Dessert';
+
+export type RecipeDifficulty = 'Easy' | 'Normal' | 'Advanced';
+
+export interface Recipe {
+  id?: string;
+  name: string;
+  category: RecipeCategory;
+  difficulty: RecipeDifficulty;
+}
