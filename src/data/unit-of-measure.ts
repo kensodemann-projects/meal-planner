@@ -1,5 +1,5 @@
 import type { AutocompleteOption, AutocompleteOptionDivider, AutocompleteOptionSubheader } from '@/models/option';
-import { unitsOfMeasure } from '@/models/unit-of-measure';
+import { unitsOfMeasure } from './units-of-measure';
 
 export const unitOfMeasureOptions: Array<AutocompleteOption | AutocompleteOptionDivider | AutocompleteOptionSubheader> =
   [
