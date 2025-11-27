@@ -1,4 +1,5 @@
-import { type UnitOfMeasure, unitsOfMeasure } from '../models/unit-of-measure';
+import { unitsOfMeasure } from '@/data/units-of-measure';
+import { type UnitOfMeasure } from '../models/unit-of-measure';
 
 const findBySearchString = (match: string): UnitOfMeasure => {
   const lowerMatch =
