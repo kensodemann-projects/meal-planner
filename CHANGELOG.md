@@ -1,5 +1,12 @@
 # meal-planner
 
+## 0.4.0
+
+### Minor Changes
+
+- 94bd9d9: revert to a single project without Firebase functions
+- 8462cf1: add the ability to edit recipes
+
 ## 0.3.0
 
 ### Minor Changes
