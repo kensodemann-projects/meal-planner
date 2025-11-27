@@ -39,6 +39,13 @@
         </v-col>
       </v-row>
     </v-container>
+
+    <v-container fluid>
+      <v-row class="pa-4" justify="end">
+        <CancelButton class="mr-4" @click="$emit('cancel')" />
+        <SaveButton :disabled="!(valid && isModified)" @click="save" />
+      </v-row>
+    </v-container>
   </v-form>
 </template>
 
@@ -46,8 +53,8 @@
 import { validationRules } from '@/core/validation-rules';
 import { recipeCategories } from '@/data/recipe-categories';
 import { recipeDifficulties } from '@/data/recipe-difficulties';
-import type { RecipeCategory, RecipeDifficulty } from '@/models/recipe';
-import { onMounted, ref } from 'vue';
+import type { Recipe, RecipeCategory, RecipeDifficulty } from '@/models/recipe';
+import { computed, onMounted, ref } from 'vue';
 import type { VTextField } from 'vuetify/components';
 
 const valid = ref(false);
@@ -56,6 +63,11 @@ const category = ref<RecipeCategory>();
 const difficulty = ref<RecipeDifficulty>();
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
+
+defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'cancel'): void }>();
+
+const isModified = computed(() => false);
+const save = () => {};
 
 onMounted(() => nameInput.value?.focus());
 </script>

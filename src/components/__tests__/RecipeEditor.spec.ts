@@ -100,4 +100,28 @@ describe('Recipe Editor', () => {
       expect(wrapper.text()).toContain('Required');
     });
   });
+
+  describe('cancel button', () => {
+    it('renders', () => {
+      wrapper = mountComponent();
+      const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+      expect(cancelButton.exists()).toBe(true);
+    });
+
+    it('emits the "cancel" event on click', async () => {
+      wrapper = mountComponent();
+      const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+      await cancelButton.trigger('click');
+      expect(wrapper.emitted('cancel')).toBeTruthy();
+      expect(wrapper.emitted('cancel')).toHaveLength(1);
+    });
+  });
+
+  describe('save button', () => {
+    it('renders', () => {
+      wrapper = mountComponent();
+      const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
+      expect(saveButton.exists()).toBe(true);
+    });
+  });
 });
