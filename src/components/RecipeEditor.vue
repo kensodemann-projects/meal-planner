@@ -65,9 +65,16 @@ const difficulty = ref<RecipeDifficulty>();
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 
 defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'cancel'): void }>();
+const props = defineProps<{ recipe?: Recipe }>();
 
-const isModified = computed(() => false);
-const save = () => {};
+const isModified = computed((): boolean => {
+  if (!props.recipe) return true;
+
+  return false;
+});
+const save = () => {
+  console.log('save clicked');
+};
 
 onMounted(() => nameInput.value?.focus());
 </script>

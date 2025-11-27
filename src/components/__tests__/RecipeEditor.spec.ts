@@ -11,6 +11,12 @@ const vuetify = createVuetify({
 });
 const mountComponent = (props = {}) => mount(RecipeEditor, { props, global: { plugins: [vuetify] } });
 
+// const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
+//   name: wrapper.findComponent('[data-testid="name-input"]').find('input'),
+//   category: wrapper.findComponent('[data-testid="category-input"]').find('input'),
+//   difficulty: wrapper.findComponent('[data-testid="difficulty-input"]').find('input'),
+// });
+
 describe('Recipe Editor', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
