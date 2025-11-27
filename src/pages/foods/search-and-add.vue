@@ -44,7 +44,7 @@
 <script lang="ts" setup>
 import { useFoodsData } from '@/data/foods';
 import { searchFdcData } from '@/data/usda-fdc-data';
-import type { FdcFoodSearchFoodItem, FdcFoodSearchResult } from '@meal-planner/common';
+import type { FdcFoodSearchFoodItem, FdcFoodSearchResult } from '@/models/usda-fdc';
 import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 

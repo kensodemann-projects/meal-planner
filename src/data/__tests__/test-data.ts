@@ -1,4 +1,6 @@
-import { findUnitOfMeasure, type FoodItem, type Portion, type UnitOfMeasure } from '@meal-planner/common';
+import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
+import type { FoodItem, Portion } from '@/models/food';
+import type { UnitOfMeasure } from '@/models/unit-of-measure';
 
 export const TEST_PORTION: Portion = {
   grams: 240,
