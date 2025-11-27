@@ -1,4 +1,4 @@
-import { TEST_FOOD } from '@/data/__tests__/test-data';
+import { TEST_FDC_FOODS, TEST_FOOD } from '@/data/__tests__/test-data';
 import { fetchFoodItem, searchFdcData } from '@/data/usda-fdc-data';
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
@@ -7,6 +7,7 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import SearchAndAddPage from '../search-and-add.vue';
+import { useFoodsData } from '@/data/foods';
 
 vi.mock('vue-router');
 vi.mock('@/data/usda-fdc-data');
@@ -88,13 +89,10 @@ describe('SearchAndAddPage', () => {
 
   describe('on search', () => {
     describe('addFoodItem', () => {
-      const foodItem = { fdcId: 123, description: 'Test Food', dataType: 'Branded', foodCategory: 'Snacks' };
-      let addFood: Mock, fdcFoodItemExists: Mock;
-
       beforeEach(async () => {
         (searchFdcData as Mock).mockResolvedValue({
-          foods: [foodItem],
-          totalHits: 1,
+          foods: [...TEST_FDC_FOODS],
+          totalHits: TEST_FDC_FOODS.length,
           currentPage: 1,
           totalPages: 1,
         });
@@ -102,36 +100,39 @@ describe('SearchAndAddPage', () => {
         const searchInput = wrapper.findComponent({ name: 'SearchInput' });
         await searchInput.vm.$emit('search', 'test');
         await flushPromises();
-        // Get the mocks
-        const foodsData = (await import('@/data/foods')).useFoodsData();
-        addFood = foodsData.addFood as Mock;
-        fdcFoodItemExists = foodsData.fdcFoodItemExists as Mock;
+      });
+
+      it('displays a food item per result', () => {
+        const listItems = wrapper.findAllComponents({ name: 'FdcFoodListItem' });
+        expect(listItems.length).toBe(TEST_FDC_FOODS.length);
       });
 
       describe('if the food does not already exist', () => {
         beforeEach(() => {
-          fdcFoodItemExists.mockReturnValue(false);
+          const { fdcFoodItemExists, addFood } = useFoodsData();
+          (fdcFoodItemExists as Mock).mockReturnValue(false);
           (fetchFoodItem as Mock).mockResolvedValue(TEST_FOOD);
-          addFood.mockResolvedValue(undefined);
+          (addFood as Mock).mockResolvedValue(undefined);
         });
 
         it('fetches the food details', async () => {
-          const listItem = wrapper.findComponent({ name: 'FdcFoodListItem' });
-          await listItem.vm.$emit('add', foodItem);
+          const listItems = wrapper.findAllComponents({ name: 'FdcFoodListItem' });
+          await listItems[2]!.vm.$emit('add', TEST_FDC_FOODS[2]);
           await flushPromises();
-          expect(fetchFoodItem).toHaveBeenCalledExactlyOnceWith(foodItem.fdcId);
+          expect(fetchFoodItem).toHaveBeenCalledExactlyOnceWith(TEST_FDC_FOODS[2]!.fdcId);
         });
 
-        it('calls addFood and shows success if not exists', async () => {
-          const listItem = wrapper.findComponent({ name: 'FdcFoodListItem' });
-          await listItem.vm.$emit('add', foodItem);
+        it('calls addFood', async () => {
+          const { addFood } = useFoodsData();
+          const listItems = wrapper.findAllComponents({ name: 'FdcFoodListItem' });
+          await listItems[2]!.vm.$emit('add', TEST_FDC_FOODS[2]);
           await flushPromises();
           expect(addFood).toHaveBeenCalledWith(TEST_FOOD);
         });
 
         it('shows success', async () => {
-          const listItem = wrapper.findComponent({ name: 'FdcFoodListItem' });
-          await listItem.vm.$emit('add', foodItem);
+          const listItems = wrapper.findAllComponents({ name: 'FdcFoodListItem' });
+          await listItems[2]!.vm.$emit('add', TEST_FDC_FOODS[2]);
           await flushPromises();
           const snackbar = document.body.querySelector('.v-snackbar');
           expect(snackbar).not.toBeNull();
@@ -140,8 +141,8 @@ describe('SearchAndAddPage', () => {
 
         it('shows error if fetchFoodItem throws', async () => {
           (fetchFoodItem as Mock).mockRejectedValueOnce(new Error('fail'));
-          const listItem = wrapper.findComponent({ name: 'FdcFoodListItem' });
-          await listItem.vm.$emit('add', foodItem);
+          const listItems = wrapper.findAllComponents({ name: 'FdcFoodListItem' });
+          await listItems[2]!.vm.$emit('add', TEST_FDC_FOODS[2]);
           await flushPromises();
           const snackbar = document.body.querySelector('.v-snackbar');
           expect(snackbar).not.toBeNull();
@@ -149,9 +150,10 @@ describe('SearchAndAddPage', () => {
         });
 
         it('shows error if addFood throws', async () => {
-          addFood.mockRejectedValueOnce(new Error('fail'));
-          const listItem = wrapper.findComponent({ name: 'FdcFoodListItem' });
-          await listItem.vm.$emit('add', foodItem);
+          const { addFood } = useFoodsData();
+          (addFood as Mock).mockRejectedValueOnce(new Error('fail'));
+          const listItems = wrapper.findAllComponents({ name: 'FdcFoodListItem' });
+          await listItems[2]!.vm.$emit('add', TEST_FDC_FOODS[2]);
           await flushPromises();
           const snackbar = document.body.querySelector('.v-snackbar');
           expect(snackbar).not.toBeNull();
