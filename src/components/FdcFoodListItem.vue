@@ -5,7 +5,16 @@
       <v-list-item-subtitle>{{ food.foodCategory }}</v-list-item-subtitle>
 
       <template #append>
-        <v-btn color="primary" variant="text" size="small" @click="$emit('add', food)"> Add Item </v-btn>
+        <v-btn
+          color="primary"
+          variant="text"
+          size="small"
+          :disabled="adding"
+          :loading="adding"
+          @click="$emit('add', food)"
+        >
+          Add Item
+        </v-btn>
       </template>
     </v-list-item>
   </div>
@@ -18,6 +27,7 @@ defineProps<{
     fdcId: number;
     foodCategory: string;
   };
+  adding: boolean;
 }>();
 
 defineEmits(['add']);

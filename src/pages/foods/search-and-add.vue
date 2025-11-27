@@ -23,7 +23,13 @@
       </v-container>
 
       <v-list v-else class="search-results-list">
-        <FdcFoodListItem v-for="food in searchResults.foods" :key="food.fdcId" :food="food" @add="addFoodItem" />
+        <FdcFoodListItem
+          v-for="food in searchResults.foods"
+          :key="food.fdcId"
+          :food="food"
+          @add="addFoodItem"
+          :adding="isAddingFood"
+        />
       </v-list>
 
       <v-container class="max-width">
@@ -43,12 +49,13 @@
 
 <script lang="ts" setup>
 import { useFoodsData } from '@/data/foods';
-import { searchFdcData } from '@/data/usda-fdc-data';
+import { fetchFoodItem, searchFdcData } from '@/data/usda-fdc-data';
 import type { FdcFoodSearchFoodItem, FdcFoodSearchResult } from '@/models/usda-fdc';
 import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 const searchResults = ref<FdcFoodSearchResult>();
+const isAddingFood = ref(false);
 const isChangingPage = ref(false);
 const isSearching = ref(false);
 const hasSearched = ref(false);
@@ -94,7 +101,10 @@ const addFoodItem = async (foodItem: FdcFoodSearchFoodItem) => {
     displayError('This food item already exists.');
   } else {
     try {
-      await addFood({ fdcId: foodItem.fdcId });
+      isAddingFood.value = true;
+      const food = await fetchFoodItem(foodItem.fdcId);
+      await addFood(food);
+      isAddingFood.value = false;
       displaySuccess('The food item has been added to your food list.');
     } catch {
       displayError('Failed to add food item. Please try again.');
