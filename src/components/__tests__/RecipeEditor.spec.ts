@@ -5,6 +5,7 @@ import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import RecipeEditor from '../RecipeEditor.vue';
 import type { Recipe } from '@/models/recipe';
+import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 
 const vuetify = createVuetify({
   components,
@@ -190,6 +191,16 @@ describe('Recipe Editor', () => {
             description: null,
             category: 'Dessert',
             difficulty: 'Easy',
+            servings: 0,
+            servingSize: 0,
+            servingSizeUnits: findUnitOfMeasure('item'),
+            servingGrams: null,
+            calories: 0,
+            sodium: 0,
+            sugar: 0,
+            totalCarbs: 0,
+            fat: 0,
+            protein: 0,
             ingredients: [],
             steps: [],
           },
@@ -241,6 +252,16 @@ describe('Recipe Editor', () => {
             description: null,
             category: 'Dessert',
             difficulty: 'Normal',
+            servings: 0,
+            servingSize: 0,
+            servingSizeUnits: findUnitOfMeasure('item'),
+            servingGrams: null,
+            calories: 0,
+            sodium: 0,
+            sugar: 0,
+            totalCarbs: 0,
+            fat: 0,
+            protein: 0,
             ingredients: [],
             steps: [],
           },
@@ -256,6 +277,16 @@ const BEER_CHEESE: Recipe = {
   description: null,
   category: 'Beverage',
   difficulty: 'Easy',
+  servings: 2,
+  servingSize: 8,
+  servingSizeUnits: findUnitOfMeasure('floz'),
+  servingGrams: null,
+  calories: 375,
+  sodium: 1250,
+  sugar: 18,
+  totalCarbs: 42,
+  fat: 35,
+  protein: 15,
   ingredients: [],
   steps: [],
 };

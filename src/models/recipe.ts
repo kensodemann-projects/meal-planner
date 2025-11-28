@@ -33,6 +33,16 @@ export interface Recipe {
   description: string | null;
   category: RecipeCategory;
   difficulty: RecipeDifficulty;
+  servings: number;
+  servingSize: number;
+  servingSizeUnits: UnitOfMeasure;
+  servingGrams: number | null;
+  calories: number;
+  sodium: number;
+  sugar: number;
+  totalCarbs: number;
+  fat: number;
+  protein: number;
   ingredients: RecipeIngredient[];
   steps: string[];
 }

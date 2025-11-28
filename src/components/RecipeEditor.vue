@@ -59,6 +59,7 @@
 </template>
 
 <script setup lang="ts">
+import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import { validationRules } from '@/core/validation-rules';
 import { recipeCategories } from '@/data/recipe-categories';
 import { recipeDifficulties } from '@/data/recipe-difficulties';
@@ -92,6 +93,16 @@ const save = () => {
     description: null,
     category: category.value!,
     difficulty: difficulty.value!,
+    servings: 0,
+    servingSize: 0,
+    servingSizeUnits: findUnitOfMeasure('item'),
+    servingGrams: null,
+    calories: 0,
+    sodium: 0,
+    sugar: 0,
+    totalCarbs: 0,
+    fat: 0,
+    protein: 0,
     ingredients: [],
     steps: [],
   });
