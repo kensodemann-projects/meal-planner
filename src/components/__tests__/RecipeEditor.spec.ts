@@ -152,6 +152,11 @@ describe('Recipe Editor', () => {
       expect(input.exists()).toBe(true);
       expect(input.props('label')).toBe('Servings');
     });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsRequired(wrapper, 'servings-input');
+    });
   });
 
   describe('serving grams', () => {
@@ -171,6 +176,11 @@ describe('Recipe Editor', () => {
       const input = wrapper.findComponent('[data-testid="serving-size-input"]') as VueWrapper<components.VNumberInput>;
       expect(input.exists()).toBe(true);
       expect(input.props('label')).toBe('Serving Size');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsRequired(wrapper, 'serving-size-input');
     });
   });
 
@@ -330,6 +340,8 @@ describe('Recipe Editor', () => {
         await inputs.difficulty.setValue('Easy');
         (wrapper.vm as any).difficulty = 'Easy';
         await inputs.name.setValue('Apple Pie');
+        await inputs.servings.setValue('2');
+        await inputs.servingSize.setValue('12');
         await inputs.calories.setValue('325');
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
@@ -343,6 +355,8 @@ describe('Recipe Editor', () => {
         await inputs.difficulty.setValue('Easy');
         (wrapper.vm as any).difficulty = 'Easy';
         await inputs.name.setValue('Apple Pie');
+        await inputs.servings.setValue('2');
+        await inputs.servingSize.setValue('1');
         await inputs.calories.setValue('325');
         await saveButton.trigger('click');
         expect(wrapper.emitted('save')).toBeTruthy();
@@ -353,8 +367,8 @@ describe('Recipe Editor', () => {
             description: null,
             category: 'Dessert',
             difficulty: 'Easy',
-            servings: 0,
-            servingSize: 0,
+            servings: 2,
+            servingSize: 1,
             servingSizeUnits: findUnitOfMeasure('item'),
             servingGrams: null,
             calories: 325,
@@ -425,10 +439,10 @@ describe('Recipe Editor', () => {
             description: null,
             category: 'Dessert',
             difficulty: 'Normal',
-            servings: 0,
-            servingSize: 0,
+            servings: BEER_CHEESE.servings,
+            servingSize: BEER_CHEESE.servingSize,
             servingSizeUnits: findUnitOfMeasure('item'),
-            servingGrams: null,
+            servingGrams: BEER_CHEESE.servingGrams,
             calories: 325,
             sodium: 0,
             sugar: 0,

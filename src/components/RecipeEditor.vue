@@ -46,7 +46,12 @@
     <v-container fluid>
       <v-row>
         <v-col cols="12" md="6">
-          <v-number-input label="Servings" v-model="servings" data-testid="servings-input"></v-number-input>
+          <v-number-input
+            label="Servings"
+            v-model="servings"
+            :rules="[validationRules.required]"
+            data-testid="servings-input"
+          ></v-number-input>
         </v-col>
 
         <v-col cols="12" md="6">
@@ -60,7 +65,12 @@
 
       <v-row>
         <v-col cols="12" md="6">
-          <v-number-input label="Serving Size" v-model="servingSize" data-testid="serving-size-input"></v-number-input>
+          <v-number-input
+            label="Serving Size"
+            v-model="servingSize"
+            :rules="[validationRules.required]"
+            data-testid="serving-size-input"
+          ></v-number-input>
         </v-col>
 
         <v-col cols="12" md="6">
@@ -186,7 +196,17 @@ const isModified = computed((): boolean => {
   return (
     props.recipe.name !== name.value ||
     props.recipe.category !== category.value ||
-    props.recipe.difficulty !== difficulty.value
+    props.recipe.difficulty !== difficulty.value ||
+    props.recipe.servings !== servings.value ||
+    props.recipe.servingSize !== servingSize.value ||
+    props.recipe.servingSizeUnits.id !== servingUnitOfMeasure.value ||
+    props.recipe.servingGrams !== servingGrams.value ||
+    props.recipe.calories !== calories.value ||
+    props.recipe.sodium !== sodium.value ||
+    props.recipe.sugar !== sugar.value ||
+    props.recipe.totalCarbs !== totalCarbs.value ||
+    props.recipe.fat !== fat.value ||
+    props.recipe.protein !== protein.value
   );
 });
 
@@ -197,10 +217,10 @@ const save = () => {
     description: null,
     category: category.value!,
     difficulty: difficulty.value!,
-    servings: 0,
-    servingSize: 0,
+    servings: servings.value!,
+    servingSize: servingSize.value!,
     servingSizeUnits: findUnitOfMeasure('item'),
-    servingGrams: null,
+    servingGrams: servingGrams.value || null,
     calories: calories.value!,
     sodium: 0,
     sugar: 0,
