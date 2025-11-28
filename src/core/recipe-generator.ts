@@ -7,7 +7,7 @@ const systemInstruction = `You are an assistant for home cooks. You provide the 
      - spice level
      - a short list of target ingredients to include
 
-Your response must be a JSON objejct in the following format:
+Your response must be a JSON object in the following format:
 {
   "name": "Name of the recipe",
   "description": "A short description of the recipe",
