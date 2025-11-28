@@ -78,6 +78,7 @@
             label="Serving Units"
             v-model="servingUnitOfMeasure"
             :items="unitOfMeasureOptions"
+            :rules="[validationRules.required]"
             data-testid="unit-of-measure-input"
           ></v-autocomplete>
         </v-col>
@@ -219,7 +220,7 @@ const save = () => {
     difficulty: difficulty.value!,
     servings: servings.value!,
     servingSize: servingSize.value!,
-    servingSizeUnits: findUnitOfMeasure('item'),
+    servingSizeUnits: findUnitOfMeasure(servingUnitOfMeasure.value!),
     servingGrams: servingGrams.value || null,
     calories: calories.value!,
     sodium: sodium.value,

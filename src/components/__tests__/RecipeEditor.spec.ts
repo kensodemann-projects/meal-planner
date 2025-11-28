@@ -44,6 +44,17 @@ const numberInputIsRequired = async (wrapper: ReturnType<typeof mountComponent>,
   expect(wrapper.text()).not.toContain('Required');
 };
 
+const autoompleteIsRequired = async (wrapper: ReturnType<typeof mountComponent>, testId: string) => {
+  const autocomplete = wrapper.findComponent(`[data-testid="${testId}"]`) as VueWrapper<components.VAutocomplete>;
+  const input = autocomplete.find('input');
+
+  expect(wrapper.text()).not.toContain('Required');
+  await input.trigger('focus');
+  await input.setValue('');
+  await input.trigger('blur');
+  expect(wrapper.text()).toContain('Required');
+};
+
 describe('Recipe Editor', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
@@ -107,16 +118,7 @@ describe('Recipe Editor', () => {
 
     it('is required', async () => {
       wrapper = mountComponent();
-      const categoryInput = wrapper.findComponent(
-        '[data-testid="category-input"]',
-      ) as VueWrapper<components.VAutocomplete>;
-      const input = categoryInput.find('input');
-
-      expect(wrapper.text()).not.toContain('Required');
-      await input.trigger('focus');
-      await input.setValue('');
-      await input.trigger('blur');
-      expect(wrapper.text()).toContain('Required');
+      await autoompleteIsRequired(wrapper, 'category-input');
     });
   });
 
@@ -132,16 +134,7 @@ describe('Recipe Editor', () => {
 
     it('is required', async () => {
       wrapper = mountComponent();
-      const difficultyInput = wrapper.findComponent(
-        '[data-testid="difficulty-input"]',
-      ) as VueWrapper<components.VAutocomplete>;
-      const input = difficultyInput.find('input');
-
-      expect(wrapper.text()).not.toContain('Required');
-      await input.trigger('focus');
-      await input.setValue('');
-      await input.trigger('blur');
-      expect(wrapper.text()).toContain('Required');
+      await autoompleteIsRequired(wrapper, 'difficulty-input');
     });
   });
 
@@ -192,6 +185,11 @@ describe('Recipe Editor', () => {
       ) as VueWrapper<components.VAutocomplete>;
       expect(input.exists()).toBe(true);
       expect(input.props('label')).toBe('Serving Units');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await autoompleteIsRequired(wrapper, 'unit-of-measure-input');
     });
   });
 
@@ -339,6 +337,8 @@ describe('Recipe Editor', () => {
         expect(saveButton.attributes('disabled')).toBeDefined();
         await inputs.difficulty.setValue('Easy');
         (wrapper.vm as any).difficulty = 'Easy';
+        await inputs.servingUnitOfMeasure.setValue('oz');
+        (wrapper.vm as any).servingUnitOfMeasure = 'oz';
         await inputs.name.setValue('Apple Pie');
         await inputs.servings.setValue('2');
         await inputs.servingSize.setValue('12');
@@ -354,6 +354,8 @@ describe('Recipe Editor', () => {
         expect(saveButton.attributes('disabled')).toBeDefined();
         await inputs.difficulty.setValue('Easy');
         (wrapper.vm as any).difficulty = 'Easy';
+        await inputs.servingUnitOfMeasure.setValue('oz');
+        (wrapper.vm as any).servingUnitOfMeasure = 'oz';
         await inputs.name.setValue('Apple Pie');
         await inputs.servings.setValue('2');
         await inputs.servingSize.setValue('1');
@@ -369,7 +371,7 @@ describe('Recipe Editor', () => {
             difficulty: 'Easy',
             servings: 2,
             servingSize: 1,
-            servingSizeUnits: findUnitOfMeasure('item'),
+            servingSizeUnits: findUnitOfMeasure('oz'),
             servingGrams: null,
             calories: 325,
             sodium: 0,
@@ -441,7 +443,7 @@ describe('Recipe Editor', () => {
             difficulty: 'Normal',
             servings: BEER_CHEESE.servings,
             servingSize: BEER_CHEESE.servingSize,
-            servingSizeUnits: findUnitOfMeasure('item'),
+            servingSizeUnits: findUnitOfMeasure('floz'),
             servingGrams: BEER_CHEESE.servingGrams,
             calories: 325,
             sodium: BEER_CHEESE.sodium,
