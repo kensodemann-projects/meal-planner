@@ -192,6 +192,11 @@ describe('Recipe Editor', () => {
       expect(input.exists()).toBe(true);
       expect(input.props('label')).toBe('Calories');
     });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsRequired(wrapper, 'calories-input');
+    });
   });
 
   describe('sodium', () => {
@@ -325,6 +330,7 @@ describe('Recipe Editor', () => {
         await inputs.difficulty.setValue('Easy');
         (wrapper.vm as any).difficulty = 'Easy';
         await inputs.name.setValue('Apple Pie');
+        await inputs.calories.setValue('325');
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
 
@@ -337,6 +343,7 @@ describe('Recipe Editor', () => {
         await inputs.difficulty.setValue('Easy');
         (wrapper.vm as any).difficulty = 'Easy';
         await inputs.name.setValue('Apple Pie');
+        await inputs.calories.setValue('325');
         await saveButton.trigger('click');
         expect(wrapper.emitted('save')).toBeTruthy();
         expect(wrapper.emitted('save')).toHaveLength(1);
@@ -350,7 +357,7 @@ describe('Recipe Editor', () => {
             servingSize: 0,
             servingSizeUnits: findUnitOfMeasure('item'),
             servingGrams: null,
-            calories: 0,
+            calories: 325,
             sodium: 0,
             sugar: 0,
             totalCarbs: 0,
@@ -407,6 +414,7 @@ describe('Recipe Editor', () => {
         await inputs.difficulty.setValue('Normal');
         (wrapper.vm as any).difficulty = 'Normal';
         await inputs.name.setValue('Apple Pie');
+        await inputs.calories.setValue('325');
         await saveButton.trigger('click');
         expect(wrapper.emitted('save')).toBeTruthy();
         expect(wrapper.emitted('save')).toHaveLength(1);
@@ -421,7 +429,7 @@ describe('Recipe Editor', () => {
             servingSize: 0,
             servingSizeUnits: findUnitOfMeasure('item'),
             servingGrams: null,
-            calories: 0,
+            calories: 325,
             sodium: 0,
             sugar: 0,
             totalCarbs: 0,

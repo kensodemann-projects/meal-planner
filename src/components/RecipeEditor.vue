@@ -79,7 +79,12 @@
     <v-container fluid>
       <v-row>
         <v-col cols="12" md="4">
-          <v-number-input label="Calories" v-model="calories" data-testid="calories-input"></v-number-input>
+          <v-number-input
+            label="Calories"
+            v-model="calories"
+            :rules="[validationRules.required]"
+            data-testid="calories-input"
+          ></v-number-input>
         </v-col>
 
         <v-col cols="12" md="4">
@@ -196,7 +201,7 @@ const save = () => {
     servingSize: 0,
     servingSizeUnits: findUnitOfMeasure('item'),
     servingGrams: null,
-    calories: 0,
+    calories: calories.value!,
     sodium: 0,
     sugar: 0,
     totalCarbs: 0,
