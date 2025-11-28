@@ -3,8 +3,8 @@ import { expect } from 'vitest';
 import * as components from 'vuetify/components';
 
 export const textFieldIsRequired = async <T>(wrapper: VueWrapper<T>, testId: string) => {
-  const nameInput = wrapper.findComponent(`[data-testid="${testId}"]`) as VueWrapper<components.VTextField>;
-  const input = nameInput.find('input');
+  const textField = wrapper.findComponent(`[data-testid="${testId}"]`) as VueWrapper<components.VTextField>;
+  const input = textField.find('input');
 
   expect(wrapper.text()).not.toContain('Required');
   await input.trigger('focus');
@@ -18,8 +18,8 @@ export const textFieldIsRequired = async <T>(wrapper: VueWrapper<T>, testId: str
 };
 
 export const textFieldIsNotRequired = async <T>(wrapper: VueWrapper<T>, testId: string) => {
-  const brandInput = wrapper.findComponent(`[data-testid="${testId}"]`) as VueWrapper<components.VTextField>;
-  const input = brandInput.find('input');
+  const textField = wrapper.findComponent(`[data-testid="${testId}"]`) as VueWrapper<components.VTextField>;
+  const input = textField.find('input');
 
   await input.trigger('focus');
   await input.setValue('');
@@ -28,8 +28,8 @@ export const textFieldIsNotRequired = async <T>(wrapper: VueWrapper<T>, testId: 
 };
 
 export const numberInputIsRequired = async <T>(wrapper: VueWrapper<T>, testId: string) => {
-  const nameInput = wrapper.findComponent(`[data-testid="${testId}"]`) as VueWrapper<components.VNumberInput>;
-  const input = nameInput.find('input');
+  const numberInput = wrapper.findComponent(`[data-testid="${testId}"]`) as VueWrapper<components.VNumberInput>;
+  const input = numberInput.find('input');
 
   expect(wrapper.text()).not.toContain('Required');
   await input.trigger('focus');
@@ -43,8 +43,8 @@ export const numberInputIsRequired = async <T>(wrapper: VueWrapper<T>, testId: s
 };
 
 export const numberInputIsNotRequired = async <T>(wrapper: VueWrapper<T>, testId: string) => {
-  const brandInput = wrapper.findComponent(`[data-testid="${testId}"]`) as VueWrapper<components.VNumberInput>;
-  const input = brandInput.find('input');
+  const numberInput = wrapper.findComponent(`[data-testid="${testId}"]`) as VueWrapper<components.VNumberInput>;
+  const input = numberInput.find('input');
 
   await input.trigger('focus');
   await input.setValue('');
@@ -53,8 +53,8 @@ export const numberInputIsNotRequired = async <T>(wrapper: VueWrapper<T>, testId
 };
 
 export const autocompleteIsRequired = async <T>(wrapper: VueWrapper<T>, testId: string) => {
-  const foodCategoryInput = wrapper.findComponent(`[data-testid="${testId}"]`) as VueWrapper<components.VAutocomplete>;
-  const input = foodCategoryInput.find('input');
+  const autocomplete = wrapper.findComponent(`[data-testid="${testId}"]`) as VueWrapper<components.VAutocomplete>;
+  const input = autocomplete.find('input');
 
   expect(wrapper.text()).not.toContain('Required');
   await input.trigger('focus');
