@@ -83,11 +83,21 @@
         </v-col>
 
         <v-col cols="12" md="4">
-          <v-number-input label="Sodium" v-model="sodium" data-testid="sodium-input"></v-number-input>
+          <v-number-input
+            label="Sodium"
+            v-model="sodium"
+            :rules="[validationRules.required]"
+            data-testid="sodium-input"
+          ></v-number-input>
         </v-col>
 
         <v-col cols="12" md="4">
-          <v-number-input label="Sugar" v-model="sugar" data-testid="sugar-input"></v-number-input>
+          <v-number-input
+            label="Sugar"
+            v-model="sugar"
+            :rules="[validationRules.required]"
+            data-testid="sugar-input"
+          ></v-number-input>
         </v-col>
       </v-row>
 
@@ -96,16 +106,27 @@
           <v-number-input
             label="Total Carbohydrates"
             v-model="totalCarbs"
+            :rules="[validationRules.required]"
             data-testid="total-carbs-input"
           ></v-number-input>
         </v-col>
 
         <v-col cols="12" md="4">
-          <v-number-input label="Fat" v-model="fat" data-testid="fat-input"></v-number-input>
+          <v-number-input
+            label="Fat"
+            v-model="fat"
+            :rules="[validationRules.required]"
+            data-testid="fat-input"
+          ></v-number-input>
         </v-col>
 
         <v-col cols="12" md="4">
-          <v-number-input label="Protein" v-model="protein" data-testid="protein-input"></v-number-input>
+          <v-number-input
+            label="Protein"
+            :rules="[validationRules.required]"
+            v-model="protein"
+            data-testid="protein-input"
+          ></v-number-input>
         </v-col>
       </v-row>
     </v-container>
