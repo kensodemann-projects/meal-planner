@@ -5,6 +5,7 @@ import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import RecipeEditor from '../RecipeEditor.vue';
 import type { Recipe } from '@/models/recipe';
+import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 
 const vuetify = createVuetify({
   components,
@@ -16,7 +17,43 @@ const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
   name: wrapper.findComponent('[data-testid="name-input"]').find('input'),
   category: wrapper.findComponent('[data-testid="category-input"]').find('input'),
   difficulty: wrapper.findComponent('[data-testid="difficulty-input"]').find('input'),
+  servings: wrapper.findComponent('[data-testid="servings-input"]').find('input'),
+  gramsPerServing: wrapper.findComponent('[data-testid="grams-per-serving-input"]').find('input'),
+  servingSize: wrapper.findComponent('[data-testid="serving-size-input"]').find('input'),
+  servingUnitOfMeasure: wrapper.findComponent('[data-testid="unit-of-measure-input"]').find('input'),
+  calories: wrapper.findComponent('[data-testid="calories-input"]').find('input'),
+  sodium: wrapper.findComponent('[data-testid="sodium-input"]').find('input'),
+  sugar: wrapper.findComponent('[data-testid="sugar-input"]').find('input'),
+  totalCarbs: wrapper.findComponent('[data-testid="total-carbs-input"]').find('input'),
+  fat: wrapper.findComponent('[data-testid="fat-input"]').find('input'),
+  protein: wrapper.findComponent('[data-testid="protein-input"]').find('input'),
 });
+
+const numberInputIsRequired = async (wrapper: ReturnType<typeof mountComponent>, testId: string) => {
+  const vInput = wrapper.findComponent(`[data-testid="${testId}"]`) as VueWrapper<components.VNumberInput>;
+  const input = vInput.find('input');
+
+  expect(wrapper.text()).not.toContain('Required');
+  await input.trigger('focus');
+  await input.setValue('');
+  await input.trigger('blur');
+  expect(wrapper.text()).toContain('Required');
+
+  await input.setValue('12');
+  await input.trigger('blur');
+  expect(wrapper.text()).not.toContain('Required');
+};
+
+const autocompleteIsRequired = async (wrapper: ReturnType<typeof mountComponent>, testId: string) => {
+  const autocomplete = wrapper.findComponent(`[data-testid="${testId}"]`) as VueWrapper<components.VAutocomplete>;
+  const input = autocomplete.find('input');
+
+  expect(wrapper.text()).not.toContain('Required');
+  await input.trigger('focus');
+  await input.setValue('');
+  await input.trigger('blur');
+  expect(wrapper.text()).toContain('Required');
+};
 
 describe('Recipe Editor', () => {
   let wrapper: ReturnType<typeof mountComponent>;
@@ -34,11 +71,22 @@ describe('Recipe Editor', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  describe('name input', () => {
+  it('includes the proper sub-sections', () => {
+    wrapper = mountComponent();
+    const subheaders = wrapper.findAll('h2');
+    expect(subheaders.length).toBe(4);
+    expect(subheaders[0]!.text()).toBe('Basic Information');
+    expect(subheaders[1]!.text()).toBe('Nutritional Information');
+    expect(subheaders[2]!.text()).toBe('Ingredients');
+    expect(subheaders[3]!.text()).toBe('Steps');
+  });
+
+  describe('name', () => {
     it('exists', () => {
       wrapper = mountComponent();
-      const input = wrapper.findComponent('[data-testid="name-input"]');
+      const input = wrapper.findComponent('[data-testid="name-input"]') as VueWrapper<components.VTextField>;
       expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Name');
     });
 
     it('is required', async () => {
@@ -70,16 +118,7 @@ describe('Recipe Editor', () => {
 
     it('is required', async () => {
       wrapper = mountComponent();
-      const categoryInput = wrapper.findComponent(
-        '[data-testid="category-input"]',
-      ) as VueWrapper<components.VAutocomplete>;
-      const input = categoryInput.find('input');
-
-      expect(wrapper.text()).not.toContain('Required');
-      await input.trigger('focus');
-      await input.setValue('');
-      await input.trigger('blur');
-      expect(wrapper.text()).toContain('Required');
+      await autocompleteIsRequired(wrapper, 'category-input');
     });
   });
 
@@ -95,16 +134,146 @@ describe('Recipe Editor', () => {
 
     it('is required', async () => {
       wrapper = mountComponent();
-      const difficultyInput = wrapper.findComponent(
-        '[data-testid="difficulty-input"]',
-      ) as VueWrapper<components.VAutocomplete>;
-      const input = difficultyInput.find('input');
+      await autocompleteIsRequired(wrapper, 'difficulty-input');
+    });
+  });
 
-      expect(wrapper.text()).not.toContain('Required');
-      await input.trigger('focus');
-      await input.setValue('');
-      await input.trigger('blur');
-      expect(wrapper.text()).toContain('Required');
+  describe('servings', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="servings-input"]') as VueWrapper<components.VNumberInput>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Servings');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsRequired(wrapper, 'servings-input');
+    });
+  });
+
+  describe('serving grams', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent(
+        '[data-testid="grams-per-serving-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Grams per Serving');
+    });
+  });
+
+  describe('serving size', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="serving-size-input"]') as VueWrapper<components.VNumberInput>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Serving Size');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsRequired(wrapper, 'serving-size-input');
+    });
+  });
+
+  describe('unit of measure', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent(
+        '[data-testid="unit-of-measure-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Serving Units');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await autocompleteIsRequired(wrapper, 'unit-of-measure-input');
+    });
+  });
+
+  describe('calories', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="calories-input"]') as VueWrapper<components.VNumberInput>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Calories');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsRequired(wrapper, 'calories-input');
+    });
+  });
+
+  describe('sodium', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="sodium-input"]') as VueWrapper<components.VNumberInput>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Sodium');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsRequired(wrapper, 'sodium-input');
+    });
+  });
+
+  describe('sugar', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="sugar-input"]') as VueWrapper<components.VNumberInput>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Sugar');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsRequired(wrapper, 'sugar-input');
+    });
+  });
+
+  describe('total carbs', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="total-carbs-input"]') as VueWrapper<components.VNumberInput>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Total Carbohydrates');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsRequired(wrapper, 'total-carbs-input');
+    });
+  });
+
+  describe('fat', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="fat-input"]') as VueWrapper<components.VNumberInput>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Fat');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsRequired(wrapper, 'fat-input');
+    });
+  });
+
+  describe('protein', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="protein-input"]') as VueWrapper<components.VNumberInput>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Protein');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsRequired(wrapper, 'protein-input');
     });
   });
 
@@ -142,6 +311,16 @@ describe('Recipe Editor', () => {
       expect(inputs.name.element.value).toBe('');
       expect(inputs.category.element.value).toBe('');
       expect(inputs.difficulty.element.value).toBe('');
+      expect(inputs.servings.element.value).toBe('');
+      expect(inputs.gramsPerServing.element.value).toBe('');
+      expect(inputs.servingSize.element.value).toBe('');
+      expect(inputs.servingUnitOfMeasure.element.value).toBe('');
+      expect(inputs.calories.element.value).toBe('');
+      expect(inputs.sodium.element.value).toBe('0');
+      expect(inputs.sugar.element.value).toBe('0');
+      expect(inputs.totalCarbs.element.value).toBe('0');
+      expect(inputs.fat.element.value).toBe('0');
+      expect(inputs.protein.element.value).toBe('0');
     });
 
     describe('the save button', () => {
@@ -158,7 +337,12 @@ describe('Recipe Editor', () => {
         expect(saveButton.attributes('disabled')).toBeDefined();
         await inputs.difficulty.setValue('Easy');
         (wrapper.vm as any).difficulty = 'Easy';
+        await inputs.servingUnitOfMeasure.setValue('oz');
+        (wrapper.vm as any).servingUnitOfMeasureId = 'oz';
         await inputs.name.setValue('Apple Pie');
+        await inputs.servings.setValue('2');
+        await inputs.servingSize.setValue('12');
+        await inputs.calories.setValue('325');
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
 
@@ -170,15 +354,33 @@ describe('Recipe Editor', () => {
         expect(saveButton.attributes('disabled')).toBeDefined();
         await inputs.difficulty.setValue('Easy');
         (wrapper.vm as any).difficulty = 'Easy';
+        await inputs.servingUnitOfMeasure.setValue('oz');
+        (wrapper.vm as any).servingUnitOfMeasureId = 'oz';
         await inputs.name.setValue('Apple Pie');
+        await inputs.servings.setValue('2');
+        await inputs.servingSize.setValue('1');
+        await inputs.calories.setValue('325');
         await saveButton.trigger('click');
         expect(wrapper.emitted('save')).toBeTruthy();
         expect(wrapper.emitted('save')).toHaveLength(1);
         expect(wrapper.emitted('save')?.[0]).toEqual([
           {
             name: 'Apple Pie',
+            description: null,
             category: 'Dessert',
             difficulty: 'Easy',
+            servings: 2,
+            servingSize: 1,
+            servingSizeUnits: findUnitOfMeasure('oz'),
+            servingGrams: null,
+            calories: 325,
+            sodium: 0,
+            sugar: 0,
+            totalCarbs: 0,
+            fat: 0,
+            protein: 0,
+            ingredients: [],
+            steps: [],
           },
         ]);
       });
@@ -195,6 +397,16 @@ describe('Recipe Editor', () => {
       expect(inputs.name.element.value).toBe(BEER_CHEESE.name);
       expect((wrapper.vm as any).category).toBe(BEER_CHEESE.category);
       expect((wrapper.vm as any).difficulty).toBe(BEER_CHEESE.difficulty);
+      expect(inputs.servings.element.value).toBe(BEER_CHEESE.servings.toString());
+      expect(inputs.gramsPerServing.element.value).toBe(BEER_CHEESE.servingGrams?.toString());
+      expect(inputs.servingSize.element.value).toBe(BEER_CHEESE.servingSize.toString());
+      expect((wrapper.vm as any).servingUnitOfMeasureId).toBe('floz');
+      expect(inputs.calories.element.value).toBe(BEER_CHEESE.calories.toString());
+      expect(inputs.sodium.element.value).toBe(BEER_CHEESE.sodium.toString());
+      expect(inputs.sugar.element.value).toBe(BEER_CHEESE.sugar.toString());
+      expect(inputs.totalCarbs.element.value).toBe(BEER_CHEESE.totalCarbs.toString());
+      expect(inputs.fat.element.value).toBe(BEER_CHEESE.fat.toString());
+      expect(inputs.protein.element.value).toBe(BEER_CHEESE.protein.toString());
     });
 
     describe('the save button', () => {
@@ -218,6 +430,7 @@ describe('Recipe Editor', () => {
         await inputs.difficulty.setValue('Normal');
         (wrapper.vm as any).difficulty = 'Normal';
         await inputs.name.setValue('Apple Pie');
+        await inputs.calories.setValue('325');
         await saveButton.trigger('click');
         expect(wrapper.emitted('save')).toBeTruthy();
         expect(wrapper.emitted('save')).toHaveLength(1);
@@ -225,8 +438,21 @@ describe('Recipe Editor', () => {
           {
             id: 'fie039950912',
             name: 'Apple Pie',
+            description: null,
             category: 'Dessert',
             difficulty: 'Normal',
+            servings: BEER_CHEESE.servings,
+            servingSize: BEER_CHEESE.servingSize,
+            servingSizeUnits: findUnitOfMeasure('floz'),
+            servingGrams: BEER_CHEESE.servingGrams,
+            calories: 325,
+            sodium: BEER_CHEESE.sodium,
+            sugar: BEER_CHEESE.sugar,
+            totalCarbs: BEER_CHEESE.totalCarbs,
+            fat: BEER_CHEESE.fat,
+            protein: BEER_CHEESE.protein,
+            ingredients: [],
+            steps: [],
           },
         ]);
       });
@@ -237,6 +463,19 @@ describe('Recipe Editor', () => {
 const BEER_CHEESE: Recipe = {
   id: 'fie039950912',
   name: 'Beer Cheese',
+  description: 'It is beery. It is cheesey. How could you go wrong?',
   category: 'Beverage',
   difficulty: 'Easy',
+  servings: 2,
+  servingSize: 8,
+  servingSizeUnits: findUnitOfMeasure('floz'),
+  servingGrams: 140,
+  calories: 375,
+  sodium: 1250,
+  sugar: 18,
+  totalCarbs: 42,
+  fat: 35,
+  protein: 15,
+  ingredients: [],
+  steps: [],
 };
