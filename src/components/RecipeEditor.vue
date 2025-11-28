@@ -40,6 +40,15 @@
       </v-row>
     </v-container>
 
+    <h2>Nutritional Information</h2>
+    <v-divider class="mb-4"></v-divider>
+
+    <h2>Ingredients</h2>
+    <v-divider class="mb-4"></v-divider>
+
+    <h2>Steps</h2>
+    <v-divider class="mb-4"></v-divider>
+
     <v-container fluid>
       <v-row class="pa-4" justify="end">
         <CancelButton class="mr-4" @click="$emit('cancel')" />

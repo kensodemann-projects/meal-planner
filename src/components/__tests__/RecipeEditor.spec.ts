@@ -34,6 +34,16 @@ describe('Recipe Editor', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
+  it('includes the proper sub-sections', () => {
+    wrapper = mountComponent();
+    const subheaders = wrapper.findAll('h2');
+    expect(subheaders.length).toBe(4);
+    expect(subheaders[0]!.text()).toBe('Basic Information');
+    expect(subheaders[1]!.text()).toBe('Nutritional Information');
+    expect(subheaders[2]!.text()).toBe('Ingredients');
+    expect(subheaders[3]!.text()).toBe('Steps');
+  });
+
   describe('name input', () => {
     it('exists', () => {
       wrapper = mountComponent();
