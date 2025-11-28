@@ -46,22 +46,27 @@
     <v-container fluid>
       <v-row>
         <v-col cols="12" md="6">
-          <v-number-input label="Servings" data-testid="servings-input"></v-number-input>
+          <v-number-input label="Servings" v-model="servings" data-testid="servings-input"></v-number-input>
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-number-input label="Grams per Serving" data-testid="grams-per-serving-input"></v-number-input>
+          <v-number-input
+            label="Grams per Serving"
+            v-model="servingGrams"
+            data-testid="grams-per-serving-input"
+          ></v-number-input>
         </v-col>
       </v-row>
 
       <v-row>
         <v-col cols="12" md="6">
-          <v-number-input label="Serving Size" data-testid="serving-size-input"></v-number-input>
+          <v-number-input label="Serving Size" v-model="servingSize" data-testid="serving-size-input"></v-number-input>
         </v-col>
 
         <v-col cols="12" md="6">
           <v-autocomplete
             label="Serving Units"
+            v-model="servingUnitOfMeasure"
             :items="unitOfMeasureOptions"
             data-testid="unit-of-measure-input"
           ></v-autocomplete>
@@ -74,29 +79,33 @@
     <v-container fluid>
       <v-row>
         <v-col cols="12" md="4">
-          <v-number-input label="Calories" data-testid="calories-input"></v-number-input>
+          <v-number-input label="Calories" v-model="calories" data-testid="calories-input"></v-number-input>
         </v-col>
 
         <v-col cols="12" md="4">
-          <v-number-input label="Sodium" data-testid="sodium-input"></v-number-input>
+          <v-number-input label="Sodium" v-model="sodium" data-testid="sodium-input"></v-number-input>
         </v-col>
 
         <v-col cols="12" md="4">
-          <v-number-input label="Sugar" data-testid="sugar-input"></v-number-input>
+          <v-number-input label="Sugar" v-model="sugar" data-testid="sugar-input"></v-number-input>
         </v-col>
       </v-row>
 
       <v-row>
         <v-col cols="12" md="4">
-          <v-number-input label="Total Carbohydrates" data-testid="total-carbs-input"></v-number-input>
+          <v-number-input
+            label="Total Carbohydrates"
+            v-model="totalCarbs"
+            data-testid="total-carbs-input"
+          ></v-number-input>
         </v-col>
 
         <v-col cols="12" md="4">
-          <v-number-input label="Fat" data-testid="fat-input"></v-number-input>
+          <v-number-input label="Fat" v-model="fat" data-testid="fat-input"></v-number-input>
         </v-col>
 
         <v-col cols="12" md="4">
-          <v-number-input label="Protein" data-testid="protein-input"></v-number-input>
+          <v-number-input label="Protein" v-model="protein" data-testid="protein-input"></v-number-input>
         </v-col>
       </v-row>
     </v-container>
@@ -133,6 +142,16 @@ const valid = ref(false);
 const name = ref<string>(props.recipe?.name || '');
 const category = ref<RecipeCategory | undefined>(props.recipe?.category);
 const difficulty = ref<RecipeDifficulty | undefined>(props.recipe?.difficulty);
+const servings = ref<number | undefined>(props.recipe?.servings);
+const servingSize = ref<number | undefined>(props.recipe?.servingSize);
+const servingUnitOfMeasure = ref<string | undefined>(props.recipe?.servingSizeUnits.id);
+const servingGrams = ref<number | null | undefined>(props.recipe?.servingGrams);
+const calories = ref<number | undefined>(props.recipe?.calories);
+const sodium = ref<number>(props.recipe?.sodium || 0);
+const sugar = ref<number>(props.recipe?.sugar || 0);
+const totalCarbs = ref<number>(props.recipe?.totalCarbs || 0);
+const fat = ref<number>(props.recipe?.fat || 0);
+const protein = ref<number>(props.recipe?.protein || 0);
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 

@@ -17,6 +17,16 @@ const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
   name: wrapper.findComponent('[data-testid="name-input"]').find('input'),
   category: wrapper.findComponent('[data-testid="category-input"]').find('input'),
   difficulty: wrapper.findComponent('[data-testid="difficulty-input"]').find('input'),
+  servings: wrapper.findComponent('[data-testid="servings-input"]').find('input'),
+  gramsPerServing: wrapper.findComponent('[data-testid="grams-per-serving-input"]').find('input'),
+  servingSize: wrapper.findComponent('[data-testid="serving-size-input"]').find('input'),
+  servingUnitOfMeasure: wrapper.findComponent('[data-testid="unit-of-measure-input"]').find('input'),
+  calories: wrapper.findComponent('[data-testid="calories-input"]').find('input'),
+  sodium: wrapper.findComponent('[data-testid="sodium-input"]').find('input'),
+  sugar: wrapper.findComponent('[data-testid="sugar-input"]').find('input'),
+  totalCarbs: wrapper.findComponent('[data-testid="total-carbs-input"]').find('input'),
+  fat: wrapper.findComponent('[data-testid="fat-input"]').find('input'),
+  protein: wrapper.findComponent('[data-testid="protein-input"]').find('input'),
 });
 
 describe('Recipe Editor', () => {
@@ -248,6 +258,16 @@ describe('Recipe Editor', () => {
       expect(inputs.name.element.value).toBe('');
       expect(inputs.category.element.value).toBe('');
       expect(inputs.difficulty.element.value).toBe('');
+      expect(inputs.servings.element.value).toBe('');
+      expect(inputs.gramsPerServing.element.value).toBe('');
+      expect(inputs.servingSize.element.value).toBe('');
+      expect(inputs.servingUnitOfMeasure.element.value).toBe('');
+      expect(inputs.calories.element.value).toBe('');
+      expect(inputs.sodium.element.value).toBe('0');
+      expect(inputs.sugar.element.value).toBe('0');
+      expect(inputs.totalCarbs.element.value).toBe('0');
+      expect(inputs.fat.element.value).toBe('0');
+      expect(inputs.protein.element.value).toBe('0');
     });
 
     describe('the save button', () => {
@@ -314,6 +334,16 @@ describe('Recipe Editor', () => {
       expect(inputs.name.element.value).toBe(BEER_CHEESE.name);
       expect((wrapper.vm as any).category).toBe(BEER_CHEESE.category);
       expect((wrapper.vm as any).difficulty).toBe(BEER_CHEESE.difficulty);
+      expect(inputs.servings.element.value).toBe(BEER_CHEESE.servings.toString());
+      expect(inputs.gramsPerServing.element.value).toBe(BEER_CHEESE.servingGrams?.toString());
+      expect(inputs.servingSize.element.value).toBe(BEER_CHEESE.servingSize.toString());
+      expect((wrapper.vm as any).servingUnitOfMeasure).toBe('floz');
+      expect(inputs.calories.element.value).toBe(BEER_CHEESE.calories.toString());
+      expect(inputs.sodium.element.value).toBe(BEER_CHEESE.sodium.toString());
+      expect(inputs.sugar.element.value).toBe(BEER_CHEESE.sugar.toString());
+      expect(inputs.totalCarbs.element.value).toBe(BEER_CHEESE.totalCarbs.toString());
+      expect(inputs.fat.element.value).toBe(BEER_CHEESE.fat.toString());
+      expect(inputs.protein.element.value).toBe(BEER_CHEESE.protein.toString());
     });
 
     describe('the save button', () => {
@@ -369,13 +399,13 @@ describe('Recipe Editor', () => {
 const BEER_CHEESE: Recipe = {
   id: 'fie039950912',
   name: 'Beer Cheese',
-  description: null,
+  description: 'It is beery. It is cheesey. How could you go wrong?',
   category: 'Beverage',
   difficulty: 'Easy',
   servings: 2,
   servingSize: 8,
   servingSizeUnits: findUnitOfMeasure('floz'),
-  servingGrams: null,
+  servingGrams: 140,
   calories: 375,
   sodium: 1250,
   sugar: 18,
