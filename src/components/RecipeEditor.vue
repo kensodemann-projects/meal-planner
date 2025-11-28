@@ -43,6 +43,34 @@
     <h2>Nutritional Information</h2>
     <v-divider class="mb-4"></v-divider>
 
+    <v-container fluid>
+      <v-row>
+        <v-col cols="12" md="6">
+          <v-number-input label="Servings" data-testid="servings-input"></v-number-input>
+        </v-col>
+
+        <v-col cols="12" md="6">
+          <v-number-input label="Grams per Serving" data-testid="grams-per-serving-input"></v-number-input>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="12" md="6">
+          <v-number-input label="Serving Size" data-testid="serving-size-input"></v-number-input>
+        </v-col>
+
+        <v-col cols="12" md="6">
+          <v-autocomplete
+            label="Serving Units"
+            :items="unitOfMeasureOptions"
+            data-testid="unit-of-measure-input"
+          ></v-autocomplete>
+        </v-col>
+      </v-row>
+    </v-container>
+
+    <h3>Nutrients per Serving</h3>
+
     <h2>Ingredients</h2>
     <v-divider class="mb-4"></v-divider>
 
@@ -66,6 +94,7 @@ import { recipeDifficulties } from '@/data/recipe-difficulties';
 import type { Recipe, RecipeCategory, RecipeDifficulty } from '@/models/recipe';
 import { computed, onMounted, ref } from 'vue';
 import type { VTextField } from 'vuetify/components';
+import { unitOfMeasureOptions } from '@/data/unit-of-measure';
 
 const emit = defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'cancel'): void }>();
 const props = defineProps<{ recipe?: Recipe }>();

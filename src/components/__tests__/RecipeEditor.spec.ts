@@ -45,11 +45,12 @@ describe('Recipe Editor', () => {
     expect(subheaders[3]!.text()).toBe('Steps');
   });
 
-  describe('name input', () => {
+  describe('name', () => {
     it('exists', () => {
       wrapper = mountComponent();
-      const input = wrapper.findComponent('[data-testid="name-input"]');
+      const input = wrapper.findComponent('[data-testid="name-input"]') as VueWrapper<components.VTextField>;
       expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Name');
     });
 
     it('is required', async () => {
@@ -116,6 +117,46 @@ describe('Recipe Editor', () => {
       await input.setValue('');
       await input.trigger('blur');
       expect(wrapper.text()).toContain('Required');
+    });
+  });
+
+  describe('servings', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="servings-input"]') as VueWrapper<components.VTextField>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Servings');
+    });
+  });
+
+  describe('serving grams', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent(
+        '[data-testid="grams-per-serving-input"]',
+      ) as VueWrapper<components.VTextField>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Grams per Serving');
+    });
+  });
+
+  describe('serving size', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="serving-size-input"]') as VueWrapper<components.VTextField>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Serving Size');
+    });
+  });
+
+  describe('unit of measure', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent(
+        '[data-testid="unit-of-measure-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Serving Units');
     });
   });
 
