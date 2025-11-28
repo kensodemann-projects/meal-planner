@@ -11,5 +11,10 @@ const text = ref('Working...');
 
 const { generate } = useRecipeGenerator();
 
-generate().then((x) => (text.value = x));
+generate()
+  .then((x) => (text.value = x))
+  .catch((error) => {
+    console.error('Recipe generation failed:', error);
+    text.value = 'Error generating recipe. Please try again.';
+  });
 </script>
