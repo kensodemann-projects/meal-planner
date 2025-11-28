@@ -89,8 +89,11 @@ const save = () => {
   emit('save', {
     ...props.recipe,
     name: name.value,
+    description: null,
     category: category.value!,
     difficulty: difficulty.value!,
+    ingredients: [],
+    steps: [],
   });
 };
 

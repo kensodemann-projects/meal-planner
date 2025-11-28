@@ -187,8 +187,11 @@ describe('Recipe Editor', () => {
         expect(wrapper.emitted('save')?.[0]).toEqual([
           {
             name: 'Apple Pie',
+            description: null,
             category: 'Dessert',
             difficulty: 'Easy',
+            ingredients: [],
+            steps: [],
           },
         ]);
       });
@@ -235,8 +238,11 @@ describe('Recipe Editor', () => {
           {
             id: 'fie039950912',
             name: 'Apple Pie',
+            description: null,
             category: 'Dessert',
             difficulty: 'Normal',
+            ingredients: [],
+            steps: [],
           },
         ]);
       });
@@ -247,6 +253,9 @@ describe('Recipe Editor', () => {
 const BEER_CHEESE: Recipe = {
   id: 'fie039950912',
   name: 'Beer Cheese',
+  description: null,
   category: 'Beverage',
   difficulty: 'Easy',
+  ingredients: [],
+  steps: [],
 };
