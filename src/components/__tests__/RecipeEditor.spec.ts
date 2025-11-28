@@ -338,7 +338,7 @@ describe('Recipe Editor', () => {
         await inputs.difficulty.setValue('Easy');
         (wrapper.vm as any).difficulty = 'Easy';
         await inputs.servingUnitOfMeasure.setValue('oz');
-        (wrapper.vm as any).servingUnitOfMeasure = 'oz';
+        (wrapper.vm as any).servingUnitOfMeasureId = 'oz';
         await inputs.name.setValue('Apple Pie');
         await inputs.servings.setValue('2');
         await inputs.servingSize.setValue('12');
@@ -355,7 +355,7 @@ describe('Recipe Editor', () => {
         await inputs.difficulty.setValue('Easy');
         (wrapper.vm as any).difficulty = 'Easy';
         await inputs.servingUnitOfMeasure.setValue('oz');
-        (wrapper.vm as any).servingUnitOfMeasure = 'oz';
+        (wrapper.vm as any).servingUnitOfMeasureId = 'oz';
         await inputs.name.setValue('Apple Pie');
         await inputs.servings.setValue('2');
         await inputs.servingSize.setValue('1');
@@ -400,7 +400,7 @@ describe('Recipe Editor', () => {
       expect(inputs.servings.element.value).toBe(BEER_CHEESE.servings.toString());
       expect(inputs.gramsPerServing.element.value).toBe(BEER_CHEESE.servingGrams?.toString());
       expect(inputs.servingSize.element.value).toBe(BEER_CHEESE.servingSize.toString());
-      expect((wrapper.vm as any).servingUnitOfMeasure).toBe('floz');
+      expect((wrapper.vm as any).servingUnitOfMeasureId).toBe('floz');
       expect(inputs.calories.element.value).toBe(BEER_CHEESE.calories.toString());
       expect(inputs.sodium.element.value).toBe(BEER_CHEESE.sodium.toString());
       expect(inputs.sugar.element.value).toBe(BEER_CHEESE.sugar.toString());

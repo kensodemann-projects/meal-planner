@@ -76,7 +76,7 @@
         <v-col cols="12" md="6">
           <v-autocomplete
             label="Serving Units"
-            v-model="servingUnitOfMeasure"
+            v-model="servingUnitOfMeasureId"
             :items="unitOfMeasureOptions"
             :rules="[validationRules.required]"
             data-testid="unit-of-measure-input"
@@ -181,7 +181,7 @@ const category = ref<RecipeCategory | undefined>(props.recipe?.category);
 const difficulty = ref<RecipeDifficulty | undefined>(props.recipe?.difficulty);
 const servings = ref<number | undefined>(props.recipe?.servings);
 const servingSize = ref<number | undefined>(props.recipe?.servingSize);
-const servingUnitOfMeasure = ref<string | undefined>(props.recipe?.servingSizeUnits.id);
+const servingUnitOfMeasureId = ref<string | undefined>(props.recipe?.servingSizeUnits.id);
 const servingGrams = ref<number | null | undefined>(props.recipe?.servingGrams);
 const calories = ref<number | undefined>(props.recipe?.calories);
 const sodium = ref<number>(props.recipe?.sodium || 0);
@@ -200,7 +200,7 @@ const isModified = computed((): boolean => {
     props.recipe.difficulty !== difficulty.value ||
     props.recipe.servings !== servings.value ||
     props.recipe.servingSize !== servingSize.value ||
-    props.recipe.servingSizeUnits.id !== servingUnitOfMeasure.value ||
+    props.recipe.servingSizeUnits.id !== servingUnitOfMeasureId.value ||
     props.recipe.servingGrams !== servingGrams.value ||
     props.recipe.calories !== calories.value ||
     props.recipe.sodium !== sodium.value ||
@@ -220,7 +220,7 @@ const save = () => {
     difficulty: difficulty.value!,
     servings: servings.value!,
     servingSize: servingSize.value!,
-    servingSizeUnits: findUnitOfMeasure(servingUnitOfMeasure.value!),
+    servingSizeUnits: findUnitOfMeasure(servingUnitOfMeasureId.value!),
     servingGrams: servingGrams.value || null,
     calories: calories.value!,
     sodium: sodium.value,
