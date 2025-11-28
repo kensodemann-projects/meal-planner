@@ -6,6 +6,12 @@ import * as directives from 'vuetify/directives';
 import RecipeEditor from '../RecipeEditor.vue';
 import type { Recipe } from '@/models/recipe';
 import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
+import {
+  autocompleteIsRequired,
+  numberInputIsNotRequired,
+  numberInputIsRequired,
+  textFieldIsRequired,
+} from './test-utils';
 
 const vuetify = createVuetify({
   components,
@@ -28,32 +34,6 @@ const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
   fat: wrapper.findComponent('[data-testid="fat-input"]').find('input'),
   protein: wrapper.findComponent('[data-testid="protein-input"]').find('input'),
 });
-
-const numberInputIsRequired = async (wrapper: ReturnType<typeof mountComponent>, testId: string) => {
-  const vInput = wrapper.findComponent(`[data-testid="${testId}"]`) as VueWrapper<components.VNumberInput>;
-  const input = vInput.find('input');
-
-  expect(wrapper.text()).not.toContain('Required');
-  await input.trigger('focus');
-  await input.setValue('');
-  await input.trigger('blur');
-  expect(wrapper.text()).toContain('Required');
-
-  await input.setValue('12');
-  await input.trigger('blur');
-  expect(wrapper.text()).not.toContain('Required');
-};
-
-const autocompleteIsRequired = async (wrapper: ReturnType<typeof mountComponent>, testId: string) => {
-  const autocomplete = wrapper.findComponent(`[data-testid="${testId}"]`) as VueWrapper<components.VAutocomplete>;
-  const input = autocomplete.find('input');
-
-  expect(wrapper.text()).not.toContain('Required');
-  await input.trigger('focus');
-  await input.setValue('');
-  await input.trigger('blur');
-  expect(wrapper.text()).toContain('Required');
-};
 
 describe('Recipe Editor', () => {
   let wrapper: ReturnType<typeof mountComponent>;
@@ -91,18 +71,7 @@ describe('Recipe Editor', () => {
 
     it('is required', async () => {
       wrapper = mountComponent();
-      const nameInput = wrapper.findComponent('[data-testid="name-input"]') as VueWrapper<components.VTextField>;
-      const input = nameInput.find('input');
-
-      expect(wrapper.text()).not.toContain('Required');
-      await input.trigger('focus');
-      await input.setValue('');
-      await input.trigger('blur');
-      expect(wrapper.text()).toContain('Required');
-
-      await input.setValue('Kiwi fruit');
-      await input.trigger('blur');
-      expect(wrapper.text()).not.toContain('Required');
+      await textFieldIsRequired(wrapper, 'name-input');
     });
   });
 
@@ -160,6 +129,11 @@ describe('Recipe Editor', () => {
       ) as VueWrapper<components.VNumberInput>;
       expect(input.exists()).toBe(true);
       expect(input.props('label')).toBe('Grams per Serving');
+    });
+
+    it('is not required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsNotRequired(wrapper, 'grams-per-serving-input');
     });
   });
 
