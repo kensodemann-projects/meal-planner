@@ -9,6 +9,12 @@ import * as directives from 'vuetify/directives';
 import FoodEditor from '../FoodEditor.vue';
 import PortionDataCard from '../PortionDataCard.vue';
 import PortionEditorCard from '../PortionEditorCard.vue';
+import {
+  autocompleteIsRequired,
+  numberInputIsRequired,
+  textFieldIsNotRequired,
+  textFieldIsRequired,
+} from './test-utils';
 
 const vuetify = createVuetify({
   components,
@@ -93,18 +99,7 @@ describe('FoodEditor', () => {
 
     it('is required', async () => {
       wrapper = mountComponent();
-      const nameInput = wrapper.findComponent('[data-testid="name-input"]') as VueWrapper<components.VTextField>;
-      const input = nameInput.find('input');
-
-      expect(wrapper.text()).not.toContain('Required');
-      await input.trigger('focus');
-      await input.setValue('');
-      await input.trigger('blur');
-      expect(wrapper.text()).toContain('Required');
-
-      await input.setValue('Kiwi fruit');
-      await input.trigger('blur');
-      expect(wrapper.text()).not.toContain('Required');
+      await textFieldIsRequired(wrapper, 'name-input');
     });
   });
 
@@ -119,13 +114,7 @@ describe('FoodEditor', () => {
 
     it('is not required', async () => {
       wrapper = mountComponent();
-      const brandInput = wrapper.findComponent('[data-testid="brand-input"]') as VueWrapper<components.VTextField>;
-      const input = brandInput.find('input');
-
-      await input.trigger('focus');
-      await input.setValue('');
-      await input.trigger('blur');
-      expect(wrapper.text()).not.toContain('Required');
+      await textFieldIsNotRequired(wrapper, 'brand-input');
     });
   });
 
@@ -141,16 +130,7 @@ describe('FoodEditor', () => {
 
     it('is required', async () => {
       wrapper = mountComponent();
-      const foodCategoryInput = wrapper.findComponent(
-        '[data-testid="food-category-input"]',
-      ) as VueWrapper<components.VAutocomplete>;
-      const input = foodCategoryInput.find('input');
-
-      expect(wrapper.text()).not.toContain('Required');
-      await input.trigger('focus');
-      await input.setValue('');
-      await input.trigger('blur');
-      expect(wrapper.text()).toContain('Required');
+      await autocompleteIsRequired(wrapper, 'food-category-input');
     });
   });
 
@@ -164,18 +144,7 @@ describe('FoodEditor', () => {
 
     it('is required', async () => {
       wrapper = mountComponent();
-      const unitsInput = wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
-      const input = unitsInput.find('input');
-
-      expect(wrapper.text()).not.toContain('Required');
-      await input.trigger('focus');
-      await input.setValue('');
-      await input.trigger('blur');
-      expect(wrapper.text()).toContain('Required');
-
-      await input.setValue(2);
-      await input.trigger('blur');
-      expect(wrapper.text()).not.toContain('Required');
+      await numberInputIsRequired(wrapper, 'units-input');
     });
   });
 
@@ -191,16 +160,7 @@ describe('FoodEditor', () => {
 
     it('is required', async () => {
       wrapper = mountComponent();
-      const unitOfMeasureInput = wrapper.findComponent(
-        '[data-testid="unit-of-measure-input"]',
-      ) as VueWrapper<components.VAutocomplete>;
-      const input = unitOfMeasureInput.find('input');
-
-      expect(wrapper.text()).not.toContain('Required');
-      await input.trigger('focus');
-      await input.setValue('');
-      await input.trigger('blur');
-      expect(wrapper.text()).toContain('Required');
+      await autocompleteIsRequired(wrapper, 'unit-of-measure-input');
     });
   });
 
@@ -215,18 +175,7 @@ describe('FoodEditor', () => {
 
     it('is required', async () => {
       wrapper = mountComponent();
-      const gramsInput = wrapper.findComponent('[data-testid="grams-input"]') as VueWrapper<components.VNumberInput>;
-      const input = gramsInput.find('input');
-
-      expect(wrapper.text()).not.toContain('Required');
-      await input.trigger('focus');
-      await input.setValue('');
-      await input.trigger('blur');
-      expect(wrapper.text()).toContain('Required');
-
-      await input.setValue(50);
-      await input.trigger('blur');
-      expect(wrapper.text()).not.toContain('Required');
+      await numberInputIsRequired(wrapper, 'grams-input');
     });
   });
 
@@ -242,20 +191,7 @@ describe('FoodEditor', () => {
 
     it('is required', async () => {
       wrapper = mountComponent();
-      const caloriesInput = wrapper.findComponent(
-        '[data-testid="calories-input"]',
-      ) as VueWrapper<components.VNumberInput>;
-      const input = caloriesInput.find('input');
-
-      expect(wrapper.text()).not.toContain('Required');
-      await input.trigger('focus');
-      await input.setValue('');
-      await input.trigger('blur');
-      expect(wrapper.text()).toContain('Required');
-
-      await input.setValue(50);
-      await input.trigger('blur');
-      expect(wrapper.text()).not.toContain('Required');
+      await numberInputIsRequired(wrapper, 'calories-input');
     });
   });
 
@@ -269,18 +205,7 @@ describe('FoodEditor', () => {
 
     it('is required', async () => {
       wrapper = mountComponent();
-      const sodiumInput = wrapper.findComponent('[data-testid="sodium-input"]') as VueWrapper<components.VNumberInput>;
-      const input = sodiumInput.find('input');
-
-      expect(wrapper.text()).not.toContain('Required');
-      await input.trigger('focus');
-      await input.setValue('');
-      await input.trigger('blur');
-      expect(wrapper.text()).toContain('Required');
-
-      await input.setValue(50);
-      await input.trigger('blur');
-      expect(wrapper.text()).not.toContain('Required');
+      await numberInputIsRequired(wrapper, 'sodium-input');
     });
   });
 
@@ -294,18 +219,7 @@ describe('FoodEditor', () => {
 
     it('is required', async () => {
       wrapper = mountComponent();
-      const sugarInput = wrapper.findComponent('[data-testid="sugar-input"]') as VueWrapper<components.VNumberInput>;
-      const input = sugarInput.find('input');
-
-      expect(wrapper.text()).not.toContain('Required');
-      await input.trigger('focus');
-      await input.setValue('');
-      await input.trigger('blur');
-      expect(wrapper.text()).toContain('Required');
-
-      await input.setValue(50);
-      await input.trigger('blur');
-      expect(wrapper.text()).not.toContain('Required');
+      await numberInputIsRequired(wrapper, 'sugar-input');
     });
   });
 
@@ -319,18 +233,7 @@ describe('FoodEditor', () => {
 
     it('is required', async () => {
       wrapper = mountComponent();
-      const carbsInput = wrapper.findComponent('[data-testid="carbs-input"]') as VueWrapper<components.VNumberInput>;
-      const input = carbsInput.find('input');
-
-      expect(wrapper.text()).not.toContain('Required');
-      await input.trigger('focus');
-      await input.setValue('');
-      await input.trigger('blur');
-      expect(wrapper.text()).toContain('Required');
-
-      await input.setValue(50);
-      await input.trigger('blur');
-      expect(wrapper.text()).not.toContain('Required');
+      await numberInputIsRequired(wrapper, 'carbs-input');
     });
   });
 
@@ -344,18 +247,7 @@ describe('FoodEditor', () => {
 
     it('is required', async () => {
       wrapper = mountComponent();
-      const fatInput = wrapper.findComponent('[data-testid="fat-input"]') as VueWrapper<components.VNumberInput>;
-      const input = fatInput.find('input');
-
-      expect(wrapper.text()).not.toContain('Required');
-      await input.trigger('focus');
-      await input.setValue('');
-      await input.trigger('blur');
-      expect(wrapper.text()).toContain('Required');
-
-      await input.setValue(50);
-      await input.trigger('blur');
-      expect(wrapper.text()).not.toContain('Required');
+      await numberInputIsRequired(wrapper, 'fat-input');
     });
   });
 
@@ -371,20 +263,7 @@ describe('FoodEditor', () => {
 
     it('is required', async () => {
       wrapper = mountComponent();
-      const proteinInput = wrapper.findComponent(
-        '[data-testid="protein-input"]',
-      ) as VueWrapper<components.VNumberInput>;
-      const input = proteinInput.find('input');
-
-      expect(wrapper.text()).not.toContain('Required');
-      await input.trigger('focus');
-      await input.setValue('');
-      await input.trigger('blur');
-      expect(wrapper.text()).toContain('Required');
-
-      await input.setValue(50);
-      await input.trigger('blur');
-      expect(wrapper.text()).not.toContain('Required');
+      await numberInputIsRequired(wrapper, 'protein-input');
     });
   });
 
