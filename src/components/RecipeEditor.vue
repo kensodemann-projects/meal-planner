@@ -71,6 +71,36 @@
 
     <h3>Nutrients per Serving</h3>
 
+    <v-container fluid>
+      <v-row>
+        <v-col cols="12" md="4">
+          <v-number-input label="Calories" data-testid="calories-input"></v-number-input>
+        </v-col>
+
+        <v-col cols="12" md="4">
+          <v-number-input label="Sodium" data-testid="sodium-input"></v-number-input>
+        </v-col>
+
+        <v-col cols="12" md="4">
+          <v-number-input label="Sugar" data-testid="sugar-input"></v-number-input>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="12" md="4">
+          <v-number-input label="Total Carbohydrates" data-testid="total-carbs-input"></v-number-input>
+        </v-col>
+
+        <v-col cols="12" md="4">
+          <v-number-input label="Fat" data-testid="fat-input"></v-number-input>
+        </v-col>
+
+        <v-col cols="12" md="4">
+          <v-number-input label="Protein" data-testid="protein-input"></v-number-input>
+        </v-col>
+      </v-row>
+    </v-container>
+
     <h2>Ingredients</h2>
     <v-divider class="mb-4"></v-divider>
 

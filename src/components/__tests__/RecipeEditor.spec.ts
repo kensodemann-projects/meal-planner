@@ -123,7 +123,7 @@ describe('Recipe Editor', () => {
   describe('servings', () => {
     it('exists', () => {
       wrapper = mountComponent();
-      const input = wrapper.findComponent('[data-testid="servings-input"]') as VueWrapper<components.VTextField>;
+      const input = wrapper.findComponent('[data-testid="servings-input"]') as VueWrapper<components.VNumberInput>;
       expect(input.exists()).toBe(true);
       expect(input.props('label')).toBe('Servings');
     });
@@ -134,7 +134,7 @@ describe('Recipe Editor', () => {
       wrapper = mountComponent();
       const input = wrapper.findComponent(
         '[data-testid="grams-per-serving-input"]',
-      ) as VueWrapper<components.VTextField>;
+      ) as VueWrapper<components.VNumberInput>;
       expect(input.exists()).toBe(true);
       expect(input.props('label')).toBe('Grams per Serving');
     });
@@ -143,7 +143,7 @@ describe('Recipe Editor', () => {
   describe('serving size', () => {
     it('exists', () => {
       wrapper = mountComponent();
-      const input = wrapper.findComponent('[data-testid="serving-size-input"]') as VueWrapper<components.VTextField>;
+      const input = wrapper.findComponent('[data-testid="serving-size-input"]') as VueWrapper<components.VNumberInput>;
       expect(input.exists()).toBe(true);
       expect(input.props('label')).toBe('Serving Size');
     });
@@ -157,6 +157,60 @@ describe('Recipe Editor', () => {
       ) as VueWrapper<components.VAutocomplete>;
       expect(input.exists()).toBe(true);
       expect(input.props('label')).toBe('Serving Units');
+    });
+  });
+
+  describe('calories', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="calories-input"]') as VueWrapper<components.VNumberInput>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Calories');
+    });
+  });
+
+  describe('sodium', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="sodium-input"]') as VueWrapper<components.VNumberInput>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Sodium');
+    });
+  });
+
+  describe('sugar', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="sugar-input"]') as VueWrapper<components.VNumberInput>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Sugar');
+    });
+  });
+
+  describe('total carbs', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="total-carbs-input"]') as VueWrapper<components.VNumberInput>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Total Carbohydrates');
+    });
+  });
+
+  describe('fat', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="fat-input"]') as VueWrapper<components.VNumberInput>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Fat');
+    });
+  });
+
+  describe('protein', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="protein-input"]') as VueWrapper<components.VNumberInput>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Protein');
     });
   });
 
