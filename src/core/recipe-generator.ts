@@ -19,7 +19,7 @@ Your response must be a JSON object in the following format:
   "totalCarbs": number in grams,
   "fat": number in grams,
   "protein": number in grams,
-  "ingrients": [{
+  "ingredients": [{
     "units": number,
     "unitOfMeasure": "c | pint | qt | gal | tsp | tbsp | floz | oz | lb | g | kg | ml | l | pinch | item" (only these, use 'item' if nothing else fits),
     "name": "the name of the ingredient"}],
