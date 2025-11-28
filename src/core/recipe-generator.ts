@@ -47,11 +47,7 @@ const generate = async (): Promise<string> => {
   const result = await model.generateContent('I need a recipe for a denver omelet');
   const response = result.response;
   const text = response.text();
-  try {
-    return text.replace(captureJson, '$1');
-  } catch {
-    return text;
-  }
+  return text.replace(captureJson, '$1');
 };
 
 export const useRecipeGenerator = () => ({ generate });
