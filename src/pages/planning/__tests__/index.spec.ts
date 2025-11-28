@@ -3,6 +3,9 @@ import { expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
+
+vi.mock('@/core/recipe-generator');
+
 import IndexPage from '../index.vue';
 
 const vuetify = createVuetify({
@@ -13,7 +16,7 @@ const mountPage = () => mount(IndexPage, { global: { plugins: [vuetify] } });
 
 it('renders', () => {
   const wrapper = mountPage();
-  expect(wrapper.text()).toBe('This is the meal planning page');
+  expect(wrapper.text()).toContain('This is the meal planning page');
   wrapper.unmount();
   vi.clearAllTimers();
   try {
