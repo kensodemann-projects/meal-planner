@@ -44,7 +44,7 @@ const numberInputIsRequired = async (wrapper: ReturnType<typeof mountComponent>,
   expect(wrapper.text()).not.toContain('Required');
 };
 
-const autoompleteIsRequired = async (wrapper: ReturnType<typeof mountComponent>, testId: string) => {
+const autocompleteIsRequired = async (wrapper: ReturnType<typeof mountComponent>, testId: string) => {
   const autocomplete = wrapper.findComponent(`[data-testid="${testId}"]`) as VueWrapper<components.VAutocomplete>;
   const input = autocomplete.find('input');
 
@@ -118,7 +118,7 @@ describe('Recipe Editor', () => {
 
     it('is required', async () => {
       wrapper = mountComponent();
-      await autoompleteIsRequired(wrapper, 'category-input');
+      await autocompleteIsRequired(wrapper, 'category-input');
     });
   });
 
@@ -134,7 +134,7 @@ describe('Recipe Editor', () => {
 
     it('is required', async () => {
       wrapper = mountComponent();
-      await autoompleteIsRequired(wrapper, 'difficulty-input');
+      await autocompleteIsRequired(wrapper, 'difficulty-input');
     });
   });
 
@@ -189,7 +189,7 @@ describe('Recipe Editor', () => {
 
     it('is required', async () => {
       wrapper = mountComponent();
-      await autoompleteIsRequired(wrapper, 'unit-of-measure-input');
+      await autocompleteIsRequired(wrapper, 'unit-of-measure-input');
     });
   });
 
