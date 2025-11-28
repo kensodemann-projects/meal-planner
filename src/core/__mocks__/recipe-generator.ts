@@ -1,8 +1,8 @@
 import { vi } from 'vitest';
 
-const generate = vi.fn().mockResolvedValue('');
+const generate = vi.fn().mockResolvedValue('{}');
 
-export const useRecipeGenerator: () => any = () => {
+export const useRecipeGenerator: () => { generate: () => Promise<string> } = () => {
   return {
     generate,
   };
