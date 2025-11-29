@@ -4,12 +4,14 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import IngredientEditorRow from '../IngredientEditorRow.vue';
+import { TEST_FOODS } from '@/data/__tests__/test-data';
 
 const vuetify = createVuetify({
   components,
   directives,
 });
-const mountComponent = (props = {}) => mount(IngredientEditorRow, { props, global: { plugins: [vuetify] } });
+const mountComponent = (props = { foods: TEST_FOODS }) =>
+  mount(IngredientEditorRow, { props, global: { plugins: [vuetify] } });
 
 describe('Ingredient Editor Row', () => {
   let wrapper: ReturnType<typeof mountComponent>;
