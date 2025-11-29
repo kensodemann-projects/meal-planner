@@ -4,7 +4,7 @@ import { useCollection, useFirestore } from 'vuefire';
 
 export const useFoodsData = () => {
   const db = useFirestore();
-  const path = `foods`;
+  const path = 'foods';
   const foodsCollection = collection(db, path);
   const foods = useCollection<FoodItem>(foodsCollection);
 
