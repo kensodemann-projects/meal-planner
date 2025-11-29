@@ -1,14 +1,16 @@
+import RecipeEditor from '@/components/RecipeEditor.vue';
+import { TEST_RECIPE } from '@/data/__tests__/test-data';
+import { useRecipesData } from '@/data/recipes';
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+import { useRouter } from 'vue-router';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import AddPage from '../add.vue';
-import { useRouter } from 'vue-router';
-import RecipeEditor from '@/components/RecipeEditor.vue';
-import { TEST_RECIPE } from '@/data/__tests__/test-data';
 
 vi.mock('vue-router');
+vi.mock('@/data/recipes');
 
 const vuetify = createVuetify({
   components,
@@ -37,14 +39,14 @@ describe('Recipe Add Page', () => {
   });
 
   describe('on cancel', () => {
-    // it('does not create a new recipe', async () => {
-    //   const { addFood } = useFoodsData();
-    //   wrapper = mountPage();
-    //   const editor = wrapper.findComponent(FoodEditor);
-    //   editor.vm.$emit('cancel');
-    //   await flushPromises();
-    //   expect(addFood).not.toHaveBeenCalled();
-    // });
+    it('does not create a new recipe', async () => {
+      const { addRecipe } = useRecipesData();
+      wrapper = mountPage();
+      const editor = wrapper.findComponent(RecipeEditor);
+      editor.vm.$emit('cancel');
+      await flushPromises();
+      expect(addRecipe).not.toHaveBeenCalled();
+    });
 
     it('navigates to the recipe list page', async () => {
       const { replace } = useRouter();
