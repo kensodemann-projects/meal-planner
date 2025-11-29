@@ -2,4 +2,4 @@
 'meal-planner': patch
 ---
 
-move repetative tests for components into a test-utils file
+move repetitive tests for components into a test-utils file
