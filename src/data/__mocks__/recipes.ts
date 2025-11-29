@@ -10,12 +10,13 @@ interface RecipesData {
   removeRecipe: (id: string) => Promise<void>;
   updateRecipe: (recipe: Recipe) => Promise<void>;
 }
+import type { Recipe } from '@/models/recipe';
 
 const addRecipe = vi.fn();
 const getRecipe = vi.fn().mockResolvedValue(null);
 const removeRecipe = vi.fn();
 const updateRecipe = vi.fn();
-const recipes = ref([]);
+const recipes = ref<Recipe[]>([]);
 
 export const useRecipesData: () => RecipesData = vi.fn().mockReturnValue({
   addRecipe,
