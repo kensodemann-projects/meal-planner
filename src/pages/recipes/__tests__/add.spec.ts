@@ -59,6 +59,15 @@ describe('Recipe Add Page', () => {
   });
 
   describe('on save', () => {
+    it('does not create a new recipe', async () => {
+      const { addRecipe } = useRecipesData();
+      wrapper = mountPage();
+      const editor = wrapper.findComponent(RecipeEditor);
+      editor.vm.$emit('save', TEST_RECIPE);
+      await flushPromises();
+      expect(addRecipe).toHaveBeenCalledExactlyOnceWith(TEST_RECIPE);
+    });
+
     it('navigates to the recipe list page', async () => {
       const { replace } = useRouter();
       wrapper = mountPage();
