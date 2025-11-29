@@ -35,7 +35,7 @@ vi.mock('vuefire', async () => {
   };
 });
 
-describe('use foods', () => {
+describe('Food Data Service', () => {
   beforeEach(() => {
     (useFirestore as Mock).mockReturnValue({ id: 42, name: 'my fake fire store' });
   });
