@@ -29,12 +29,12 @@ const router = useRouter();
 
 const i1 = ref<RecipeIngredient>({ units: 8, unitOfMeasure: findUnitOfMeasure('oz'), name: 'Large Sea Scallops' });
 const i2 = ref<RecipeIngredient>({
-  units: 2,
+  units: 2.5,
   unitOfMeasure: findUnitOfMeasure('tbsp'),
   name: 'Something Bogus',
   foodId: 'FG9je9i8bfvYmL0PJzCR',
 });
-const i3 = ref<RecipeIngredient>({ units: 1, unitOfMeasure: findUnitOfMeasure('tbsp'), name: 'Olive Oil' });
+const i3 = ref<RecipeIngredient>({ units: 0.25, unitOfMeasure: findUnitOfMeasure('tbsp'), name: 'Olive Oil' });
 
 watch(i2, (x) => console.log(x));
 

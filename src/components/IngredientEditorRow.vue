@@ -5,6 +5,9 @@
         density="compact"
         hide-details
         control-variant="hidden"
+        :precision="null"
+        :rules="[validationRules.required]"
+        v-model="units"
         data-testid="units-input"
       ></v-number-input>
     </v-col>
@@ -13,8 +16,10 @@
         density="compact"
         hide-details
         :items="unitsOfMeasure"
+        :rules="[validationRules.required]"
         item-title="id"
         item-value="id"
+        v-model="unitOfMeasureId"
         data-testid="unit-of-measure-input"
       ></v-autocomplete>
     </v-col>
@@ -25,6 +30,7 @@
         item-title="name"
         hide-details
         :items="foods"
+        :rules="[validationRules.required]"
         v-model="foodItem"
         data-testid="food-item-input"
       ></v-combobox>
@@ -36,6 +42,8 @@
 </template>
 
 <script setup lang="ts">
+import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
+import { validationRules } from '@/core/validation-rules';
 import { unitsOfMeasure } from '@/data/units-of-measure';
 import type { FoodItem } from '@/models/food';
 import type { RecipeIngredient } from '@/models/recipe';
@@ -45,6 +53,31 @@ const props = defineProps<{
   foods: FoodItem[];
 }>();
 const ingredient = defineModel<RecipeIngredient>();
+
+const units = computed({
+  get: () => ingredient.value?.units,
+  set: (units: number) => {
+    if (ingredient.value) {
+      ingredient.value = {
+        ...ingredient.value,
+        units,
+      };
+    }
+  },
+});
+
+const unitOfMeasureId = computed({
+  get: () => ingredient.value?.unitOfMeasure.id,
+  set: (id: string) => {
+    const unitOfMeasure = findUnitOfMeasure(id);
+    if (unitOfMeasure && ingredient.value) {
+      ingredient.value = {
+        ...ingredient.value,
+        unitOfMeasure,
+      };
+    }
+  },
+});
 
 const foodItem = computed({
   get: () => {
