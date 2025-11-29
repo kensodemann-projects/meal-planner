@@ -3,8 +3,8 @@ import { type AutocompleteOption } from '@/models/option';
 import { describe, expect, it } from 'vitest';
 import { unitOfMeasureOptions } from '../unit-of-measure';
 
-describe('unit-of-measure utilities', () => {
-  describe('unit of measure autocomplete items', () => {
+describe('Unit of Measure Utilities', () => {
+  describe('Autocomplete Items', () => {
     it('includes all defined units of measure plus the dividers and subheaders', () => {
       const volumeUofM = unitsOfMeasure.filter((x) => x.type === 'volume');
       const weightUofM = unitsOfMeasure.filter((x) => x.type === 'weight');
