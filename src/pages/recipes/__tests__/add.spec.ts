@@ -6,6 +6,7 @@ import * as directives from 'vuetify/directives';
 import AddPage from '../add.vue';
 import { useRouter } from 'vue-router';
 import RecipeEditor from '@/components/RecipeEditor.vue';
+import { TEST_RECIPE } from '@/data/__tests__/test-data';
 
 vi.mock('vue-router');
 
@@ -50,6 +51,17 @@ describe('Recipe Add Page', () => {
       wrapper = mountPage();
       const editor = wrapper.findComponent(RecipeEditor);
       editor.vm.$emit('cancel');
+      await flushPromises();
+      expect(replace).toHaveBeenCalledExactlyOnceWith('/recipes');
+    });
+  });
+
+  describe('on save', () => {
+    it('navigates to the recipe list page', async () => {
+      const { replace } = useRouter();
+      wrapper = mountPage();
+      const editor = wrapper.findComponent(RecipeEditor);
+      editor.vm.$emit('save', TEST_RECIPE);
       await flushPromises();
       expect(replace).toHaveBeenCalledExactlyOnceWith('/recipes');
     });
