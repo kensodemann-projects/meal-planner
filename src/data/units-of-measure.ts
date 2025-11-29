@@ -28,4 +28,5 @@ export const unitsOfMeasure: readonly UnitOfMeasure[] = [
   { id: 'item', name: 'Item', type: 'quantity', system: 'none', fdcId: 9999 },
   { id: 'each', name: 'Each', type: 'quantity', system: 'none' },
   { id: 'pinch', name: 'Pinch', type: 'quantity', system: 'none' },
+  { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
 ];
