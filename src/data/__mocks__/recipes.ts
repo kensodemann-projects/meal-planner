@@ -1,7 +1,7 @@
-import { vi } from 'vitest';
-import { ref } from 'vue';
-import type { Ref } from 'vue';
 import type { Recipe } from '@/models/recipe';
+import { vi } from 'vitest';
+import type { Ref } from 'vue';
+import { ref } from 'vue';
 
 interface RecipesData {
   addRecipe: (recipe: Recipe) => Promise<string>;
@@ -10,7 +10,6 @@ interface RecipesData {
   removeRecipe: (id: string) => Promise<void>;
   updateRecipe: (recipe: Recipe) => Promise<void>;
 }
-import type { Recipe } from '@/models/recipe';
 
 const addRecipe = vi.fn();
 const getRecipe = vi.fn().mockResolvedValue(null);
