@@ -69,7 +69,7 @@ describe('Food Add Page', () => {
       expect(addFood).not.toHaveBeenCalled();
     });
 
-    it('navigates to the search and add page page', async () => {
+    it('navigates to the food list page', async () => {
       const { replace } = useRouter();
       wrapper = mountPage();
       const editor = wrapper.findComponent(FoodEditor);
