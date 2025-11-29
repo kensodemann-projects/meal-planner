@@ -19,6 +19,7 @@ declare module 'vue' {
     FdcFoodListItem: typeof import('./components/FdcFoodListItem.vue')['default']
     FoodEditor: typeof import('./components/FoodEditor.vue')['default']
     FoodListItem: typeof import('./components/FoodListItem.vue')['default']
+    IngredientEditorRow: typeof import('./components/IngredientEditorRow.vue')['default']
     LoginCard: typeof import('./components/LoginCard.vue')['default']
     ModifyButton: typeof import('./components/buttons/ModifyButton.vue')['default']
     PortionData: typeof import('./components/PortionData.vue')['default']
