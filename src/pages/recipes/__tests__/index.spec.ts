@@ -37,7 +37,7 @@ describe('Recipes List Page', () => {
   });
 
   describe('add button', () => {
-    it('navigates to the add by search page', async () => {
+    it('navigates to the recipe add page', async () => {
       const router = useRouter();
       wrapper = mountPage();
       const btn = wrapper.findComponent('[data-testid="add-button"]');
