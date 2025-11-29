@@ -36,7 +36,13 @@
       ></v-combobox>
     </v-col>
     <v-col cols="1" md="1" align-self="center">
-      <v-btn density="compact" variant="plain" icon="mdi-delete-forever" data-testid="delete-button"></v-btn>
+      <v-btn
+        density="compact"
+        variant="plain"
+        icon="mdi-delete-forever"
+        @click="$emit('delete')"
+        data-testid="delete-button"
+      ></v-btn>
     </v-col>
   </v-row>
 </template>
@@ -52,6 +58,7 @@ import { computed } from 'vue';
 const props = defineProps<{
   foods: FoodItem[];
 }>();
+defineEmits(['delete']);
 const ingredient = defineModel<RecipeIngredient>();
 
 const units = computed({

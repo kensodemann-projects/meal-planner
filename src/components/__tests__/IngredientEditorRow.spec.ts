@@ -65,6 +65,13 @@ describe('Ingredient Editor Row', () => {
       const button = wrapper.findComponent('[data-testid="delete-button"]') as VueWrapper<components.VNumberInput>;
       expect(button.exists()).toBe(true);
     });
+
+    it('emits delete on click', async () => {
+      wrapper = mountComponent({ foods: TEST_FOODS, modelValue: TEST_INGREDIENTS[1]! });
+      const button = wrapper.findComponent('[data-testid="delete-button"]') as VueWrapper<components.VNumberInput>;
+      await button.trigger('click');
+      expect(wrapper.emitted('delete')).toHaveLength(1);
+    });
   });
 });
 
