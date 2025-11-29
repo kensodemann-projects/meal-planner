@@ -1,10 +1,17 @@
 <template>
-  <h2>This is the recipe list page</h2>
-  <RecipeEditor />
+  <v-fab
+    color="primary"
+    icon="mdi-plus"
+    variant="tonal"
+    location="bottom end"
+    absolute
+    @click="router.push('recipes/add')"
+    data-testid="add-button"
+  ></v-fab>
 </template>
 
 <script lang="ts" setup>
-import RecipeEditor from '@/components/RecipeEditor.vue';
+import { useRouter } from 'vue-router';
 
-//
+const router = useRouter();
 </script>
