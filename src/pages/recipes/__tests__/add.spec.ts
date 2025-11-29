@@ -59,7 +59,7 @@ describe('Recipe Add Page', () => {
   });
 
   describe('on save', () => {
-    it('does not create a new recipe', async () => {
+    it('creates a new recipe', async () => {
       const { addRecipe } = useRecipesData();
       wrapper = mountPage();
       const editor = wrapper.findComponent(RecipeEditor);
