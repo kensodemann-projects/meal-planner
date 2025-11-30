@@ -48,7 +48,7 @@
           variant="text"
           icon="mdi-plus"
           :disabled="ingredientsInvalid"
-          @click="ingredients.push({ units: 1, unitOfMeasure: findUnitOfMeasure('item'), name: '' })"
+          @click="addIngredient"
           data-testid="add-ingredient-button"
         ></v-btn>
       </div>
@@ -61,7 +61,7 @@
         :key="index"
         :foods="foods"
         :ingredient="ingredient"
-        @changed="(i) => (ingredients[index] = { ...i })"
+        @changed="(i) => changeIngredient(i, index)"
       />
     </v-container>
 
@@ -233,6 +233,7 @@ const ingredients = ref<RecipeIngredient[]>(props.recipe ? [...props.recipe.ingr
 const steps = ref<string[]>(props.recipe ? [...props.recipe.steps] : []);
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
+const listChanged = ref(false);
 
 const { foods } = useFoodsData();
 
@@ -242,9 +243,20 @@ const ingredientsInvalid = computed(
 
 const stepsInvalid = computed((): boolean => !!steps.value.find((s) => !!(s && s.trim())));
 
+const addIngredient = () => {
+  ingredients.value.push({ units: 1, unitOfMeasure: findUnitOfMeasure('item'), name: '' });
+  listChanged.value = true;
+};
+
+const changeIngredient = (ingredient: RecipeIngredient, index: number) => {
+  ingredients.value[index] = { ...ingredient };
+  listChanged.value = true;
+};
+
 const isModified = computed((): boolean => {
   if (!props.recipe) return true;
   return (
+    listChanged.value ||
     props.recipe.name !== name.value ||
     props.recipe.category !== category.value ||
     props.recipe.difficulty !== difficulty.value ||

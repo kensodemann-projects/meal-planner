@@ -464,7 +464,6 @@ describe('Recipe Editor', () => {
           expect(button.attributes('disabled')).toBeUndefined();
         });
 
-        // TODO: Fill this out
         describe('on click', () => {
           it('adds a blank ingredient', async () => {
             const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
@@ -511,13 +510,28 @@ describe('Recipe Editor', () => {
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
 
-      // TODO: fill this out
-      it('is eabled if an ingredient is changed', () => {
+      it('is eabled if an ingredient is changed', async () => {
+        const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        expect(saveButton.attributes('disabled')).toBeDefined();
         expect(true).toBeTruthy();
+        const ingredients = listArea.findAllComponents(IngredientEditorRow);
+        await ingredients[2]?.vm.$emit('changed', {
+          units: 1,
+          unitOfMeasure: findUnitOfMeasure('lb'),
+          name: 'fudge',
+        });
+        expect(saveButton.attributes('disabled')).toBeUndefined();
       });
 
-      it('is disabled if an invalid ingredient exists in the ingredients list', () => {
-        expect(true).toBeTruthy();
+      it('is disabled if an invalid ingredient exists in the ingredients list', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const inputs = getInputs(wrapper);
+        await inputs.name.setValue('Apple Pie');
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+        const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+        await button.trigger('click');
+        expect(saveButton.attributes('disabled')).toBeDefined();
       });
 
       it('emits the entered data in click', async () => {
