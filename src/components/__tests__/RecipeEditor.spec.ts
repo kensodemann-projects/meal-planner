@@ -56,9 +56,9 @@ describe('Recipe Editor', () => {
     const subheaders = wrapper.findAll('h2');
     expect(subheaders.length).toBe(4);
     expect(subheaders[0]!.text()).toBe('Basic Information');
-    expect(subheaders[1]!.text()).toBe('Nutritional Information');
-    expect(subheaders[2]!.text()).toBe('Ingredients');
-    expect(subheaders[3]!.text()).toBe('Steps');
+    expect(subheaders[1]!.text()).toBe('Ingredients');
+    expect(subheaders[2]!.text()).toBe('Steps');
+    expect(subheaders[3]!.text()).toBe('Nutritional Information');
   });
 
   describe('name', () => {

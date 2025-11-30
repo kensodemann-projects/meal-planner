@@ -40,6 +40,36 @@
       </v-row>
     </v-container>
 
+    <h2>
+      <div class="d-flex justify-space-between">
+        <div>Ingredients</div>
+        <v-btn
+          density="compact"
+          variant="text"
+          icon="mdi-plus"
+          :disabled="true"
+          @click="() => null"
+          data-testid="add-ingredient-button"
+        ></v-btn>
+      </div>
+    </h2>
+    <v-divider class="mb-4"></v-divider>
+
+    <h2>
+      <div class="d-flex justify-space-between">
+        <div>Steps</div>
+        <v-btn
+          density="compact"
+          variant="text"
+          icon="mdi-plus"
+          :disabled="true"
+          @click="() => null"
+          data-testid="add-steps-button"
+        ></v-btn>
+      </div>
+    </h2>
+    <v-divider class="mb-4"></v-divider>
+
     <h2>Nutritional Information</h2>
     <v-divider class="mb-4"></v-divider>
 
@@ -146,12 +176,6 @@
         </v-col>
       </v-row>
     </v-container>
-
-    <h2>Ingredients</h2>
-    <v-divider class="mb-4"></v-divider>
-
-    <h2>Steps</h2>
-    <v-divider class="mb-4"></v-divider>
 
     <v-container fluid>
       <v-row class="pa-4" justify="end">
