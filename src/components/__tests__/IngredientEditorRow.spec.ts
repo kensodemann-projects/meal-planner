@@ -39,6 +39,15 @@ describe('Ingredient Editor Row', () => {
       const numberInput = wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
       expect(numberInput.exists()).toBe(true);
     });
+
+    it('is emitted on change', async () => {
+      wrapper = mountComponent({ foods: TEST_FOODS, modelValue: TEST_INGREDIENTS[1]! });
+      const unitsInput = wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
+      await unitsInput.setValue(73);
+      const emitted = wrapper.emitted('update:modelValue');
+      expect(emitted?.length).toBe(1);
+      expect((emitted![0]![0] as RecipeIngredient).units).toBe(73);
+    });
   });
 
   describe('unit of measure', () => {
