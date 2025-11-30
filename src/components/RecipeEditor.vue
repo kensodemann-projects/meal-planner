@@ -193,7 +193,7 @@ import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import { validationRules } from '@/core/validation-rules';
 import { recipeCategories } from '@/data/recipe-categories';
 import { recipeDifficulties } from '@/data/recipe-difficulties';
-import type { Recipe, RecipeCategory, RecipeDifficulty } from '@/models/recipe';
+import { RecipeIngredient, type Recipe, type RecipeCategory, type RecipeDifficulty } from '@/models/recipe';
 import { computed, onMounted, ref } from 'vue';
 import type { VTextField } from 'vuetify/components';
 import { unitOfMeasureOptions } from '@/data/unit-of-measure';
@@ -215,6 +215,8 @@ const sugar = ref<number>(props.recipe?.sugar || 0);
 const totalCarbs = ref<number>(props.recipe?.totalCarbs || 0);
 const fat = ref<number>(props.recipe?.fat || 0);
 const protein = ref<number>(props.recipe?.protein || 0);
+const ingredients = ref<Partial<RecipeIngredient>[]>(props.recipe ? [...props.recipe.ingredients] : []);
+const steps = ref<string[]>(props.recipe ? [...props.recipe.steps] : []);
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 
@@ -254,8 +256,8 @@ const save = () => {
     totalCarbs: totalCarbs.value,
     fat: fat.value,
     protein: protein.value,
-    ingredients: [],
-    steps: [],
+    ingredients: ingredients.value as RecipeIngredient[],
+    steps: steps.value,
   });
 };
 

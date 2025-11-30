@@ -501,8 +501,8 @@ describe('Recipe Editor', () => {
             totalCarbs: BEER_CHEESE.totalCarbs,
             fat: BEER_CHEESE.fat,
             protein: BEER_CHEESE.protein,
-            ingredients: [],
-            steps: [],
+            ingredients: [...BEER_CHEESE.ingredients],
+            steps: [...BEER_CHEESE.steps],
           },
         ]);
       });
