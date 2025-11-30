@@ -57,54 +57,47 @@ import { computed } from 'vue';
 
 const props = defineProps<{
   foods: FoodItem[];
+  ingredient: RecipeIngredient;
 }>();
-defineEmits(['delete']);
-const ingredient = defineModel<RecipeIngredient>();
+const emit = defineEmits<{ (event: 'changed', payload: RecipeIngredient): void; (event: 'delete'): void }>();
 
 const units = computed({
-  get: () => ingredient.value?.units,
-  set: (units: number) => {
-    if (ingredient.value) {
-      ingredient.value = {
-        ...ingredient.value,
-        units,
-      };
-    }
-  },
+  get: () => props.ingredient.units,
+  set: (units: number) =>
+    emit('changed', {
+      ...props.ingredient,
+      units,
+    }),
 });
 
 const unitOfMeasureId = computed({
-  get: () => ingredient.value?.unitOfMeasure.id,
+  get: () => props.ingredient.unitOfMeasure.id,
   set: (id: string) => {
     const unitOfMeasure = findUnitOfMeasure(id);
-    if (unitOfMeasure && ingredient.value) {
-      ingredient.value = {
-        ...ingredient.value,
-        unitOfMeasure,
-      };
-    }
+    emit('changed', {
+      ...props.ingredient,
+      unitOfMeasure,
+    });
   },
 });
 
 const foodItem = computed({
   get: () => {
-    if (ingredient.value?.foodId) {
-      return props.foods.find((f) => f.id === ingredient.value?.foodId);
+    if (props.ingredient.foodId) {
+      return props.foods.find((f) => f.id === props.ingredient.foodId);
     } else {
-      return ingredient.value?.name;
+      return props.ingredient.name;
     }
   },
   set: (value: FoodItem | string) => {
     const isString = typeof value === 'string';
     const name = isString ? value : value?.name;
     const foodId = isString ? null : value?.id;
-    if (ingredient.value) {
-      ingredient.value = {
-        ...ingredient.value,
-        name,
-        foodId,
-      };
-    }
+    emit('changed', {
+      ...props.ingredient,
+      name,
+      foodId,
+    });
   },
 });
 </script>

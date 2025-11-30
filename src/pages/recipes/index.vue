@@ -1,9 +1,9 @@
 <template>
   <h2>This is the recipe list page</h2>
   <v-container fluid>
-    <IngredientEditorRow :foods="foods" v-model="i1" />
-    <IngredientEditorRow :foods="foods" v-model="i2" />
-    <IngredientEditorRow :foods="foods" v-model="i3" />
+    <IngredientEditorRow :foods="foods" :ingredient="i1" @changed="(x) => (i1 = { ...x })" />
+    <IngredientEditorRow :foods="foods" :ingredient="i2" @changed="(x) => (i2 = { ...x })" />
+    <IngredientEditorRow :foods="foods" :ingredient="i3" @changed="(x) => (i3 = { ...x })" />
   </v-container>
 
   <v-fab

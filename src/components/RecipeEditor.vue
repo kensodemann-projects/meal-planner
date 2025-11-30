@@ -60,7 +60,7 @@
         v-for="(ingredient, index) in ingredients"
         :key="index"
         :foods="foods"
-        :modelValue="ingredient"
+        :ingredient="ingredient"
       />
     </v-container>
 
