@@ -47,13 +47,22 @@
           density="compact"
           variant="text"
           icon="mdi-plus"
-          :disabled="true"
-          @click="() => null"
+          :disabled="ingredientsInvalid"
+          @click="ingredients.push({ units: 1, unitOfMeasure: findUnitOfMeasure('item'), name: '' })"
           data-testid="add-ingredient-button"
         ></v-btn>
       </div>
     </h2>
     <v-divider class="mb-4"></v-divider>
+
+    <v-container fluid data-testid="ingredient-list-grid">
+      <IngredientEditorRow
+        v-for="(ingredient, index) in ingredients"
+        :key="index"
+        :foods="foods"
+        :modelValue="ingredient"
+      />
+    </v-container>
 
     <h2>
       <div class="d-flex justify-space-between">
@@ -62,13 +71,15 @@
           density="compact"
           variant="text"
           icon="mdi-plus"
-          :disabled="true"
+          :disabled="stepsInvalid"
           @click="() => null"
           data-testid="add-steps-button"
         ></v-btn>
       </div>
     </h2>
     <v-divider class="mb-4"></v-divider>
+
+    <v-container fluid data-testid="step-list-grid"></v-container>
 
     <h2>Nutritional Information</h2>
     <v-divider class="mb-4"></v-divider>
@@ -193,10 +204,12 @@ import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import { validationRules } from '@/core/validation-rules';
 import { recipeCategories } from '@/data/recipe-categories';
 import { recipeDifficulties } from '@/data/recipe-difficulties';
-import { RecipeIngredient, type Recipe, type RecipeCategory, type RecipeDifficulty } from '@/models/recipe';
+import type { RecipeIngredient, Recipe, RecipeCategory, RecipeDifficulty } from '@/models/recipe';
 import { computed, onMounted, ref } from 'vue';
 import type { VTextField } from 'vuetify/components';
 import { unitOfMeasureOptions } from '@/data/unit-of-measure';
+import IngredientEditorRow from './IngredientEditorRow.vue';
+import { useFoodsData } from '@/data/foods';
 
 const emit = defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'cancel'): void }>();
 const props = defineProps<{ recipe?: Recipe }>();
@@ -215,10 +228,18 @@ const sugar = ref<number>(props.recipe?.sugar || 0);
 const totalCarbs = ref<number>(props.recipe?.totalCarbs || 0);
 const fat = ref<number>(props.recipe?.fat || 0);
 const protein = ref<number>(props.recipe?.protein || 0);
-const ingredients = ref<Partial<RecipeIngredient>[]>(props.recipe ? [...props.recipe.ingredients] : []);
+const ingredients = ref<RecipeIngredient[]>(props.recipe ? [...props.recipe.ingredients] : []);
 const steps = ref<string[]>(props.recipe ? [...props.recipe.steps] : []);
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
+
+const { foods } = useFoodsData();
+
+const ingredientsInvalid = computed(
+  (): boolean => !!ingredients.value.find((i) => !(i.units && i.name && i.unitOfMeasure)),
+);
+
+const stepsInvalid = computed((): boolean => !!steps.value.find((s) => !!(s && s.trim())));
 
 const isModified = computed((): boolean => {
   if (!props.recipe) return true;
@@ -256,7 +277,7 @@ const save = () => {
     totalCarbs: totalCarbs.value,
     fat: fat.value,
     protein: protein.value,
-    ingredients: ingredients.value as RecipeIngredient[],
+    ingredients: ingredients.value,
     steps: steps.value,
   });
 };

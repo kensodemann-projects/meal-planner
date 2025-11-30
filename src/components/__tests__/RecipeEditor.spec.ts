@@ -1,17 +1,20 @@
+import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
+import type { Recipe } from '@/models/recipe';
 import { mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
+import IngredientEditorRow from '../IngredientEditorRow.vue';
 import RecipeEditor from '../RecipeEditor.vue';
-import type { Recipe } from '@/models/recipe';
-import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import {
   autocompleteIsRequired,
   numberInputIsNotRequired,
   numberInputIsRequired,
   textFieldIsRequired,
 } from './test-utils';
+
+vi.mock('@/data/foods');
 
 const vuetify = createVuetify({
   components,
@@ -297,26 +300,36 @@ describe('Recipe Editor', () => {
       expect(inputs.protein.element.value).toBe('0');
     });
 
-    // TODO: Fill this out
     describe('the ingredients list', () => {
       it('is empty', () => {
-        expect(true).toBeTruthy();
+        const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
+        const ingredients = listArea.findAllComponents(IngredientEditorRow);
+        expect(ingredients.length).toBe(0);
       });
 
       describe('add button', () => {
         it('is enabled', () => {
-          expect(true).toBeTruthy();
+          const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+          expect(button.attributes('disabled')).toBeUndefined();
         });
 
         describe('on click', () => {
-          it('adds a blank ingredient', () => {
-            expect(true).toBeTruthy();
+          it('adds a blank ingredient', async () => {
+            const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+            const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
+            await button.trigger('click');
+            const ingredients = listArea.findAllComponents(IngredientEditorRow);
+            expect(ingredients.length).toBe(1);
           });
 
-          it('becomes disabled', () => {
-            expect(true).toBeTruthy();
+          it('becomes disabled', async () => {
+            const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+            expect(button.attributes('disabled')).toBeUndefined();
+            await button.trigger('click');
+            expect(button.attributes('disabled')).toBeDefined();
           });
 
+          // TODO: Fill this out
           it('remains disabled until the blank ingredient is filled in', () => {
             expect(true).toBeTruthy();
           });
@@ -419,17 +432,20 @@ describe('Recipe Editor', () => {
       expect(inputs.protein.element.value).toBe(BEER_CHEESE.protein.toString());
     });
 
-    // TODO: Fill this out
     describe('the ingredients list', () => {
       it('contains each ingredient', () => {
-        expect(true).toBeTruthy();
+        const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
+        const ingredients = listArea.findAllComponents(IngredientEditorRow);
+        expect(ingredients.length).toBe(BEER_CHEESE.ingredients.length);
       });
 
       describe('add button', () => {
         it('is enabled', () => {
-          expect(true).toBeTruthy();
+          const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+          expect(button.attributes('disabled')).toBeUndefined();
         });
 
+        // TODO: Fill this out
         describe('on click', () => {
           it('adds a blank ingredient', () => {
             expect(true).toBeTruthy();

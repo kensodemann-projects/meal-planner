@@ -10,6 +10,7 @@ import * as directives from 'vuetify/directives';
 import AddPage from '../add.vue';
 
 vi.mock('vue-router');
+vi.mock('@/data/foods');
 vi.mock('@/data/recipes');
 
 const vuetify = createVuetify({
