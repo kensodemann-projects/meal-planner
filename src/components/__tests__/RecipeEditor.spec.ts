@@ -369,9 +369,23 @@ describe('Recipe Editor', () => {
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
 
-      // TODO: fill this out
-      it('is disabled if an invalid ingredient exists in the ingredients list', () => {
-        expect(true).toBeTruthy();
+      it('is disabled if an invalid ingredient exists in the ingredients list', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const inputs = getInputs(wrapper);
+        await inputs.category.setValue('Dessert');
+        (wrapper.vm as any).category = 'Dessert';
+        await inputs.difficulty.setValue('Easy');
+        (wrapper.vm as any).difficulty = 'Easy';
+        await inputs.servingUnitOfMeasure.setValue('oz');
+        (wrapper.vm as any).servingUnitOfMeasureId = 'oz';
+        await inputs.name.setValue('Apple Pie');
+        await inputs.servings.setValue('2');
+        await inputs.servingSize.setValue('12');
+        await inputs.calories.setValue('325');
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+        const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+        await button.trigger('click');
+        expect(saveButton.attributes('disabled')).toBeDefined();
       });
 
       it('emits the entered data in click', async () => {
