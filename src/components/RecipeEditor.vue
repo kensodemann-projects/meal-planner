@@ -61,6 +61,7 @@
         :key="index"
         :foods="foods"
         :ingredient="ingredient"
+        @changed="(i) => (ingredients[index] = { ...i })"
       />
     </v-container>
 

@@ -329,14 +329,19 @@ describe('Recipe Editor', () => {
             expect(button.attributes('disabled')).toBeDefined();
           });
 
-          // TODO: Fill this out
-          it('remains disabled until the blank ingredient is filled in', () => {
-            expect(true).toBeTruthy();
+          it('remains disabled until the blank ingredient is filled in', async () => {
+            const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
+            const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+            await button.trigger('click');
+            expect(button.attributes('disabled')).toBeDefined();
+            const ingredients = listArea.findAllComponents(IngredientEditorRow);
+            await ingredients[0]?.vm.$emit('changed', {
+              units: 1,
+              unitOfMeasure: findUnitOfMeasure('lb'),
+              name: 'fudge',
+            });
+            expect(button.attributes('disabled')).toBeUndefined();
           });
-        });
-
-        it('is disabled if an invalid ingredient exists in the list', () => {
-          expect(true).toBeTruthy();
         });
       });
     });
