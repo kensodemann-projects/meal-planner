@@ -466,21 +466,34 @@ describe('Recipe Editor', () => {
 
         // TODO: Fill this out
         describe('on click', () => {
-          it('adds a blank ingredient', () => {
-            expect(true).toBeTruthy();
+          it('adds a blank ingredient', async () => {
+            const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+            const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
+            await button.trigger('click');
+            const ingredients = listArea.findAllComponents(IngredientEditorRow);
+            expect(ingredients.length).toBe(BEER_CHEESE.ingredients.length + 1);
           });
 
-          it('becomes disabled', () => {
-            expect(true).toBeTruthy();
+          it('becomes disabled', async () => {
+            const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+            expect(button.attributes('disabled')).toBeUndefined();
+            await button.trigger('click');
+            expect(button.attributes('disabled')).toBeDefined();
           });
 
-          it('remains disabled until the blank ingredient is filled in', () => {
-            expect(true).toBeTruthy();
+          it('remains disabled until the blank ingredient is filled in', async () => {
+            const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
+            const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+            await button.trigger('click');
+            expect(button.attributes('disabled')).toBeDefined();
+            const ingredients = listArea.findAllComponents(IngredientEditorRow);
+            await ingredients[ingredients.length - 1]?.vm.$emit('changed', {
+              units: 1,
+              unitOfMeasure: findUnitOfMeasure('lb'),
+              name: 'fudge',
+            });
+            expect(button.attributes('disabled')).toBeUndefined();
           });
-        });
-
-        it('is disabled if an invalid ingredient exists in the list', () => {
-          expect(true).toBeTruthy();
         });
       });
     });
