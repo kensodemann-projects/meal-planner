@@ -40,6 +40,13 @@ describe('Ingredient Editor Row', () => {
       expect(numberInput.exists()).toBe(true);
     });
 
+    it('is initialized', () => {
+      wrapper = mountComponent({ foods: TEST_FOODS, modelValue: TEST_INGREDIENTS[1]! });
+      const numberInput = wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
+      const input = numberInput.find('input');
+      expect(input.element.value).toBe('1');
+    });
+
     it('is emitted on change', async () => {
       wrapper = mountComponent({ foods: TEST_FOODS, modelValue: TEST_INGREDIENTS[1]! });
       const numberInput = wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
@@ -59,6 +66,11 @@ describe('Ingredient Editor Row', () => {
       expect(autocomplete.exists()).toBe(true);
     });
 
+    it('is initialized', () => {
+      wrapper = mountComponent({ foods: TEST_FOODS, modelValue: TEST_INGREDIENTS[1]! });
+      expect((wrapper.vm as any).unitOfMeasureId).toBe('cup');
+    });
+
     it('is emitted on change', async () => {
       wrapper = mountComponent({ foods: TEST_FOODS, modelValue: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent(
@@ -76,6 +88,13 @@ describe('Ingredient Editor Row', () => {
       wrapper = mountComponent({ foods: TEST_FOODS, modelValue: TEST_INGREDIENTS[1]! });
       const combo = wrapper.findComponent('[data-testid="food-item-input"]') as VueWrapper<components.VCombobox>;
       expect(combo.exists()).toBe(true);
+    });
+
+    it('is initialized', () => {
+      wrapper = mountComponent({ foods: TEST_FOODS, modelValue: TEST_INGREDIENTS[1]! });
+      const combo = wrapper.findComponent('[data-testid="food-item-input"]') as VueWrapper<components.VCombobox>;
+      const input = combo.find('input');
+      expect(input.element.value).toBe('Vegetable Broth');
     });
 
     it('emits name and id when a food is selected', async () => {
