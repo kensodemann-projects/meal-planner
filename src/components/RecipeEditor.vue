@@ -80,6 +80,7 @@
             label="Servings"
             v-model="servings"
             :rules="[validationRules.required]"
+            :precision="null"
             data-testid="servings-input"
           ></v-number-input>
         </v-col>
@@ -99,6 +100,7 @@
             label="Serving Size"
             v-model="servingSize"
             :rules="[validationRules.required]"
+            :precision="null"
             data-testid="serving-size-input"
           ></v-number-input>
         </v-col>

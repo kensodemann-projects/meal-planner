@@ -297,6 +297,37 @@ describe('Recipe Editor', () => {
       expect(inputs.protein.element.value).toBe('0');
     });
 
+    // TODO: Fill this out
+    describe('the ingredients list', () => {
+      it('is empty', () => {
+        expect(true).toBeTruthy();
+      });
+
+      describe('add button', () => {
+        it('is enabled', () => {
+          expect(true).toBeTruthy();
+        });
+
+        describe('on click', () => {
+          it('adds a blank ingredient', () => {
+            expect(true).toBeTruthy();
+          });
+
+          it('becomes disabled', () => {
+            expect(true).toBeTruthy();
+          });
+
+          it('remains disabled until the blank ingredient is filled in', () => {
+            expect(true).toBeTruthy();
+          });
+        });
+
+        it('is disabled if an invalid ingredient exists in the list', () => {
+          expect(true).toBeTruthy();
+        });
+      });
+    });
+
     describe('the save button', () => {
       it('begins disabled', () => {
         const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
@@ -318,6 +349,11 @@ describe('Recipe Editor', () => {
         await inputs.servingSize.setValue('12');
         await inputs.calories.setValue('325');
         expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      // TODO: fill this out
+      it('is disabled if an invalid ingredient exists in the ingredients list', () => {
+        expect(true).toBeTruthy();
       });
 
       it('emits the entered data in click', async () => {
@@ -374,13 +410,44 @@ describe('Recipe Editor', () => {
       expect(inputs.servings.element.value).toBe(BEER_CHEESE.servings.toString());
       expect(inputs.gramsPerServing.element.value).toBe(BEER_CHEESE.servingGrams?.toString());
       expect(inputs.servingSize.element.value).toBe(BEER_CHEESE.servingSize.toString());
-      expect((wrapper.vm as any).servingUnitOfMeasureId).toBe('floz');
+      expect((wrapper.vm as any).servingUnitOfMeasureId).toBe('cup');
       expect(inputs.calories.element.value).toBe(BEER_CHEESE.calories.toString());
       expect(inputs.sodium.element.value).toBe(BEER_CHEESE.sodium.toString());
       expect(inputs.sugar.element.value).toBe(BEER_CHEESE.sugar.toString());
       expect(inputs.totalCarbs.element.value).toBe(BEER_CHEESE.totalCarbs.toString());
       expect(inputs.fat.element.value).toBe(BEER_CHEESE.fat.toString());
       expect(inputs.protein.element.value).toBe(BEER_CHEESE.protein.toString());
+    });
+
+    // TODO: Fill this out
+    describe('the ingredients list', () => {
+      it('contains each ingredient', () => {
+        expect(true).toBeTruthy();
+      });
+
+      describe('add button', () => {
+        it('is enabled', () => {
+          expect(true).toBeTruthy();
+        });
+
+        describe('on click', () => {
+          it('adds a blank ingredient', () => {
+            expect(true).toBeTruthy();
+          });
+
+          it('becomes disabled', () => {
+            expect(true).toBeTruthy();
+          });
+
+          it('remains disabled until the blank ingredient is filled in', () => {
+            expect(true).toBeTruthy();
+          });
+        });
+
+        it('is disabled if an invalid ingredient exists in the list', () => {
+          expect(true).toBeTruthy();
+        });
+      });
     });
 
     describe('the save button', () => {
@@ -394,6 +461,15 @@ describe('Recipe Editor', () => {
         const inputs = getInputs(wrapper);
         await inputs.name.setValue('Apple Pie');
         expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      // TODO: fill this out
+      it('is eabled if an ingredient is changed', () => {
+        expect(true).toBeTruthy();
+      });
+
+      it('is disabled if an invalid ingredient exists in the ingredients list', () => {
+        expect(true).toBeTruthy();
       });
 
       it('emits the entered data in click', async () => {
@@ -417,7 +493,7 @@ describe('Recipe Editor', () => {
             difficulty: 'Normal',
             servings: BEER_CHEESE.servings,
             servingSize: BEER_CHEESE.servingSize,
-            servingSizeUnits: findUnitOfMeasure('floz'),
+            servingSizeUnits: findUnitOfMeasure('cup'),
             servingGrams: BEER_CHEESE.servingGrams,
             calories: 325,
             sodium: BEER_CHEESE.sodium,
@@ -436,20 +512,35 @@ describe('Recipe Editor', () => {
 
 const BEER_CHEESE: Recipe = {
   id: 'fie039950912',
-  name: 'Beer Cheese',
-  description: 'It is beery. It is cheesey. How could you go wrong?',
-  category: 'Beverage',
-  difficulty: 'Easy',
-  servings: 2,
-  servingSize: 8,
-  servingSizeUnits: findUnitOfMeasure('floz'),
-  servingGrams: 140,
-  calories: 375,
-  sodium: 1250,
-  sugar: 18,
-  totalCarbs: 42,
-  fat: 35,
+  name: 'Hearty Beer Cheese Soup',
+  description: 'A rich and creamy soup combining sharp cheddar cheese with beer and savory seasonings.',
+  category: 'Soup',
+  difficulty: 'Normal',
+  servings: 6,
+  servingSize: 1.5,
+  servingSizeUnits: findUnitOfMeasure('cup'),
+  servingGrams: 350,
+  calories: 410,
+  sodium: 680,
+  sugar: 5,
+  totalCarbs: 22,
+  fat: 30,
   protein: 15,
-  ingredients: [],
-  steps: [],
+  ingredients: [
+    { units: 0.25, unitOfMeasure: findUnitOfMeasure('cup'), name: 'Unsalted Butter' },
+    { units: 0.25, unitOfMeasure: findUnitOfMeasure('cup'), name: 'All-Purpose Flour' },
+    { units: 0.5, unitOfMeasure: findUnitOfMeasure('cup'), name: 'Chopped Onion' },
+    { units: 3, unitOfMeasure: findUnitOfMeasure('cup'), name: 'Chicken Broth' },
+    { units: 12, unitOfMeasure: findUnitOfMeasure('floz'), name: 'Lager or Pale Ale Beer' },
+    { units: 8, unitOfMeasure: findUnitOfMeasure('oz'), name: 'Sharp Cheddar Cheese, shredded' },
+    { units: 1, unitOfMeasure: findUnitOfMeasure('cup'), name: 'Heavy Cream' },
+  ],
+  steps: [
+    'In a large pot, melt butter over medium heat. Add onion and cook until softened, about 5 minutes.',
+    'Whisk in the flour and cook for 1 minute to create a roux.',
+    'Slowly whisk in the chicken broth and then the beer, ensuring no lumps remain.',
+    'Bring the soup to a simmer and cook for 10 minutes, stirring occasionally.',
+    'Reduce heat to low. Stir in the heavy cream and then gradually add the shredded cheese, stirring constantly until fully melted and smooth.',
+    'Do not boil after adding cheese. Season with salt, pepper, and a dash of hot sauce if desired. Serve hot.',
+  ],
 };
