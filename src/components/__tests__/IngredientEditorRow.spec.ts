@@ -42,8 +42,8 @@ describe('Ingredient Editor Row', () => {
 
     it('is emitted on change', async () => {
       wrapper = mountComponent({ foods: TEST_FOODS, modelValue: TEST_INGREDIENTS[1]! });
-      const unitsInput = wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
-      await unitsInput.setValue(73);
+      const numberInput = wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
+      await numberInput.setValue(73);
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
       expect((emitted![0]![0] as RecipeIngredient).units).toBe(73);
@@ -58,6 +58,17 @@ describe('Ingredient Editor Row', () => {
       ) as VueWrapper<components.VAutocomplete>;
       expect(autocomplete.exists()).toBe(true);
     });
+
+    it('is emitted on change', async () => {
+      wrapper = mountComponent({ foods: TEST_FOODS, modelValue: TEST_INGREDIENTS[1]! });
+      const autocomplete = wrapper.findComponent(
+        '[data-testid="unit-of-measure-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      await autocomplete.setValue('floz');
+      const emitted = wrapper.emitted('update:modelValue');
+      expect(emitted?.length).toBe(1);
+      expect((emitted![0]![0] as RecipeIngredient).unitOfMeasure).toEqual(findUnitOfMeasure('floz'));
+    });
   });
 
   describe('food item', () => {
@@ -65,6 +76,26 @@ describe('Ingredient Editor Row', () => {
       wrapper = mountComponent({ foods: TEST_FOODS, modelValue: TEST_INGREDIENTS[1]! });
       const combo = wrapper.findComponent('[data-testid="food-item-input"]') as VueWrapper<components.VCombobox>;
       expect(combo.exists()).toBe(true);
+    });
+
+    it('emits name and id when a food is selected', async () => {
+      wrapper = mountComponent({ foods: TEST_FOODS, modelValue: TEST_INGREDIENTS[1]! });
+      const combo = wrapper.findComponent('[data-testid="food-item-input"]') as VueWrapper<components.VCombobox>;
+      await combo.setValue(TEST_FOODS[2]);
+      const emitted = wrapper.emitted('update:modelValue');
+      expect(emitted?.length).toBe(1);
+      expect((emitted![0]![0] as RecipeIngredient).foodId).toBe(TEST_FOODS[2]?.id);
+      expect((emitted![0]![0] as RecipeIngredient).name).toBe(TEST_FOODS[2]?.name);
+    });
+
+    it('emits just name when free-form text is entered', async () => {
+      wrapper = mountComponent({ foods: TEST_FOODS, modelValue: TEST_INGREDIENTS[1]! });
+      const combo = wrapper.findComponent('[data-testid="food-item-input"]') as VueWrapper<components.VCombobox>;
+      await combo.setValue('silver bells');
+      const emitted = wrapper.emitted('update:modelValue');
+      expect(emitted?.length).toBe(1);
+      expect((emitted![0]![0] as RecipeIngredient).foodId).toBe(null);
+      expect((emitted![0]![0] as RecipeIngredient).name).toBe('silver bells');
     });
   });
 
