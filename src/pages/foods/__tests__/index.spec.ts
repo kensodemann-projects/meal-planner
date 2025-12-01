@@ -7,6 +7,7 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import IndexPage from '../index.vue';
+import type { FoodItem } from '@/models/food';
 
 vi.mock('vue-router');
 vi.mock('@/data/foods');
@@ -52,7 +53,7 @@ describe('Foods List Page', () => {
 
   it('displays each food item', () => {
     const { foods } = useFoodsData();
-    foods.value = TEST_FOODS;
+    (foods.value as FoodItem[]) = TEST_FOODS;
     wrapper = mountPage();
     const listItems = wrapper.findAllComponents('.food-list-item');
     expect(listItems.length).toBe(TEST_FOODS.length);
@@ -61,7 +62,7 @@ describe('Foods List Page', () => {
   it('navigates to the given food on click', async () => {
     const router = useRouter();
     const { foods } = useFoodsData();
-    foods.value = TEST_FOODS;
+    (foods.value as FoodItem[]) = TEST_FOODS;
     wrapper = mountPage();
     const listItems = wrapper.findAllComponents('.food-list-item');
     const listItem = listItems[2]?.findComponent({ name: 'VListItem' });

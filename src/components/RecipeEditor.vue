@@ -40,6 +40,48 @@
       </v-row>
     </v-container>
 
+    <h2>
+      <div class="d-flex justify-space-between">
+        <div>Ingredients</div>
+        <v-btn
+          density="compact"
+          variant="text"
+          icon="mdi-plus"
+          :disabled="ingredientsInvalid"
+          @click="addIngredient"
+          data-testid="add-ingredient-button"
+        ></v-btn>
+      </div>
+    </h2>
+    <v-divider class="mb-4"></v-divider>
+
+    <v-container fluid data-testid="ingredient-list-grid">
+      <IngredientEditorRow
+        v-for="(ingredient, index) in ingredients"
+        :key="ingredient.id"
+        :foods="foods"
+        :ingredient="ingredient"
+        @changed="(i) => changeIngredient(i, index)"
+      />
+    </v-container>
+
+    <h2>
+      <div class="d-flex justify-space-between">
+        <div>Steps</div>
+        <v-btn
+          density="compact"
+          variant="text"
+          icon="mdi-plus"
+          :disabled="stepsInvalid"
+          @click="() => null"
+          data-testid="add-steps-button"
+        ></v-btn>
+      </div>
+    </h2>
+    <v-divider class="mb-4"></v-divider>
+
+    <v-container fluid data-testid="step-list-grid"></v-container>
+
     <h2>Nutritional Information</h2>
     <v-divider class="mb-4"></v-divider>
 
@@ -50,6 +92,7 @@
             label="Servings"
             v-model="servings"
             :rules="[validationRules.required]"
+            :precision="null"
             data-testid="servings-input"
           ></v-number-input>
         </v-col>
@@ -69,6 +112,7 @@
             label="Serving Size"
             v-model="servingSize"
             :rules="[validationRules.required]"
+            :precision="null"
             data-testid="serving-size-input"
           ></v-number-input>
         </v-col>
@@ -147,12 +191,6 @@
       </v-row>
     </v-container>
 
-    <h2>Ingredients</h2>
-    <v-divider class="mb-4"></v-divider>
-
-    <h2>Steps</h2>
-    <v-divider class="mb-4"></v-divider>
-
     <v-container fluid>
       <v-row class="pa-4" justify="end">
         <CancelButton class="mr-4" @click="$emit('cancel')" />
@@ -167,10 +205,12 @@ import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import { validationRules } from '@/core/validation-rules';
 import { recipeCategories } from '@/data/recipe-categories';
 import { recipeDifficulties } from '@/data/recipe-difficulties';
-import type { Recipe, RecipeCategory, RecipeDifficulty } from '@/models/recipe';
+import type { RecipeIngredient, Recipe, RecipeCategory, RecipeDifficulty } from '@/models/recipe';
 import { computed, onMounted, ref } from 'vue';
 import type { VTextField } from 'vuetify/components';
 import { unitOfMeasureOptions } from '@/data/unit-of-measure';
+import IngredientEditorRow from './IngredientEditorRow.vue';
+import { useFoodsData } from '@/data/foods';
 
 const emit = defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'cancel'): void }>();
 const props = defineProps<{ recipe?: Recipe }>();
@@ -189,12 +229,39 @@ const sugar = ref<number>(props.recipe?.sugar || 0);
 const totalCarbs = ref<number>(props.recipe?.totalCarbs || 0);
 const fat = ref<number>(props.recipe?.fat || 0);
 const protein = ref<number>(props.recipe?.protein || 0);
+const ingredients = ref<RecipeIngredient[]>(props.recipe ? [...props.recipe.ingredients] : []);
+const steps = ref<string[]>(props.recipe ? [...props.recipe.steps] : []);
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
+const listChanged = ref(false);
+
+const { foods } = useFoodsData();
+
+const ingredientsInvalid = computed(
+  (): boolean => !!ingredients.value.find((i) => !(i.units && i.name && i.unitOfMeasure)),
+);
+
+const stepsInvalid = computed((): boolean => !!steps.value.find((s) => !!(s && s.trim())));
+
+const addIngredient = () => {
+  ingredients.value.push({
+    id: crypto.randomUUID(),
+    units: 1,
+    unitOfMeasure: findUnitOfMeasure('item'),
+    name: '',
+  });
+  listChanged.value = true;
+};
+
+const changeIngredient = (ingredient: RecipeIngredient, index: number) => {
+  ingredients.value[index] = { ...ingredient, id: ingredients.value[index]!.id };
+  listChanged.value = true;
+};
 
 const isModified = computed((): boolean => {
   if (!props.recipe) return true;
   return (
+    listChanged.value ||
     props.recipe.name !== name.value ||
     props.recipe.category !== category.value ||
     props.recipe.difficulty !== difficulty.value ||
@@ -228,8 +295,8 @@ const save = () => {
     totalCarbs: totalCarbs.value,
     fat: fat.value,
     protein: protein.value,
-    ingredients: [],
-    steps: [],
+    ingredients: ingredients.value,
+    steps: steps.value,
   });
 };
 

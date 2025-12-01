@@ -21,6 +21,7 @@ export type RecipeCategory =
 export type RecipeDifficulty = 'Easy' | 'Normal' | 'Advanced';
 
 export interface RecipeIngredient {
+  id: string;
   units: number;
   unitOfMeasure: UnitOfMeasure;
   name: string;

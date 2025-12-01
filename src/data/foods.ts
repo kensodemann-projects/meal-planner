@@ -4,9 +4,9 @@ import { useCollection, useFirestore } from 'vuefire';
 
 export const useFoodsData = () => {
   const db = useFirestore();
-  const path = `foods`;
+  const path = 'foods';
   const foodsCollection = collection(db, path);
-  const foods = useCollection(foodsCollection);
+  const foods = useCollection<FoodItem>(foodsCollection);
 
   const addFood = async (food: FoodItem): Promise<string> => {
     const item = await addDoc(foodsCollection, food);
@@ -32,7 +32,7 @@ export const useFoodsData = () => {
   };
 
   const getFood = async (id: string): Promise<FoodItem | null> =>
-    (foods.value.find((f) => f.id === id) as FoodItem) || getFoodFromDatabase(id);
+    foods.value.find((f) => f.id === id) || getFoodFromDatabase(id);
 
   const fdcFoodItemExists = (fdcId: number): boolean => !!foods.value.find((f) => f.fdcId === fdcId);
 

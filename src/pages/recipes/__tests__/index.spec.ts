@@ -13,6 +13,7 @@ const vuetify = createVuetify({
 const mountPage = () => mount(IndexPage, { global: { plugins: [vuetify] } });
 
 vi.mock('vue-router');
+vi.mock('@/data/foods');
 
 describe('Recipes List Page', () => {
   let wrapper: ReturnType<typeof mountPage>;
