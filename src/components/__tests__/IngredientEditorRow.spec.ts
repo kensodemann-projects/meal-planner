@@ -135,8 +135,28 @@ describe('Ingredient Editor Row', () => {
 });
 
 const TEST_INGREDIENTS = [
-  { units: 28, unitOfMeasure: findUnitOfMeasure('oz'), name: 'Crushed Tomatoes' },
-  { units: 1, unitOfMeasure: findUnitOfMeasure('cup'), name: 'Vegetable Broth' },
-  { units: 0.5, unitOfMeasure: findUnitOfMeasure('cup'), name: 'Heavy Cream' },
-  { units: 0.5, unitOfMeasure: findUnitOfMeasure('item'), name: 'Chopped Onion' },
+  {
+    id: '5031a23c-3605-4b8a-b66b-b5d6d181fdd4',
+    units: 28,
+    unitOfMeasure: findUnitOfMeasure('oz'),
+    name: 'Crushed Tomatoes',
+  },
+  {
+    id: 'a8125d02-16d9-4402-b0cd-26e6b3542c00',
+    units: 1,
+    unitOfMeasure: findUnitOfMeasure('cup'),
+    name: 'Vegetable Broth',
+  },
+  {
+    id: '7e30d5ee-e208-4f8e-b5a9-540b0ac32ced',
+    units: 0.5,
+    unitOfMeasure: findUnitOfMeasure('cup'),
+    name: 'Heavy Cream',
+  },
+  {
+    id: 'bf71cfa8-86fb-482b-a378-aa0749ef68fc',
+    units: 0.5,
+    unitOfMeasure: findUnitOfMeasure('item'),
+    name: 'Chopped Onion',
+  },
 ];
