@@ -510,7 +510,7 @@ describe('Recipe Editor', () => {
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
 
-      it('is eabled if an ingredient is changed', async () => {
+      it('is enabled if an ingredient is changed', async () => {
         const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
         expect(saveButton.attributes('disabled')).toBeDefined();
