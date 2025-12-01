@@ -256,7 +256,7 @@ const addIngredient = () => {
 };
 
 const changeIngredient = (ingredient: RecipeIngredient, index: number) => {
-  ingredients.value[index] = { ...ingredient, id: ingredients.value[index]?.id };
+  ingredients.value[index] = { ...ingredient, id: ingredients.value[index]!.id };
   listChanged.value = true;
 };
 
