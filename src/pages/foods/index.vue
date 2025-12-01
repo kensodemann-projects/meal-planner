@@ -2,7 +2,7 @@
   <div>
     <h1 class="text-center">My Foods</h1>
     <v-list>
-      <food-list-item v-for="food in foods" :key="food.fdcId" :food="food as FoodItem" @click="viewFoodItem" />
+      <food-list-item v-for="food in foods" :key="food.id" :food="food as FoodItem" @click="viewFoodItem" />
     </v-list>
     <v-fab color="primary" size="48" variant="flat" location="bottom end" absolute>
       <v-icon>{{ open ? 'mdi-close' : 'mdi-plus' }}</v-icon>
