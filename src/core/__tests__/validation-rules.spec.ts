@@ -8,6 +8,8 @@ describe('Validation Rules', () => {
       expect(validationRules.required(42.73)).toBe(true);
       expect(validationRules.required(-42.73)).toBe(true);
       expect(validationRules.required(0)).toBe(true);
+      expect(validationRules.required({})).toBe(true);
+      expect(validationRules.required({ message: 'hello' })).toBe(true);
     });
 
     it('returns "Required." if there is no value', () => {

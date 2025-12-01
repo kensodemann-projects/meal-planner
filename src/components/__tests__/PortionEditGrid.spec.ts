@@ -53,9 +53,7 @@ describe('Portion Edit Grid', () => {
 
     it('is emitted on change', async () => {
       wrapper = mountComponent({ ...TEST_FOOD, units: 42 });
-      const unitsInput = wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
-      const input = unitsInput.find('input');
-      await input.trigger('focus');
+      const input = wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
       await input.setValue(73);
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
@@ -105,9 +103,7 @@ describe('Portion Edit Grid', () => {
 
     it('is emitted on change', async () => {
       wrapper = mountComponent(TEST_FOOD);
-      const gramsInput = wrapper.findComponent('[data-testid="grams-input"]') as VueWrapper<components.VNumberInput>;
-      const input = gramsInput.find('input');
-      await input.trigger('focus');
+      const input = wrapper.findComponent('[data-testid="grams-input"]') as VueWrapper<components.VNumberInput>;
       await input.setValue(124);
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
@@ -136,9 +132,7 @@ describe('Portion Edit Grid', () => {
 
     it('is emitted on change', async () => {
       wrapper = mountComponent({ ...TEST_FOOD, calories: 42 });
-      const calsInput = wrapper.findComponent('[data-testid="calories-input"]') as VueWrapper<components.VNumberInput>;
-      const input = calsInput.find('input');
-      await input.trigger('focus');
+      const input = wrapper.findComponent('[data-testid="calories-input"]') as VueWrapper<components.VNumberInput>;
       await input.setValue(173);
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
@@ -167,9 +161,7 @@ describe('Portion Edit Grid', () => {
 
     it('is emitted on change', async () => {
       wrapper = mountComponent({ ...TEST_FOOD, sodium: 42 });
-      const sodiumInput = wrapper.findComponent('[data-testid="sodium-input"]') as VueWrapper<components.VNumberInput>;
-      const input = sodiumInput.find('input');
-      await input.trigger('focus');
+      const input = wrapper.findComponent('[data-testid="sodium-input"]') as VueWrapper<components.VNumberInput>;
       await input.setValue(267);
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
@@ -198,9 +190,7 @@ describe('Portion Edit Grid', () => {
 
     it('is emitted on change', async () => {
       wrapper = mountComponent({ ...TEST_FOOD, sugar: 92 });
-      const sugarInput = wrapper.findComponent('[data-testid="sugar-input"]') as VueWrapper<components.VNumberInput>;
-      const input = sugarInput.find('input');
-      await input.trigger('focus');
+      const input = wrapper.findComponent('[data-testid="sugar-input"]') as VueWrapper<components.VNumberInput>;
       await input.setValue(486);
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
@@ -229,9 +219,7 @@ describe('Portion Edit Grid', () => {
 
     it('is emitted on change', async () => {
       wrapper = mountComponent({ ...TEST_FOOD, carbs: 13 });
-      const carbsInput = wrapper.findComponent('[data-testid="carbs-input"]') as VueWrapper<components.VNumberInput>;
-      const input = carbsInput.find('input');
-      await input.trigger('focus');
+      const input = wrapper.findComponent('[data-testid="carbs-input"]') as VueWrapper<components.VNumberInput>;
       await input.setValue(27);
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
@@ -260,9 +248,7 @@ describe('Portion Edit Grid', () => {
 
     it('is emitted on change', async () => {
       wrapper = mountComponent({ ...TEST_FOOD, fat: 4 });
-      const fatInput = wrapper.findComponent('[data-testid="fat-input"]') as VueWrapper<components.VNumberInput>;
-      const input = fatInput.find('input');
-      await input.trigger('focus');
+      const input = wrapper.findComponent('[data-testid="fat-input"]') as VueWrapper<components.VNumberInput>;
       await input.setValue(19);
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
@@ -295,11 +281,7 @@ describe('Portion Edit Grid', () => {
 
     it('is emitted on change', async () => {
       wrapper = mountComponent({ ...TEST_FOOD, protein: 14 });
-      const proteinInput = wrapper.findComponent(
-        '[data-testid="protein-input"]',
-      ) as VueWrapper<components.VNumberInput>;
-      const input = proteinInput.find('input');
-      await input.trigger('focus');
+      const input = wrapper.findComponent('[data-testid="protein-input"]') as VueWrapper<components.VNumberInput>;
       await input.setValue(23);
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
