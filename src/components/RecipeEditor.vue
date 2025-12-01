@@ -58,7 +58,7 @@
     <v-container fluid data-testid="ingredient-list-grid">
       <IngredientEditorRow
         v-for="(ingredient, index) in ingredients"
-        :key="index"
+        :key="ingredient.id"
         :foods="foods"
         :ingredient="ingredient"
         @changed="(i) => changeIngredient(i, index)"
@@ -244,12 +244,17 @@ const ingredientsInvalid = computed(
 const stepsInvalid = computed((): boolean => !!steps.value.find((s) => !!(s && s.trim())));
 
 const addIngredient = () => {
-  ingredients.value.push({ units: 1, unitOfMeasure: findUnitOfMeasure('item'), name: '' });
+  ingredients.value.push({
+    id: crypto.randomUUID(),
+    units: 1,
+    unitOfMeasure: findUnitOfMeasure('item'),
+    name: '',
+  });
   listChanged.value = true;
 };
 
 const changeIngredient = (ingredient: RecipeIngredient, index: number) => {
-  ingredients.value[index] = { ...ingredient };
+  ingredients.value[index] = { ...ingredient, id: ingredients.value[index]!.id };
   listChanged.value = true;
 };
 

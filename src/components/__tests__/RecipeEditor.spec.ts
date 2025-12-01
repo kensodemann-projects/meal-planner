@@ -336,6 +336,7 @@ describe('Recipe Editor', () => {
             expect(button.attributes('disabled')).toBeDefined();
             const ingredients = listArea.findAllComponents(IngredientEditorRow);
             await ingredients[0]?.vm.$emit('changed', {
+              id: 'bd3543e0-68d4-4ba0-a1a6-29548d46464b',
               units: 1,
               unitOfMeasure: findUnitOfMeasure('lb'),
               name: 'fudge',
@@ -487,6 +488,7 @@ describe('Recipe Editor', () => {
             expect(button.attributes('disabled')).toBeDefined();
             const ingredients = listArea.findAllComponents(IngredientEditorRow);
             await ingredients[ingredients.length - 1]?.vm.$emit('changed', {
+              id: '0e8e3d4e-396d-42e8-aed6-fc8be1892c9e',
               units: 1,
               unitOfMeasure: findUnitOfMeasure('lb'),
               name: 'fudge',
@@ -516,6 +518,7 @@ describe('Recipe Editor', () => {
         expect(saveButton.attributes('disabled')).toBeDefined();
         const ingredients = listArea.findAllComponents(IngredientEditorRow);
         await ingredients[2]?.vm.$emit('changed', {
+          id: '3d56a852-d60c-453d-ba8b-61e8091c07aa',
           units: 1,
           unitOfMeasure: findUnitOfMeasure('lb'),
           name: 'fudge',
@@ -545,27 +548,31 @@ describe('Recipe Editor', () => {
         await saveButton.trigger('click');
         expect(wrapper.emitted('save')).toBeTruthy();
         expect(wrapper.emitted('save')).toHaveLength(1);
-        expect(wrapper.emitted('save')?.[0]).toEqual([
-          {
-            id: 'fie039950912',
-            name: 'Apple Pie',
-            description: null,
-            category: 'Dessert',
-            difficulty: 'Normal',
-            servings: BEER_CHEESE.servings,
-            servingSize: BEER_CHEESE.servingSize,
-            servingSizeUnits: findUnitOfMeasure('cup'),
-            servingGrams: BEER_CHEESE.servingGrams,
-            calories: 325,
-            sodium: BEER_CHEESE.sodium,
-            sugar: BEER_CHEESE.sugar,
-            totalCarbs: BEER_CHEESE.totalCarbs,
-            fat: BEER_CHEESE.fat,
-            protein: BEER_CHEESE.protein,
-            ingredients: [...BEER_CHEESE.ingredients],
-            steps: [...BEER_CHEESE.steps],
-          },
-        ]);
+        const emittedData = wrapper.emitted('save')?.[0]?.[0] as Recipe;
+        expect(emittedData.id).toBe('fie039950912');
+        expect(emittedData.name).toBe('Apple Pie');
+        expect(emittedData.description).toBeNull();
+        expect(emittedData.category).toBe('Dessert');
+        expect(emittedData.difficulty).toBe('Normal');
+        expect(emittedData.servings).toBe(BEER_CHEESE.servings);
+        expect(emittedData.servingSize).toBe(BEER_CHEESE.servingSize);
+        expect(emittedData.servingSizeUnits).toEqual(findUnitOfMeasure('cup'));
+        expect(emittedData.servingGrams).toBe(BEER_CHEESE.servingGrams);
+        expect(emittedData.calories).toBe(325);
+        expect(emittedData.sodium).toBe(BEER_CHEESE.sodium);
+        expect(emittedData.sugar).toBe(BEER_CHEESE.sugar);
+        expect(emittedData.totalCarbs).toBe(BEER_CHEESE.totalCarbs);
+        expect(emittedData.fat).toBe(BEER_CHEESE.fat);
+        expect(emittedData.protein).toBe(BEER_CHEESE.protein);
+        expect(emittedData.steps).toEqual([...BEER_CHEESE.steps]);
+        expect(emittedData.ingredients.length).toBe(BEER_CHEESE.ingredients.length);
+        emittedData.ingredients.forEach((ingredient, index) => {
+          expect(ingredient.id).toBeDefined();
+          expect(typeof ingredient.id).toBe('string');
+          expect(ingredient.name).toBe(BEER_CHEESE.ingredients[index]!.name);
+          expect(ingredient.units).toBe(BEER_CHEESE.ingredients[index]!.units);
+          expect(ingredient.unitOfMeasure).toEqual(BEER_CHEESE.ingredients[index]!.unitOfMeasure);
+        });
       });
     });
   });
@@ -588,13 +595,48 @@ const BEER_CHEESE: Recipe = {
   fat: 30,
   protein: 15,
   ingredients: [
-    { units: 0.25, unitOfMeasure: findUnitOfMeasure('cup'), name: 'Unsalted Butter' },
-    { units: 0.25, unitOfMeasure: findUnitOfMeasure('cup'), name: 'All-Purpose Flour' },
-    { units: 0.5, unitOfMeasure: findUnitOfMeasure('cup'), name: 'Chopped Onion' },
-    { units: 3, unitOfMeasure: findUnitOfMeasure('cup'), name: 'Chicken Broth' },
-    { units: 12, unitOfMeasure: findUnitOfMeasure('floz'), name: 'Lager or Pale Ale Beer' },
-    { units: 8, unitOfMeasure: findUnitOfMeasure('oz'), name: 'Sharp Cheddar Cheese, shredded' },
-    { units: 1, unitOfMeasure: findUnitOfMeasure('cup'), name: 'Heavy Cream' },
+    {
+      id: 'c01d5817-8101-4a72-8173-4b303e8dafde',
+      units: 0.25,
+      unitOfMeasure: findUnitOfMeasure('cup'),
+      name: 'Unsalted Butter',
+    },
+    {
+      id: '1fe0060d-7762-4f6a-a3ac-a8eaf98078a9',
+      units: 0.25,
+      unitOfMeasure: findUnitOfMeasure('cup'),
+      name: 'All-Purpose Flour',
+    },
+    {
+      id: '3d56a852-d60c-453d-ba8b-61e8091c07aa',
+      units: 0.5,
+      unitOfMeasure: findUnitOfMeasure('cup'),
+      name: 'Chopped Onion',
+    },
+    {
+      id: 'd8c1ddab-dd3f-4edf-bb60-75991b199247',
+      units: 3,
+      unitOfMeasure: findUnitOfMeasure('cup'),
+      name: 'Chicken Broth',
+    },
+    {
+      id: 'a0d9b316-32b4-44b3-b0aa-d7f139477a44',
+      units: 12,
+      unitOfMeasure: findUnitOfMeasure('floz'),
+      name: 'Lager or Pale Ale Beer',
+    },
+    {
+      id: '88706b21-246b-419a-8b20-de5a964ed1f9',
+      units: 8,
+      unitOfMeasure: findUnitOfMeasure('oz'),
+      name: 'Sharp Cheddar Cheese, shredded',
+    },
+    {
+      id: 'df8f184a-7cea-4f75-a72d-aa4333ec3e9c',
+      units: 1,
+      unitOfMeasure: findUnitOfMeasure('cup'),
+      name: 'Heavy Cream',
+    },
   ],
   steps: [
     'In a large pot, melt butter over medium heat. Add onion and cook until softened, about 5 minutes.',
