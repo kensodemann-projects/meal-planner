@@ -58,7 +58,7 @@
     <v-container fluid data-testid="ingredient-list-grid">
       <IngredientEditorRow
         v-for="(ingredient, index) in ingredients"
-        :key="index"
+        :key="ingredient.id"
         :foods="foods"
         :ingredient="ingredient"
         @changed="(i) => changeIngredient(i, index)"
@@ -229,7 +229,9 @@ const sugar = ref<number>(props.recipe?.sugar || 0);
 const totalCarbs = ref<number>(props.recipe?.totalCarbs || 0);
 const fat = ref<number>(props.recipe?.fat || 0);
 const protein = ref<number>(props.recipe?.protein || 0);
-const ingredients = ref<RecipeIngredient[]>(props.recipe ? [...props.recipe.ingredients] : []);
+const ingredients = ref<RecipeIngredient[]>(
+  props.recipe ? props.recipe.ingredients.map((i) => ({ ...i, id: i.id || crypto.randomUUID() })) : [],
+);
 const steps = ref<string[]>(props.recipe ? [...props.recipe.steps] : []);
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
@@ -244,12 +246,17 @@ const ingredientsInvalid = computed(
 const stepsInvalid = computed((): boolean => !!steps.value.find((s) => !!(s && s.trim())));
 
 const addIngredient = () => {
-  ingredients.value.push({ units: 1, unitOfMeasure: findUnitOfMeasure('item'), name: '' });
+  ingredients.value.push({
+    id: crypto.randomUUID(),
+    units: 1,
+    unitOfMeasure: findUnitOfMeasure('item'),
+    name: '',
+  });
   listChanged.value = true;
 };
 
 const changeIngredient = (ingredient: RecipeIngredient, index: number) => {
-  ingredients.value[index] = { ...ingredient };
+  ingredients.value[index] = { ...ingredient, id: ingredients.value[index]?.id };
   listChanged.value = true;
 };
 

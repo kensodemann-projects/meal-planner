@@ -545,27 +545,31 @@ describe('Recipe Editor', () => {
         await saveButton.trigger('click');
         expect(wrapper.emitted('save')).toBeTruthy();
         expect(wrapper.emitted('save')).toHaveLength(1);
-        expect(wrapper.emitted('save')?.[0]).toEqual([
-          {
-            id: 'fie039950912',
-            name: 'Apple Pie',
-            description: null,
-            category: 'Dessert',
-            difficulty: 'Normal',
-            servings: BEER_CHEESE.servings,
-            servingSize: BEER_CHEESE.servingSize,
-            servingSizeUnits: findUnitOfMeasure('cup'),
-            servingGrams: BEER_CHEESE.servingGrams,
-            calories: 325,
-            sodium: BEER_CHEESE.sodium,
-            sugar: BEER_CHEESE.sugar,
-            totalCarbs: BEER_CHEESE.totalCarbs,
-            fat: BEER_CHEESE.fat,
-            protein: BEER_CHEESE.protein,
-            ingredients: [...BEER_CHEESE.ingredients],
-            steps: [...BEER_CHEESE.steps],
-          },
-        ]);
+        const emittedData = wrapper.emitted('save')?.[0]?.[0] as Recipe;
+        expect(emittedData.id).toBe('fie039950912');
+        expect(emittedData.name).toBe('Apple Pie');
+        expect(emittedData.description).toBeNull();
+        expect(emittedData.category).toBe('Dessert');
+        expect(emittedData.difficulty).toBe('Normal');
+        expect(emittedData.servings).toBe(BEER_CHEESE.servings);
+        expect(emittedData.servingSize).toBe(BEER_CHEESE.servingSize);
+        expect(emittedData.servingSizeUnits).toEqual(findUnitOfMeasure('cup'));
+        expect(emittedData.servingGrams).toBe(BEER_CHEESE.servingGrams);
+        expect(emittedData.calories).toBe(325);
+        expect(emittedData.sodium).toBe(BEER_CHEESE.sodium);
+        expect(emittedData.sugar).toBe(BEER_CHEESE.sugar);
+        expect(emittedData.totalCarbs).toBe(BEER_CHEESE.totalCarbs);
+        expect(emittedData.fat).toBe(BEER_CHEESE.fat);
+        expect(emittedData.protein).toBe(BEER_CHEESE.protein);
+        expect(emittedData.steps).toEqual([...BEER_CHEESE.steps]);
+        expect(emittedData.ingredients.length).toBe(BEER_CHEESE.ingredients.length);
+        emittedData.ingredients.forEach((ingredient, index) => {
+          expect(ingredient.id).toBeDefined();
+          expect(typeof ingredient.id).toBe('string');
+          expect(ingredient.name).toBe(BEER_CHEESE.ingredients[index]!.name);
+          expect(ingredient.units).toBe(BEER_CHEESE.ingredients[index]!.units);
+          expect(ingredient.unitOfMeasure).toEqual(BEER_CHEESE.ingredients[index]!.unitOfMeasure);
+        });
       });
     });
   });
