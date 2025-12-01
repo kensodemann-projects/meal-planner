@@ -514,7 +514,6 @@ describe('Recipe Editor', () => {
         const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
         expect(saveButton.attributes('disabled')).toBeDefined();
-        expect(true).toBeTruthy();
         const ingredients = listArea.findAllComponents(IngredientEditorRow);
         await ingredients[2]?.vm.$emit('changed', {
           units: 1,
