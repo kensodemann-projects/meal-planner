@@ -229,9 +229,7 @@ const sugar = ref<number>(props.recipe?.sugar || 0);
 const totalCarbs = ref<number>(props.recipe?.totalCarbs || 0);
 const fat = ref<number>(props.recipe?.fat || 0);
 const protein = ref<number>(props.recipe?.protein || 0);
-const ingredients = ref<RecipeIngredient[]>(
-  props.recipe ? props.recipe.ingredients.map((i) => ({ ...i, id: i.id || crypto.randomUUID() })) : [],
-);
+const ingredients = ref<RecipeIngredient[]>(props.recipe ? [...props.recipe.ingredients] : []);
 const steps = ref<string[]>(props.recipe ? [...props.recipe.steps] : []);
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
