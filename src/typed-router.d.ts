@@ -93,6 +93,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/recipes/[id]/': RouteRecordInfo<
+      '/recipes/[id]/',
+      '/recipes/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
+      | never
+    >,
     '/recipes/add': RouteRecordInfo<
       '/recipes/add',
       '/recipes/add',
@@ -184,6 +191,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/recipes/index.vue': {
       routes:
         | '/recipes/'
+      views:
+        | never
+    }
+    'src/pages/recipes/[id]/index.vue': {
+      routes:
+        | '/recipes/[id]/'
       views:
         | never
     }
