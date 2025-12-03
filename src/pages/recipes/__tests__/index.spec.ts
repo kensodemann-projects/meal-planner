@@ -54,6 +54,17 @@ describe('Recipes List Page', () => {
     expect(items.length).toBe(TEST_RECIPES.length);
   });
 
+  it('navigates to the given recipe on click', async () => {
+    const router = useRouter();
+    const { recipes } = useRecipesData();
+    recipes.value = TEST_RECIPES;
+    wrapper = mountPage();
+    const listItems = wrapper.findAllComponents(RecipeListItem);
+    const listItem = listItems[0]?.findComponent({ name: 'VListItem' });
+    await listItem?.trigger('click');
+    expect(router.push).toHaveBeenCalledExactlyOnceWith(`recipes/${TEST_RECIPES[0]?.id}`);
+  });
+
   describe('add button', () => {
     it('navigates to the recipe add page', async () => {
       const router = useRouter();
