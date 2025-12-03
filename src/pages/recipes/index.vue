@@ -1,5 +1,14 @@
 <template>
-  <h2>This is the recipe list page</h2>
+  <h1 class="text-center">My Recipes</h1>
+
+  <v-list two-line>
+    <RecipeListItem
+      v-for="recipe in recipes"
+      :key="recipe.id"
+      :recipe="recipe as Recipe"
+      @click="router.push(`recipes/${recipe.id}`)"
+    />
+  </v-list>
 
   <v-fab
     color="primary"
@@ -13,7 +22,10 @@
 </template>
 
 <script lang="ts" setup>
+import { useRecipesData } from '@/data/recipes';
 import { useRouter } from 'vue-router';
+import type { Recipe } from '@/models/recipe';
 
 const router = useRouter();
+const { recipes } = useRecipesData();
 </script>
