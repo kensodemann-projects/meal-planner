@@ -2,7 +2,7 @@
   <div>
     <h1>Recipe Details Page</h1>
     <p>This is the recipe details page for a specific recipe.</p>
-    <a href="/recipes">Back to Recipes List</a>
+    <RouterLink to="/recipes">Back to Recipes List</RouterLink>
   </div>
 </template>
 
