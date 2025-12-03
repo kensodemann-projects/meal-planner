@@ -1,9 +1,16 @@
-import { sendPasswordResetEmail, signInWithEmailAndPassword, signOut, type UserCredential } from 'firebase/auth';
+import {
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signOut,
+  type User,
+  type UserCredential,
+} from 'firebase/auth';
+import type { Ref } from 'vue';
 import { getCurrentUser, useCurrentUser, useFirebaseAuth } from 'vuefire';
 
 export const useAuthentication = () => {
   const auth = useFirebaseAuth();
-  const user = useCurrentUser();
+  const user: Ref<User | null | undefined> = useCurrentUser();
 
   const isAuthenticated = async (): Promise<boolean> => {
     return !!(await getCurrentUser());

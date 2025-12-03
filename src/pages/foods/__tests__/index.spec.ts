@@ -1,5 +1,7 @@
+import FoodListItem from '@/components/FoodListItem.vue';
 import { TEST_FOODS } from '@/data/__tests__/test-data';
 import { useFoodsData } from '@/data/foods';
+import type { FoodItem } from '@/models/food';
 import { mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { useRouter } from 'vue-router';
@@ -7,7 +9,6 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import IndexPage from '../index.vue';
-import type { FoodItem } from '@/models/food';
 
 vi.mock('vue-router');
 vi.mock('@/data/foods');
@@ -55,7 +56,7 @@ describe('Foods List Page', () => {
     const { foods } = useFoodsData();
     (foods.value as FoodItem[]) = TEST_FOODS;
     wrapper = mountPage();
-    const listItems = wrapper.findAllComponents('.food-list-item');
+    const listItems = wrapper.findAllComponents(FoodListItem);
     expect(listItems.length).toBe(TEST_FOODS.length);
   });
 
@@ -64,7 +65,7 @@ describe('Foods List Page', () => {
     const { foods } = useFoodsData();
     (foods.value as FoodItem[]) = TEST_FOODS;
     wrapper = mountPage();
-    const listItems = wrapper.findAllComponents('.food-list-item');
+    const listItems = wrapper.findAllComponents(FoodListItem);
     const listItem = listItems[2]?.findComponent({ name: 'VListItem' });
     await listItem?.trigger('click');
     expect(router.push).toHaveBeenCalledExactlyOnceWith(`foods/${TEST_FOODS[2]?.id}`);

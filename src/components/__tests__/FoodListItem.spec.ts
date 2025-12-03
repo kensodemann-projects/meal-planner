@@ -65,7 +65,6 @@ describe('Food List Item Component', () => {
   it('renders', () => {
     wrapper = createWrapper();
     expect(wrapper.exists()).toBe(true);
-    expect(wrapper.find('.food-list-item').exists()).toBe(true);
   });
 
   it('displays food description as title', () => {
