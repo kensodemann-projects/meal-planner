@@ -18,6 +18,12 @@
       </v-row>
 
       <v-row>
+        <v-col cols="12">
+          <v-textarea label="Description" v-model="description" data-testid="description-input"></v-textarea>
+        </v-col>
+      </v-row>
+
+      <v-row>
         <v-col cols="12" md="6">
           <v-autocomplete
             label="Category"
@@ -217,6 +223,7 @@ const props = defineProps<{ recipe?: Recipe }>();
 
 const valid = ref(false);
 const name = ref<string>(props.recipe?.name || '');
+const description = ref<string>(props.recipe?.description || '');
 const category = ref<RecipeCategory | undefined>(props.recipe?.category);
 const difficulty = ref<RecipeDifficulty | undefined>(props.recipe?.difficulty);
 const servings = ref<number | undefined>(props.recipe?.servings);
@@ -281,8 +288,8 @@ const isModified = computed((): boolean => {
 const save = () => {
   emit('save', {
     ...props.recipe,
-    name: name.value,
-    description: null,
+    name: name.value.trim(),
+    description: description.value.trim() || null,
     category: category.value!,
     difficulty: difficulty.value!,
     servings: servings.value!,
