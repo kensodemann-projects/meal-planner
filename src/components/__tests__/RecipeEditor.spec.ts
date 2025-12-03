@@ -401,7 +401,7 @@ describe('Recipe Editor', () => {
         (wrapper.vm as any).difficulty = 'Easy';
         await inputs.servingUnitOfMeasure.setValue('oz');
         (wrapper.vm as any).servingUnitOfMeasureId = 'oz';
-        await inputs.name.setValue('Apple Pie');
+        await inputs.name.setValue(' Apple Pie   ');
         await inputs.servings.setValue('2');
         await inputs.servingSize.setValue('1');
         await inputs.calories.setValue('325');
@@ -444,7 +444,7 @@ describe('Recipe Editor', () => {
         await inputs.servings.setValue('2');
         await inputs.servingSize.setValue('1');
         await inputs.calories.setValue('325');
-        await inputs.description.setValue('A delicious apple pie recipe.');
+        await inputs.description.setValue('  A delicious apple pie recipe.   ');
         await saveButton.trigger('click');
         expect(wrapper.emitted('save')).toBeTruthy();
         expect(wrapper.emitted('save')).toHaveLength(1);
