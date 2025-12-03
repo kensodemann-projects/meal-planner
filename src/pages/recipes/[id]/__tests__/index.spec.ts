@@ -11,7 +11,7 @@ const vuetify = createVuetify({
 });
 const mountComponent = (props = {}) => mount(IndexPage, { props, global: { plugins: [vuetify] } });
 
-describe('Index Page', () => {
+describe('Recipe Details Page', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
   afterEach(() => {
