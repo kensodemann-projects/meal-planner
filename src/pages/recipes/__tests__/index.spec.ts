@@ -60,7 +60,7 @@ describe('Recipes List Page', () => {
     recipes.value = TEST_RECIPES;
     wrapper = mountPage();
     const listItems = wrapper.findAllComponents(RecipeListItem);
-    const listItem = listItems[0]?.findComponent({ name: 'VListItem' });
+    const listItem = listItems[0]?.findComponent(components.VListItem);
     await listItem?.trigger('click');
     expect(router.push).toHaveBeenCalledExactlyOnceWith(`recipes/${TEST_RECIPES[0]?.id}`);
   });
