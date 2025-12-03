@@ -24,6 +24,7 @@ const mountComponent = (props = {}) => mount(RecipeEditor, { props, global: { pl
 
 const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
   name: wrapper.findComponent('[data-testid="name-input"]').find('input'),
+  description: wrapper.findComponent('[data-testid="description-input"]').find('textarea'),
   category: wrapper.findComponent('[data-testid="category-input"]').find('input'),
   difficulty: wrapper.findComponent('[data-testid="difficulty-input"]').find('input'),
   servings: wrapper.findComponent('[data-testid="servings-input"]').find('input'),
