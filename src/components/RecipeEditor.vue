@@ -289,7 +289,7 @@ const save = () => {
   emit('save', {
     ...props.recipe,
     name: name.value,
-    description: null,
+    description: description.value?.trim() || null,
     category: category.value!,
     difficulty: difficulty.value!,
     servings: servings.value!,

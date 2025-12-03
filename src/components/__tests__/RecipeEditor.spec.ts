@@ -287,6 +287,7 @@ describe('Recipe Editor', () => {
     it('initializes the inputs with blank values', () => {
       const inputs = getInputs(wrapper);
       expect(inputs.name.element.value).toBe('');
+      expect(inputs.description.element.value).toBe('');
       expect(inputs.category.element.value).toBe('');
       expect(inputs.difficulty.element.value).toBe('');
       expect(inputs.servings.element.value).toBe('');
@@ -390,7 +391,7 @@ describe('Recipe Editor', () => {
         expect(saveButton.attributes('disabled')).toBeDefined();
       });
 
-      it('emits the entered data in click', async () => {
+      it('emits the entered data on click', async () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
         const inputs = getInputs(wrapper);
         await inputs.category.setValue('Dessert');
@@ -427,6 +428,28 @@ describe('Recipe Editor', () => {
             steps: [],
           },
         ]);
+      });
+
+      it('emits the entered description if entered', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const inputs = getInputs(wrapper);
+        await inputs.category.setValue('Dessert');
+        (wrapper.vm as any).category = 'Dessert';
+        expect(saveButton.attributes('disabled')).toBeDefined();
+        await inputs.difficulty.setValue('Easy');
+        (wrapper.vm as any).difficulty = 'Easy';
+        await inputs.servingUnitOfMeasure.setValue('oz');
+        (wrapper.vm as any).servingUnitOfMeasureId = 'oz';
+        await inputs.name.setValue('Apple Pie');
+        await inputs.servings.setValue('2');
+        await inputs.servingSize.setValue('1');
+        await inputs.calories.setValue('325');
+        await inputs.description.setValue('A delicious apple pie recipe.');
+        await saveButton.trigger('click');
+        expect(wrapper.emitted('save')).toBeTruthy();
+        expect(wrapper.emitted('save')).toHaveLength(1);
+        const emittedData = wrapper.emitted('save')?.[0]?.[0] as Recipe;
+        expect(emittedData.description).toBe('A delicious apple pie recipe.');
       });
     });
   });
@@ -552,7 +575,7 @@ describe('Recipe Editor', () => {
         const emittedData = wrapper.emitted('save')?.[0]?.[0] as Recipe;
         expect(emittedData.id).toBe('fie039950912');
         expect(emittedData.name).toBe('Apple Pie');
-        expect(emittedData.description).toBeNull();
+        expect(emittedData.description).toBe(BEER_CHEESE.description);
         expect(emittedData.category).toBe('Dessert');
         expect(emittedData.difficulty).toBe('Normal');
         expect(emittedData.servings).toBe(BEER_CHEESE.servings);
