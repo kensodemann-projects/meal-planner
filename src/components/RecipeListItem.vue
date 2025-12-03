@@ -14,4 +14,8 @@ import type { Recipe } from '@/models/recipe';
 defineProps<{
   recipe: Recipe;
 }>();
+
+defineEmits<{
+  (event: 'click', payload: Recipe): void;
+}>();
 </script>
