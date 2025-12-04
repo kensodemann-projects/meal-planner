@@ -1,12 +1,13 @@
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import { TEST_FOOD } from '@/data/__tests__/test-data';
+import { useFoodsData } from '@/data/foods';
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+import { useRoute, useRouter } from 'vue-router';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import IndexPage from '../index.vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useFoodsData } from '@/data/foods';
-import { TEST_FOOD } from '@/data/__tests__/test-data';
 
 vi.mock('@/data/foods');
 vi.mock('vue-router');
@@ -20,19 +21,36 @@ const mountPage = () => mount(IndexPage, { global: { plugins: [vuetify] } });
 describe('Food View Page', () => {
   let wrapper: ReturnType<typeof mountPage>;
 
+  beforeEach(() => {
+    // Polyfill visualViewport for Vuetify overlays/dialogs in jsdom
+    if (!window.visualViewport) {
+      // @ts-expect-error Polyfill for Vuetify overlay in jsdom
+      window.visualViewport = {
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        width: window.innerWidth,
+        height: window.innerHeight,
+        scale: 1,
+        offsetLeft: 0,
+        offsetTop: 0,
+        pageLeft: 0,
+        pageTop: 0,
+      };
+    }
+    const { getFood } = useFoodsData();
+    (useRoute as Mock).mockReturnValue({ params: { id: '88f933fiieo' } });
+    (useRouter as Mock).mockReturnValue({ push: vi.fn() });
+    (getFood as Mock).mockResolvedValue({ ...TEST_FOOD, id: '88f933fiieo' });
+    const router = useRouter();
+    router.replace = vi.fn();
+  });
+
   afterEach(() => {
     wrapper?.unmount();
     vi.clearAllTimers();
     try {
       vi.useRealTimers();
     } catch {}
-  });
-
-  beforeEach(() => {
-    const { getFood } = useFoodsData();
-    (useRoute as Mock).mockReturnValue({ params: { id: '88f933fiieo' } });
-    (useRouter as Mock).mockReturnValue({ push: vi.fn() });
-    (getFood as Mock).mockResolvedValue(TEST_FOOD);
   });
 
   it('renders', async () => {
@@ -67,6 +85,65 @@ describe('Food View Page', () => {
       const button = wrapper.findComponent('[data-testid="modify-button"]');
       await button.trigger('click');
       expect(router.push).toHaveBeenCalledExactlyOnceWith('/foods/88f933fiieo/update');
+    });
+  });
+
+  describe('delete button', () => {
+    it('confirms the delete with the user', async () => {
+      wrapper = mountPage();
+      await flushPromises();
+      const button = wrapper.findComponent('[data-testid="delete-button"]');
+      await button.trigger('click');
+      const confirmDialog = wrapper.findComponent(ConfirmDialog);
+      expect(confirmDialog.exists()).toBe(true);
+    });
+
+    describe('on confirm', () => {
+      it('removes the food', async () => {
+        wrapper = mountPage();
+        await flushPromises();
+        const button = wrapper.findComponent('[data-testid="delete-button"]');
+        await button.trigger('click');
+        const confirmDialog = wrapper.findComponent(ConfirmDialog);
+        await confirmDialog.vm.$emit('confirm');
+        const { removeFood } = useFoodsData();
+        expect(removeFood).toHaveBeenCalledExactlyOnceWith('88f933fiieo');
+      });
+
+      it('navigates to the food list page', async () => {
+        const router = useRouter();
+        wrapper = mountPage();
+        await flushPromises();
+        const button = wrapper.findComponent('[data-testid="delete-button"]');
+        await button.trigger('click');
+        const confirmDialog = wrapper.findComponent(ConfirmDialog);
+        await confirmDialog.vm.$emit('confirm');
+        expect(router.replace).toHaveBeenCalledExactlyOnceWith('/foods');
+      });
+    });
+
+    describe('on cancel', () => {
+      it('does not remove the food', async () => {
+        wrapper = mountPage();
+        await flushPromises();
+        const button = wrapper.findComponent('[data-testid="delete-button"]');
+        await button.trigger('click');
+        const confirmDialog = wrapper.findComponent(ConfirmDialog);
+        await confirmDialog.vm.$emit('cancel');
+        const { removeFood } = useFoodsData();
+        expect(removeFood).not.toHaveBeenCalled();
+      });
+
+      it('does not navigate', async () => {
+        wrapper = mountPage();
+        await flushPromises();
+        const button = wrapper.findComponent('[data-testid="delete-button"]');
+        await button.trigger('click');
+        const confirmDialog = wrapper.findComponent(ConfirmDialog);
+        await confirmDialog.vm.$emit('cancel');
+        const router = useRouter();
+        expect(router.replace).not.toHaveBeenCalled();
+      });
     });
   });
 });

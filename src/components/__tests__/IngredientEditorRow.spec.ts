@@ -8,6 +8,7 @@ import { TEST_FOODS } from '@/data/__tests__/test-data';
 import type { RecipeIngredient } from '@/models/recipe';
 import type { FoodItem } from '@/models/food';
 import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
+import ConfirmDialog from '../ConfirmDialog.vue';
 
 const vuetify = createVuetify({
   components,
@@ -148,7 +149,7 @@ describe('Ingredient Editor Row', () => {
       const button = wrapper.findComponent('[data-testid="delete-button"]');
       await button.trigger('click');
       await flushPromises();
-      const confirmDialog = wrapper.findComponent({ name: 'ConfirmDialog' });
+      const confirmDialog = wrapper.findComponent(ConfirmDialog);
       expect(confirmDialog.exists()).toBe(true);
     });
 
@@ -158,7 +159,7 @@ describe('Ingredient Editor Row', () => {
       await button.trigger('click');
       await flushPromises();
 
-      const confirmDialog = wrapper.findComponent({ name: 'ConfirmDialog' });
+      const confirmDialog = wrapper.findComponent(ConfirmDialog);
       expect(confirmDialog.exists()).toBe(true);
 
       await confirmDialog.vm.$emit('confirm');
@@ -177,7 +178,7 @@ describe('Ingredient Editor Row', () => {
       await button.trigger('click');
       await flushPromises();
 
-      const confirmDialog = wrapper.findComponent({ name: 'ConfirmDialog' });
+      const confirmDialog = wrapper.findComponent(ConfirmDialog);
       expect(confirmDialog.exists()).toBe(true);
 
       await confirmDialog.vm.$emit('cancel');
