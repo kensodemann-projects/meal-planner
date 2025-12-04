@@ -575,6 +575,15 @@ describe('Recipe Editor', () => {
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
 
+      it('is enabled if an ingredient is deleted', async () => {
+        const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        expect(saveButton.attributes('disabled')).toBeDefined();
+        const ingredients = listArea.findAllComponents(IngredientEditorRow);
+        await ingredients[2]?.vm.$emit('delete');
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
       it('is disabled if an invalid ingredient exists in the ingredients list', async () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
         const inputs = getInputs(wrapper);
