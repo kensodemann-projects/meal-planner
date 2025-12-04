@@ -8,6 +8,7 @@ import PortionData from '../PortionData.vue';
 import PortionDataCard from '../PortionDataCard.vue';
 import ModifyButton from '../buttons/ModifyButton.vue';
 import DeleteButton from '../buttons/DeleteButton.vue';
+import ConfirmDialog from '../ConfirmDialog.vue';
 
 const vuetify = createVuetify({
   components,
@@ -19,6 +20,21 @@ describe('Portion Data Card', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
   beforeEach(() => {
+    // Polyfill visualViewport for Vuetify overlays/dialogs in jsdom
+    if (!window.visualViewport) {
+      // @ts-expect-error Polyfill for Vuetify overlay in jsdom
+      window.visualViewport = {
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        width: window.innerWidth,
+        height: window.innerHeight,
+        scale: 1,
+        offsetLeft: 0,
+        offsetTop: 0,
+        pageLeft: 0,
+        pageTop: 0,
+      };
+    }
     wrapper = mountComponent();
   });
 
@@ -43,17 +59,45 @@ describe('Portion Data Card', () => {
     expect(data.exists()).toBe(true);
   });
 
-  it('emits modify', async () => {
-    const button = wrapper.findComponent(ModifyButton);
-    await button.trigger('click');
-    expect(wrapper.emitted('modify')).toBeTruthy();
-    expect(wrapper.emitted('modify')?.length).toBe(1);
+  describe('modify button', () => {
+    it('emits modify', async () => {
+      const button = wrapper.findComponent(ModifyButton);
+      await button.trigger('click');
+      expect(wrapper.emitted('modify')).toBeTruthy();
+      expect(wrapper.emitted('modify')?.length).toBe(1);
+    });
   });
 
-  it('emits delete', async () => {
-    const button = wrapper.findComponent(DeleteButton);
-    await button.trigger('click');
-    expect(wrapper.emitted('delete')).toBeTruthy();
-    expect(wrapper.emitted('delete')?.length).toBe(1);
+  describe('delete button', () => {
+    it('displays a confirmation dialog', async () => {
+      const button = wrapper.findComponent(DeleteButton);
+      await button.trigger('click');
+      await wrapper.vm.$nextTick();
+      const dialog = wrapper.findComponent(ConfirmDialog);
+      expect(dialog.exists()).toBe(true);
+    });
+
+    describe('on confirm', () => {
+      it('emits delete', async () => {
+        const button = wrapper.findComponent(DeleteButton);
+        await button.trigger('click');
+        await wrapper.vm.$nextTick();
+        const dialog = wrapper.findComponent(ConfirmDialog);
+        dialog.vm.$emit('confirm');
+        expect(wrapper.emitted('delete')).toBeTruthy();
+        expect(wrapper.emitted('delete')?.length).toBe(1);
+      });
+    });
+
+    describe('on cancel', () => {
+      it('does not emit delete', async () => {
+        const button = wrapper.findComponent(DeleteButton);
+        await button.trigger('click');
+        await wrapper.vm.$nextTick();
+        const dialog = wrapper.findComponent(ConfirmDialog);
+        dialog.vm.$emit('cancel');
+        expect(wrapper.emitted('delete')).toBeFalsy();
+      });
+    });
   });
 });
