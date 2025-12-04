@@ -40,11 +40,24 @@
         density="compact"
         variant="plain"
         icon="mdi-delete-forever"
-        @click="$emit('delete')"
+        @click="showConfirmDelete = true"
         data-testid="delete-button"
       ></v-btn>
     </v-col>
   </v-row>
+  <v-dialog v-model="showConfirmDelete" max-width="600px" data-testid="confirm-dialog">
+    <ConfirmDialog
+      question="Are you sure you want to delete this ingredient?"
+      icon-color="error"
+      @confirm="
+        () => {
+          showConfirmDelete = false;
+          emit('delete');
+        }
+      "
+      @cancel="() => (showConfirmDelete = false)"
+    />
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
@@ -53,13 +66,15 @@ import { validationRules } from '@/core/validation-rules';
 import { unitsOfMeasure } from '@/data/units-of-measure';
 import type { FoodItem } from '@/models/food';
 import type { RecipeIngredient } from '@/models/recipe';
-import { computed } from 'vue';
+import { computed, shallowRef } from 'vue';
 
 const props = defineProps<{
   foods: FoodItem[];
   ingredient: RecipeIngredient;
 }>();
 const emit = defineEmits<{ (event: 'changed', payload: RecipeIngredient): void; (event: 'delete'): void }>();
+
+const showConfirmDelete = shallowRef(false);
 
 const units = computed({
   get: () => props.ingredient.units,
