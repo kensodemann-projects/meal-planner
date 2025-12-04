@@ -347,6 +347,19 @@ describe('Recipe Editor', () => {
           });
         });
       });
+
+      describe('deleting an ingredient', () => {
+        it('removes the ingredient from the list', async () => {
+          const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+          const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
+          await button.trigger('click');
+          let ingredients = listArea.findAllComponents(IngredientEditorRow);
+          expect(ingredients.length).toBe(1);
+          await ingredients[0]?.vm.$emit('delete');
+          ingredients = listArea.findAllComponents(IngredientEditorRow);
+          expect(ingredients.length).toBe(0);
+        });
+      });
     });
 
     describe('the save button', () => {
@@ -519,6 +532,18 @@ describe('Recipe Editor', () => {
             });
             expect(button.attributes('disabled')).toBeUndefined();
           });
+        });
+      });
+
+      describe('deleting an ingredient', () => {
+        it('removes the ingredient from the list', async () => {
+          const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
+          let ingredients = listArea.findAllComponents(IngredientEditorRow);
+          const originalCount = BEER_CHEESE.ingredients.length;
+          expect(ingredients.length).toBe(originalCount);
+          await ingredients[2]?.vm.$emit('delete');
+          ingredients = listArea.findAllComponents(IngredientEditorRow);
+          expect(ingredients.length).toBe(originalCount - 1);
         });
       });
     });
