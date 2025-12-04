@@ -67,6 +67,7 @@
         :key="ingredient.id"
         :foods="foods"
         :ingredient="ingredient"
+        @delete="() => deleteIngredient(index)"
         @changed="(i) => changeIngredient(i, index)"
       />
     </v-container>
@@ -262,6 +263,11 @@ const addIngredient = () => {
 
 const changeIngredient = (ingredient: RecipeIngredient, index: number) => {
   ingredients.value[index] = { ...ingredient, id: ingredients.value[index]!.id };
+  listChanged.value = true;
+};
+
+const deleteIngredient = (index: number) => {
+  ingredients.value.splice(index, 1);
   listChanged.value = true;
 };
 
