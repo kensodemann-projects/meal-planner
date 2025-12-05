@@ -1,4 +1,4 @@
-import { TEST_FOOD } from '@/data/__tests__/test-data';
+import { TEST_FOOD, TEST_PORTIONS } from '@/data/__tests__/test-data';
 import type { FoodItem } from '@/models/food';
 import { mount } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -6,6 +6,7 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import FoodView from '../FoodView.vue';
+import PortionData from '../PortionData.vue';
 
 const vuetify = createVuetify({
   components,
@@ -49,5 +50,42 @@ describe('Food View', () => {
   it('displays the food category', () => {
     wrapper = mountComponent({ food: { ...TEST_FOOD, category: 'Produce' } });
     expect(wrapper.text()).toContain('Category: Produce');
+  });
+
+  describe('standard portion', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const subHeaders = wrapper.findAll('h2');
+      expect(subHeaders[0]?.text()).toBe('Standard Portion');
+      const portions = wrapper.findAllComponents(PortionData);
+      expect(portions.length).toBe(1);
+    });
+
+    it('displays the standard portion data', () => {
+      wrapper = mountComponent();
+      const portions = wrapper.findAllComponents(PortionData);
+      expect(portions[0]?.props('value')).toEqual({ ...TEST_FOOD, id: '444930059d99fkd' });
+    });
+  });
+
+  describe('alternative portions', () => {
+    it('does not exist if there are none', () => {
+      wrapper = mountComponent();
+      const subHeaders = wrapper.findAll('h2');
+      expect(subHeaders.find((h) => h.text() === 'Alternative Portions')).toBeUndefined();
+      const portions = wrapper.findAllComponents(PortionData);
+      expect(portions.length).toBe(1);
+    });
+
+    it('displays as many alternative portions as we have', () => {
+      const alternativePortions = TEST_PORTIONS;
+      wrapper = mountComponent({
+        food: { ...TEST_FOOD, alternativePortions, id: '444930059d99fkd' },
+      });
+      const subHeaders = wrapper.findAll('h2');
+      expect(subHeaders.filter((h) => h.text() === 'Alternative Portion').length).toBe(TEST_PORTIONS.length);
+      const portions = wrapper.findAllComponents(PortionData);
+      expect(portions.length).toBe(1 + alternativePortions.length);
+    });
   });
 });
