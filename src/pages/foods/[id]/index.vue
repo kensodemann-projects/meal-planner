@@ -2,11 +2,11 @@
   <div v-if="food">
     <FoodView :food="food" />
 
-    <div class="page-actions mt-4">
-      <CloseButton @click="router.push('/foods')" />
-      <ModifyButton class="ml-8" @click="router?.push(`/foods/${id}/update`)" />
-      <DeleteButton class="ml-8" @click="showConfirmDialog = true" />
-    </div>
+    <ViewPageActionButtons
+      @close="router.push('/foods')"
+      @modify="router.push(`/foods/${id}/update`)"
+      @delete="showConfirmDialog = true"
+    />
 
     <v-dialog v-model="showConfirmDialog" max-width="600px" data-testid="confirm-dialog">
       <ConfirmDialog
