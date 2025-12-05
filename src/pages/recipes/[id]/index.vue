@@ -1,8 +1,8 @@
 <template>
-  <div>
-    <h1>{{ recipe?.name }}</h1>
-    <RouterLink to="/recipes">Back to Recipes List</RouterLink>
+  <div v-if="recipe">
+    <RecipeView v-if="recipe" :recipe="recipe" />
   </div>
+  <RouterLink to="/recipes">Back to Recipes List</RouterLink>
 </template>
 
 <script setup lang="ts">
