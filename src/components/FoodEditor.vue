@@ -206,7 +206,7 @@ const cancelModifyPortion = (idx: number) => {
   alternativePortions.value[idx]!.status = 'view';
 };
 
-const deletePortion = async (idx: number) => {
+const deletePortion = (idx: number) => {
   const newPortions = [...alternativePortions.value];
   newPortions.splice(idx, 1);
   alternativePortions.value = newPortions;
