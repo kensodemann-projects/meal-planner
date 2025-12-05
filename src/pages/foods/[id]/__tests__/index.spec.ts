@@ -41,7 +41,6 @@ describe('Food View Page', () => {
     (useRoute as Mock).mockReturnValue({ params: { id: '88f933fiieo' } });
     (useRouter as Mock).mockReturnValue({ push: vi.fn(), replace: vi.fn() });
     (getFood as Mock).mockResolvedValue({ ...TEST_FOOD, id: '88f933fiieo' });
-    // No need to manually assign router.replace; it's included in the mock return value.
   });
 
   afterEach(() => {
