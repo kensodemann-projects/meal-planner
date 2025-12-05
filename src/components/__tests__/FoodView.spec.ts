@@ -35,4 +35,19 @@ describe('Food View', () => {
     const header = wrapper.find('h1');
     expect(header.text()).toBe('Test Food Name');
   });
+
+  it('displays the brand', () => {
+    wrapper = mountComponent({ food: { ...TEST_FOOD, brand: 'Test Brand' } });
+    expect(wrapper.text()).toContain('Brand: Test Brand');
+  });
+
+  it('displays "no specific brand" if the brand is not specified', () => {
+    wrapper = mountComponent({ food: { ...TEST_FOOD, brand: '' } });
+    expect(wrapper.text()).toContain('Brand: No specific brand');
+  });
+
+  it('displays the food category', () => {
+    wrapper = mountComponent({ food: { ...TEST_FOOD, category: 'Produce' } });
+    expect(wrapper.text()).toContain('Category: Produce');
+  });
 });
