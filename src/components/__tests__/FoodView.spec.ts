@@ -1,11 +1,11 @@
 import { TEST_FOOD } from '@/data/__tests__/test-data';
+import type { FoodItem } from '@/models/food';
 import { mount } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import FoodView from '../FoodView.vue';
-import type { FoodItem } from '@/models/food';
 
 const vuetify = createVuetify({
   components,
@@ -28,5 +28,11 @@ describe('Food View', () => {
   it('renders', () => {
     wrapper = mountComponent();
     expect(wrapper.exists()).toBe(true);
+  });
+
+  it('displays the name in a header', () => {
+    wrapper = mountComponent({ food: { ...TEST_FOOD, name: 'Test Food Name' } });
+    const header = wrapper.find('h1');
+    expect(header.text()).toBe('Test Food Name');
   });
 });
