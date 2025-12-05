@@ -16,6 +16,42 @@ export const TEST_PORTION: Portion = {
   fat: 35,
 };
 
+export const TEST_PORTIONS: Portion[] = [
+  {
+    grams: 240,
+    unitOfMeasure: findUnitOfMeasure('each'),
+    units: 2,
+    calories: 940,
+    sodium: 2500,
+    sugar: 3,
+    carbs: 35,
+    protein: 5,
+    fat: 35,
+  },
+  {
+    grams: 1000,
+    unitOfMeasure: findUnitOfMeasure('liter'),
+    units: 1,
+    calories: 3917,
+    sodium: 10417,
+    sugar: 12.5,
+    carbs: 145.8,
+    protein: 20.8,
+    fat: 145.8,
+  },
+  {
+    grams: 480,
+    unitOfMeasure: findUnitOfMeasure('c'),
+    units: 2,
+    calories: 1880,
+    sodium: 5000,
+    sugar: 6,
+    carbs: 70,
+    protein: 10,
+    fat: 70,
+  },
+];
+
 export const TEST_FOOD: FoodItem = {
   name: 'Hot Dog',
   brand: "Jimmy's",
