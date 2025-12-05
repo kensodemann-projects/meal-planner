@@ -1,6 +1,6 @@
 <template>
   <div v-if="food">
-    <h1>Food Details</h1>
+    <h1>{{ food.name }}</h1>
     <div>
       <div><span class="font-weight-black">Name:</span> {{ food.name }}</div>
       <div><span class="font-weight-black">Brand:</span> {{ food.brand || 'No specific brand' }}</div>
