@@ -647,6 +647,37 @@ describe('FoodEditor', () => {
           });
         });
       });
+
+      describe('delete event', () => {
+        it('removes the portion from the list', async () => {
+          let portions = wrapper.findAllComponents(PortionDataCard);
+          expect(portions.length).toBe(2);
+          portions[0]?.vm.$emit('delete');
+          await flushPromises();
+          portions = wrapper.findAllComponents(PortionDataCard);
+          expect(portions.length).toBe(1);
+        });
+
+        it('enables the save button when a portion is deleted', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          const portions = wrapper.findAllComponents(PortionDataCard);
+          portions[0]?.vm.$emit('delete');
+          await flushPromises();
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('removes the correct portion when deleting from multiple', async () => {
+          const portions = wrapper.findAllComponents(PortionDataCard);
+          expect(portions[0]!.text()).toContain('Serving Size: 1 Each (115g)');
+          expect(portions[1]!.text()).toContain('Serving Size: 4 Ounce (112g)');
+          portions[0]?.vm.$emit('delete');
+          await flushPromises();
+          const updatedPortions = wrapper.findAllComponents(PortionDataCard);
+          expect(updatedPortions.length).toBe(1);
+          expect(updatedPortions[0]!.text()).toContain('Serving Size: 4 Ounce (112g)');
+        });
+      });
     });
   });
 });

@@ -88,21 +88,13 @@
       </v-row>
     </v-container>
   </v-form>
-  <v-dialog v-model="showConfirmDelete" max-width="600px" data-testid="confirm-dialog">
-    <ConfirmDialog
-      question="Are you sure you want to delete this portion?"
-      icon-color="error"
-      @confirm="confirmDelete(true)"
-      @cancel="confirmDelete(false)"
-    />
-  </v-dialog>
 </template>
 
 <script setup lang="ts">
 import { validationRules } from '@/core/validation-rules';
 import { foodCategories } from '@/data/food-categories';
 import type { FoodCategory, FoodItem, Portion } from '@/models/food';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import type { VTextField } from 'vuetify/components';
 import PortionDataCard from './PortionDataCard.vue';
 
@@ -125,8 +117,6 @@ const alternativePortions = ref<WrappedPortion[]>([]);
 const valid = ref(false);
 const addPortion = ref(false);
 const portionsModified = ref(false);
-const showConfirmDelete = ref(false);
-const confirmDelete = ref<(x: boolean) => void>(() => {});
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 
 const initialize = () => {
@@ -148,8 +138,6 @@ const initialize = () => {
   portionsModified.value = false;
   addPortion.value = false;
   valid.value = false;
-  showConfirmDelete.value = false;
-  confirmDelete.value = () => {};
 };
 
 const reset = () => {
@@ -218,25 +206,11 @@ const cancelModifyPortion = (idx: number) => {
   alternativePortions.value[idx]!.status = 'view';
 };
 
-const deletePortion = async (idx: number) => {
-  showConfirmDelete.value = true;
-  const remove = await new Promise<boolean>((resolve) => {
-    confirmDelete.value = resolve;
-    // Watch for dialog being closed externally (e.g., ESC or click outside)
-    const unwatch = watch(showConfirmDelete, (newVal) => {
-      if (!newVal) {
-        resolve(false);
-        unwatch();
-      }
-    });
-  });
-  if (remove) {
-    const newPortions = [...alternativePortions.value];
-    newPortions.splice(idx, 1);
-    alternativePortions.value = newPortions;
-    portionsModified.value = true;
-  }
-  showConfirmDelete.value = false;
+const deletePortion = (idx: number) => {
+  const newPortions = [...alternativePortions.value];
+  newPortions.splice(idx, 1);
+  alternativePortions.value = newPortions;
+  portionsModified.value = true;
 };
 
 onMounted(() => nameInput.value?.focus());
