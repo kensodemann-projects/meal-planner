@@ -27,7 +27,7 @@
 
     <ViewPageActionButtons
       @close="router.push('/foods')"
-      @modify="router?.push(`/foods/${id}/update`)"
+      @modify="router.push(`/foods/${id}/update`)"
       @delete="showConfirmDialog = true"
     />
 
