@@ -1,4 +1,5 @@
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import ViewPageActionButtons from '@/components/ViewPageActionButtons.vue';
 import { TEST_FOOD } from '@/data/__tests__/test-data';
 import { useFoodsData } from '@/data/foods';
 import { flushPromises, mount } from '@vue/test-utils';
@@ -69,8 +70,8 @@ describe('Food View Page', () => {
       const router = useRouter();
       wrapper = mountPage();
       await flushPromises();
-      const button = wrapper.findComponent('[data-testid="close-button"]');
-      await button.trigger('click');
+      const actionButtons = wrapper.findComponent(ViewPageActionButtons);
+      actionButtons.vm.$emit('close');
       expect(router.push).toHaveBeenCalledExactlyOnceWith('/foods');
     });
   });
@@ -80,8 +81,8 @@ describe('Food View Page', () => {
       const router = useRouter();
       wrapper = mountPage();
       await flushPromises();
-      const button = wrapper.findComponent('[data-testid="modify-button"]');
-      await button.trigger('click');
+      const actionButtons = wrapper.findComponent(ViewPageActionButtons);
+      actionButtons.vm.$emit('modify');
       expect(router.push).toHaveBeenCalledExactlyOnceWith('/foods/88f933fiieo/update');
     });
   });
@@ -90,8 +91,9 @@ describe('Food View Page', () => {
     it('confirms the delete with the user', async () => {
       wrapper = mountPage();
       await flushPromises();
-      const button = wrapper.findComponent('[data-testid="delete-button"]');
-      await button.trigger('click');
+      const actionButtons = wrapper.findComponent(ViewPageActionButtons);
+      actionButtons.vm.$emit('delete');
+      await flushPromises();
       const confirmDialog = wrapper.findComponent(ConfirmDialog);
       expect(confirmDialog.exists()).toBe(true);
     });
@@ -100,10 +102,11 @@ describe('Food View Page', () => {
       it('removes the food', async () => {
         wrapper = mountPage();
         await flushPromises();
-        const button = wrapper.findComponent('[data-testid="delete-button"]');
-        await button.trigger('click');
+        const actionButtons = wrapper.findComponent(ViewPageActionButtons);
+        actionButtons.vm.$emit('delete');
+        await flushPromises();
         const confirmDialog = wrapper.findComponent(ConfirmDialog);
-        await confirmDialog.vm.$emit('confirm');
+        confirmDialog.vm.$emit('confirm');
         const { removeFood } = useFoodsData();
         expect(removeFood).toHaveBeenCalledExactlyOnceWith('88f933fiieo');
       });
@@ -112,10 +115,12 @@ describe('Food View Page', () => {
         const router = useRouter();
         wrapper = mountPage();
         await flushPromises();
-        const button = wrapper.findComponent('[data-testid="delete-button"]');
-        await button.trigger('click');
+        const actionButtons = wrapper.findComponent(ViewPageActionButtons);
+        actionButtons.vm.$emit('delete');
+        await flushPromises();
         const confirmDialog = wrapper.findComponent(ConfirmDialog);
-        await confirmDialog.vm.$emit('confirm');
+        confirmDialog.vm.$emit('confirm');
+        await flushPromises();
         expect(router.replace).toHaveBeenCalledExactlyOnceWith('/foods');
       });
     });
@@ -124,10 +129,12 @@ describe('Food View Page', () => {
       it('does not remove the food', async () => {
         wrapper = mountPage();
         await flushPromises();
-        const button = wrapper.findComponent('[data-testid="delete-button"]');
-        await button.trigger('click');
+        const actionButtons = wrapper.findComponent(ViewPageActionButtons);
+        actionButtons.vm.$emit('delete');
+        await flushPromises();
         const confirmDialog = wrapper.findComponent(ConfirmDialog);
-        await confirmDialog.vm.$emit('cancel');
+        confirmDialog.vm.$emit('cancel');
+        await flushPromises();
         const { removeFood } = useFoodsData();
         expect(removeFood).not.toHaveBeenCalled();
       });
@@ -135,10 +142,12 @@ describe('Food View Page', () => {
       it('does not navigate', async () => {
         wrapper = mountPage();
         await flushPromises();
-        const button = wrapper.findComponent('[data-testid="delete-button"]');
-        await button.trigger('click');
+        const actionButtons = wrapper.findComponent(ViewPageActionButtons);
+        actionButtons.vm.$emit('delete');
+        await flushPromises();
         const confirmDialog = wrapper.findComponent(ConfirmDialog);
-        await confirmDialog.vm.$emit('cancel');
+        confirmDialog.vm.$emit('cancel');
+        await flushPromises();
         const router = useRouter();
         expect(router.replace).not.toHaveBeenCalled();
       });
