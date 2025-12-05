@@ -42,17 +42,17 @@ describe('View Page Action Buttons', () => {
       expect(buttons[2]?.text()).toBe('Delete');
     });
 
-    it('emit properly', () => {
+    it('emit properly', async () => {
       wrapper = mountComponent();
       const buttons = wrapper.findAllComponents(components.VBtn);
 
-      buttons[0]?.trigger('click');
+      await buttons[0]?.trigger('click');
       expect(wrapper.emitted()['close']).toBeTruthy();
 
-      buttons[1]?.trigger('click');
+      await buttons[1]?.trigger('click');
       expect(wrapper.emitted()['modify']).toBeTruthy();
 
-      buttons[2]?.trigger('click');
+      await buttons[2]?.trigger('click');
       expect(wrapper.emitted()['delete']).toBeTruthy();
     });
   });
