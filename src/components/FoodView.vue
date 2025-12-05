@@ -20,6 +20,8 @@
       </v-col>
     </v-row>
   </v-container>
+
+  <hr class="my-4" />
 </template>
 
 <script setup lang="ts">
