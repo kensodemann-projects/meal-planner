@@ -680,7 +680,7 @@ export const TEST_RECIPES: Recipe[] = [
     steps: [
       { id: 'd6f1k3m9-2c0a-1f5d-be1f-9m3c4n6e7f0a', instruction: 'Combine all diced ingredients (tomatoes, onion, jalapeño, cilantro) in a bowl.' },
       { id: 'e7a2l4n0-3d1b-2a6e-cf2a-0n4d5o7f8a1b', instruction: 'Pour in the fresh lime juice and season generously with salt.' },
-      { id: 'f8b3m5o1-4e2c-3b7f-da3b-1o5e6p8a9b2c', instruction: 'Stir well and let sit for at least 15 minutes for flavors to meld before serving.' },
+      { id: 'f8b3a5e1-4e2c-3b7f-da3b-1a5e6a8a9b2c', instruction: 'Stir well and let sit for at least 15 minutes for flavors to meld before serving.' },
     ],
   },
 ];
