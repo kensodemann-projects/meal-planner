@@ -61,8 +61,19 @@ describe('RecipeView', () => {
     wrapper = mountComponent();
     const subHeaders = wrapper.findAll('h2').map((h) => h.text());
     expect(subHeaders.length).toBe(3);
+    console.log(subHeaders);
     expect(subHeaders[0]).toBe('Ingredients');
     expect(subHeaders[1]).toBe('Steps');
     expect(subHeaders[2]).toBe('Nutritional Information');
+  });
+
+  it('lists the ingredients', () => {
+    wrapper = mountComponent();
+    const lists = wrapper.findAll('ul');
+    const listItems = lists[0]?.findAll('li').map((li) => li.text());
+    expect(listItems?.length).toBe(TEST_RECIPE.ingredients.length);
+    TEST_RECIPE.ingredients.forEach((ingredient, index) => {
+      expect(listItems?.[index]).toContain(ingredient.name);
+    });
   });
 });
