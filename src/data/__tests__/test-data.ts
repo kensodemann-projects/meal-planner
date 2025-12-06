@@ -626,7 +626,7 @@ export const TEST_RECIPES: Recipe[] = [
       { id: 'f2b7g9i5-8e6c-7b1f-da7b-5i9e0j2a3b6c', instruction: 'Sauté the onion until softened.' },
       { id: 'a3c8h0j6-9f7d-8c2a-eb8c-6j0f1k3b4c7d', instruction: 'Add crushed tomatoes and vegetable broth. Simmer for 15 minutes.' },
       { id: 'b4d9i1k7-0a8e-9d3b-fc9d-7k1a2l4c5d8e', instruction: 'Use an immersion blender to blend the soup until smooth (or transfer to a regular blender).' },
-      { id: 'c5e0j2l8-1b9f-0e4c-ad0e-8l2b3m5d6e9f', instruction: 'Stir in heavy cream and heat through, but do not boil.' },
+      { id: 'c5e0a2f8-1b9f-4e4c-ad0e-8a2b3d5e6f9c', instruction: 'Stir in heavy cream and heat through, but do not boil.' },
     ],
   },
   {
