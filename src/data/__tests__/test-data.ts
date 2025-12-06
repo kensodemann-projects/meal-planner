@@ -575,9 +575,9 @@ export const TEST_RECIPES: Recipe[] = [
     ],
     steps: [
       { id: 'b8f3c5d1-4a2e-4f7b-9c3d-1e5a6f8b9c2d', instruction: 'Mash black beans until chunky.' },
-      { id: 'c9e4d6f2-5b3f-4e8c-ad4e-2f6b7g9d0e3f', instruction: 'Mix mashed beans with bread crumbs, onion, chili powder, and seasoning.' },
-      { id: 'd0f5e7g3-6c4a-5f9d-be5f-3g7c8h0e1f4a', instruction: 'Form mixture into 4 patties.' },
-      { id: 'e1a6f8h4-7d5b-6a0e-cf6a-4h8d9i1f2a5b', instruction: 'Cook patties on a skillet or grill for 5-7 minutes per side.' },
+      { id: 'c9e4d6f2-5b3f-4e8c-ad4e-2f6b79d0e3fa', instruction: 'Mix mashed beans with bread crumbs, onion, chili powder, and seasoning.' },
+      { id: 'd0f5e7a3-6c4a-5f9d-be5f-37c8a0e1f4ab', instruction: 'Form mixture into 4 patties.' },
+      { id: 'e1a6f8a4-7d5b-6a0e-cf6a-48d91f2a5bcd', instruction: 'Cook patties on a skillet or grill for 5-7 minutes per side.' },
     ],
   },
   {
