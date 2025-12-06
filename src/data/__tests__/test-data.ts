@@ -277,10 +277,21 @@ export const TEST_RECIPES: Recipe[] = [
       },
     ],
     steps: [
-      'Cook spaghetti according to package directions.',
-      'In a separate pan, cook the guanciale until crispy. Remove from heat.',
-      'Whisk eggs, yolks, and Pecorino Romano cheese with plenty of black pepper.',
-      'Drain pasta, reserving some pasta water. Immediately toss hot pasta with egg/cheese mixture and crispy guanciale, using reserved pasta water to create a creamy sauce.',
+      { id: '45d6c4b7-0015-4659-a9f8-9582de51ff36', instruction: 'Bring a large pot of salted water to a boil.' },
+      { id: '742f2008-a8e5-40d1-91fd-37d5bcb140d6', instruction: 'Cook spaghetti according to package directions.' },
+      {
+        id: '233db2e4-f6ab-444a-a740-1408d3dedbab',
+        instruction: 'In a separate pan, cook the guanciale until crispy. Remove from heat.',
+      },
+      {
+        id: 'f07a2158-2c96-43e8-b02e-e692fccc4566',
+        instruction: 'Whisk eggs, yolks, and Pecorino Romano cheese with plenty of black pepper.',
+      },
+      {
+        id: '433ab4ca-1621-46ac-96ed-3f8f1cc47d1f',
+        instruction:
+          'Drain pasta, reserving some pasta water. Immediately toss hot pasta with egg/cheese mixture and crispy guanciale, using reserved pasta water to create a creamy sauce.',
+      },
     ],
   },
   {
@@ -326,9 +337,16 @@ export const TEST_RECIPES: Recipe[] = [
       },
     ],
     steps: [
-      'Whisk together olive oil, balsamic vinegar, Dijon mustard, and salt/pepper to make the vinaigrette.',
-      'Place mixed greens in a bowl.',
-      'Drizzle vinaigrette over the greens and toss gently to coat.',
+      {
+        id: 'fbe49d87-7c89-4aea-a597-f49ff1d6978a',
+        instruction:
+          'Whisk together olive oil, balsamic vinegar, Dijon mustard, and salt/pepper to make the vinaigrette.',
+      },
+      { id: 'd3747f73-5081-4241-b490-bd3fcb793861', instruction: 'Place mixed greens in a bowl.' },
+      {
+        id: '6db1c53c-bab0-4d78-a910-308a44bf0251',
+        instruction: 'Drizzle vinaigrette over the greens and toss gently to coat.',
+      },
     ],
   },
   {
@@ -374,10 +392,28 @@ export const TEST_RECIPES: Recipe[] = [
       },
     ],
     steps: [
-      'Preheat oven to 400°F (200°C).',
-      'Chop vegetables and toss them with olive oil, rosemary, salt, and pepper on a baking sheet.',
-      'Place chicken thighs among the vegetables. Season chicken.',
-      'Roast for 35-40 minutes, or until chicken is cooked through.',
+      { id: 'fc7c9fb8-d0d9-4b4f-8c50-2793be47e307', instruction: 'Preheat oven to 400°F (200°C).' },
+      {
+        id: 'bc200aa9-43e4-417e-abac-db1abbff6d2b',
+        instruction: 'Chop vegetables and toss them with olive oil, rosemary, salt, and pepper on a baking sheet.',
+      },
+      {
+        id: '8bdf8d68-a61e-487b-8052-c901f6f42d8e',
+        instruction: 'Place chicken thighs among the vegetables. Season chicken.',
+      },
+      {
+        id: '6e1e80c5-0c89-4f3e-9215-a945d7f522e9',
+        instruction: 'Roast for 35-40 minutes, or until chicken is cooked through.',
+      },
+      {
+        id: '29f7d85d-2000-45af-aaee-d7416858e740',
+        instruction: 'Remove from oven and let rest for a few minutes before serving.',
+      },
+      { id: 'c39e4dcb-691c-4c81-a26b-966519104e78', instruction: 'Serve warm and enjoy your meal.' },
+      {
+        id: '8c91e770-b818-48f5-b2e5-02a4fd1c999a',
+        instruction: 'Optionally garnish with fresh herbs before serving.',
+      },
     ],
   },
   {
@@ -423,10 +459,11 @@ export const TEST_RECIPES: Recipe[] = [
       },
     ],
     steps: [
-      'Combine all ingredients in a jar or container.',
-      'Stir well until thoroughly mixed.',
-      'Refrigerate overnight (at least 8 hours).',
-      'Enjoy cold, optionally topped with fruit or nuts.',
+      { id: '094ccab8-47b1-498b-9354-6735cdb04c35', instruction: 'Combine all ingredients in a jar or container.' },
+      { id: 'e040f0d4-fd3a-4076-9431-18cd8c8d823f', instruction: 'Stir well until thoroughly mixed.' },
+      { id: 'fcba18eb-a96b-4c2e-997c-cb4d25edef8d', instruction: 'Refrigerate overnight (at least 8 hours).' },
+      { id: 'aba4f02b-116e-4dad-a9af-1b1c1d2c7be8', instruction: 'Enjoy cold, optionally topped with fruit or nuts.' },
+      { id: 'cd7d4219-d5f9-4495-a919-751b5c4f13d3', instruction: 'Serve and enjoy.' },
     ],
   },
   {
@@ -478,11 +515,20 @@ export const TEST_RECIPES: Recipe[] = [
       },
     ],
     steps: [
-      'Preheat oven to 350°F (175°C). Line an 8x8 inch pan with parchment paper.',
-      'Melt butter and chocolate together until smooth.',
-      'Stir in sugar, then beat in eggs one at a time.',
-      'Fold in flour and a pinch of salt. Pour batter into the prepared pan.',
-      'Bake for 25-30 minutes. Cool completely before cutting.',
+      {
+        id: '2850b9f8-b2ad-4ca5-bf22-76b891350811',
+        instruction: 'Preheat oven to 350°F (175°C). Line an 8x8 inch pan with parchment paper.',
+      },
+      { id: '86bf539a-eec6-42de-bf7e-f42ee41bb540', instruction: 'Melt butter and chocolate together until smooth.' },
+      { id: '078bedc1-1eb6-4768-a2fc-e849f039250b', instruction: 'Stir in sugar, then beat in eggs one at a time.' },
+      {
+        id: '4b0cf0b9-01a9-4be9-a0db-d36f9b465586',
+        instruction: 'Fold in flour and a pinch of salt. Pour batter into the prepared pan.',
+      },
+      {
+        id: 'e2b258e7-17aa-4dac-8853-84ff2ac47d98',
+        instruction: 'Bake for 25-30 minutes. Cool completely before cutting.',
+      },
     ],
   },
   {
@@ -528,10 +574,10 @@ export const TEST_RECIPES: Recipe[] = [
       },
     ],
     steps: [
-      'Mash black beans until chunky.',
-      'Mix mashed beans with bread crumbs, onion, chili powder, and seasoning.',
-      'Form mixture into 4 patties.',
-      'Cook patties on a skillet or grill for 5-7 minutes per side.',
+      { id: 'b8f3c5d1-4a2e-4f7b-9c3d-1e5a6f8b9c2d', instruction: 'Mash black beans until chunky.' },
+      { id: 'c9e4d6f2-5b3f-4e8c-ad4e-2f6b79d0e3fa', instruction: 'Mix mashed beans with bread crumbs, onion, chili powder, and seasoning.' },
+      { id: 'd0f5e7a3-6c4a-5f9d-be5f-37c8a0e1f4ab', instruction: 'Form mixture into 4 patties.' },
+      { id: 'e1a6f8a4-7d5b-6a0e-cf6a-48d91f2a5bcd', instruction: 'Cook patties on a skillet or grill for 5-7 minutes per side.' },
     ],
   },
   {
@@ -577,10 +623,10 @@ export const TEST_RECIPES: Recipe[] = [
       },
     ],
     steps: [
-      'Sauté the onion until softened.',
-      'Add crushed tomatoes and vegetable broth. Simmer for 15 minutes.',
-      'Use an immersion blender to blend the soup until smooth (or transfer to a regular blender).',
-      'Stir in heavy cream and heat through, but do not boil.',
+      { id: 'f2b7g9i5-8e6c-7b1f-da7b-5i9e0j2a3b6c', instruction: 'Sauté the onion until softened.' },
+      { id: 'a3c8h0j6-9f7d-8c2a-eb8c-6j0f1k3b4c7d', instruction: 'Add crushed tomatoes and vegetable broth. Simmer for 15 minutes.' },
+      { id: 'b4d9i1k7-0a8e-9d3b-fc9d-7k1a2l4c5d8e', instruction: 'Use an immersion blender to blend the soup until smooth (or transfer to a regular blender).' },
+      { id: 'c5e0a2f8-1b9f-4e4c-ad0e-8a2b3d5e6f9c', instruction: 'Stir in heavy cream and heat through, but do not boil.' },
     ],
   },
   {
@@ -632,9 +678,9 @@ export const TEST_RECIPES: Recipe[] = [
       },
     ],
     steps: [
-      'Combine all diced ingredients (tomatoes, onion, jalapeño, cilantro) in a bowl.',
-      'Pour in the fresh lime juice and season generously with salt.',
-      'Stir well and let sit for at least 15 minutes for flavors to meld before serving.',
+      { id: 'd6f1k3m9-2c0a-1f5d-be1f-9m3c4n6e7f0a', instruction: 'Combine all diced ingredients (tomatoes, onion, jalapeño, cilantro) in a bowl.' },
+      { id: 'e7a2l4n0-3d1b-2a6e-cf2a-0n4d5o7f8a1b', instruction: 'Pour in the fresh lime juice and season generously with salt.' },
+      { id: 'f8b3a5e1-4e2c-3b7f-da3b-1a5e6a8a9b2c', instruction: 'Stir well and let sit for at least 15 minutes for flavors to meld before serving.' },
     ],
   },
 ];
@@ -681,11 +727,11 @@ export const TEST_RECIPE: Recipe = {
     },
   ],
   steps: [
-    'Pat scallops completely dry with paper towels (this is critical for a good sear).',
-    'Season scallops heavily with salt and pepper.',
-    'Heat olive oil and 1 tablespoon of butter in a skillet over high heat until smoking.',
-    'Place scallops in the hot pan, ensuring they do not touch. Sear for 1.5 to 2 minutes per side until deep golden brown.',
-    'Remove scallops from the pan. Reduce heat, add remaining butter and lemon juice to the pan, scraping up any browned bits. Simmer briefly.',
-    'Spoon the lemon-butter sauce over the scallops and serve immediately.',
+    { id: 'a9c4n6p2-5f3d-4c8a-eb4c-2p6f7q9c0d3e', instruction: 'Pat scallops completely dry with paper towels (this is critical for a good sear).' },
+    { id: 'b0d5o7q3-6a4e-5d9b-fc5d-3q7a8r0d1e4f', instruction: 'Season scallops heavily with salt and pepper.' },
+    { id: 'c1e6p8r4-7b5f-6e0c-ad6e-4r8b9s1e2f5a', instruction: 'Heat olive oil and 1 tablespoon of butter in a skillet over high heat until smoking.' },
+    { id: 'd2f7q9s5-8c6a-7f1d-be7f-5s9c0t2f3a6b', instruction: 'Place scallops in the hot pan, ensuring they do not touch. Sear for 1.5 to 2 minutes per side until deep golden brown.' },
+    { id: 'e3a8r0t6-9d7b-8a2e-cf8a-6t0d1u3a4b7c', instruction: 'Remove scallops from the pan. Reduce heat, add remaining butter and lemon juice to the pan, scraping up any browned bits. Simmer briefly.' },
+    { id: 'f4b9a1b7-0e8c-9b3f-da9b-7a1e2b4b5c8d', instruction: 'Spoon the lemon-butter sauce over the scallops and serve immediately.' },
   ],
 };

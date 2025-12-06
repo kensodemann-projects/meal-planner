@@ -697,11 +697,31 @@ const BEER_CHEESE: Recipe = {
     },
   ],
   steps: [
-    'In a large pot, melt butter over medium heat. Add onion and cook until softened, about 5 minutes.',
-    'Whisk in the flour and cook for 1 minute to create a roux.',
-    'Slowly whisk in the chicken broth and then the beer, ensuring no lumps remain.',
-    'Bring the soup to a simmer and cook for 10 minutes, stirring occasionally.',
-    'Reduce heat to low. Stir in the heavy cream and then gradually add the shredded cheese, stirring constantly until fully melted and smooth.',
-    'Do not boil after adding cheese. Season with salt, pepper, and a dash of hot sauce if desired. Serve hot.',
+    {
+      id: 'a5c9a7b3-6f4e-5d9a-fc6d-4a9c1a3e5f7b',
+      instruction: 'In a large pot, melt butter over medium heat. Add onion and cook until softened, about 5 minutes.',
+    },
+    {
+      id: 'b6d0a8c4-7a5f-6e0b-ad7e-5a0d2a4f6a8c',
+      instruction: 'Whisk in the flour and cook for 1 minute to create a roux.',
+    },
+    {
+      id: 'c7e1a9b5-8b6a-7f1c-be8f-6a1e3a5a7b9d',
+      instruction: 'Slowly whisk in the chicken broth and then the beer, ensuring no lumps remain.',
+    },
+    {
+      id: 'd8f2a0b6-9c7b-8a2d-cf9a-7a2f4a6b8c0e',
+      instruction: 'Bring the soup to a simmer and cook for 10 minutes, stirring occasionally.',
+    },
+    {
+      id: 'e9a3a1a7-0d8c-9b3e-da0b-8a3a5a7c9d1f',
+      instruction:
+        'Reduce heat to low. Stir in the heavy cream and then gradually add the shredded cheese, stirring constantly until fully melted and smooth.',
+    },
+    {
+      id: 'f0b4a2a8-1e9d-0c4f-eb1c-9a4b6a8d0e2a',
+      instruction:
+        'Do not boil after adding cheese. Season with salt, pepper, and a dash of hot sauce if desired. Serve hot.',
+    },
   ],
 };
