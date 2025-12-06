@@ -41,3 +41,10 @@ import type { Recipe } from '@/models/recipe';
 
 defineProps<{ recipe: Recipe }>();
 </script>
+
+<style scoped>
+ul[role='list'] {
+  list-style-type: none;
+  padding-left: 1.5rem;
+}
+</style>
