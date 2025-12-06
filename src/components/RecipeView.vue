@@ -25,6 +25,11 @@
 
   <section>
     <h2>Steps</h2>
+    <ol class="mt-2">
+      <li v-for="step in recipe.steps" :key="step.id">
+        {{ step.instruction }}
+      </li>
+    </ol>
   </section>
 
   <hr class="my-4" />
@@ -45,6 +50,10 @@ defineProps<{ recipe: Recipe }>();
 <style scoped>
 ul[role='list'] {
   list-style-type: none;
+  padding-left: 1.5rem;
+}
+
+ol {
   padding-left: 1.5rem;
 }
 </style>

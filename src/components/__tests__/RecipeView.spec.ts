@@ -76,4 +76,14 @@ describe('RecipeView', () => {
       expect(listItems?.[index]).toContain(ingredient.name);
     });
   });
+
+  it('lists the steps', () => {
+    wrapper = mountComponent();
+    const lists = wrapper.findAll('ol');
+    const listItems = lists[0]?.findAll('li').map((li) => li.text());
+    expect(listItems?.length).toBe(TEST_RECIPE.steps.length);
+    TEST_RECIPE.steps.forEach((step, index) => {
+      expect(listItems?.[index]).toBe(step.instruction);
+    });
+  });
 });
