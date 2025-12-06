@@ -28,6 +28,11 @@ export interface RecipeIngredient {
   foodId?: string | null;
 }
 
+export interface RecipeStep {
+  id: string;
+  instruction: string;
+}
+
 export interface Recipe {
   id?: string;
   name: string;
@@ -45,5 +50,5 @@ export interface Recipe {
   fat: number;
   protein: number;
   ingredients: RecipeIngredient[];
-  steps: string[];
+  steps: RecipeStep[];
 }
