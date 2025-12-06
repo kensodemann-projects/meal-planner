@@ -52,6 +52,11 @@ describe('RecipeView', () => {
     expect(wrapper.text()).toContain(`Difficulty: ${TEST_RECIPE.difficulty}`);
   });
 
+  it('renders the description', () => {
+    wrapper = mountComponent();
+    expect(wrapper.text()).toContain(TEST_RECIPE.description);
+  });
+
   it('has sections for Ingredients, Steps, and Nutritional Information', () => {
     wrapper = mountComponent();
     const subHeaders = wrapper.findAll('h2').map((h) => h.text());
