@@ -36,4 +36,28 @@ describe('RecipeView', () => {
     expect(header.exists()).toBe(true);
     expect(header.text()).toBe(TEST_RECIPE.name);
   });
+
+  it('renders the category', () => {
+    wrapper = mountComponent();
+    expect(wrapper.text()).toContain(`Category: ${TEST_RECIPE.category}`);
+  });
+
+  it('renders the servings', () => {
+    wrapper = mountComponent();
+    expect(wrapper.text()).toContain(`Servings: ${TEST_RECIPE.servings}`);
+  });
+
+  it('renders the difficulty', () => {
+    wrapper = mountComponent();
+    expect(wrapper.text()).toContain(`Difficulty: ${TEST_RECIPE.difficulty}`);
+  });
+
+  it('has sections for Ingredients, Steps, and Nutritional Information', () => {
+    wrapper = mountComponent();
+    const subHeaders = wrapper.findAll('h2').map((h) => h.text());
+    expect(subHeaders.length).toBe(3);
+    expect(subHeaders[0]).toBe('Ingredients');
+    expect(subHeaders[1]).toBe('Steps');
+    expect(subHeaders[2]).toBe('Nutritional Information');
+  });
 });
