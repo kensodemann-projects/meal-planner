@@ -732,6 +732,6 @@ export const TEST_RECIPE: Recipe = {
     { id: 'c1e6p8r4-7b5f-6e0c-ad6e-4r8b9s1e2f5a', instruction: 'Heat olive oil and 1 tablespoon of butter in a skillet over high heat until smoking.' },
     { id: 'd2f7q9s5-8c6a-7f1d-be7f-5s9c0t2f3a6b', instruction: 'Place scallops in the hot pan, ensuring they do not touch. Sear for 1.5 to 2 minutes per side until deep golden brown.' },
     { id: 'e3a8r0t6-9d7b-8a2e-cf8a-6t0d1u3a4b7c', instruction: 'Remove scallops from the pan. Reduce heat, add remaining butter and lemon juice to the pan, scraping up any browned bits. Simmer briefly.' },
-    { id: 'f4b9s1u7-0e8c-9b3f-da9b-7u1e2v4b5c8d', instruction: 'Spoon the lemon-butter sauce over the scallops and serve immediately.' },
+    { id: 'f4b9a1b7-0e8c-9b3f-da9b-7a1e2b4b5c8d', instruction: 'Spoon the lemon-butter sauce over the scallops and serve immediately.' },
   ],
 };
