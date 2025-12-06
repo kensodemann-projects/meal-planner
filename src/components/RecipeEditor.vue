@@ -249,7 +249,7 @@ const ingredientsInvalid = computed(
   (): boolean => !!ingredients.value.find((i) => !(i.units && i.name && i.unitOfMeasure)),
 );
 
-const stepsInvalid = computed((): boolean => !!steps.value.find((s) => !s.instruction.trim()));
+const stepsInvalid = computed((): boolean => !!steps.value.find((s) => !s.instruction?.trim()));
 
 const addIngredient = () => {
   ingredients.value.push({
