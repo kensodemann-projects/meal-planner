@@ -11,15 +11,27 @@
 
   <hr class="my-4" />
 
-  <h2>Ingredients</h2>
+  <section>
+    <h2>Ingredients</h2>
+    <ul role="list" class="mt-2">
+      <li v-for="(ingredient, index) in recipe.ingredients" :key="index">
+        {{ ingredient.units }} {{ ingredient.unitOfMeasure.id === 'item' ? '' : ingredient.unitOfMeasure.id }}
+        {{ ingredient.name }}
+      </li>
+    </ul>
+  </section>
 
   <hr class="my-4" />
 
-  <h2>Steps</h2>
+  <section>
+    <h2>Steps</h2>
+  </section>
 
   <hr class="my-4" />
 
-  <h2>Nutritional Information</h2>
+  <section>
+    <h2>Nutritional Information</h2>
+  </section>
 
   <hr class="my-4" />
 </template>
