@@ -93,7 +93,8 @@
 <script setup lang="ts">
 import { validationRules } from '@/core/validation-rules';
 import { foodCategories } from '@/data/food-categories';
-import type { FoodCategory, FoodItem, Portion } from '@/models/food';
+import type { FoodCategory, FoodItem } from '@/models/food';
+import type { Portion } from '@/models/portion';
 import { computed, onMounted, ref } from 'vue';
 import type { VTextField } from 'vuetify/components';
 import PortionDataCard from './PortionDataCard.vue';

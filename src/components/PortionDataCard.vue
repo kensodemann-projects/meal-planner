@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Portion } from '@/models/food';
+import type { Portion } from '@/models/portion';
 import { shallowRef } from 'vue';
 
 defineProps<{ value: Portion }>();

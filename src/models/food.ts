@@ -1,4 +1,4 @@
-import type { UnitOfMeasure } from './unit-of-measure';
+import type { Portion } from './portion';
 
 export type FoodCategory =
   | 'Bakery'
@@ -16,18 +16,6 @@ export type FoodCategory =
   | 'Spices'
   | 'Sweets'
   | 'Unknown';
-
-export interface Portion {
-  units: number;
-  unitOfMeasure: UnitOfMeasure;
-  grams: number;
-  calories: number;
-  sodium: number;
-  fat: number;
-  protein: number;
-  carbs: number;
-  sugar: number;
-}
 export interface FoodItem extends Portion {
   id?: string;
   fdcId?: number | null;
