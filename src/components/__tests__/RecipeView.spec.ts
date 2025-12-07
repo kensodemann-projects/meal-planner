@@ -75,11 +75,6 @@ describe('RecipeView', () => {
     });
   });
 
-  // it('has sections for Ingredients, Steps, and Nutritional Information', () => {
-  //   expectSection(wrapper, 'ingredients-section', 'Ingredients');
-  //   expectSection(wrapper, 'steps-section', 'Steps');
-  //   expectSection(wrapper, 'nutritional-information-section', 'Nutritional Information');
-  // });
 
   describe('the ingredients section', () => {
     let section: DOMWrapper<HTMLElement>;
