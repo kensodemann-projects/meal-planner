@@ -14,7 +14,7 @@
 
   <section data-testid="ingredients-section">
     <h2>Ingredients</h2>
-    <ul role="list" class="mt-2">
+    <ul class="mt-2">
       <li v-for="ingredient in recipe.ingredients" :key="ingredient.id">
         {{ ingredient.units }} {{ ingredient.unitOfMeasure.id === 'item' ? '' : ingredient.unitOfMeasure.id }}
         {{ ingredient.name }}
