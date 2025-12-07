@@ -1,6 +1,6 @@
 <template>
   <div v-if="recipe">
-    <RecipeView v-if="recipe" :recipe="recipe" />
+    <RecipeView :recipe="recipe" />
     <ViewPageActionButtons
       @close="router.push('/recipes')"
       @modify="router.push(`/recipes/${id}/update`)"
