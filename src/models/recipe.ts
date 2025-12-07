@@ -1,3 +1,4 @@
+import type { Portion } from './portion';
 import type { UnitOfMeasure } from './unit-of-measure';
 
 export type RecipeCategory =
@@ -33,22 +34,13 @@ export interface RecipeStep {
   instruction: string;
 }
 
-export interface Recipe {
+export interface Recipe extends Portion {
   id?: string;
   name: string;
   description: string | null;
   category: RecipeCategory;
   difficulty: RecipeDifficulty;
   servings: number;
-  servingSize: number;
-  servingSizeUnits: UnitOfMeasure;
-  servingGrams: number | null;
-  calories: number;
-  sodium: number;
-  sugar: number;
-  totalCarbs: number;
-  fat: number;
-  protein: number;
   ingredients: RecipeIngredient[];
   steps: RecipeStep[];
 }

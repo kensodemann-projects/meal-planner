@@ -1,5 +1,5 @@
 import { TEST_PORTION } from '@/data/__tests__/test-data';
-import type { Portion } from '@/models/food';
+import type { Portion } from '@/models/portion';
 import { mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';

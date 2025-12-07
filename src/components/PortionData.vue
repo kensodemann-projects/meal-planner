@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Portion } from '@/models/food';
+import type { Portion } from '@/models/portion';
 
 defineProps<{ value: Portion; compact?: boolean }>();
 </script>

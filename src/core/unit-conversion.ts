@@ -1,6 +1,6 @@
-import type { Portion } from '@/models/food';
-import { findUnitOfMeasure } from './find-unit-of-measure';
+import type { Portion } from '@/models/portion';
 import type { UnitOfMeasure } from '@/models/unit-of-measure';
+import { findUnitOfMeasure } from './find-unit-of-measure';
 
 interface UnitConversionFactor {
   id: string;

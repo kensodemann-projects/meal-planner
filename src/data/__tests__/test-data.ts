@@ -1,5 +1,6 @@
 import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
-import type { FoodItem, Portion } from '@/models/food';
+import type { FoodItem } from '@/models/food';
+import type { Portion } from '@/models/portion';
 import type { Recipe } from '@/models/recipe';
 import type { UnitOfMeasure } from '@/models/unit-of-measure';
 import type { FdcFoodSearchFoodItem } from '@/models/usda-fdc';
@@ -235,13 +236,13 @@ export const TEST_RECIPES: Recipe[] = [
     category: 'Pasta',
     difficulty: 'Normal',
     servings: 4,
-    servingSize: 1.5,
-    servingSizeUnits: findUnitOfMeasure('cup'),
-    servingGrams: 280,
+    units: 1.5,
+    unitOfMeasure: findUnitOfMeasure('cup'),
+    grams: 280,
     calories: 630,
     sodium: 780,
     sugar: 3,
-    totalCarbs: 55,
+    carbs: 55,
     fat: 35,
     protein: 28,
     ingredients: [
@@ -301,13 +302,13 @@ export const TEST_RECIPES: Recipe[] = [
     category: 'Salad',
     difficulty: 'Easy',
     servings: 2,
-    servingSize: 2,
-    servingSizeUnits: findUnitOfMeasure('cup'),
-    servingGrams: 150,
+    units: 2,
+    unitOfMeasure: findUnitOfMeasure('cup'),
+    grams: 150,
     calories: 120,
     sodium: 5,
     sugar: 2,
-    totalCarbs: 8,
+    carbs: 8,
     fat: 9,
     protein: 3,
     ingredients: [
@@ -356,13 +357,13 @@ export const TEST_RECIPES: Recipe[] = [
     category: 'Poultry',
     difficulty: 'Easy',
     servings: 4,
-    servingSize: 1,
-    servingSizeUnits: findUnitOfMeasure('serving'),
-    servingGrams: 400,
+    units: 1,
+    unitOfMeasure: findUnitOfMeasure('serving'),
+    grams: 400,
     calories: 480,
     sodium: 350,
     sugar: 7,
-    totalCarbs: 25,
+    carbs: 25,
     fat: 25,
     protein: 40,
     ingredients: [
@@ -423,13 +424,13 @@ export const TEST_RECIPES: Recipe[] = [
     category: 'Breakfast',
     difficulty: 'Easy',
     servings: 1,
-    servingSize: 1.5,
-    servingSizeUnits: findUnitOfMeasure('cup'),
-    servingGrams: 200,
+    units: 1.5,
+    unitOfMeasure: findUnitOfMeasure('cup'),
+    grams: 200,
     calories: 320,
     sodium: 100,
     sugar: 10,
-    totalCarbs: 55,
+    carbs: 55,
     fat: 8,
     protein: 12,
     ingredients: [
@@ -473,13 +474,13 @@ export const TEST_RECIPES: Recipe[] = [
     category: 'Dessert',
     difficulty: 'Normal',
     servings: 16,
-    servingSize: 1,
-    servingSizeUnits: findUnitOfMeasure('piece'),
-    servingGrams: 60,
+    units: 1,
+    unitOfMeasure: findUnitOfMeasure('piece'),
+    grams: 60,
     calories: 250,
     sodium: 120,
     sugar: 25,
-    totalCarbs: 35,
+    carbs: 35,
     fat: 12,
     protein: 3,
     ingredients: [
@@ -538,13 +539,13 @@ export const TEST_RECIPES: Recipe[] = [
     category: 'Vegetarian',
     difficulty: 'Normal',
     servings: 4,
-    servingSize: 1,
-    servingSizeUnits: findUnitOfMeasure('item'),
-    servingGrams: 180,
+    units: 1,
+    unitOfMeasure: findUnitOfMeasure('item'),
+    grams: 180,
     calories: 380,
     sodium: 400,
     sugar: 5,
-    totalCarbs: 65,
+    carbs: 65,
     fat: 8,
     protein: 18,
     ingredients: [
@@ -575,9 +576,15 @@ export const TEST_RECIPES: Recipe[] = [
     ],
     steps: [
       { id: 'b8f3c5d1-4a2e-4f7b-9c3d-1e5a6f8b9c2d', instruction: 'Mash black beans until chunky.' },
-      { id: 'c9e4d6f2-5b3f-4e8c-ad4e-2f6b79d0e3fa', instruction: 'Mix mashed beans with bread crumbs, onion, chili powder, and seasoning.' },
+      {
+        id: 'c9e4d6f2-5b3f-4e8c-ad4e-2f6b79d0e3fa',
+        instruction: 'Mix mashed beans with bread crumbs, onion, chili powder, and seasoning.',
+      },
       { id: 'd0f5e7a3-6c4a-5f9d-be5f-37c8a0e1f4ab', instruction: 'Form mixture into 4 patties.' },
-      { id: 'e1a6f8a4-7d5b-6a0e-cf6a-48d91f2a5bcd', instruction: 'Cook patties on a skillet or grill for 5-7 minutes per side.' },
+      {
+        id: 'e1a6f8a4-7d5b-6a0e-cf6a-48d91f2a5bcd',
+        instruction: 'Cook patties on a skillet or grill for 5-7 minutes per side.',
+      },
     ],
   },
   {
@@ -587,13 +594,13 @@ export const TEST_RECIPES: Recipe[] = [
     category: 'Soup',
     difficulty: 'Easy',
     servings: 6,
-    servingSize: 1.5,
-    servingSizeUnits: findUnitOfMeasure('cup'),
-    servingGrams: 300,
+    units: 1.5,
+    unitOfMeasure: findUnitOfMeasure('cup'),
+    grams: 300,
     calories: 150,
     sodium: 550,
     sugar: 8,
-    totalCarbs: 20,
+    carbs: 20,
     fat: 6,
     protein: 4,
     ingredients: [
@@ -624,9 +631,18 @@ export const TEST_RECIPES: Recipe[] = [
     ],
     steps: [
       { id: 'f2b7g9i5-8e6c-7b1f-da7b-5i9e0j2a3b6c', instruction: 'Sauté the onion until softened.' },
-      { id: 'a3c8h0j6-9f7d-8c2a-eb8c-6j0f1k3b4c7d', instruction: 'Add crushed tomatoes and vegetable broth. Simmer for 15 minutes.' },
-      { id: 'b4d9i1k7-0a8e-9d3b-fc9d-7k1a2l4c5d8e', instruction: 'Use an immersion blender to blend the soup until smooth (or transfer to a regular blender).' },
-      { id: 'c5e0a2f8-1b9f-4e4c-ad0e-8a2b3d5e6f9c', instruction: 'Stir in heavy cream and heat through, but do not boil.' },
+      {
+        id: 'a3c8h0j6-9f7d-8c2a-eb8c-6j0f1k3b4c7d',
+        instruction: 'Add crushed tomatoes and vegetable broth. Simmer for 15 minutes.',
+      },
+      {
+        id: 'b4d9i1k7-0a8e-9d3b-fc9d-7k1a2l4c5d8e',
+        instruction: 'Use an immersion blender to blend the soup until smooth (or transfer to a regular blender).',
+      },
+      {
+        id: 'c5e0a2f8-1b9f-4e4c-ad0e-8a2b3d5e6f9c',
+        instruction: 'Stir in heavy cream and heat through, but do not boil.',
+      },
     ],
   },
   {
@@ -636,13 +652,13 @@ export const TEST_RECIPES: Recipe[] = [
     category: 'Sauce',
     difficulty: 'Easy',
     servings: 8,
-    servingSize: 0.25,
-    servingSizeUnits: findUnitOfMeasure('cup'),
-    servingGrams: 60,
+    units: 0.25,
+    unitOfMeasure: findUnitOfMeasure('cup'),
+    grams: 60,
     calories: 15,
     sodium: 10,
     sugar: 2,
-    totalCarbs: 3,
+    carbs: 3,
     fat: 0,
     protein: 0,
     ingredients: [
@@ -678,9 +694,18 @@ export const TEST_RECIPES: Recipe[] = [
       },
     ],
     steps: [
-      { id: 'd6f1k3m9-2c0a-1f5d-be1f-9m3c4n6e7f0a', instruction: 'Combine all diced ingredients (tomatoes, onion, jalapeño, cilantro) in a bowl.' },
-      { id: 'e7a2l4n0-3d1b-2a6e-cf2a-0n4d5o7f8a1b', instruction: 'Pour in the fresh lime juice and season generously with salt.' },
-      { id: 'f8b3a5e1-4e2c-3b7f-da3b-1a5e6a8a9b2c', instruction: 'Stir well and let sit for at least 15 minutes for flavors to meld before serving.' },
+      {
+        id: 'd6f1k3m9-2c0a-1f5d-be1f-9m3c4n6e7f0a',
+        instruction: 'Combine all diced ingredients (tomatoes, onion, jalapeño, cilantro) in a bowl.',
+      },
+      {
+        id: 'e7a2l4n0-3d1b-2a6e-cf2a-0n4d5o7f8a1b',
+        instruction: 'Pour in the fresh lime juice and season generously with salt.',
+      },
+      {
+        id: 'f8b3a5e1-4e2c-3b7f-da3b-1a5e6a8a9b2c',
+        instruction: 'Stir well and let sit for at least 15 minutes for flavors to meld before serving.',
+      },
     ],
   },
 ];
@@ -691,13 +716,13 @@ export const TEST_RECIPE: Recipe = {
   category: 'Seafood',
   difficulty: 'Advanced', // Requires precise timing for searing
   servings: 2,
-  servingSize: 4,
-  servingSizeUnits: findUnitOfMeasure('oz'),
-  servingGrams: 120,
+  units: 4,
+  unitOfMeasure: findUnitOfMeasure('oz'),
+  grams: 120,
   calories: 300,
   sodium: 420,
   sugar: 1,
-  totalCarbs: 3,
+  carbs: 3,
   fat: 18,
   protein: 30,
   ingredients: [
@@ -727,11 +752,28 @@ export const TEST_RECIPE: Recipe = {
     },
   ],
   steps: [
-    { id: 'a9c4n6p2-5f3d-4c8a-eb4c-2p6f7q9c0d3e', instruction: 'Pat scallops completely dry with paper towels (this is critical for a good sear).' },
+    {
+      id: 'a9c4n6p2-5f3d-4c8a-eb4c-2p6f7q9c0d3e',
+      instruction: 'Pat scallops completely dry with paper towels (this is critical for a good sear).',
+    },
     { id: 'b0d5o7q3-6a4e-5d9b-fc5d-3q7a8r0d1e4f', instruction: 'Season scallops heavily with salt and pepper.' },
-    { id: 'c1e6p8r4-7b5f-6e0c-ad6e-4r8b9s1e2f5a', instruction: 'Heat olive oil and 1 tablespoon of butter in a skillet over high heat until smoking.' },
-    { id: 'd2f7q9s5-8c6a-7f1d-be7f-5s9c0t2f3a6b', instruction: 'Place scallops in the hot pan, ensuring they do not touch. Sear for 1.5 to 2 minutes per side until deep golden brown.' },
-    { id: 'e3a8r0t6-9d7b-8a2e-cf8a-6t0d1u3a4b7c', instruction: 'Remove scallops from the pan. Reduce heat, add remaining butter and lemon juice to the pan, scraping up any browned bits. Simmer briefly.' },
-    { id: 'f4b9a1b7-0e8c-9b3f-da9b-7a1e2b4b5c8d', instruction: 'Spoon the lemon-butter sauce over the scallops and serve immediately.' },
+    {
+      id: 'c1e6p8r4-7b5f-6e0c-ad6e-4r8b9s1e2f5a',
+      instruction: 'Heat olive oil and 1 tablespoon of butter in a skillet over high heat until smoking.',
+    },
+    {
+      id: 'd2f7q9s5-8c6a-7f1d-be7f-5s9c0t2f3a6b',
+      instruction:
+        'Place scallops in the hot pan, ensuring they do not touch. Sear for 1.5 to 2 minutes per side until deep golden brown.',
+    },
+    {
+      id: 'e3a8r0t6-9d7b-8a2e-cf8a-6t0d1u3a4b7c',
+      instruction:
+        'Remove scallops from the pan. Reduce heat, add remaining butter and lemon juice to the pan, scraping up any browned bits. Simmer briefly.',
+    },
+    {
+      id: 'f4b9a1b7-0e8c-9b3f-da9b-7a1e2b4b5c8d',
+      instruction: 'Spoon the lemon-butter sauce over the scallops and serve immediately.',
+    },
   ],
 };

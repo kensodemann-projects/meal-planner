@@ -1,4 +1,5 @@
-import type { FoodCategory, FoodItem, Portion } from '../models/food';
+import type { Portion } from '@/models/portion';
+import type { FoodCategory, FoodItem } from '../models/food';
 import type { FdcFoodItem, FdcFoodPortion } from '../models/usda-fdc';
 import { findUnitOfMeasure } from './find-unit-of-measure';
 
