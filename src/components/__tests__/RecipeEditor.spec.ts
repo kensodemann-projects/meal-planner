@@ -128,7 +128,7 @@ describe('Recipe Editor', () => {
       expect(input.props('label')).toBe('Grams per Serving');
     });
 
-    it('is not required', async () => {
+    it('is required', async () => {
       wrapper = mountComponent();
       await numberInputIsRequired(wrapper, 'grams-input');
     });
