@@ -16,8 +16,12 @@
     <h2>Ingredients</h2>
     <ul class="mt-2">
       <li v-for="ingredient in recipe.ingredients" :key="ingredient.id">
-        {{ ingredient.units }} {{ ingredient.unitOfMeasure.id === 'item' ? '' : ingredient.unitOfMeasure.id }}
-        {{ ingredient.name }}
+        <template v-if="ingredient.unitOfMeasure.id === 'item'">
+          {{ ingredient.units }} {{ ingredient.name }}
+        </template>
+        <template v-else>
+          {{ ingredient.units }} {{ ingredient.unitOfMeasure.id }} {{ ingredient.name }}
+        </template>
       </li>
     </ul>
   </section>
