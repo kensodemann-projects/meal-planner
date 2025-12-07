@@ -107,8 +107,9 @@
         <v-col cols="12" md="6">
           <v-number-input
             label="Grams per Serving"
-            v-model="servingGrams"
-            data-testid="grams-per-serving-input"
+            v-model="grams"
+            :rules="[validationRules.required]"
+            data-testid="grams-input"
           ></v-number-input>
         </v-col>
       </v-row>
@@ -117,20 +118,20 @@
         <v-col cols="12" md="6">
           <v-number-input
             label="Serving Size"
-            v-model="servingSize"
+            v-model="units"
             :rules="[validationRules.required]"
             :precision="null"
-            data-testid="serving-size-input"
+            data-testid="recipe-units-input"
           ></v-number-input>
         </v-col>
 
         <v-col cols="12" md="6">
           <v-autocomplete
             label="Serving Units"
-            v-model="servingUnitOfMeasureId"
+            v-model="unitOfMeasureId"
             :items="unitOfMeasureOptions"
             :rules="[validationRules.required]"
-            data-testid="unit-of-measure-input"
+            data-testid="recipe-unit-of-measure-input"
           ></v-autocomplete>
         </v-col>
       </v-row>
@@ -172,9 +173,9 @@
         <v-col cols="12" md="4">
           <v-number-input
             label="Total Carbohydrates"
-            v-model="totalCarbs"
+            v-model="carbs"
             :rules="[validationRules.required]"
-            data-testid="total-carbs-input"
+            data-testid="carbs-input"
           ></v-number-input>
         </v-col>
 
@@ -228,13 +229,13 @@ const description = ref<string>(props.recipe?.description || '');
 const category = ref<RecipeCategory | undefined>(props.recipe?.category);
 const difficulty = ref<RecipeDifficulty | undefined>(props.recipe?.difficulty);
 const servings = ref<number | undefined>(props.recipe?.servings);
-const servingSize = ref<number | undefined>(props.recipe?.servingSize);
-const servingUnitOfMeasureId = ref<string | undefined>(props.recipe?.servingSizeUnits?.id);
-const servingGrams = ref<number | null | undefined>(props.recipe?.servingGrams);
+const units = ref<number | undefined>(props.recipe?.units);
+const unitOfMeasureId = ref<string | undefined>(props.recipe?.unitOfMeasure?.id);
+const grams = ref<number | undefined>(props.recipe?.grams);
 const calories = ref<number | undefined>(props.recipe?.calories);
 const sodium = ref<number>(props.recipe?.sodium || 0);
 const sugar = ref<number>(props.recipe?.sugar || 0);
-const totalCarbs = ref<number>(props.recipe?.totalCarbs || 0);
+const carbs = ref<number>(props.recipe?.carbs || 0);
 const fat = ref<number>(props.recipe?.fat || 0);
 const protein = ref<number>(props.recipe?.protein || 0);
 const ingredients = ref<RecipeIngredient[]>(props.recipe ? [...props.recipe.ingredients] : []);
@@ -279,13 +280,13 @@ const isModified = computed((): boolean => {
     props.recipe.category !== category.value ||
     props.recipe.difficulty !== difficulty.value ||
     props.recipe.servings !== servings.value ||
-    props.recipe.servingSize !== servingSize.value ||
-    props.recipe.servingSizeUnits.id !== servingUnitOfMeasureId.value ||
-    props.recipe.servingGrams !== servingGrams.value ||
+    props.recipe.units !== units.value ||
+    props.recipe.unitOfMeasure.id !== unitOfMeasureId.value ||
+    props.recipe.grams !== grams.value ||
     props.recipe.calories !== calories.value ||
     props.recipe.sodium !== sodium.value ||
     props.recipe.sugar !== sugar.value ||
-    props.recipe.totalCarbs !== totalCarbs.value ||
+    props.recipe.carbs !== carbs.value ||
     props.recipe.fat !== fat.value ||
     props.recipe.protein !== protein.value
   );
@@ -299,13 +300,13 @@ const save = () => {
     category: category.value!,
     difficulty: difficulty.value!,
     servings: servings.value!,
-    servingSize: servingSize.value!,
-    servingSizeUnits: findUnitOfMeasure(servingUnitOfMeasureId.value!),
-    servingGrams: servingGrams.value || null,
+    units: units.value!,
+    unitOfMeasure: findUnitOfMeasure(unitOfMeasureId.value!),
+    grams: grams.value!,
     calories: calories.value!,
     sodium: sodium.value,
     sugar: sugar.value,
-    totalCarbs: totalCarbs.value,
+    carbs: carbs.value,
     fat: fat.value,
     protein: protein.value,
     ingredients: ingredients.value,

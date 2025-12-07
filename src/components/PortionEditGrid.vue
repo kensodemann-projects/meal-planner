@@ -96,7 +96,7 @@
 import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import { validationRules } from '@/core/validation-rules';
 import { unitOfMeasureOptions } from '@/data/unit-of-measure';
-import type { Portion } from '@/models/food';
+import type { Portion } from '@/models/portion';
 import { computed } from 'vue';
 
 const portion = defineModel<Partial<Portion>>();

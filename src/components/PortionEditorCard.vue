@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Portion } from '@/models/food';
+import type { Portion } from '@/models/portion';
 import { ref } from 'vue';
 
 const props = defineProps<{ portion?: Portion }>();
