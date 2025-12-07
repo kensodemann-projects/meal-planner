@@ -1,4 +1,5 @@
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import RecipeView from '@/components/RecipeView.vue';
 import ViewPageActionButtons from '@/components/ViewPageActionButtons.vue';
 import { TEST_RECIPE } from '@/data/__tests__/test-data';
 import { useRecipesData } from '@/data/recipes';
@@ -61,6 +62,28 @@ describe('Recipe Details Page', () => {
     const { getRecipe } = useRecipesData();
     wrapper = mountPage();
     expect(getRecipe).toHaveBeenCalledExactlyOnceWith('88f933fiieo');
+  });
+
+  it('handles recipe not found', async () => {
+    const { getRecipe } = useRecipesData();
+    (getRecipe as Mock).mockResolvedValue(null);
+    wrapper = mountPage();
+    await flushPromises();
+    const recipeView = wrapper.findComponent(RecipeView);
+    const actionButtons = wrapper.findComponent(ViewPageActionButtons);
+    expect(recipeView.exists()).toBe(false);
+    expect(actionButtons.exists()).toBe(false);
+  });
+
+  it('handles recipe loading error', async () => {
+    const { getRecipe } = useRecipesData();
+    (getRecipe as Mock).mockRejectedValue(new Error('Failed to load'));
+    wrapper = mountPage();
+    await flushPromises();
+    const recipeView = wrapper.findComponent(RecipeView);
+    const actionButtons = wrapper.findComponent(ViewPageActionButtons);
+    expect(recipeView.exists()).toBe(false);
+    expect(actionButtons.exists()).toBe(false);
   });
 
   describe('close button', () => {
