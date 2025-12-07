@@ -1,11 +1,11 @@
 import { TEST_RECIPE } from '@/data/__tests__/test-data';
-import { mount } from '@vue/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import type { Recipe } from '@/models/recipe';
+import { DOMWrapper, mount } from '@vue/test-utils';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import RecipeView from '../RecipeView.vue';
-import type { Recipe } from '@/models/recipe';
 
 const vuetify = createVuetify({
   components,
@@ -37,53 +37,135 @@ describe('RecipeView', () => {
     expect(header.text()).toBe(TEST_RECIPE.name);
   });
 
-  it('renders the category', () => {
-    wrapper = mountComponent();
-    expect(wrapper.text()).toContain(`Category: ${TEST_RECIPE.category}`);
-  });
+  describe('the description section', () => {
+    let section: DOMWrapper<HTMLElement>;
 
-  it('renders the servings', () => {
-    wrapper = mountComponent();
-    expect(wrapper.text()).toContain(`Servings: ${TEST_RECIPE.servings}`);
-  });
+    beforeEach(() => {
+      wrapper = mountComponent();
+      section = wrapper.find('[data-testid="description-section"]');
+    });
 
-  it('renders the difficulty', () => {
-    wrapper = mountComponent();
-    expect(wrapper.text()).toContain(`Difficulty: ${TEST_RECIPE.difficulty}`);
-  });
+    it('exists', () => {
+      expect(section.exists()).toBe(true);
+    });
 
-  it('renders the description', () => {
-    wrapper = mountComponent();
-    expect(wrapper.text()).toContain(TEST_RECIPE.description);
-  });
+    it('does not have a sub-header', () => {
+      const header = section.find('h2');
+      expect(header.exists()).toBe(false);
+    });
 
-  it('has sections for Ingredients, Steps, and Nutritional Information', () => {
-    wrapper = mountComponent();
-    const subHeaders = wrapper.findAll('h2').map((h) => h.text());
-    expect(subHeaders.length).toBe(3);
-    console.log(subHeaders);
-    expect(subHeaders[0]).toBe('Ingredients');
-    expect(subHeaders[1]).toBe('Steps');
-    expect(subHeaders[2]).toBe('Nutritional Information');
-  });
+    it('renders the category', () => {
+      wrapper = mountComponent();
+      expect(wrapper.text()).toContain(`Category: ${TEST_RECIPE.category}`);
+    });
 
-  it('lists the ingredients', () => {
-    wrapper = mountComponent();
-    const lists = wrapper.findAll('ul');
-    const listItems = lists[0]?.findAll('li').map((li) => li.text());
-    expect(listItems?.length).toBe(TEST_RECIPE.ingredients.length);
-    TEST_RECIPE.ingredients.forEach((ingredient, index) => {
-      expect(listItems?.[index]).toContain(ingredient.name);
+    it('renders the servings', () => {
+      wrapper = mountComponent();
+      expect(wrapper.text()).toContain(`Servings: ${TEST_RECIPE.servings}`);
+    });
+
+    it('renders the difficulty', () => {
+      wrapper = mountComponent();
+      expect(wrapper.text()).toContain(`Difficulty: ${TEST_RECIPE.difficulty}`);
+    });
+
+    it('renders the description', () => {
+      wrapper = mountComponent();
+      expect(wrapper.text()).toContain(TEST_RECIPE.description);
     });
   });
 
-  it('lists the steps', () => {
-    wrapper = mountComponent();
-    const lists = wrapper.findAll('ol');
-    const listItems = lists[0]?.findAll('li').map((li) => li.text());
-    expect(listItems?.length).toBe(TEST_RECIPE.steps.length);
-    TEST_RECIPE.steps.forEach((step, index) => {
-      expect(listItems?.[index]).toBe(step.instruction);
+  // it('has sections for Ingredients, Steps, and Nutritional Information', () => {
+  //   expectSection(wrapper, 'ingredients-section', 'Ingredients');
+  //   expectSection(wrapper, 'steps-section', 'Steps');
+  //   expectSection(wrapper, 'nutritional-information-section', 'Nutritional Information');
+  // });
+
+  describe('the ingredients section', () => {
+    let section: DOMWrapper<HTMLElement>;
+
+    beforeEach(() => {
+      wrapper = mountComponent();
+      section = wrapper.find('[data-testid="ingredients-section"]');
+    });
+
+    it('exists', () => {
+      expect(section.exists()).toBe(true);
+    });
+
+    it('has a subheader', () => {
+      const header = section.find('h2');
+      expect(header.exists()).toBe(true);
+      expect(header.text()).toBe('Ingredients');
+    });
+
+    it('lists the ingredients', () => {
+      const lists = section.findAll('ul');
+      const listItems = lists[0]?.findAll('li').map((li) => li.text());
+      expect(listItems?.length).toBe(TEST_RECIPE.ingredients.length);
+      TEST_RECIPE.ingredients.forEach((ingredient, index) => {
+        expect(listItems?.[index]).toContain(ingredient.name);
+      });
+    });
+  });
+
+  describe('the steps section', () => {
+    let section: DOMWrapper<HTMLElement>;
+
+    beforeEach(() => {
+      wrapper = mountComponent();
+      section = wrapper.find('[data-testid="steps-section"]');
+    });
+
+    it('exists', () => {
+      expect(section.exists()).toBe(true);
+    });
+
+    it('has a subheader', () => {
+      const header = section.find('h2');
+      expect(header.exists()).toBe(true);
+      expect(header.text()).toBe('Steps');
+    });
+
+    it('lists the steps', () => {
+      const lists = section.findAll('ol');
+      const listItems = lists[0]?.findAll('li').map((li) => li.text());
+      expect(listItems?.length).toBe(TEST_RECIPE.steps.length);
+      TEST_RECIPE.steps.forEach((step, index) => {
+        expect(listItems?.[index]).toBe(step.instruction);
+      });
+    });
+  });
+
+  describe('the nutritional information section', () => {
+    let section: DOMWrapper<HTMLElement>;
+
+    beforeEach(() => {
+      wrapper = mountComponent();
+      section = wrapper.find('[data-testid="nutritional-information-section"]');
+    });
+
+    it('exists', () => {
+      expect(section.exists()).toBe(true);
+    });
+
+    it('has a subheader', () => {
+      const header = section.find('h2');
+      expect(header.exists()).toBe(true);
+      expect(header.text()).toBe('Nutritional Information');
+    });
+
+    it('displays the nutritional information', () => {
+      const text = section.text();
+      expect(text).toContain(
+        `Serving Size: ${TEST_RECIPE.units} ${TEST_RECIPE.unitOfMeasure.name} (${TEST_RECIPE.grams}g)`,
+      );
+      expect(text).toContain(`Calories: ${TEST_RECIPE.calories}`);
+      expect(text).toContain(`Sodium: ${TEST_RECIPE.sodium}mg`);
+      expect(text).toContain(`Sugar: ${TEST_RECIPE.sugar}g`);
+      expect(text).toContain(`Total Carbs: ${TEST_RECIPE.carbs}g`);
+      expect(text).toContain(`Fat: ${TEST_RECIPE.fat}g`);
+      expect(text).toContain(`Protein: ${TEST_RECIPE.protein}g`);
     });
   });
 });
