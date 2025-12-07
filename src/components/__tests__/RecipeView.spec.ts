@@ -55,23 +55,19 @@ describe('RecipeView', () => {
     });
 
     it('renders the category', () => {
-      wrapper = mountComponent();
-      expect(wrapper.text()).toContain(`Category: ${TEST_RECIPE.category}`);
+      expect(section.text()).toContain(`Category: ${TEST_RECIPE.category}`);
     });
 
     it('renders the servings', () => {
-      wrapper = mountComponent();
-      expect(wrapper.text()).toContain(`Servings: ${TEST_RECIPE.servings}`);
+      expect(section.text()).toContain(`Servings: ${TEST_RECIPE.servings}`);
     });
 
     it('renders the difficulty', () => {
-      wrapper = mountComponent();
-      expect(wrapper.text()).toContain(`Difficulty: ${TEST_RECIPE.difficulty}`);
+      expect(section.text()).toContain(`Difficulty: ${TEST_RECIPE.difficulty}`);
     });
 
     it('renders the description', () => {
-      wrapper = mountComponent();
-      expect(wrapper.text()).toContain(TEST_RECIPE.description);
+      expect(section.text()).toContain(TEST_RECIPE.description);
     });
   });
 
