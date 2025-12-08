@@ -1,16 +1,18 @@
-import { mount, VueWrapper } from '@vue/test-utils';
+import type { RecipeStep } from '@/models/recipe';
+import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
+import ConfirmDialog from '../ConfirmDialog.vue';
 import StepEditorRow from '../StepEditorRow.vue';
-import type { RecipeStep } from '@/models/recipe';
 
 const vuetify = createVuetify({
   components,
   directives,
 });
-const mountComponent = (props = {}) => mount(StepEditorRow, { props, global: { plugins: [vuetify] } });
+const mountComponent = (props: { step: RecipeStep } = { step: TEST_STEPS[0]! }) =>
+  mount(StepEditorRow, { props, global: { plugins: [vuetify] } });
 
 describe('StepEditorRow', () => {
   let wrapper: ReturnType<typeof mountComponent>;
@@ -69,6 +71,61 @@ describe('StepEditorRow', () => {
       const emitted = wrapper.emitted('changed');
       expect(emitted?.length).toBe(1);
       expect((emitted![0]![0] as RecipeStep).instruction).toBe('Dump the stuff in the thing and mix');
+    });
+  });
+
+  describe('delete button', () => {
+    it('renders', () => {
+      wrapper = mountComponent({ step: TEST_STEPS[1]! });
+      const button = wrapper.findComponent('[data-testid="delete-button"]') as VueWrapper<components.VNumberInput>;
+      expect(button.exists()).toBe(true);
+    });
+
+    it('displays confirm dialog when clicked', async () => {
+      wrapper = mountComponent({ step: TEST_STEPS[1]! });
+      const button = wrapper.findComponent('[data-testid="delete-button"]');
+      await button.trigger('click');
+      await flushPromises();
+      const confirmDialog = wrapper.findComponent(ConfirmDialog);
+      expect(confirmDialog.exists()).toBe(true);
+    });
+
+    it('emits delete and closes dialog when user confirms', async () => {
+      wrapper = mountComponent({ step: TEST_STEPS[1]! });
+      const button = wrapper.findComponent('[data-testid="delete-button"]');
+      await button.trigger('click');
+      await flushPromises();
+
+      const confirmDialog = wrapper.findComponent(ConfirmDialog);
+      expect(confirmDialog.exists()).toBe(true);
+
+      await confirmDialog.vm.$emit('confirm');
+      await flushPromises();
+
+      const emitted = wrapper.emitted('delete');
+      expect(emitted?.length).toBe(1);
+
+      const activeOverlay = document.querySelector('.v-overlay--active');
+      expect(activeOverlay).toBeNull();
+    });
+
+    it('does not emit delete and closes dialog when user cancels', async () => {
+      wrapper = mountComponent({ step: TEST_STEPS[1]! });
+      const button = wrapper.findComponent('[data-testid="delete-button"]');
+      await button.trigger('click');
+      await flushPromises();
+
+      const confirmDialog = wrapper.findComponent(ConfirmDialog);
+      expect(confirmDialog.exists()).toBe(true);
+
+      await confirmDialog.vm.$emit('cancel');
+      await flushPromises();
+
+      const emitted = wrapper.emitted('delete');
+      expect(emitted).toBeUndefined();
+
+      const activeOverlay = document.querySelector('.v-overlay--active');
+      expect(activeOverlay).toBeNull();
     });
   });
 });

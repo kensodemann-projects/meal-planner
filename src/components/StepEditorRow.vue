@@ -20,6 +20,19 @@
       ></v-btn>
     </v-col>
   </v-row>
+  <v-dialog v-model="showConfirmDelete" max-width="600px" data-testid="confirm-dialog">
+    <ConfirmDialog
+      question="Are you sure you want to delete this step?"
+      icon-color="error"
+      @confirm="
+        () => {
+          showConfirmDelete = false;
+          emit('delete');
+        }
+      "
+      @cancel="() => (showConfirmDelete = false)"
+    />
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
