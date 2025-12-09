@@ -458,7 +458,25 @@ describe('Recipe Editor', () => {
         expect(saveButton.attributes('disabled')).toBeDefined();
       });
 
-      // TODO: add similar tests for steps
+      it('is disabled if an invalid step exists in the steps list', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const inputs = getInputs(wrapper);
+        await inputs.category.setValue('Dessert');
+        (wrapper.vm as any).category = 'Dessert';
+        await inputs.difficulty.setValue('Easy');
+        (wrapper.vm as any).difficulty = 'Easy';
+        await inputs.unitOfMeasure.setValue('oz');
+        (wrapper.vm as any).unitOfMeasureId = 'oz';
+        await inputs.name.setValue('Apple Pie');
+        await inputs.grams.setValue('200');
+        await inputs.servings.setValue('2');
+        await inputs.units.setValue('12');
+        await inputs.calories.setValue('325');
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+        const button = wrapper.findComponent('[data-testid="add-step-button"]');
+        await button.trigger('click');
+        expect(saveButton.attributes('disabled')).toBeDefined();
+      });
 
       it('emits the entered data on click', async () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
