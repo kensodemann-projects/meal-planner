@@ -22,7 +22,13 @@ getRecipe(id)
     recipe.value = null;
   });
 
-const onCancel = () => router.replace(`/recipes/${recipe.value?.id}`);
+const onCancel = () => {
+  if (recipe.value?.id) {
+    router.replace(`/recipes/${recipe.value.id}`);
+  } else {
+    router.replace('/recipes');
+  }
+};
 
 const onSave = async (item: Recipe) => {
   await updateRecipe(item);
