@@ -15,7 +15,12 @@ const id = (params as { id: string }).id;
 const recipe = ref<Recipe | null>();
 
 const { getRecipe, updateRecipe } = useRecipesData();
-getRecipe(id).then((r) => (recipe.value = r));
+getRecipe(id)
+  .then((r) => (recipe.value = r))
+  .catch(() => {
+    // Error handling for UI feedback is a future task
+    recipe.value = null;
+  });
 
 const onCancel = () => router.replace(`/recipes/${recipe.value?.id}`);
 
