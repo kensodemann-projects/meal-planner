@@ -319,8 +319,7 @@ const isModified = computed((): boolean => {
 });
 
 const save = () => {
-  emit('save', {
-    ...props.recipe,
+  const recipe = {
     name: name.value.trim(),
     description: description.value.trim() || null,
     category: category.value!,
@@ -337,6 +336,9 @@ const save = () => {
     protein: protein.value,
     ingredients: ingredients.value,
     steps: steps.value,
+  };
+  emit('save', {
+    ...(props.recipe ? { ...recipe, id: props.recipe.id } : recipe),
   });
 };
 
