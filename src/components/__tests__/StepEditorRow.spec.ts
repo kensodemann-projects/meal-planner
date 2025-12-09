@@ -77,7 +77,7 @@ describe('StepEditorRow', () => {
   describe('delete button', () => {
     it('renders', () => {
       wrapper = mountComponent({ step: TEST_STEPS[1]! });
-      const button = wrapper.findComponent('[data-testid="delete-button"]') as VueWrapper<components.VNumberInput>;
+      const button = wrapper.findComponent('[data-testid="delete-button"]') as VueWrapper<components.VBtn>;
       expect(button.exists()).toBe(true);
     });
 
