@@ -711,7 +711,7 @@ describe('Recipe Editor', () => {
 
       // TODO: add similar tests for steps
 
-      it('emits the entered data in click', async () => {
+      it('emits the entered data on click', async () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
         const inputs = getInputs(wrapper);
         await inputs.category.setValue('Dessert');
