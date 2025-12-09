@@ -709,7 +709,15 @@ describe('Recipe Editor', () => {
         expect(saveButton.attributes('disabled')).toBeDefined();
       });
 
-      // TODO: add similar tests for steps
+      it('is disabled if an invalid step exists in the steps list', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const inputs = getInputs(wrapper);
+        await inputs.name.setValue('Apple Pie');
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+        const button = wrapper.findComponent('[data-testid="add-step-button"]');
+        await button.trigger('click');
+        expect(saveButton.attributes('disabled')).toBeDefined();
+      });
 
       it('emits the entered data on click', async () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
