@@ -84,7 +84,7 @@
     <v-container fluid>
       <v-row class="pa-4" justify="end">
         <CancelButton class="mr-4" @click="$emit('cancel')" />
-        <SaveButton :disabled="!(valid && isModified)" @click="save" />
+        <SaveButton :disabled="!valid || !isModified || isEditingAlternativePortion" @click="save" />
       </v-row>
     </v-container>
   </v-form>
@@ -163,6 +163,10 @@ const isModified = computed((): boolean => {
   const portionFields = ['units', 'grams', 'calories', 'sodium', 'sugar', 'carbs', 'fat', 'protein'] as const;
   return portionFields.some((field) => props.food![field as keyof FoodItem] !== portion.value[field]);
 });
+
+const isEditingAlternativePortion = computed(
+  (): boolean => addPortion.value || !!alternativePortions.value.some((p) => p.status === 'modify'),
+);
 
 const save = () => {
   const food: Omit<FoodItem, 'alternativePortions'> = {
