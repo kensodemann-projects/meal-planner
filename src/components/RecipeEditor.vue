@@ -80,14 +80,22 @@
           variant="text"
           icon="mdi-plus"
           :disabled="stepsInvalid"
-          @click="() => null"
-          data-testid="add-steps-button"
+          @click="addStep"
+          data-testid="add-step-button"
         ></v-btn>
       </div>
     </h2>
     <v-divider class="mb-4"></v-divider>
 
-    <v-container fluid data-testid="step-list-grid"></v-container>
+    <v-container fluid data-testid="step-list-grid">
+      <StepEditorRow
+        v-for="(step, index) in steps"
+        :key="step.id"
+        :step="step"
+        @delete="() => deleteStep(index)"
+        @changed="(s) => changeStep(s, index)"
+      />
+    </v-container>
 
     <h2>Nutritional Information</h2>
     <v-divider class="mb-4"></v-divider>
@@ -269,6 +277,24 @@ const changeIngredient = (ingredient: RecipeIngredient, index: number) => {
 
 const deleteIngredient = (index: number) => {
   ingredients.value.splice(index, 1);
+  listChanged.value = true;
+};
+
+const addStep = () => {
+  steps.value.push({
+    id: crypto.randomUUID(),
+    instruction: '',
+  });
+  listChanged.value = true;
+};
+
+const changeStep = (step: RecipeStep, index: number) => {
+  steps.value[index] = { ...step, id: steps.value[index]!.id };
+  listChanged.value = true;
+};
+
+const deleteStep = (index: number) => {
+  steps.value.splice(index, 1);
   listChanged.value = true;
 };
 

@@ -36,6 +36,7 @@ declare module 'vue' {
     SaveButton: typeof import('./components/buttons/SaveButton.vue')['default']
     SearchInput: typeof import('./components/SearchInput.vue')['default']
     SecondaryButton: typeof import('./components/buttons/SecondaryButton.vue')['default']
+    StepEditorRow: typeof import('./components/StepEditorRow.vue')['default']
     ViewPageActionButtons: typeof import('./components/ViewPageActionButtons.vue')['default']
   }
 }

@@ -8,6 +8,7 @@ import * as directives from 'vuetify/directives';
 import IngredientEditorRow from '../IngredientEditorRow.vue';
 import RecipeEditor from '../RecipeEditor.vue';
 import { autocompleteIsRequired, numberInputIsRequired, textFieldIsRequired } from './test-utils';
+import StepEditorRow from '../StepEditorRow.vue';
 
 vi.mock('@/data/foods');
 
@@ -355,6 +356,64 @@ describe('Recipe Editor', () => {
       });
     });
 
+    describe('the steps list', () => {
+      it('is empty', () => {
+        const listArea = wrapper.find('[data-testid="step-list-grid"]');
+        const steps = listArea.findAllComponents(StepEditorRow);
+        expect(steps.length).toBe(0);
+      });
+
+      describe('add button', () => {
+        it('is enabled', () => {
+          const button = wrapper.findComponent('[data-testid="add-step-button"]');
+          expect(button.attributes('disabled')).toBeUndefined();
+        });
+
+        describe('on click', () => {
+          it('adds a blank step', async () => {
+            const button = wrapper.findComponent('[data-testid="add-step-button"]');
+            const listArea = wrapper.find('[data-testid="step-list-grid"]');
+            await button.trigger('click');
+            const steps = listArea.findAllComponents(StepEditorRow);
+            expect(steps.length).toBe(1);
+          });
+
+          it('becomes disabled', async () => {
+            const button = wrapper.findComponent('[data-testid="add-step-button"]');
+            expect(button.attributes('disabled')).toBeUndefined();
+            await button.trigger('click');
+            expect(button.attributes('disabled')).toBeDefined();
+          });
+
+          it('remains disabled until the blank step is filled in', async () => {
+            const listArea = wrapper.find('[data-testid="step-list-grid"]');
+            const button = wrapper.findComponent('[data-testid="add-step-button"]');
+            await button.trigger('click');
+            expect(button.attributes('disabled')).toBeDefined();
+            const steps = listArea.findAllComponents(StepEditorRow);
+            await steps[0]?.vm.$emit('changed', {
+              id: 'bd3543e0-68d4-4ba0-a1a6-29548d46464b',
+              instruction: 'Preheat oven to 375°F (190°C).',
+            });
+            expect(button.attributes('disabled')).toBeUndefined();
+          });
+        });
+      });
+
+      describe('deleting a step', () => {
+        it('removes the step from the list', async () => {
+          const button = wrapper.findComponent('[data-testid="add-step-button"]');
+          const listArea = wrapper.find('[data-testid="step-list-grid"]');
+          await button.trigger('click');
+          let steps = listArea.findAllComponents(StepEditorRow);
+          expect(steps.length).toBe(1);
+          await steps[0]?.vm.$emit('delete');
+          steps = listArea.findAllComponents(StepEditorRow);
+          expect(steps.length).toBe(0);
+        });
+      });
+    });
+
     describe('the save button', () => {
       it('begins disabled', () => {
         const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
@@ -395,6 +454,26 @@ describe('Recipe Editor', () => {
         await inputs.calories.setValue('325');
         expect(saveButton.attributes('disabled')).toBeUndefined();
         const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+        await button.trigger('click');
+        expect(saveButton.attributes('disabled')).toBeDefined();
+      });
+
+      it('is disabled if an invalid step exists in the steps list', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const inputs = getInputs(wrapper);
+        await inputs.category.setValue('Dessert');
+        (wrapper.vm as any).category = 'Dessert';
+        await inputs.difficulty.setValue('Easy');
+        (wrapper.vm as any).difficulty = 'Easy';
+        await inputs.unitOfMeasure.setValue('oz');
+        (wrapper.vm as any).unitOfMeasureId = 'oz';
+        await inputs.name.setValue('Apple Pie');
+        await inputs.grams.setValue('200');
+        await inputs.servings.setValue('2');
+        await inputs.units.setValue('12');
+        await inputs.calories.setValue('325');
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+        const button = wrapper.findComponent('[data-testid="add-step-button"]');
         await button.trigger('click');
         expect(saveButton.attributes('disabled')).toBeDefined();
       });
@@ -545,6 +624,63 @@ describe('Recipe Editor', () => {
       });
     });
 
+    describe('the steps list', () => {
+      it('contains each step', () => {
+        const listArea = wrapper.find('[data-testid="step-list-grid"]');
+        const steps = listArea.findAllComponents(StepEditorRow);
+        expect(steps.length).toBe(BEER_CHEESE.steps.length);
+      });
+
+      describe('add button', () => {
+        it('is enabled', () => {
+          const button = wrapper.findComponent('[data-testid="add-step-button"]');
+          expect(button.attributes('disabled')).toBeUndefined();
+        });
+
+        describe('on click', () => {
+          it('adds a blank step', async () => {
+            const button = wrapper.findComponent('[data-testid="add-step-button"]');
+            const listArea = wrapper.find('[data-testid="step-list-grid"]');
+            await button.trigger('click');
+            const steps = listArea.findAllComponents(StepEditorRow);
+            expect(steps.length).toBe(BEER_CHEESE.steps.length + 1);
+          });
+
+          it('becomes disabled', async () => {
+            const button = wrapper.findComponent('[data-testid="add-step-button"]');
+            expect(button.attributes('disabled')).toBeUndefined();
+            await button.trigger('click');
+            expect(button.attributes('disabled')).toBeDefined();
+          });
+
+          it('remains disabled until the blank step is filled in', async () => {
+            const listArea = wrapper.find('[data-testid="step-list-grid"]');
+            const button = wrapper.findComponent('[data-testid="add-step-button"]');
+            await button.trigger('click');
+            expect(button.attributes('disabled')).toBeDefined();
+            const steps = listArea.findAllComponents(StepEditorRow);
+            await steps[steps.length - 1]?.vm.$emit('changed', {
+              id: '0e8e3d4e-396d-42e8-aed6-fc8be1892c9e',
+              instruction: 'Mix thoroughly.',
+            });
+            expect(button.attributes('disabled')).toBeUndefined();
+          });
+        });
+      });
+
+      describe('deleting a step', () => {
+        it('removes the step from the list', async () => {
+          const listArea = wrapper.find('[data-testid="step-list-grid"]');
+          let steps = listArea.findAllComponents(StepEditorRow);
+          const originalCount = BEER_CHEESE.steps.length;
+          expect(steps.length).toBe(originalCount);
+          await steps[2]?.vm.$emit('delete');
+          steps = listArea.findAllComponents(StepEditorRow);
+          expect(steps.length).toBe(originalCount - 1);
+        });
+      });
+    });
+
     describe('the save button', () => {
       it('begins disabled', () => {
         const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
@@ -591,7 +727,17 @@ describe('Recipe Editor', () => {
         expect(saveButton.attributes('disabled')).toBeDefined();
       });
 
-      it('emits the entered data in click', async () => {
+      it('is disabled if an invalid step exists in the steps list', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const inputs = getInputs(wrapper);
+        await inputs.name.setValue('Apple Pie');
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+        const button = wrapper.findComponent('[data-testid="add-step-button"]');
+        await button.trigger('click');
+        expect(saveButton.attributes('disabled')).toBeDefined();
+      });
+
+      it('emits the entered data on click', async () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
         const inputs = getInputs(wrapper);
         await inputs.category.setValue('Dessert');
