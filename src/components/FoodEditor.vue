@@ -184,7 +184,7 @@ const isModified = computed((): boolean => {
 });
 
 const isEditingAlternativePortion = computed(
-  (): boolean => addPortion.value || !!alternativePortions.value.some((p) => p.status === 'modify'),
+  (): boolean => addPortion.value || alternativePortions.value.some((p) => p.status === 'modify'),
 );
 
 const cancel = () => {
