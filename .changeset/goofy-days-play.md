@@ -2,4 +2,4 @@
 'meal-planner': patch
 ---
 
-disable save of food if editing an alternative portion
+Improve food editor user experience by disabling save/cancel buttons during alternative portion editing and adding confirmation dialog when discarding unsaved changes to existing food items
