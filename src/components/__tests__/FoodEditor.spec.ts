@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
+import ConfirmDialog from '../ConfirmDialog.vue';
 import FoodEditor from '../FoodEditor.vue';
 import PortionDataCard from '../PortionDataCard.vue';
 import PortionEditorCard from '../PortionEditorCard.vue';
@@ -273,14 +274,6 @@ describe('FoodEditor', () => {
       const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
       expect(cancelButton.exists()).toBe(true);
     });
-
-    it('emits the "cancel" event on click', async () => {
-      wrapper = mountComponent();
-      const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
-      await cancelButton.trigger('click');
-      expect(wrapper.emitted('cancel')).toBeTruthy();
-      expect(wrapper.emitted('cancel')).toHaveLength(1);
-    });
   });
 
   describe('save button', () => {
@@ -310,6 +303,38 @@ describe('FoodEditor', () => {
       expect(inputs.carbsInput.element.value).toBe('0');
       expect(inputs.fatInput.element.value).toBe('0');
       expect(inputs.proteinInput.element.value).toBe('0');
+    });
+
+    describe('cancel button', () => {
+      describe('without changes', () => {
+        it('emits the "cancel" event on click', async () => {
+          const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+          await cancelButton.trigger('click');
+          expect(wrapper.emitted('cancel')).toBeTruthy();
+          expect(wrapper.emitted('cancel')).toHaveLength(1);
+        });
+      });
+
+      describe('with changes', () => {
+        it('does not display the confirm dialog', async () => {
+          const inputs = getInputs(wrapper);
+          await inputs.nameInput.setValue('Apple');
+          const button = wrapper.findComponent('[data-testid="cancel-button"]');
+          await button.trigger('click');
+          await flushPromises();
+          const confirmDialog = wrapper.findComponent(ConfirmDialog);
+          expect(confirmDialog.exists()).toBe(false);
+        });
+
+        it('emits the "cancel" event', async () => {
+          const inputs = getInputs(wrapper);
+          await inputs.nameInput.setValue('Apple');
+          const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+          await cancelButton.trigger('click');
+          expect(wrapper.emitted('cancel')).toBeTruthy();
+          expect(wrapper.emitted('cancel')).toHaveLength(1);
+        });
+      });
     });
 
     describe('the save button', () => {
@@ -388,6 +413,22 @@ describe('FoodEditor', () => {
           expect(wrapper.findComponent(PortionEditorCard).exists()).toBe(true);
         });
 
+        it('disables the save button', async () => {
+          const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+          const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+          expect(wrapper.findComponent(PortionEditorCard).exists()).toBe(false);
+          await button.trigger('click');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('disables the cancel button', async () => {
+          const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+          const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]');
+          expect(wrapper.findComponent(PortionEditorCard).exists()).toBe(false);
+          await button.trigger('click');
+          expect(cancelButton.attributes('disabled')).toBeDefined();
+        });
+
         it('is disabled once the editor is opened', async () => {
           const button = wrapper.findComponent('[data-testid="add-portion-button"]');
           await button.trigger('click');
@@ -464,6 +505,68 @@ describe('FoodEditor', () => {
       expect(inputs.proteinInput.element.value).toBe('0.75');
     });
 
+    describe('cancel button', () => {
+      describe('without changes', () => {
+        it('emits the "cancel" event on click', async () => {
+          const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+          await cancelButton.trigger('click');
+          expect(wrapper.emitted('cancel')).toBeTruthy();
+          expect(wrapper.emitted('cancel')).toHaveLength(1);
+        });
+      });
+
+      describe('with changes', () => {
+        it('displays confirm dialog', async () => {
+          const inputs = getInputs(wrapper);
+          await inputs.nameInput.setValue('Apple');
+          const button = wrapper.findComponent('[data-testid="cancel-button"]');
+          await button.trigger('click');
+          await flushPromises();
+          const confirmDialog = wrapper.findComponent(ConfirmDialog);
+          expect(confirmDialog.exists()).toBe(true);
+        });
+
+        it('does not cancel', async () => {
+          const inputs = getInputs(wrapper);
+          await inputs.nameInput.setValue('Apple');
+          const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+          await cancelButton.trigger('click');
+          expect(wrapper.emitted('cancel')).toBeFalsy();
+        });
+
+        it('cancels on confirm', async () => {
+          const inputs = getInputs(wrapper);
+          await inputs.nameInput.setValue('Apple');
+          const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+          await cancelButton.trigger('click');
+
+          const confirmDialog = wrapper.findComponent(ConfirmDialog);
+          expect(confirmDialog.exists()).toBe(true);
+
+          await confirmDialog.vm.$emit('confirm');
+          await flushPromises();
+
+          expect(wrapper.emitted('cancel')).toBeTruthy();
+          expect(wrapper.emitted('cancel')).toHaveLength(1);
+        });
+
+        it('does not cancel on confirmation being cancelled', async () => {
+          const inputs = getInputs(wrapper);
+          await inputs.nameInput.setValue('Apple');
+          const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+          await cancelButton.trigger('click');
+
+          const confirmDialog = wrapper.findComponent(ConfirmDialog);
+          expect(confirmDialog.exists()).toBe(true);
+
+          await confirmDialog.vm.$emit('cancel');
+          await flushPromises();
+
+          expect(wrapper.emitted('cancel')).toBeFalsy();
+        });
+      });
+    });
+
     describe('the save button', () => {
       it('begins disabled', () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
@@ -522,7 +625,7 @@ describe('FoodEditor', () => {
         expect(portions[1]!.text()).toContain('Calories: 110');
       });
 
-      describe('modify event', () => {
+      describe('modify portion', () => {
         it('switches from the card to the editor', async () => {
           let portions = wrapper.findAllComponents(PortionDataCard);
           let editors = wrapper.findAllComponents(PortionEditorCard);
@@ -533,6 +636,22 @@ describe('FoodEditor', () => {
           expect(portions.length).toBe(1);
           editors = wrapper.findAllComponents(PortionEditorCard);
           expect(editors.length).toBe(1);
+        });
+
+        it('disables the save button', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const portions = wrapper.findAllComponents(PortionDataCard);
+          portions[0]?.vm.$emit('modify');
+          await flushPromises();
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('disables the cancel button', async () => {
+          const cancelButton = wrapper.getComponent('[data-testid="cancel-button"]');
+          const portions = wrapper.findAllComponents(PortionDataCard);
+          portions[0]?.vm.$emit('modify');
+          await flushPromises();
+          expect(cancelButton.attributes('disabled')).toBeDefined();
         });
 
         it('switches back to the card on cancel', async () => {

@@ -83,11 +83,25 @@
 
     <v-container fluid>
       <v-row class="pa-4" justify="end">
-        <CancelButton class="mr-4" @click="$emit('cancel')" />
-        <SaveButton :disabled="!(valid && isModified)" @click="save" />
+        <CancelButton class="mr-4" :disabled="isEditingAlternativePortion" @click="cancel" />
+        <SaveButton :disabled="!valid || !isModified || isEditingAlternativePortion" @click="save" />
       </v-row>
     </v-container>
   </v-form>
+
+  <v-dialog v-model="confirmCancel" max-width="600px" data-testid="confirm-dialog">
+    <ConfirmDialog
+      question="This food item has unsaved changes. Are you sure you want to cancel?"
+      icon-color="error"
+      @confirm="
+        () => {
+          confirmCancel = false;
+          emit('cancel');
+        }
+      "
+      @cancel="() => (confirmCancel = false)"
+    />
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
@@ -119,6 +133,7 @@ const valid = ref(false);
 const addPortion = ref(false);
 const portionsModified = ref(false);
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
+const confirmCancel = ref(false);
 
 const initialize = () => {
   name.value = props.food?.name || '';
@@ -152,7 +167,11 @@ const isModified = computed((): boolean => {
   if (!props.food) return true;
   if (portionsModified.value) return true;
 
-  if (props.food.name !== name.value || props.food.brand !== brand.value || props.food.category !== category.value) {
+  if (
+    props.food.name !== name.value ||
+    (props.food.brand || '') !== (brand.value || '') ||
+    props.food.category !== category.value
+  ) {
     return true;
   }
 
@@ -163,6 +182,18 @@ const isModified = computed((): boolean => {
   const portionFields = ['units', 'grams', 'calories', 'sodium', 'sugar', 'carbs', 'fat', 'protein'] as const;
   return portionFields.some((field) => props.food![field as keyof FoodItem] !== portion.value[field]);
 });
+
+const isEditingAlternativePortion = computed(
+  (): boolean => addPortion.value || alternativePortions.value.some((p) => p.status === 'modify'),
+);
+
+const cancel = () => {
+  if (props.food && isModified.value) {
+    confirmCancel.value = true;
+  } else {
+    emit('cancel');
+  }
+};
 
 const save = () => {
   const food: Omit<FoodItem, 'alternativePortions'> = {
