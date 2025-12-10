@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
+import ConfirmDialog from '../ConfirmDialog.vue';
 import FoodEditor from '../FoodEditor.vue';
 import PortionDataCard from '../PortionDataCard.vue';
 import PortionEditorCard from '../PortionEditorCard.vue';
@@ -273,14 +274,6 @@ describe('FoodEditor', () => {
       const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
       expect(cancelButton.exists()).toBe(true);
     });
-
-    it('emits the "cancel" event on click', async () => {
-      wrapper = mountComponent();
-      const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
-      await cancelButton.trigger('click');
-      expect(wrapper.emitted('cancel')).toBeTruthy();
-      expect(wrapper.emitted('cancel')).toHaveLength(1);
-    });
   });
 
   describe('save button', () => {
@@ -310,6 +303,38 @@ describe('FoodEditor', () => {
       expect(inputs.carbsInput.element.value).toBe('0');
       expect(inputs.fatInput.element.value).toBe('0');
       expect(inputs.proteinInput.element.value).toBe('0');
+    });
+
+    describe('cancel button', () => {
+      describe('without changes', () => {
+        it('emits the "cancel" event on click', async () => {
+          const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+          await cancelButton.trigger('click');
+          expect(wrapper.emitted('cancel')).toBeTruthy();
+          expect(wrapper.emitted('cancel')).toHaveLength(1);
+        });
+      });
+
+      describe('with changes', () => {
+        it('does not display the confirm dialog', async () => {
+          const inputs = getInputs(wrapper);
+          await inputs.nameInput.setValue('Apple');
+          const button = wrapper.findComponent('[data-testid="cancel-button"]');
+          await button.trigger('click');
+          await flushPromises();
+          const confirmDialog = wrapper.findComponent(ConfirmDialog);
+          expect(confirmDialog.exists()).toBe(false);
+        });
+
+        it('emits the "cancel" event', async () => {
+          const inputs = getInputs(wrapper);
+          await inputs.nameInput.setValue('Apple');
+          const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+          await cancelButton.trigger('click');
+          expect(wrapper.emitted('cancel')).toBeTruthy();
+          expect(wrapper.emitted('cancel')).toHaveLength(1);
+        });
+      });
     });
 
     describe('the save button', () => {
@@ -478,6 +503,68 @@ describe('FoodEditor', () => {
       expect(inputs.carbsInput.element.value).toBe('23');
       expect(inputs.fatInput.element.value).toBe('1');
       expect(inputs.proteinInput.element.value).toBe('0.75');
+    });
+
+    describe('cancel button', () => {
+      describe('without changes', () => {
+        it('emits the "cancel" event on click', async () => {
+          const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+          await cancelButton.trigger('click');
+          expect(wrapper.emitted('cancel')).toBeTruthy();
+          expect(wrapper.emitted('cancel')).toHaveLength(1);
+        });
+      });
+
+      describe('with changes', () => {
+        it('displays confirm dialog', async () => {
+          const inputs = getInputs(wrapper);
+          await inputs.nameInput.setValue('Apple');
+          const button = wrapper.findComponent('[data-testid="cancel-button"]');
+          await button.trigger('click');
+          await flushPromises();
+          const confirmDialog = wrapper.findComponent(ConfirmDialog);
+          expect(confirmDialog.exists()).toBe(true);
+        });
+
+        it('does not cancel', async () => {
+          const inputs = getInputs(wrapper);
+          await inputs.nameInput.setValue('Apple');
+          const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+          await cancelButton.trigger('click');
+          expect(wrapper.emitted('cancel')).toBeFalsy();
+        });
+
+        it('cancels on confirm', async () => {
+          const inputs = getInputs(wrapper);
+          await inputs.nameInput.setValue('Apple');
+          const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+          await cancelButton.trigger('click');
+
+          const confirmDialog = wrapper.findComponent(ConfirmDialog);
+          expect(confirmDialog.exists()).toBe(true);
+
+          await confirmDialog.vm.$emit('confirm');
+          await flushPromises();
+
+          expect(wrapper.emitted('cancel')).toBeTruthy();
+          expect(wrapper.emitted('cancel')).toHaveLength(1);
+        });
+
+        it('does not cancel on confirmation being cancelled', async () => {
+          const inputs = getInputs(wrapper);
+          await inputs.nameInput.setValue('Apple');
+          const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+          await cancelButton.trigger('click');
+
+          const confirmDialog = wrapper.findComponent(ConfirmDialog);
+          expect(confirmDialog.exists()).toBe(true);
+
+          await confirmDialog.vm.$emit('cancel');
+          await flushPromises();
+
+          expect(wrapper.emitted('cancel')).toBeFalsy();
+        });
+      });
     });
 
     describe('the save button', () => {
