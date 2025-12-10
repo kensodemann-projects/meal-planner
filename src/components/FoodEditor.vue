@@ -83,7 +83,7 @@
 
     <v-container fluid>
       <v-row class="pa-4" justify="end">
-        <CancelButton class="mr-4" @click="$emit('cancel')" />
+        <CancelButton class="mr-4" :disabled="isEditingAlternativePortion" @click="$emit('cancel')" />
         <SaveButton :disabled="!valid || !isModified || isEditingAlternativePortion" @click="save" />
       </v-row>
     </v-container>
@@ -152,7 +152,11 @@ const isModified = computed((): boolean => {
   if (!props.food) return true;
   if (portionsModified.value) return true;
 
-  if (props.food.name !== name.value || props.food.brand !== brand.value || props.food.category !== category.value) {
+  if (
+    props.food.name !== name.value ||
+    (props.food.brand || '') !== (brand.value || '') ||
+    props.food.category !== category.value
+  ) {
     return true;
   }
 
