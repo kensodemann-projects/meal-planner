@@ -388,6 +388,14 @@ describe('FoodEditor', () => {
           expect(wrapper.findComponent(PortionEditorCard).exists()).toBe(true);
         });
 
+        it('disables the save button', async () => {
+          const button = wrapper.findComponent('[data-testid="add-portion-button"]');
+          const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+          expect(wrapper.findComponent(PortionEditorCard).exists()).toBe(false);
+          await button.trigger('click');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
         it('is disabled once the editor is opened', async () => {
           const button = wrapper.findComponent('[data-testid="add-portion-button"]');
           await button.trigger('click');
@@ -533,6 +541,14 @@ describe('FoodEditor', () => {
           expect(portions.length).toBe(1);
           editors = wrapper.findAllComponents(PortionEditorCard);
           expect(editors.length).toBe(1);
+        });
+
+        it('disables the save button', async () => {
+          const portions = wrapper.findAllComponents(PortionDataCard);
+          portions[0]?.vm.$emit('modify');
+          await flushPromises();
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          expect(saveButton.attributes('disabled')).toBeDefined();
         });
 
         it('switches back to the card on cancel', async () => {
