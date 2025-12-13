@@ -171,5 +171,4 @@ These are workflows that are required in order to support the execution of the p
 
 #### Decisions
 
-- The intention is that these are foods eaten as an item (Milk, Apple), etc.
-  r There is nothing to stop a user from entering what would commonly be considered "ingredients" as "food items."
+- The intention is that these are foods eaten as an item (Milk, Apple), etc. There is nothing to stop a user from entering what would commonly be considered "ingredients" as "food items."
