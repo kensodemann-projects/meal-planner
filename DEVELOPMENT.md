@@ -2,7 +2,7 @@
 
 ## Environment Files
 
-In order to build this application, you will need two environment files: `.env.local` and `.env.production`. They have the following data in them:
+In order to build this application, you will need to create a `.env` file with the following data in it:
 
 ```
 VITE_FIREBASE_API_KEY=your-dev-api-key-here
@@ -31,7 +31,7 @@ Once enough has been done to justify releasing, then from the fully merged `main
 
 1. `pnpm bump`
 1. Review and commit using a message such as "release vX.Y.Z"
-1. `git -a vX.Y.Z -m "release vX.Y.Z"`
+1. `git tag -a vX.Y.Z -m "release vX.Y.Z" as natively supported`
 1. `git push`
 1. `git push --tags`
 1. `pnpm release`
