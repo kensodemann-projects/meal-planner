@@ -1,57 +1,138 @@
-When reviewing a pull request, apply the following criteria:
+# Meal Planner Project Instructions
 
-## Review Focus Areas
+This is a Vue 3 + TypeScript + Vuetify + Firebase meal planning application using Vite and pnpm.
 
-- **Security**: Check for hardcoded secrets, input validation, auth issues
-- **Performance**: Look for uses of inefficient algorithms and paradigms
-- **Testing**: Ensure adequate test coverage for new functionality
-- **Comment**: Verify code comments are minimal, and that any comments explain why something is done rather than explaining what the code does
+## Architecture
 
-## Review Style
+### Tech Stack
 
-- Be specific and constructive in feedback
-- Acknowledge good patterns and solutions
-- Ask clarifying questions when code intent is unclear
-- Focus on maintainability and readability improvements
-- Always prioritize changes that improve security, maintainability, or user experience.
-- Provide migration guides for significant changes
-- When providing feedback, make specific suggestions for improvement when possible
-- When suggesting a code change, be specific and provide justification
-- Provide links to documented best-practices when possible
+- **Frontend**: Vue 3 (Composition API with `<script setup>`), TypeScript, Vuetify 3 (Material Design components)
+- **Backend**: Firebase (Authentication, Firestore)
+- **Build**: Vite with auto-imports for components, pages, and routes
+- **Testing**: Vitest + @vue/test-utils
 
-## Code Review Guidelines
+### Project Structure
 
-### Code Quality Standards
+- `src/components/`: Auto-imported Vue components (use multi-word names, no manual imports needed)
+- `src/pages/`: Auto-converted to routes via `unplugin-vue-router` (e.g., `foods/[id]/index.vue` → `/foods/:id`)
+- `src/layouts/`: Reusable layouts (`default` for main app, `standalone` for login)
+- `src/data/`: Composables for Firestore operations (prefix with `use*`, e.g., `useFoodsData()`)
+- `src/core/`: Business logic composables (`useAuthentication()`, `useRecipeGenerator()`)
+- `src/models/`: TypeScript interfaces for domain entities (`FoodItem`, `Recipe`, `Portion`)
 
-- Ensure readable, maintainable code structure
-- Verify adherence to team coding standards and style guides
-- Check function size, complexity, and single responsibility
-- Review naming conventions and code organization
-- Validate proper error handling and logging practices
+### Key Patterns
 
-### Review Communication
+#### Composables Pattern
 
-- Provide specific, actionable feedback with examples
-- Explain reasoning behind recommendations to promote learning
-- Acknowledge good patterns, solutions, and creative approaches
-- Ask clarifying questions when context is unclear
-- Focus on improvement rather than criticism
+All data access and business logic uses composable functions returning reactive state:
 
-## Review Comment Format
+```typescript
+// Data layer example (src/data/foods.ts)
+export const useFoodsData = () => {
+  const db = useFirestore();
+  const foods = useCollection<FoodItem>(collection(db, 'foods'));
+  const addFood = async (food: FoodItem) => {
+    /* ... */
+  };
+  return { foods, addFood, updateFood, removeFood };
+};
+```
 
-Use this structure for consistent, helpful feedback:
+#### Auto-imports
 
-**Issue:** Describe what needs attention
-**Suggestion:** Provide specific improvement with code example
-**Why:** Explain the reasoning and benefits
-**Documentation:** Provide links to best-practices or other helpful documentation if applicable
+- Components in `src/components/` are globally available (no import statements)
+- Pages in `src/pages/` become routes automatically (folder structure = URL structure)
+- Use `<route lang="yaml">` block in page components to set metadata (e.g., `meta: { layout: standalone }`)
 
-## Review Labels and Emojis
+#### Testing Mocks
 
-- 🔒 Security concerns requiring immediate attention
-- ⚡ Performance issues or optimization opportunities
-- 🧹 Code cleanup and maintainability improvements
-- 📚 Documentation gaps or update requirements
-- ✅ Positive feedback and acknowledgment of good practices
-- 🚨 Critical issues that block merge
-- 💭 Questions for clarification or discussion
+- Create manual mocks in `src/data/__mocks__/` and `src/core/__mocks__/`
+- Use `vi.mock('@/data/foods')` to auto-swap real composables with mocks
+- Example: `src/data/__mocks__/foods.ts` exports mocked `useFoodsData` with vi.fn() methods
+
+#### Firebase Integration
+
+- Use VueFire composables: `useFirestore()`, `useCollection()`, `useCurrentUser()`
+- Authentication via `useAuthentication()` composable in `src/core/authentication.ts`
+- Router has `checkAuthStatus` guard (routes need `meta: { allowAnonymous: true }` to skip auth)
+
+## Development Workflow
+
+### Commands
+
+```bash
+pnpm dev              # Start dev server (localhost:3000)
+pnpm test             # Run tests once
+pnpm test:dev         # Watch mode for tests
+pnpm test:cov         # Generate coverage reports
+pnpm lint             # ESLint check
+pnpm build            # Production build
+pnpm emulate          # Firebase emulators with seed data
+```
+
+### Testing
+
+- Vitest with jsdom environment
+- Vuetify components require manual vuetify instance in tests:
+
+```typescript
+const vuetify = createVuetify({ components, directives });
+mount(Component, { global: { plugins: [vuetify] } });
+```
+
+- Mock Firebase/VueFire composables: `vi.mock('@/core/authentication')`
+- Coverage excludes: `.d.ts`, config files, models, plugins, router, root-level `.vue`/`.ts`
+
+### Release Process
+
+1. `pnpm changeset` - Document changes in branch
+2. Code, test, commit, PR, merge
+3. When ready to release: `pnpm bump` (updates version), commit, tag (`vX.Y.Z`), push with tags
+4. `pnpm release` - builds and deploys to Firebase
+
+## Code Conventions
+
+- **Components**: Multi-word PascalCase names (e.g., `FoodListItem.vue`), except pages (lowercase OK for URL paths)
+- **Composables**: Prefix with `use`, return reactive state + methods: `const { user, login, logout } = useAuthentication()`
+- **Tests**: Co-located in `__tests__/` folders, named `*.spec.ts`
+- **Types**: Centralized in `src/models/`, use TypeScript interfaces for domain entities
+- **Minimal comments**: Explain "why", not "what" (code should be self-documenting)
+
+## ESLint Rules
+
+- `no-console/debugger`: Warn in production only
+- `vue/multi-word-component-names`: Off for pages/layouts (single-word OK for routes)
+- `@typescript-eslint/no-explicit-any`: Off (pragmatic for rapid development)
+
+## Pull Request Reviews
+
+### Focus Areas
+
+- **Security**: No hardcoded secrets, proper input validation, auth checks
+- **Performance**: Avoid inefficient algorithms (watch for O(n²) operations)
+- **Testing**: Adequate coverage for new features, especially data operations
+- **Comments**: Minimal, explain "why" not "what"
+
+### Review Style
+
+- Provide specific, actionable feedback with code examples
+- Acknowledge good patterns and creative solutions
+- Link to best-practices documentation when relevant
+- Focus on improvement, not criticism
+
+### Review Comment Format
+
+**Issue:** Describe what needs attention  
+**Suggestion:** Provide specific improvement with code example  
+**Why:** Explain reasoning and benefits  
+**Documentation:** Link to best-practices if applicable
+
+### Review Labels
+
+- 🔒 Security concerns (immediate attention)
+- ⚡ Performance issues/optimizations
+- 🧹 Code cleanup and maintainability
+- 📚 Documentation gaps
+- ✅ Positive feedback
+- 🚨 Critical blockers
+- 💭 Questions for discussion
