@@ -1,135 +1,174 @@
 # Meal Planner
 
-## Environment Files
+The meal planner application aims to promote healthier eating habits by making meal planning more convenient and simplifying
+the grocery shopping experience. It will achieve this by providing users with an intelligent, easy to use, assisted planner
+that helps them to select meals for each day, adhering to user-defined daily maximums for calories and sugars as well as a
+minimum protein requirement. Using the coming week's plan, it will generate a categorized shopping list to help users
+ensure they have the ingredients needed for the week's meals.
 
-In order to build this application, you will need two environment files: `.env.local` and `.env.production`. They have he following data in them:
+The purpose of this README is to serve as a guidepost as development tasks are created and scheduled.
 
-```
-VITE_FIREBASE_API_KEY=your-dev-api-key-here
-VITE_FIREBASE_MESSAGING_SENDER_ID=your-dev-sender-id-here
-VITE_FIREBASE_APP_ID=your-dev-app-id-here
-```
+# Key Goals
 
-Obtain the appropriate information from the Firebase console.
+- Simplify daily and weekly meal planning.
+- Track the daily meal plan against targets.
+- Allow for cheat days. A "cheat day" shall be defined as one where maximums in sugar and/or calories are exceeded, the minimum protein requirement is not met, or where a meal is not tracked / specified (typically because eating out is planned)
+- Simplify the process of determining a grocery list.
 
-## Build and Deploy
+**Note:** This application is shared by my wife and I without anyone else having intentional access to it. As such,
+none of the workflows, settings, plans, or other artifacts created within the application shall apply on a per-user
+basis. They are all application wide for all users.
 
-This application uses [pnpm](https://pnpm.io/) with [changesets](https://pnpm.io/using-changesets). The general workflow is:
+# User Workflows
 
-1. Create a branch from the Jira task.
-1. `pnpm changeset` - describe in a sentence what you will be doing
-1. Test, Code, Commit, Test, Code, Commit, etc.
-1. Pull request, move Jira task to in-review
-1. When reviewing the PR, be sure to also perform the following:
-   1. `pnpm build`
-   1. `pnpm test`
-   1. `pnpm lint`
-1. Merge pull request via BitBucket, moving Jira task to done
-1. Repeat
+## Primary Workflows
 
-Once enough has been done to justify releasing, then from the fully merged `main` branch:
+These are workflows that are required in order to directly support the specified purpose of the application.
 
-1. `pnpm bump`
-1. Review and commit using a message such as "release vX.Y.Z"
-1. `git -a vX.Y.Z -m "release vX.Y.Z"`
-1. `git push`
-1. `git push --tags`
-1. `pnpm release`
+### Specifying Daily Goals
 
-## 🛠️ Tooling Notes
+From within the "Settings" area the following values are allowed to be set:
 
-### Components
+- **Calories**: target maximum for calories per day
+- **Sugars**: target maximum in grams for sugars per day
+- **Proteins**: target minimum in grams for proteins per day
+- **Tolerance**: percentage by which values can exceed their max before this is considered a "cheat"
+- **Cheat Days**: the number of allowable cheat days per week
+- **Week Start Day**: default to Sunday
 
-Vue template files in the `src/components` folder (and sub-folders) are automatically imported.
+Other settings will be added as they are surfaced through the implementation of various goals.
 
-#### 🚀 Usage
+### Planning Meals
 
-Importing is handled by [unplugin-vue-components](https://github.com/unplugin/unplugin-vue-components). This plugin automatically imports `.vue` files created in the `src/components` directory, and registers them as global components. This means that you can use any component in your application without having to manually import it.
+#### Definitions
 
-The following example assumes a component located at `src/components/MyComponent.vue`:
+The user can add the following meals:
 
-```vue
-<template>
-  <div>
-    <MyComponent />
-  </div>
-</template>
+- Breakfast
+- Lunch
+- Dinner
+- Snacks (multiple snacks can be added)
 
-<script lang="ts" setup>
-//
-</script>
-```
+Each meal consists of at least one recipe or food item.
 
-When your template is rendered, the component's import will automatically be inlined, which renders to this:
+#### Goals
 
-```vue
-<template>
-  <div>
-    <MyComponent />
-  </div>
-</template>
+- Plan meals for the next week
+- View existing meal plans
+  - Past weeks
+  - Current week
+  - Next week (the week in planning)
+- View what I plan on eating today
 
-<script lang="ts" setup>
-import MyComponent from '@/components/MyComponent.vue';
-</script>
-```
+#### Decisions
 
-#### Notes
+- These are plans not actual results
+- Current and future plans can change but past plans are what they are
+- Actual meals should be tracked via a dedicated food tracking app at this time
 
-- This works for subfolders without a namespace on the component. The subfolders are just organizational within the `src/components` directory.
-- I am not using a prefix on the components, but they _do_ all have multi-word names by convention.
+### Creating Shopping Lists
 
-### Pages
+#### Definitions
 
-Vue components created in the `src/pages` folder will automatically be converted to navigatable routes.
+- A shopping check-list is list of ingredients and food items that will be required for the next week.
 
-#### 🚀 Usage
+#### Goals
 
-Full documentation for this feature can be found in the Official [unplugin-vue-router](https://github.com/posva/unplugin-vue-router) repository.
+- Generate a list of ingredients and food items required for a specified week
+  - Default to "this week" if today is in the first two days of the week
+  - Default to "next week" otherwise
+- Allow the user to check off items that they already have
+- Allow the user to check off items as they acquire them
+- Allow the user to regenerate the list as needed and at their own discretion
 
-#### Notes
+#### Decisions
 
-- Subfolders are expressed in the navigation. That is, items under `src/pages/foods` will be under `foods/` in the URL navigation of the app.
-- Pages often have single-name files begining with lower-case letters, breaking from Vue standards and best-practices in general. This is done because they affect the paths in the URL, which are public. While breaking from best-practice, it does not cause problems. These components are never rendered outside of the router.
-- The folder structure itself is very similar to how the router works in NextJS, so directory or file names like `[id]` denote a parameter (`id` in this case) that is replaced at run-time and is accessible via the `params` object.
+- An item being on the shopping list means it is needed for the next week's meals and make no assumptions about whether or not it is in the house's inventory (there is no inventory data in this app).
+- This is a supplemental list and not a primary list. As such, there is no need to provide edit capabilities.
+- If the user regenerates a list, checked items will not be kept.
+- Only one list is active at a time, there is no need to store or retrieve previous lists
 
-### Plugins
+### Cooking a Meal
 
-Plugins are a way to extend the functionality of your Vue application. Use the `src/plugins` folder for registering plugins that you want to use globally.
+#### Definitions
 
-### Layouts
+- A meal can consist of multiple recipes and stand-alone food items. For example:
+  - Meatloaf (recipe)
+  - Mashed Potatoes (recipe)
+  - Glass of Milk (stand-alone food item)
 
-Layouts are reusable components that wrap around pages. They are used to provide a consistent look and feel across multiple pages. For the base layouts used in this project, see `src/layouts`.
+#### Goals
 
-#### 🚀 Usage
+- The user has the information that they need in order to prepare the meal
 
-Full documentation for this feature can be found in the Official [vite-plugin-vue-layouts-next](https://github.com/loicduong/vite-plugin-vue-layouts-next) repository.
+#### Decisions
 
-#### Notes
+- For recipes, only display the information required to prepare the meal. That limits the information to:
+  - Name
+  - Ingredients
+  - Steps
+- There is no reason at this point to display nutritional information or other ancillary data for recipes or food items.
 
-- The `default` layout is used by most screens and it wraps the pages in a menu structure.
-  - The `DefaultMobileLayout` is used for viewport sizes consistent with tablets or smaller. It uses a mobile friendly "hamburger" menu.
-  - The `DefaultDesktopLayout` is used for larger viewports. It uses a hover expanding side menu.
-- The `standalone` layout is used for pages such as the login page that are not wrapped by a menu.
+### Dashboard
 
-### Changesets
+#### Definitions
 
-The `.changeset/` folder was automatically generated by `@changesets/cli`, a build tool that works with multi-package repos, or single-package repos to help you version and publish the code.
+- None at this time
 
-#### 🚀 Usage
+#### Goals
 
-Full documentation for changesets exists [in its repository](https://github.com/changesets/changesets).
+- Display the information that will be most useful to the user right away
 
-A quick list of common questions to get started engaging with this project [also exists](https://github.com/changesets/changesets/blob/main/docs/common-questions.md).
+#### Decisions
 
-#### Notes
+- These are not decisions per se, but should be taken as ideas for potential items:
+  - Today's meals (list, link to "today" full page view)
+  - This Week at a Glance (day by day calories w/ cheat days noted)
+  - Next Week at a Glance (day by day calories w/ cheat days and unplanned days noted)
+  - Daily calories trend over X past days plus the future
 
-- See the [build notes](#build-and-deploy) for details on how this tool is used within this project.
+## Supporting Workflows
 
-## ❗️ Important Links
+These are workflows that are required in order to support the execution of the primary actions.
 
-- 📄 [Vuetify Docs](https://vuetifyjs.com/)
-- 🚨 [Vuetify Issues](https://issues.vuetifyjs.com/)
-- 💬 [Vuetify Discord](https://community.vuetifyjs.com)
-  🔥 [Firebase Console](https://console.firebase.google.com/project/kws-meal-planner/overview)
-  📑 [Firebase Docs](https://firebase.google.com/docs)
+### Managing Recipes
+
+#### Definitions
+
+- None at this time
+
+#### Goals
+
+- Browse recipes by category in an organized fashion
+  - full browse
+  - by category
+  - by cuisine
+  - by calorie ranges (TBD on range definitions)
+- Users can perform a keyword search to find a recipe
+  - The keyword search should apply to all textual fields
+  - The keyword search should apply keywords individually, for example:
+    - **Rice** should return foods with "rice" or "Rice" "Rice-a-Roni"
+    - **Italian Rice** should return foods with "Italian" somewhere in them and "rice" somewhere in them
+- Easily add new recipes
+  - manually
+  - automatically via a search (likely an AI search)
+
+#### Decisions
+
+- Ingredients in the recipe shall not reference food items.
+- While perhaps a cool feature for later, the search will not find related words. That is, "rice" will not find recipes that use "risotto" without referencing "rice."
+
+### Managing Food Items
+
+#### Definitions
+
+- None at this time
+
+#### Goals
+
+- Enter commonly consumed food items so they can be added to a meal
+- Automatically fill in the data when possible
+
+#### Decisions
+
+- The intention is that these are foods eaten as an item (Milk, Apple), etc. There is nothing to stop a user from entering what would commonly be considered "ingredients" as "food items."
