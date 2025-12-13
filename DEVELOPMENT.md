@@ -2,7 +2,7 @@
 
 ## Environment Files
 
-In order to build this application, you will need two environment files: `.env.local` and `.env.production`. They have he following data in them:
+In order to build this application, you will need two environment files: `.env.local` and `.env.production`. They have the following data in them:
 
 ```
 VITE_FIREBASE_API_KEY=your-dev-api-key-here
