@@ -12,7 +12,7 @@ The purpose of this README is to serve as a guidepost as development tasks are c
 
 - Simplify daily and weekly meal planning.
 - Track the daily meal plan against targets.
-- Allow for cheat days. A "cheat day" shall be defined as ones where minimums in sugar and/or calories are violated or where a meal is not tracked / specified (typically because eating out is planned)
+- Allow for cheat days. A "cheat day" shall be defined as one where maximums in sugar and/or calories are exceeded, the minimum protein requirement is not met, or where a meal is not tracked / specified (typically because eating out is planned)
 - Simplify the process of determining a grocery list.
 
 **Note:** This application is shared by my wife and I without anyone else having intentional access to it. As such,
