@@ -90,7 +90,7 @@ Full documentation for this feature can be found in the Official [unplugin-vue-r
 #### Notes
 
 - Subfolders are expressed in the navigation. That is, items under `src/pages/foods` will be under `foods/` in the URL navigation of the app.
-- Pages often have single-name files begining with lower-case letters, breaking from Vue standards and best-practices in general. This is done because they affect the paths in the URL, which are public. While breaking from best-practice, it does not cause problems. These components are never rendered outside of the router.
+- Pages often have single-name files beginning with lower-case letters, breaking from Vue standards and best-practices in general. This is done because they affect the paths in the URL, which are public. While breaking from best-practice, it does not cause problems. These components are never rendered outside of the router.
 - The folder structure itself is very similar to how the router works in NextJS, so directory or file names like `[id]` denote a parameter (`id` in this case) that is replaced at run-time and is accessible via the `params` object.
 
 ### Plugins
