@@ -148,7 +148,7 @@ These are workflows that are required in order to support the execution of the p
   - The keyword search should apply to all textual fields
   - The keyword search should apply keywords individually, for example:
     - **Rice** should return foods with "rice" or "Rice" "Rice-a-Roni"
-    - **Itanlian Rice** should return foods with "Italian" somewhere in them and "rice" somewhere in them
+    - **Italian Rice** should return foods with "Italian" somewhere in them and "rice" somewhere in them
 - Easily add new recipes
   - manually
   - automatically via a search (likely an AI search)
