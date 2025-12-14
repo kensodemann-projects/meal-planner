@@ -104,6 +104,66 @@ mount(Component, { global: { plugins: [vuetify] } });
 - `vue/multi-word-component-names`: Off for pages/layouts (single-word OK for routes)
 - `@typescript-eslint/no-explicit-any`: Off (pragmatic for rapid development)
 
+## GitHub Issue Templates
+
+### Feature Request Structure
+
+```markdown
+---
+name: Feature
+about: I have an awesome idea
+title: ''
+type: feature
+assignees: ''
+---
+
+# Synopsis
+
+[Brief description of the feature]
+
+# User stories
+
+1. As a user, I would like to...
+
+# Processes
+
+[Key workflows or processes affected]
+
+# Components
+
+[Components/files that will be created or modified]
+
+# Acceptance Criteria
+
+- [ ] [Testable criteria for completion]
+```
+
+### Task Structure
+
+```markdown
+---
+name: Task
+about: Just do it!
+title: ''
+type: task
+assignees: ''
+---
+
+# User Story
+
+As a user, I would like to...
+
+# Details
+
+[Implementation details, technical considerations]
+
+# Acceptance Criteria
+
+- [ ] [Testable criteria for completion]
+```
+
+**Subtasks**: Create as separate Task issues and link them to the parent Feature/Task using GitHub's task list syntax or by referencing the issue number (e.g., "Related to #123").
+
 ## Pull Request Reviews
 
 ### Focus Areas
