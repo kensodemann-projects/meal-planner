@@ -162,7 +162,7 @@ As a user, I would like to...
 - [ ] [Testable criteria for completion]
 ```
 
-**Subtasks**: Create as separate Task issues and link them to the parent Feature/Task using GitHub's task list syntax or by referencing the issue number (e.g., "Related to #123").
+**Subtasks**: When generating subtasks, **DO NOT create files**. Instead, output the complete markdown for each subtask in the chat only. The user will manually create GitHub issues from the provided markdown. Link subtasks to the parent Feature/Task using GitHub's task list syntax or by referencing the issue number (e.g., "Related to #123").
 
 ## Pull Request Reviews
 
