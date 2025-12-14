@@ -24,16 +24,14 @@
       ></v-autocomplete>
     </v-col>
     <v-col cols="11" md="8">
-      <v-combobox
+      <v-text-field
         density="compact"
-        label="Food Item"
-        item-title="name"
+        label="Ingredient"
         hide-details
-        :items="foods"
         :rules="[validationRules.required]"
-        v-model="foodItem"
-        data-testid="food-item-input"
-      ></v-combobox>
+        v-model="ingredientName"
+        data-testid="ingredient-name-input"
+      ></v-text-field>
     </v-col>
     <v-col cols="1" md="1" align-self="center">
       <v-btn
@@ -64,12 +62,10 @@
 import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import { validationRules } from '@/core/validation-rules';
 import { unitsOfMeasure } from '@/data/units-of-measure';
-import type { FoodItem } from '@/models/food';
 import type { RecipeIngredient } from '@/models/recipe';
 import { computed, shallowRef } from 'vue';
 
 const props = defineProps<{
-  foods: FoodItem[];
   ingredient: RecipeIngredient;
 }>();
 const emit = defineEmits<{ (event: 'changed', payload: RecipeIngredient): void; (event: 'delete'): void }>();
@@ -96,22 +92,12 @@ const unitOfMeasureId = computed({
   },
 });
 
-const foodItem = computed({
-  get: () => {
-    if (props.ingredient.foodId) {
-      return props.foods.find((f) => f.id === props.ingredient.foodId);
-    } else {
-      return props.ingredient.name;
-    }
-  },
-  set: (value: FoodItem | string) => {
-    const isString = typeof value === 'string';
-    const name = isString ? value : value?.name;
-    const foodId = isString ? null : value?.id;
+const ingredientName = computed({
+  get: () => props.ingredient.name,
+  set: (name: string) => {
     emit('changed', {
       ...props.ingredient,
       name,
-      foodId,
     });
   },
 });
