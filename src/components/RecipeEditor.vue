@@ -36,6 +36,28 @@
 
         <v-col cols="12" md="6">
           <v-autocomplete
+            label="Cuisine"
+            v-model="cuisine"
+            :items="cuisines"
+            :rules="[validationRules.required]"
+            data-testid="cuisine-input"
+          ></v-autocomplete>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="12" md="6">
+          <v-number-input
+            label="Servings"
+            v-model="servings"
+            :rules="[validationRules.required]"
+            :precision="null"
+            data-testid="servings-input"
+          ></v-number-input>
+        </v-col>
+
+        <v-col cols="12" md="6">
+          <v-autocomplete
             label="Difficulty"
             v-model="difficulty"
             :items="recipeDifficulties"
@@ -101,28 +123,7 @@
 
     <v-container fluid>
       <v-row>
-        <v-col cols="12" md="6">
-          <v-number-input
-            label="Servings"
-            v-model="servings"
-            :rules="[validationRules.required]"
-            :precision="null"
-            data-testid="servings-input"
-          ></v-number-input>
-        </v-col>
-
-        <v-col cols="12" md="6">
-          <v-number-input
-            label="Grams per Serving"
-            v-model="grams"
-            :rules="[validationRules.required]"
-            data-testid="grams-input"
-          ></v-number-input>
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col cols="12" md="6">
+        <v-col cols="12" md="4">
           <v-number-input
             label="Serving Size"
             v-model="units"
@@ -132,7 +133,7 @@
           ></v-number-input>
         </v-col>
 
-        <v-col cols="12" md="6">
+        <v-col cols="12" md="4">
           <v-autocomplete
             label="Serving Units"
             v-model="unitOfMeasureId"
@@ -140,6 +141,15 @@
             :rules="[validationRules.required]"
             data-testid="recipe-unit-of-measure-input"
           ></v-autocomplete>
+        </v-col>
+
+        <v-col cols="12" md="4">
+          <v-number-input
+            label="Grams per Serving"
+            v-model="grams"
+            :rules="[validationRules.required]"
+            data-testid="grams-input"
+          ></v-number-input>
         </v-col>
       </v-row>
     </v-container>
@@ -220,11 +230,12 @@ import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import { validationRules } from '@/core/validation-rules';
 import { recipeCategories } from '@/data/recipe-categories';
 import { recipeDifficulties } from '@/data/recipe-difficulties';
-import type { RecipeIngredient, Recipe, RecipeCategory, RecipeDifficulty, RecipeStep } from '@/models/recipe';
+import type { RecipeIngredient, Recipe, RecipeCategory, RecipeDifficulty, RecipeStep, Cuisine } from '@/models/recipe';
 import { computed, onMounted, ref } from 'vue';
 import type { VTextField } from 'vuetify/components';
 import { unitOfMeasureOptions } from '@/data/unit-of-measure';
 import IngredientEditorRow from './IngredientEditorRow.vue';
+import { cuisines } from '@/data/cuisines';
 
 const emit = defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'cancel'): void }>();
 const props = defineProps<{ recipe?: Recipe }>();
@@ -233,6 +244,7 @@ const valid = ref(false);
 const name = ref<string>(props.recipe?.name || '');
 const description = ref<string>(props.recipe?.description || '');
 const category = ref<RecipeCategory | undefined>(props.recipe?.category);
+const cuisine = ref<Cuisine | undefined>(props.recipe?.cuisine);
 const difficulty = ref<RecipeDifficulty | undefined>(props.recipe?.difficulty);
 const servings = ref<number | undefined>(props.recipe?.servings);
 const units = ref<number | undefined>(props.recipe?.units);
@@ -300,6 +312,7 @@ const isModified = computed((): boolean => {
     listChanged.value ||
     props.recipe.name !== name.value ||
     props.recipe.category !== category.value ||
+    props.recipe.cuisine !== cuisine.value ||
     props.recipe.difficulty !== difficulty.value ||
     props.recipe.servings !== servings.value ||
     props.recipe.units !== units.value ||
@@ -319,6 +332,7 @@ const save = () => {
     name: name.value.trim(),
     description: description.value.trim() || null,
     category: category.value!,
+    cuisine: cuisine.value!,
     difficulty: difficulty.value!,
     servings: servings.value!,
     units: units.value!,

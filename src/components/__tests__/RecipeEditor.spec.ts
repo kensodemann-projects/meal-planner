@@ -22,6 +22,7 @@ const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
   name: wrapper.findComponent('[data-testid="name-input"]').find('input'),
   description: wrapper.findComponent('[data-testid="description-input"]').find('textarea'),
   category: wrapper.findComponent('[data-testid="category-input"]').find('input'),
+  cuisine: wrapper.findComponent('[data-testid="cuisine-input"]').find('input'),
   difficulty: wrapper.findComponent('[data-testid="difficulty-input"]').find('input'),
   servings: wrapper.findComponent('[data-testid="servings-input"]').find('input'),
   grams: wrapper.findComponent('[data-testid="grams-input"]').find('input'),
@@ -91,14 +92,30 @@ describe('Recipe Editor', () => {
     });
   });
 
+  describe('cuisine', () => {
+    it('renders', () => {
+      wrapper = mountComponent();
+      const cuisineInput = wrapper.findComponent(
+        '[data-testid="cuisine-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      expect(cuisineInput.exists()).toBe(true);
+      expect(cuisineInput.props('label')).toBe('Cuisine');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await autocompleteIsRequired(wrapper, 'cuisine-input');
+    });
+  });
+
   describe('difficulty', () => {
     it('renders', () => {
       wrapper = mountComponent();
-      const categoryInput = wrapper.findComponent(
+      const difficultyInput = wrapper.findComponent(
         '[data-testid="difficulty-input"]',
       ) as VueWrapper<components.VAutocomplete>;
-      expect(categoryInput.exists()).toBe(true);
-      expect(categoryInput.props('label')).toBe('Difficulty');
+      expect(difficultyInput.exists()).toBe(true);
+      expect(difficultyInput.props('label')).toBe('Difficulty');
     });
 
     it('is required', async () => {
@@ -283,6 +300,7 @@ describe('Recipe Editor', () => {
       expect(inputs.name.element.value).toBe('');
       expect(inputs.description.element.value).toBe('');
       expect(inputs.category.element.value).toBe('');
+      expect(inputs.cuisine.element.value).toBe('');
       expect(inputs.difficulty.element.value).toBe('');
       expect(inputs.servings.element.value).toBe('');
       expect(inputs.grams.element.value).toBe('');
@@ -425,6 +443,8 @@ describe('Recipe Editor', () => {
         const inputs = getInputs(wrapper);
         await inputs.category.setValue('Dessert');
         (wrapper.vm as any).category = 'Dessert';
+        await inputs.cuisine.setValue('American');
+        (wrapper.vm as any).cuisine = 'American';
         expect(saveButton.attributes('disabled')).toBeDefined();
         await inputs.difficulty.setValue('Easy');
         (wrapper.vm as any).difficulty = 'Easy';
@@ -441,6 +461,8 @@ describe('Recipe Editor', () => {
       it('is disabled if an invalid ingredient exists in the ingredients list', async () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
         const inputs = getInputs(wrapper);
+        await inputs.cuisine.setValue('American');
+        (wrapper.vm as any).cuisine = 'American';
         await inputs.category.setValue('Dessert');
         (wrapper.vm as any).category = 'Dessert';
         await inputs.difficulty.setValue('Easy');
@@ -463,6 +485,8 @@ describe('Recipe Editor', () => {
         const inputs = getInputs(wrapper);
         await inputs.category.setValue('Dessert');
         (wrapper.vm as any).category = 'Dessert';
+        await inputs.cuisine.setValue('American');
+        (wrapper.vm as any).cuisine = 'American';
         await inputs.difficulty.setValue('Easy');
         (wrapper.vm as any).difficulty = 'Easy';
         await inputs.unitOfMeasure.setValue('oz');
@@ -483,6 +507,8 @@ describe('Recipe Editor', () => {
         const inputs = getInputs(wrapper);
         await inputs.category.setValue('Dessert');
         (wrapper.vm as any).category = 'Dessert';
+        await inputs.cuisine.setValue('American');
+        (wrapper.vm as any).cuisine = 'American';
         expect(saveButton.attributes('disabled')).toBeDefined();
         await inputs.difficulty.setValue('Easy');
         (wrapper.vm as any).difficulty = 'Easy';
@@ -501,6 +527,7 @@ describe('Recipe Editor', () => {
             name: 'Apple Pie',
             description: null,
             category: 'Dessert',
+            cuisine: 'American',
             difficulty: 'Easy',
             servings: 2,
             units: 1,
@@ -523,6 +550,8 @@ describe('Recipe Editor', () => {
         const inputs = getInputs(wrapper);
         await inputs.category.setValue('Dessert');
         (wrapper.vm as any).category = 'Dessert';
+        await inputs.cuisine.setValue('American');
+        (wrapper.vm as any).cuisine = 'American';
         expect(saveButton.attributes('disabled')).toBeDefined();
         await inputs.difficulty.setValue('Easy');
         (wrapper.vm as any).difficulty = 'Easy';
@@ -552,6 +581,7 @@ describe('Recipe Editor', () => {
       const inputs = getInputs(wrapper);
       expect(inputs.name.element.value).toBe(BEER_CHEESE.name);
       expect((wrapper.vm as any).category).toBe(BEER_CHEESE.category);
+      expect((wrapper.vm as any).cuisine).toBe(BEER_CHEESE.cuisine);
       expect((wrapper.vm as any).difficulty).toBe(BEER_CHEESE.difficulty);
       expect(inputs.servings.element.value).toBe(BEER_CHEESE.servings.toString());
       expect(inputs.grams.element.value).toBe(BEER_CHEESE.grams.toString());
@@ -754,6 +784,7 @@ describe('Recipe Editor', () => {
         expect(emittedData.name).toBe('Apple Pie');
         expect(emittedData.description).toBe(BEER_CHEESE.description);
         expect(emittedData.category).toBe('Dessert');
+        expect(emittedData.cuisine).toBe(BEER_CHEESE.cuisine);
         expect(emittedData.difficulty).toBe('Normal');
         expect(emittedData.servings).toBe(BEER_CHEESE.servings);
         expect(emittedData.units).toBe(BEER_CHEESE.units);
@@ -784,6 +815,7 @@ const BEER_CHEESE: Recipe = {
   name: 'Hearty Beer Cheese Soup',
   description: 'A rich and creamy soup combining sharp cheddar cheese with beer and savory seasonings.',
   category: 'Soup',
+  cuisine: 'American',
   difficulty: 'Normal',
   servings: 6,
   units: 1.5,

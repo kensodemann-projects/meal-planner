@@ -58,6 +58,10 @@ describe('RecipeView', () => {
       expect(section.text()).toContain(`Category: ${TEST_RECIPE.category}`);
     });
 
+    it('renders the cuisine', () => {
+      expect(section.text()).toContain(`Cuisine: ${TEST_RECIPE.cuisine}`);
+    });
+
     it('renders the servings', () => {
       expect(section.text()).toContain(`Servings: ${TEST_RECIPE.servings}`);
     });
@@ -70,7 +74,6 @@ describe('RecipeView', () => {
       expect(section.text()).toContain(TEST_RECIPE.description);
     });
   });
-
 
   describe('the ingredients section', () => {
     let section: DOMWrapper<HTMLElement>;
