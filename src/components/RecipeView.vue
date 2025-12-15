@@ -4,8 +4,9 @@
   <section data-testid="description-section">
     <div class="mt-4 mb-8 pre-formatted">{{ recipe.description }}</div>
     <div>
-      <div><span class="font-weight-black">Difficulty:</span> {{ recipe.difficulty }}</div>
       <div><span class="font-weight-black">Category:</span> {{ recipe.category }}</div>
+      <div><span class="font-weight-black">Cuisine:</span> {{ recipe.cuisine }}</div>
+      <div><span class="font-weight-black">Difficulty:</span> {{ recipe.difficulty }}</div>
       <div><span class="font-weight-black">Servings:</span> {{ recipe.servings }}</div>
     </div>
   </section>
@@ -19,9 +20,7 @@
         <template v-if="ingredient.unitOfMeasure.id === 'item'">
           {{ ingredient.units }} {{ ingredient.name }}
         </template>
-        <template v-else>
-          {{ ingredient.units }} {{ ingredient.unitOfMeasure.id }} {{ ingredient.name }}
-        </template>
+        <template v-else> {{ ingredient.units }} {{ ingredient.unitOfMeasure.id }} {{ ingredient.name }} </template>
       </li>
     </ul>
   </section>

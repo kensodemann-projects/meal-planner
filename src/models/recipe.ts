@@ -1,6 +1,19 @@
 import type { Portion } from './portion';
 import type { UnitOfMeasure } from './unit-of-measure';
 
+export type Cuisine =
+  | 'American'
+  | 'Chinese'
+  | 'French'
+  | 'Greek'
+  | 'Indian'
+  | 'Italian'
+  | 'Japanese'
+  | 'Mediterranean'
+  | 'Mexican'
+  | 'Middle Eastern'
+  | 'Thai';
+
 export type RecipeCategory =
   | 'Appetizer'
   | 'Beverage'
@@ -38,6 +51,7 @@ export interface Recipe extends Portion {
   name: string;
   description: string | null;
   category: RecipeCategory;
+  cuisine: Cuisine;
   difficulty: RecipeDifficulty;
   servings: number;
   ingredients: RecipeIngredient[];
