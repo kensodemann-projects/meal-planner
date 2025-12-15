@@ -4,9 +4,7 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import IngredientEditorRow from '../IngredientEditorRow.vue';
-import { TEST_FOODS } from '@/data/__tests__/test-data';
 import type { RecipeIngredient } from '@/models/recipe';
-import type { FoodItem } from '@/models/food';
 import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import ConfirmDialog from '../ConfirmDialog.vue';
 
@@ -15,7 +13,7 @@ const vuetify = createVuetify({
   directives,
 });
 
-const mountComponent = (props: { foods: FoodItem[]; ingredient: RecipeIngredient }) =>
+const mountComponent = (props: { ingredient: RecipeIngredient }) =>
   mount(IngredientEditorRow, { props, global: { plugins: [vuetify] } });
 
 describe('Ingredient Editor Row', () => {
@@ -48,26 +46,26 @@ describe('Ingredient Editor Row', () => {
   });
 
   it('renders', () => {
-    wrapper = mountComponent({ foods: TEST_FOODS, ingredient: TEST_INGREDIENTS[1]! });
+    wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
     expect(wrapper.exists()).toBe(true);
   });
 
   describe('units', () => {
     it('renders', () => {
-      wrapper = mountComponent({ foods: TEST_FOODS, ingredient: TEST_INGREDIENTS[1]! });
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const numberInput = wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
       expect(numberInput.exists()).toBe(true);
     });
 
     it('is initialized', () => {
-      wrapper = mountComponent({ foods: TEST_FOODS, ingredient: TEST_INGREDIENTS[1]! });
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const numberInput = wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
       const input = numberInput.find('input');
       expect(input.element.value).toBe('1');
     });
 
     it('is emitted on change', async () => {
-      wrapper = mountComponent({ foods: TEST_FOODS, ingredient: TEST_INGREDIENTS[1]! });
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const numberInput = wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
       await numberInput.setValue(73);
       const emitted = wrapper.emitted('changed');
@@ -78,7 +76,7 @@ describe('Ingredient Editor Row', () => {
 
   describe('unit of measure', () => {
     it('renders', () => {
-      wrapper = mountComponent({ foods: TEST_FOODS, ingredient: TEST_INGREDIENTS[1]! });
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent(
         '[data-testid="unit-of-measure-input"]',
       ) as VueWrapper<components.VAutocomplete>;
@@ -86,12 +84,12 @@ describe('Ingredient Editor Row', () => {
     });
 
     it('is initialized', () => {
-      wrapper = mountComponent({ foods: TEST_FOODS, ingredient: TEST_INGREDIENTS[1]! });
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       expect((wrapper.vm as any).unitOfMeasureId).toBe('cup');
     });
 
     it('is emitted on change', async () => {
-      wrapper = mountComponent({ foods: TEST_FOODS, ingredient: TEST_INGREDIENTS[1]! });
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent(
         '[data-testid="unit-of-measure-input"]',
       ) as VueWrapper<components.VAutocomplete>;
@@ -102,50 +100,45 @@ describe('Ingredient Editor Row', () => {
     });
   });
 
-  describe('food item', () => {
+  describe('ingredient name', () => {
     it('renders', () => {
-      wrapper = mountComponent({ foods: TEST_FOODS, ingredient: TEST_INGREDIENTS[1]! });
-      const combo = wrapper.findComponent('[data-testid="food-item-input"]') as VueWrapper<components.VCombobox>;
-      expect(combo.exists()).toBe(true);
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
+      const textField = wrapper.findComponent(
+        '[data-testid="ingredient-name-input"]',
+      ) as VueWrapper<components.VTextField>;
+      expect(textField.exists()).toBe(true);
     });
 
     it('is initialized', () => {
-      wrapper = mountComponent({ foods: TEST_FOODS, ingredient: TEST_INGREDIENTS[1]! });
-      const combo = wrapper.findComponent('[data-testid="food-item-input"]') as VueWrapper<components.VCombobox>;
-      const input = combo.find('input');
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
+      const textField = wrapper.findComponent(
+        '[data-testid="ingredient-name-input"]',
+      ) as VueWrapper<components.VTextField>;
+      const input = textField.find('input');
       expect(input.element.value).toBe('Vegetable Broth');
     });
 
-    it('emits name and id when a food is selected', async () => {
-      wrapper = mountComponent({ foods: TEST_FOODS, ingredient: TEST_INGREDIENTS[1]! });
-      const combo = wrapper.findComponent('[data-testid="food-item-input"]') as VueWrapper<components.VCombobox>;
-      await combo.setValue(TEST_FOODS[2]);
+    it('emits name when text is entered', async () => {
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
+      const textField = wrapper.findComponent(
+        '[data-testid="ingredient-name-input"]',
+      ) as VueWrapper<components.VTextField>;
+      await textField.setValue('silver bells');
       const emitted = wrapper.emitted('changed');
       expect(emitted?.length).toBe(1);
-      expect((emitted![0]![0] as RecipeIngredient).foodId).toBe(TEST_FOODS[2]?.id);
-      expect((emitted![0]![0] as RecipeIngredient).name).toBe(TEST_FOODS[2]?.name);
-    });
-
-    it('emits just name when free-form text is entered', async () => {
-      wrapper = mountComponent({ foods: TEST_FOODS, ingredient: TEST_INGREDIENTS[1]! });
-      const combo = wrapper.findComponent('[data-testid="food-item-input"]') as VueWrapper<components.VCombobox>;
-      await combo.setValue('silver bells');
-      const emitted = wrapper.emitted('changed');
-      expect(emitted?.length).toBe(1);
-      expect((emitted![0]![0] as RecipeIngredient).foodId).toBe(null);
       expect((emitted![0]![0] as RecipeIngredient).name).toBe('silver bells');
     });
   });
 
   describe('delete button', () => {
     it('renders', () => {
-      wrapper = mountComponent({ foods: TEST_FOODS, ingredient: TEST_INGREDIENTS[1]! });
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const button = wrapper.findComponent('[data-testid="delete-button"]') as VueWrapper<components.VNumberInput>;
       expect(button.exists()).toBe(true);
     });
 
     it('displays confirm dialog when clicked', async () => {
-      wrapper = mountComponent({ foods: TEST_FOODS, ingredient: TEST_INGREDIENTS[1]! });
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const button = wrapper.findComponent('[data-testid="delete-button"]');
       await button.trigger('click');
       await flushPromises();
@@ -154,7 +147,7 @@ describe('Ingredient Editor Row', () => {
     });
 
     it('emits delete and closes dialog when user confirms', async () => {
-      wrapper = mountComponent({ foods: TEST_FOODS, ingredient: TEST_INGREDIENTS[1]! });
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const button = wrapper.findComponent('[data-testid="delete-button"]');
       await button.trigger('click');
       await flushPromises();
@@ -173,7 +166,7 @@ describe('Ingredient Editor Row', () => {
     });
 
     it('does not emit delete and closes dialog when user cancels', async () => {
-      wrapper = mountComponent({ foods: TEST_FOODS, ingredient: TEST_INGREDIENTS[1]! });
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const button = wrapper.findComponent('[data-testid="delete-button"]');
       await button.trigger('click');
       await flushPromises();

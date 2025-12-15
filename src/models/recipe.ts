@@ -26,7 +26,6 @@ export interface RecipeIngredient {
   units: number;
   unitOfMeasure: UnitOfMeasure;
   name: string;
-  foodId?: string | null;
 }
 
 export interface RecipeStep {

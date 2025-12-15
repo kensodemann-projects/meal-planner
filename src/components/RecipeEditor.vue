@@ -65,7 +65,6 @@
       <IngredientEditorRow
         v-for="(ingredient, index) in ingredients"
         :key="ingredient.id"
-        :foods="foods"
         :ingredient="ingredient"
         @delete="() => deleteIngredient(index)"
         @changed="(i) => changeIngredient(i, index)"
@@ -226,7 +225,6 @@ import { computed, onMounted, ref } from 'vue';
 import type { VTextField } from 'vuetify/components';
 import { unitOfMeasureOptions } from '@/data/unit-of-measure';
 import IngredientEditorRow from './IngredientEditorRow.vue';
-import { useFoodsData } from '@/data/foods';
 
 const emit = defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'cancel'): void }>();
 const props = defineProps<{ recipe?: Recipe }>();
@@ -251,8 +249,6 @@ const steps = ref<RecipeStep[]>(props.recipe ? [...props.recipe.steps] : []);
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 const listChanged = ref(false);
-
-const { foods } = useFoodsData();
 
 const ingredientsInvalid = computed(
   (): boolean => !!ingredients.value.find((i) => !(i.units && i.name && i.unitOfMeasure)),
