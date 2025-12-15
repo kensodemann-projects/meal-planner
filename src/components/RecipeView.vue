@@ -20,7 +20,9 @@
         <template v-if="ingredient.unitOfMeasure.id === 'item'">
           {{ ingredient.units }} {{ ingredient.name }}
         </template>
-        <template v-else> {{ ingredient.units }} {{ ingredient.unitOfMeasure.id }} {{ ingredient.name }} </template>
+        <template v-else>
+          {{ ingredient.units }} {{ ingredient.unitOfMeasure.id }} {{ ingredient.name }}
+        </template>
       </li>
     </ul>
   </section>
