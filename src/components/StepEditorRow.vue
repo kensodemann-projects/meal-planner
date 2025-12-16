@@ -60,7 +60,6 @@ const instruction = computed({
 <style scoped>
 .step-editor-row {
   --gap: 12px;
-  --gap-offset: calc(var(--gap) / 2);
 
   display: flex;
   flex-wrap: nowrap;
