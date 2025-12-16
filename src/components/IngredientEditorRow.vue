@@ -105,26 +105,30 @@ const ingredientName = computed({
 
 <style scoped>
 .ingredient-editor-row {
+  --gap: 12px;
+  --mobile-gap-offset: calc(var(--gap) / 2);
+  --desktop-gap-offset: calc(var(--gap) * 3 / 4);
+
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: var(--gap);
   align-items: center;
 }
 
 .ingredient-editor-row__units {
-  flex: 0 0 calc(50% - 6px);
+  flex: 0 0 calc(50% - var(--mobile-gap-offset));
 }
 
 .ingredient-editor-row__unit-of-measure {
-  flex: 0 0 calc(50% - 6px);
+  flex: 0 0 calc(50% - var(--mobile-gap-offset));
 }
 
 .ingredient-editor-row__name {
-  flex: 0 0 calc(91.666% - 6px);
+  flex: 0 0 calc(91.667% - var(--mobile-gap-offset));
 }
 
 .ingredient-editor-row__delete {
-  flex: 0 0 calc(8.334% - 6px);
+  flex: 0 0 calc(8.333% - var(--mobile-gap-offset));
   display: flex;
   justify-content: center;
   align-items: center;
@@ -136,19 +140,19 @@ const ingredientName = computed({
   }
 
   .ingredient-editor-row__units {
-    flex: 0 0 calc(8.333% - 9px);
+    flex: 0 0 calc(8.333% - var(--desktop-gap-offset));
   }
 
   .ingredient-editor-row__unit-of-measure {
-    flex: 0 0 calc(16.667% - 9px);
+    flex: 0 0 calc(16.667% - var(--desktop-gap-offset));
   }
 
   .ingredient-editor-row__name {
-    flex: 0 0 calc(66.667% - 9px);
+    flex: 0 0 calc(66.667% - var(--desktop-gap-offset));
   }
 
   .ingredient-editor-row__delete {
-    flex: 0 0 calc(8.333% - 9px);
+    flex: 0 0 calc(8.333% - var(--desktop-gap-offset));
   }
 }
 </style>
