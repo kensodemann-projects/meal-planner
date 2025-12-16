@@ -83,7 +83,7 @@
     </h2>
     <v-divider class="mb-4"></v-divider>
 
-    <v-container fluid data-testid="ingredient-list-grid">
+    <div class="ingredient-list" data-testid="ingredient-list-grid">
       <IngredientEditorRow
         v-for="(ingredient, index) in ingredients"
         :key="ingredient.id"
@@ -91,7 +91,7 @@
         @delete="() => deleteIngredient(index)"
         @changed="(i) => changeIngredient(i, index)"
       />
-    </v-container>
+    </div>
 
     <h2>
       <div class="d-flex justify-space-between">
@@ -108,7 +108,7 @@
     </h2>
     <v-divider class="mb-4"></v-divider>
 
-    <v-container fluid data-testid="step-list-grid">
+    <div class="step-list" data-testid="step-list-grid">
       <StepEditorRow
         v-for="(step, index) in steps"
         :key="step.id"
@@ -116,7 +116,7 @@
         @delete="() => deleteStep(index)"
         @changed="(s) => changeStep(s, index)"
       />
-    </v-container>
+    </div>
 
     <h2>Nutritional Information</h2>
     <v-divider class="mb-4"></v-divider>
@@ -354,3 +354,12 @@ const save = () => {
 
 onMounted(() => nameInput.value?.focus());
 </script>
+
+<style scoped>
+.ingredient-list,
+.step-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+</style>
