@@ -1,6 +1,6 @@
 <template>
-  <v-row dense>
-    <v-col cols="6" md="1">
+  <div class="ingredient-editor-row">
+    <div class="ingredient-editor-row__units">
       <v-number-input
         density="compact"
         hide-details
@@ -10,8 +10,8 @@
         v-model="units"
         data-testid="units-input"
       ></v-number-input>
-    </v-col>
-    <v-col cols="6" md="2">
+    </div>
+    <div class="ingredient-editor-row__unit-of-measure">
       <v-autocomplete
         density="compact"
         hide-details
@@ -22,8 +22,8 @@
         v-model="unitOfMeasureId"
         data-testid="unit-of-measure-input"
       ></v-autocomplete>
-    </v-col>
-    <v-col cols="11" md="8">
+    </div>
+    <div class="ingredient-editor-row__name">
       <v-text-field
         density="compact"
         label="Ingredient"
@@ -32,8 +32,8 @@
         v-model="ingredientName"
         data-testid="ingredient-name-input"
       ></v-text-field>
-    </v-col>
-    <v-col cols="1" md="1" align-self="center">
+    </div>
+    <div class="ingredient-editor-row__delete">
       <v-btn
         density="compact"
         variant="plain"
@@ -41,8 +41,8 @@
         @click="showConfirmDelete = true"
         data-testid="delete-button"
       ></v-btn>
-    </v-col>
-  </v-row>
+    </div>
+  </div>
   <v-dialog v-model="showConfirmDelete" max-width="600px" data-testid="confirm-dialog">
     <ConfirmDialog
       question="Are you sure you want to delete this ingredient?"
@@ -102,3 +102,57 @@ const ingredientName = computed({
   },
 });
 </script>
+
+<style scoped>
+.ingredient-editor-row {
+  --gap: 12px;
+  --mobile-gap-offset: calc(var(--gap) / 2);
+  --desktop-gap-offset: calc(var(--gap) * 3 / 4);
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap);
+  align-items: center;
+}
+
+.ingredient-editor-row__units {
+  flex: 0 0 calc(50% - var(--mobile-gap-offset));
+}
+
+.ingredient-editor-row__unit-of-measure {
+  flex: 0 0 calc(50% - var(--mobile-gap-offset));
+}
+
+.ingredient-editor-row__name {
+  flex: 0 0 calc(91.667% - var(--mobile-gap-offset));
+}
+
+.ingredient-editor-row__delete {
+  flex: 0 0 calc(8.333% - var(--mobile-gap-offset));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (min-width: 960px) {
+  .ingredient-editor-row {
+    flex-wrap: nowrap;
+  }
+
+  .ingredient-editor-row__units {
+    flex: 0 0 calc(8.333% - var(--desktop-gap-offset));
+  }
+
+  .ingredient-editor-row__unit-of-measure {
+    flex: 0 0 calc(16.667% - var(--desktop-gap-offset));
+  }
+
+  .ingredient-editor-row__name {
+    flex: 0 0 calc(66.667% - var(--desktop-gap-offset));
+  }
+
+  .ingredient-editor-row__delete {
+    flex: 0 0 calc(8.333% - var(--desktop-gap-offset));
+  }
+}
+</style>
