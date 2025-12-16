@@ -1,6 +1,6 @@
 <template>
-  <v-row dense>
-    <v-col cols="11">
+  <div class="step-editor-row">
+    <div class="step-editor-row__instruction">
       <v-text-field
         density="compact"
         label="Instruction"
@@ -9,8 +9,8 @@
         v-model="instruction"
         data-testid="instruction-input"
       ></v-text-field>
-    </v-col>
-    <v-col cols="1" align-self="center">
+    </div>
+    <div class="step-editor-row__delete">
       <v-btn
         density="compact"
         variant="plain"
@@ -18,8 +18,8 @@
         @click="showConfirmDelete = true"
         data-testid="delete-button"
       ></v-btn>
-    </v-col>
-  </v-row>
+    </div>
+  </div>
   <v-dialog v-model="showConfirmDelete" max-width="600px" data-testid="confirm-dialog">
     <ConfirmDialog
       question="Are you sure you want to delete this step?"
@@ -56,3 +56,25 @@ const instruction = computed({
     }),
 });
 </script>
+
+<style scoped>
+.step-editor-row {
+  --gap: 12px;
+
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--gap);
+  align-items: center;
+}
+
+.step-editor-row__instruction {
+  flex: 1 1 auto;
+}
+
+.step-editor-row__delete {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>
