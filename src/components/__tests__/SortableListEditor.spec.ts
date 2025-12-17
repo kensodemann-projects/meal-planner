@@ -28,7 +28,7 @@ describe('SortableListEditor', () => {
 
   const mountComponent = (props = {}) => {
     return mount(SortableListEditor, {
-      props: { ...defaultProps, ...props },
+      props: { ...defaultProps, ...props } as any,
       global: {
         plugins: [vuetify],
         stubs: {
@@ -97,9 +97,10 @@ describe('SortableListEditor', () => {
 
     const emitted = wrapper.emitted('update:modelValue');
     expect(emitted).toBeTruthy();
-    expect(emitted![0][0]).toHaveLength(1);
-    expect(emitted![0][0][0]).toHaveProperty('id');
-    expect(emitted![0][0][0]).toHaveProperty('value', '');
+    const emittedValue = emitted?.[0]?.[0] as TestItem[];
+    expect(emittedValue).toHaveLength(1);
+    expect(emittedValue?.[0]).toHaveProperty('id');
+    expect(emittedValue?.[0]).toHaveProperty('value', '');
   });
 
   it('emits list-modified when item is added', async () => {
@@ -131,7 +132,8 @@ describe('SortableListEditor', () => {
 
     const emitted = wrapper.emitted('update:modelValue');
     expect(emitted).toBeTruthy();
-    expect(emitted![0][0][0].value).toBe('Updated');
+    const emittedValue = emitted?.[0]?.[0] as TestItem[];
+    expect(emittedValue?.[0]?.value).toBe('Updated');
     expect(wrapper.emitted('list-modified')).toBeTruthy();
   });
 
@@ -147,8 +149,9 @@ describe('SortableListEditor', () => {
 
     const emitted = wrapper.emitted('update:modelValue');
     expect(emitted).toBeTruthy();
-    expect(emitted![0][0]).toHaveLength(1);
-    expect(emitted![0][0][0].id).toBe('2');
+    const emittedValue = emitted?.[0]?.[0] as TestItem[];
+    expect(emittedValue).toHaveLength(1);
+    expect(emittedValue?.[0]?.id).toBe('2');
     expect(wrapper.emitted('list-modified')).toBeTruthy();
   });
 
@@ -183,6 +186,7 @@ describe('SortableListEditor', () => {
     await input.setValue('Updated');
 
     const emitted = wrapper.emitted('update:modelValue');
-    expect(emitted![0][0][0].id).toBe('original-id');
+    const emittedValue = emitted?.[0]?.[0] as TestItem[];
+    expect(emittedValue?.[0]?.id).toBe('original-id');
   });
 });
