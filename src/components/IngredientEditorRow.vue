@@ -124,11 +124,11 @@ const ingredientName = computed({
 }
 
 .ingredient-editor-row__name {
-  flex: 0 0 calc(91.667% - var(--mobile-gap-offset));
+  flex: 1 1 auto;
 }
 
 .ingredient-editor-row__delete {
-  flex: 0 0 calc(8.333% - var(--mobile-gap-offset));
+  flex: 0 0 auto;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -145,14 +145,6 @@ const ingredientName = computed({
 
   .ingredient-editor-row__unit-of-measure {
     flex: 0 0 calc(16.667% - var(--desktop-gap-offset));
-  }
-
-  .ingredient-editor-row__name {
-    flex: 0 0 calc(66.667% - var(--desktop-gap-offset));
-  }
-
-  .ingredient-editor-row__delete {
-    flex: 0 0 calc(8.333% - var(--desktop-gap-offset));
   }
 }
 </style>
