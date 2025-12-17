@@ -16,7 +16,63 @@ const vuetify = createVuetify({
   components,
   directives,
 });
-const mountComponent = (props = {}) => mount(RecipeEditor, { props, global: { plugins: [vuetify] } });
+const mountComponent = (props = {}) =>
+  mount(RecipeEditor, {
+    props,
+    global: {
+      plugins: [vuetify],
+      stubs: {
+        SortableListEditor: {
+          name: 'SortableListEditor',
+          template: `
+            <div>
+              <div class="header-section">
+                <h2>{{ title }}</h2>
+                <button
+                  :data-testid="'add-' + testIdPrefix + '-button'"
+                  :disabled="hasInvalidItems"
+                  @click="addItem"
+                >Add</button>
+              </div>
+              <div :data-testid="testIdPrefix + '-list-grid'" class="list-container">
+                <div v-for="(item, index) in modelValue" :key="item.id" class="list-item">
+                  <slot name="item" :item="item" :index="index"
+                    :on-change="(updated) => changeItem(updated, index)"
+                    :on-delete="() => deleteItem(index)"
+                  />
+                </div>
+              </div>
+            </div>
+          `,
+          props: ['modelValue', 'title', 'validateItem', 'createItem', 'testIdPrefix', 'listClass', 'sortable'],
+          computed: {
+            hasInvalidItems() {
+              return this.modelValue.some((item: any) => !this.validateItem(item));
+            },
+          },
+          methods: {
+            addItem() {
+              const newArr = [...this.modelValue, this.createItem()];
+              this.$emit('update:modelValue', newArr);
+              this.$emit('list-modified');
+            },
+            changeItem(updated: any, index: number) {
+              const arr = [...this.modelValue];
+              arr[index] = updated;
+              this.$emit('update:modelValue', arr);
+              this.$emit('list-modified');
+            },
+            deleteItem(index: number) {
+              const arr = [...this.modelValue];
+              arr.splice(index, 1);
+              this.$emit('update:modelValue', arr);
+              this.$emit('list-modified');
+            },
+          },
+        },
+      },
+    },
+  });
 
 const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
   name: wrapper.findComponent('[data-testid="name-input"]').find('input'),
@@ -323,13 +379,13 @@ describe('Recipe Editor', () => {
 
       describe('add button', () => {
         it('is enabled', () => {
-          const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+          const button = wrapper.find('[data-testid="add-ingredient-button"]');
           expect(button.attributes('disabled')).toBeUndefined();
         });
 
         describe('on click', () => {
           it('adds a blank ingredient', async () => {
-            const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+            const button = wrapper.find('[data-testid="add-ingredient-button"]');
             const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
             await button.trigger('click');
             const ingredients = listArea.findAllComponents(IngredientEditorRow);
@@ -337,7 +393,7 @@ describe('Recipe Editor', () => {
           });
 
           it('becomes disabled', async () => {
-            const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+            const button = wrapper.find('[data-testid="add-ingredient-button"]');
             expect(button.attributes('disabled')).toBeUndefined();
             await button.trigger('click');
             expect(button.attributes('disabled')).toBeDefined();
@@ -345,7 +401,7 @@ describe('Recipe Editor', () => {
 
           it('remains disabled until the blank ingredient is filled in', async () => {
             const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
-            const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+            const button = wrapper.find('[data-testid="add-ingredient-button"]');
             await button.trigger('click');
             expect(button.attributes('disabled')).toBeDefined();
             const ingredients = listArea.findAllComponents(IngredientEditorRow);
@@ -362,7 +418,7 @@ describe('Recipe Editor', () => {
 
       describe('deleting an ingredient', () => {
         it('removes the ingredient from the list', async () => {
-          const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+          const button = wrapper.find('[data-testid="add-ingredient-button"]');
           const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
           await button.trigger('click');
           let ingredients = listArea.findAllComponents(IngredientEditorRow);
@@ -383,13 +439,13 @@ describe('Recipe Editor', () => {
 
       describe('add button', () => {
         it('is enabled', () => {
-          const button = wrapper.findComponent('[data-testid="add-step-button"]');
+          const button = wrapper.find('[data-testid="add-step-button"]');
           expect(button.attributes('disabled')).toBeUndefined();
         });
 
         describe('on click', () => {
           it('adds a blank step', async () => {
-            const button = wrapper.findComponent('[data-testid="add-step-button"]');
+            const button = wrapper.find('[data-testid="add-step-button"]');
             const listArea = wrapper.find('[data-testid="step-list-grid"]');
             await button.trigger('click');
             const steps = listArea.findAllComponents(StepEditorRow);
@@ -397,7 +453,7 @@ describe('Recipe Editor', () => {
           });
 
           it('becomes disabled', async () => {
-            const button = wrapper.findComponent('[data-testid="add-step-button"]');
+            const button = wrapper.find('[data-testid="add-step-button"]');
             expect(button.attributes('disabled')).toBeUndefined();
             await button.trigger('click');
             expect(button.attributes('disabled')).toBeDefined();
@@ -405,7 +461,7 @@ describe('Recipe Editor', () => {
 
           it('remains disabled until the blank step is filled in', async () => {
             const listArea = wrapper.find('[data-testid="step-list-grid"]');
-            const button = wrapper.findComponent('[data-testid="add-step-button"]');
+            const button = wrapper.find('[data-testid="add-step-button"]');
             await button.trigger('click');
             expect(button.attributes('disabled')).toBeDefined();
             const steps = listArea.findAllComponents(StepEditorRow);
@@ -420,7 +476,7 @@ describe('Recipe Editor', () => {
 
       describe('deleting a step', () => {
         it('removes the step from the list', async () => {
-          const button = wrapper.findComponent('[data-testid="add-step-button"]');
+          const button = wrapper.find('[data-testid="add-step-button"]');
           const listArea = wrapper.find('[data-testid="step-list-grid"]');
           await button.trigger('click');
           let steps = listArea.findAllComponents(StepEditorRow);
@@ -475,7 +531,7 @@ describe('Recipe Editor', () => {
         await inputs.units.setValue('12');
         await inputs.calories.setValue('325');
         expect(saveButton.attributes('disabled')).toBeUndefined();
-        const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+        const button = wrapper.find('[data-testid="add-ingredient-button"]');
         await button.trigger('click');
         expect(saveButton.attributes('disabled')).toBeDefined();
       });
@@ -497,7 +553,7 @@ describe('Recipe Editor', () => {
         await inputs.units.setValue('12');
         await inputs.calories.setValue('325');
         expect(saveButton.attributes('disabled')).toBeUndefined();
-        const button = wrapper.findComponent('[data-testid="add-step-button"]');
+        const button = wrapper.find('[data-testid="add-step-button"]');
         await button.trigger('click');
         expect(saveButton.attributes('disabled')).toBeDefined();
       });
@@ -604,13 +660,13 @@ describe('Recipe Editor', () => {
 
       describe('add button', () => {
         it('is enabled', () => {
-          const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+          const button = wrapper.find('[data-testid="add-ingredient-button"]');
           expect(button.attributes('disabled')).toBeUndefined();
         });
 
         describe('on click', () => {
           it('adds a blank ingredient', async () => {
-            const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+            const button = wrapper.find('[data-testid="add-ingredient-button"]');
             const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
             await button.trigger('click');
             const ingredients = listArea.findAllComponents(IngredientEditorRow);
@@ -618,7 +674,7 @@ describe('Recipe Editor', () => {
           });
 
           it('becomes disabled', async () => {
-            const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+            const button = wrapper.find('[data-testid="add-ingredient-button"]');
             expect(button.attributes('disabled')).toBeUndefined();
             await button.trigger('click');
             expect(button.attributes('disabled')).toBeDefined();
@@ -626,7 +682,7 @@ describe('Recipe Editor', () => {
 
           it('remains disabled until the blank ingredient is filled in', async () => {
             const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
-            const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+            const button = wrapper.find('[data-testid="add-ingredient-button"]');
             await button.trigger('click');
             expect(button.attributes('disabled')).toBeDefined();
             const ingredients = listArea.findAllComponents(IngredientEditorRow);
@@ -663,13 +719,13 @@ describe('Recipe Editor', () => {
 
       describe('add button', () => {
         it('is enabled', () => {
-          const button = wrapper.findComponent('[data-testid="add-step-button"]');
+          const button = wrapper.find('[data-testid="add-step-button"]');
           expect(button.attributes('disabled')).toBeUndefined();
         });
 
         describe('on click', () => {
           it('adds a blank step', async () => {
-            const button = wrapper.findComponent('[data-testid="add-step-button"]');
+            const button = wrapper.find('[data-testid="add-step-button"]');
             const listArea = wrapper.find('[data-testid="step-list-grid"]');
             await button.trigger('click');
             const steps = listArea.findAllComponents(StepEditorRow);
@@ -677,7 +733,7 @@ describe('Recipe Editor', () => {
           });
 
           it('becomes disabled', async () => {
-            const button = wrapper.findComponent('[data-testid="add-step-button"]');
+            const button = wrapper.find('[data-testid="add-step-button"]');
             expect(button.attributes('disabled')).toBeUndefined();
             await button.trigger('click');
             expect(button.attributes('disabled')).toBeDefined();
@@ -685,7 +741,7 @@ describe('Recipe Editor', () => {
 
           it('remains disabled until the blank step is filled in', async () => {
             const listArea = wrapper.find('[data-testid="step-list-grid"]');
-            const button = wrapper.findComponent('[data-testid="add-step-button"]');
+            const button = wrapper.find('[data-testid="add-step-button"]');
             await button.trigger('click');
             expect(button.attributes('disabled')).toBeDefined();
             const steps = listArea.findAllComponents(StepEditorRow);
@@ -752,7 +808,7 @@ describe('Recipe Editor', () => {
         const inputs = getInputs(wrapper);
         await inputs.name.setValue('Apple Pie');
         expect(saveButton.attributes('disabled')).toBeUndefined();
-        const button = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+        const button = wrapper.find('[data-testid="add-ingredient-button"]');
         await button.trigger('click');
         expect(saveButton.attributes('disabled')).toBeDefined();
       });
@@ -762,7 +818,7 @@ describe('Recipe Editor', () => {
         const inputs = getInputs(wrapper);
         await inputs.name.setValue('Apple Pie');
         expect(saveButton.attributes('disabled')).toBeUndefined();
-        const button = wrapper.findComponent('[data-testid="add-step-button"]');
+        const button = wrapper.find('[data-testid="add-step-button"]');
         await button.trigger('click');
         expect(saveButton.attributes('disabled')).toBeDefined();
       });

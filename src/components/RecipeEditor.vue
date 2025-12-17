@@ -68,55 +68,33 @@
       </v-row>
     </v-container>
 
-    <h2>
-      <div class="d-flex justify-space-between">
-        <div>Ingredients</div>
-        <v-btn
-          density="compact"
-          variant="text"
-          icon="mdi-plus"
-          :disabled="ingredientsInvalid"
-          @click="addIngredient"
-          data-testid="add-ingredient-button"
-        ></v-btn>
-      </div>
-    </h2>
-    <v-divider class="mb-4"></v-divider>
+    <SortableListEditor
+      v-model="ingredients"
+      title="Ingredients"
+      :validate-item="(item) => !!(item.units && item.name && item.unitOfMeasure)"
+      :create-item="createIngredient"
+      @list-modified="listChanged = true"
+      test-id-prefix="ingredient"
+      list-class="ingredient-list"
+    >
+      <template #item="{ item, onChange, onDelete }">
+        <IngredientEditorRow :ingredient="item" @changed="onChange" @delete="onDelete" />
+      </template>
+    </SortableListEditor>
 
-    <div class="ingredient-list" data-testid="ingredient-list-grid">
-      <IngredientEditorRow
-        v-for="(ingredient, index) in ingredients"
-        :key="ingredient.id"
-        :ingredient="ingredient"
-        @delete="() => deleteIngredient(index)"
-        @changed="(i) => changeIngredient(i, index)"
-      />
-    </div>
-
-    <h2>
-      <div class="d-flex justify-space-between">
-        <div>Steps</div>
-        <v-btn
-          density="compact"
-          variant="text"
-          icon="mdi-plus"
-          :disabled="stepsInvalid"
-          @click="addStep"
-          data-testid="add-step-button"
-        ></v-btn>
-      </div>
-    </h2>
-    <v-divider class="mb-4"></v-divider>
-
-    <div class="step-list" data-testid="step-list-grid">
-      <StepEditorRow
-        v-for="(step, index) in steps"
-        :key="step.id"
-        :step="step"
-        @delete="() => deleteStep(index)"
-        @changed="(s) => changeStep(s, index)"
-      />
-    </div>
+    <SortableListEditor
+      v-model="steps"
+      title="Steps"
+      :validate-item="(item) => !!item.instruction?.trim()"
+      :create-item="createStep"
+      @list-modified="listChanged = true"
+      test-id-prefix="step"
+      list-class="step-list"
+    >
+      <template #item="{ item, onChange, onDelete }">
+        <StepEditorRow :step="item" @changed="onChange" @delete="onDelete" />
+      </template>
+    </SortableListEditor>
 
     <h2>Nutritional Information</h2>
     <v-divider class="mb-4"></v-divider>
@@ -234,7 +212,6 @@ import type { RecipeIngredient, Recipe, RecipeCategory, RecipeDifficulty, Recipe
 import { computed, onMounted, ref } from 'vue';
 import type { VTextField } from 'vuetify/components';
 import { unitOfMeasureOptions } from '@/data/unit-of-measure';
-import IngredientEditorRow from './IngredientEditorRow.vue';
 import { cuisines } from '@/data/cuisines';
 
 const emit = defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'cancel'): void }>();
@@ -262,49 +239,17 @@ const steps = ref<RecipeStep[]>(props.recipe ? [...props.recipe.steps] : []);
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 const listChanged = ref(false);
 
-const ingredientsInvalid = computed(
-  (): boolean => !!ingredients.value.find((i) => !(i.units && i.name && i.unitOfMeasure)),
-);
+const createIngredient = (): RecipeIngredient => ({
+  id: globalThis.crypto.randomUUID(),
+  units: 1,
+  unitOfMeasure: findUnitOfMeasure('item'),
+  name: '',
+});
 
-const stepsInvalid = computed((): boolean => !!steps.value.find((s) => !s.instruction?.trim()));
-
-const addIngredient = () => {
-  ingredients.value.push({
-    id: crypto.randomUUID(),
-    units: 1,
-    unitOfMeasure: findUnitOfMeasure('item'),
-    name: '',
-  });
-  listChanged.value = true;
-};
-
-const changeIngredient = (ingredient: RecipeIngredient, index: number) => {
-  ingredients.value[index] = { ...ingredient, id: ingredients.value[index]!.id };
-  listChanged.value = true;
-};
-
-const deleteIngredient = (index: number) => {
-  ingredients.value.splice(index, 1);
-  listChanged.value = true;
-};
-
-const addStep = () => {
-  steps.value.push({
-    id: crypto.randomUUID(),
-    instruction: '',
-  });
-  listChanged.value = true;
-};
-
-const changeStep = (step: RecipeStep, index: number) => {
-  steps.value[index] = { ...step, id: steps.value[index]!.id };
-  listChanged.value = true;
-};
-
-const deleteStep = (index: number) => {
-  steps.value.splice(index, 1);
-  listChanged.value = true;
-};
+const createStep = (): RecipeStep => ({
+  id: globalThis.crypto.randomUUID(),
+  instruction: '',
+});
 
 const isModified = computed((): boolean => {
   if (!props.recipe) return true;
