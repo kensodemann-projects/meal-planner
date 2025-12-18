@@ -8,7 +8,10 @@ export interface Settings {
   sugar: number;
   /** Daily protein target in grams */
   protein: number;
-  /** Acceptable percentage deviation from nutritional targets before the day counts as a cheat day (0-100) */
+  /**
+   * Acceptable percentage deviation from nutritional targets before the day counts as a cheat day.
+   * Must be between 0 and 100 (inclusive). Validation is performed at runtime when updating settings.
+   */
   tolerance: number;
   /** Number of cheat days allowed per week */
   cheatDays: number;
