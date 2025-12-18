@@ -18,7 +18,7 @@
     <draggable
       v-model="internalList"
       :class="listClass"
-      :data-testid="`${testIdPrefix}-grid`"
+      :data-testid="`${testIdPrefix}-list`"
       item-key="id"
       :disabled="!sortable"
       handle=".drag-handle"
