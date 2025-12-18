@@ -122,9 +122,11 @@ const handleKeydown = (event: KeyboardEvent, index: number) => {
       return;
     }
 
-    // Swap items
+    // Swap items - TypeScript doesn't know these indices are valid, but we checked above
     const updated = [...props.modelValue];
-    [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
+    const temp = updated[index]!;
+    updated[index] = updated[newIndex]!;
+    updated[newIndex] = temp;
     internalList.value = updated;
 
     // Focus the drag handle at the new position after a short delay

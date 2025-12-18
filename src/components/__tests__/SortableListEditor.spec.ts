@@ -210,7 +210,7 @@ describe('SortableListEditor', () => {
       wrapper = mountComponent({ modelValue: items });
 
       const dragHandles = wrapper.findAll('.drag-handle');
-      await dragHandles[1].trigger('keydown', { key: 'ArrowUp', altKey: true });
+      await dragHandles[1]!.trigger('keydown', { key: 'ArrowUp', altKey: true });
 
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted).toBeTruthy();
@@ -229,7 +229,7 @@ describe('SortableListEditor', () => {
       wrapper = mountComponent({ modelValue: items });
 
       const dragHandles = wrapper.findAll('.drag-handle');
-      await dragHandles[1].trigger('keydown', { key: 'ArrowDown', altKey: true });
+      await dragHandles[1]!.trigger('keydown', { key: 'ArrowDown', altKey: true });
 
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted).toBeTruthy();
@@ -247,7 +247,7 @@ describe('SortableListEditor', () => {
       wrapper = mountComponent({ modelValue: items });
 
       const dragHandles = wrapper.findAll('.drag-handle');
-      await dragHandles[0].trigger('keydown', { key: 'ArrowUp', altKey: true });
+      await dragHandles[0]!.trigger('keydown', { key: 'ArrowUp', altKey: true });
 
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted).toBeFalsy();
@@ -261,7 +261,7 @@ describe('SortableListEditor', () => {
       wrapper = mountComponent({ modelValue: items });
 
       const dragHandles = wrapper.findAll('.drag-handle');
-      await dragHandles[1].trigger('keydown', { key: 'ArrowDown', altKey: true });
+      await dragHandles[1]!.trigger('keydown', { key: 'ArrowDown', altKey: true });
 
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted).toBeFalsy();
@@ -275,7 +275,7 @@ describe('SortableListEditor', () => {
       wrapper = mountComponent({ modelValue: items });
 
       const dragHandles = wrapper.findAll('.drag-handle');
-      await dragHandles[1].trigger('keydown', { key: 'ArrowUp', altKey: true });
+      await dragHandles[1]!.trigger('keydown', { key: 'ArrowUp', altKey: true });
 
       expect(wrapper.emitted('list-modified')).toBeTruthy();
     });
@@ -288,7 +288,7 @@ describe('SortableListEditor', () => {
       wrapper = mountComponent({ modelValue: items });
 
       const dragHandles = wrapper.findAll('.drag-handle');
-      await dragHandles[1].trigger('keydown', { key: 'ArrowUp', altKey: false });
+      await dragHandles[1]!.trigger('keydown', { key: 'ArrowUp', altKey: false });
 
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted).toBeFalsy();
@@ -302,7 +302,7 @@ describe('SortableListEditor', () => {
       wrapper = mountComponent({ modelValue: items });
 
       const dragHandles = wrapper.findAll('.drag-handle');
-      await dragHandles[1].trigger('keydown', { key: 'a', altKey: true });
+      await dragHandles[1]!.trigger('keydown', { key: 'a', altKey: true });
 
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted).toBeFalsy();
