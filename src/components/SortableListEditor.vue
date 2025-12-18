@@ -22,7 +22,6 @@
       item-key="id"
       :disabled="!sortable"
       handle=".drag-handle"
-      @end="handleDragEnd"
     >
       <template #item="{ element, index }">
         <div class="list-item-wrapper">
@@ -95,10 +94,6 @@ const deleteItem = (index: number) => {
   const updated = [...props.modelValue];
   updated.splice(index, 1);
   internalList.value = updated;
-};
-
-const handleDragEnd = () => {
-  emit('list-modified');
 };
 </script>
 
