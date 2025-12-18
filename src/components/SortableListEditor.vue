@@ -26,7 +26,16 @@
     >
       <template #item="{ element, index }">
         <div class="list-item-wrapper">
-          <v-icon v-if="sortable" class="drag-handle" icon="mdi-drag-vertical" size="small"></v-icon>
+          <v-icon
+            v-if="sortable"
+            class="drag-handle"
+            icon="mdi-drag-vertical"
+            size="small"
+            role="button"
+            tabindex="0"
+            aria-label="Drag to reorder, or use Alt+Arrow keys to move"
+            @keydown="(e: KeyboardEvent) => handleKeydown(e, index)"
+          ></v-icon>
           <div class="list-item-content">
             <slot
               name="item"
@@ -100,6 +109,34 @@ const deleteItem = (index: number) => {
 const handleDragEnd = () => {
   emit('list-modified');
 };
+
+const handleKeydown = (event: KeyboardEvent, index: number) => {
+  // Alt+ArrowUp moves item up, Alt+ArrowDown moves item down
+  if (event.altKey && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
+    event.preventDefault();
+
+    const newIndex = event.key === 'ArrowUp' ? index - 1 : index + 1;
+
+    // Check bounds
+    if (newIndex < 0 || newIndex >= props.modelValue.length) {
+      return;
+    }
+
+    // Swap items
+    const updated = [...props.modelValue];
+    [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
+    internalList.value = updated;
+
+    // Focus the drag handle at the new position after a short delay
+    setTimeout(() => {
+      const dragHandles = document.querySelectorAll('.drag-handle');
+      const targetHandle = dragHandles[newIndex] as HTMLElement;
+      if (targetHandle) {
+        targetHandle.focus();
+      }
+    }, 50);
+  }
+};
 </script>
 
 <style scoped>
@@ -121,6 +158,7 @@ const handleDragEnd = () => {
   cursor: grab;
   opacity: 0.4;
   flex-shrink: 0;
+  border-radius: 4px;
 }
 
 .drag-handle:hover {
@@ -129,6 +167,12 @@ const handleDragEnd = () => {
 
 .drag-handle:active {
   cursor: grabbing;
+}
+
+.drag-handle:focus {
+  opacity: 1;
+  outline: 2px solid rgb(var(--v-theme-primary));
+  outline-offset: 2px;
 }
 
 .list-item-content {

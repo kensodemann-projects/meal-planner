@@ -189,4 +189,123 @@ describe('SortableListEditor', () => {
     const emittedValue = emitted?.[0]?.[0] as TestItem[];
     expect(emittedValue?.[0]?.id).toBe('original-id');
   });
+
+  describe('Keyboard Accessibility', () => {
+    it('drag handle has proper ARIA attributes', () => {
+      const items: TestItem[] = [{ id: '1', value: 'First' }];
+      wrapper = mountComponent({ modelValue: items, sortable: true });
+
+      const dragHandle = wrapper.find('.drag-handle');
+      expect(dragHandle.attributes('role')).toBe('button');
+      expect(dragHandle.attributes('tabindex')).toBe('0');
+      expect(dragHandle.attributes('aria-label')).toContain('Drag to reorder');
+    });
+
+    it('moves item up when Alt+ArrowUp is pressed', async () => {
+      const items: TestItem[] = [
+        { id: '1', value: 'First' },
+        { id: '2', value: 'Second' },
+        { id: '3', value: 'Third' },
+      ];
+      wrapper = mountComponent({ modelValue: items });
+
+      const dragHandles = wrapper.findAll('.drag-handle');
+      await dragHandles[1].trigger('keydown', { key: 'ArrowUp', altKey: true });
+
+      const emitted = wrapper.emitted('update:modelValue');
+      expect(emitted).toBeTruthy();
+      const emittedValue = emitted?.[0]?.[0] as TestItem[];
+      expect(emittedValue?.[0]?.id).toBe('2');
+      expect(emittedValue?.[1]?.id).toBe('1');
+      expect(emittedValue?.[2]?.id).toBe('3');
+    });
+
+    it('moves item down when Alt+ArrowDown is pressed', async () => {
+      const items: TestItem[] = [
+        { id: '1', value: 'First' },
+        { id: '2', value: 'Second' },
+        { id: '3', value: 'Third' },
+      ];
+      wrapper = mountComponent({ modelValue: items });
+
+      const dragHandles = wrapper.findAll('.drag-handle');
+      await dragHandles[1].trigger('keydown', { key: 'ArrowDown', altKey: true });
+
+      const emitted = wrapper.emitted('update:modelValue');
+      expect(emitted).toBeTruthy();
+      const emittedValue = emitted?.[0]?.[0] as TestItem[];
+      expect(emittedValue?.[0]?.id).toBe('1');
+      expect(emittedValue?.[1]?.id).toBe('3');
+      expect(emittedValue?.[2]?.id).toBe('2');
+    });
+
+    it('does not move first item up', async () => {
+      const items: TestItem[] = [
+        { id: '1', value: 'First' },
+        { id: '2', value: 'Second' },
+      ];
+      wrapper = mountComponent({ modelValue: items });
+
+      const dragHandles = wrapper.findAll('.drag-handle');
+      await dragHandles[0].trigger('keydown', { key: 'ArrowUp', altKey: true });
+
+      const emitted = wrapper.emitted('update:modelValue');
+      expect(emitted).toBeFalsy();
+    });
+
+    it('does not move last item down', async () => {
+      const items: TestItem[] = [
+        { id: '1', value: 'First' },
+        { id: '2', value: 'Second' },
+      ];
+      wrapper = mountComponent({ modelValue: items });
+
+      const dragHandles = wrapper.findAll('.drag-handle');
+      await dragHandles[1].trigger('keydown', { key: 'ArrowDown', altKey: true });
+
+      const emitted = wrapper.emitted('update:modelValue');
+      expect(emitted).toBeFalsy();
+    });
+
+    it('emits list-modified when item is moved via keyboard', async () => {
+      const items: TestItem[] = [
+        { id: '1', value: 'First' },
+        { id: '2', value: 'Second' },
+      ];
+      wrapper = mountComponent({ modelValue: items });
+
+      const dragHandles = wrapper.findAll('.drag-handle');
+      await dragHandles[1].trigger('keydown', { key: 'ArrowUp', altKey: true });
+
+      expect(wrapper.emitted('list-modified')).toBeTruthy();
+    });
+
+    it('ignores arrow keys without Alt modifier', async () => {
+      const items: TestItem[] = [
+        { id: '1', value: 'First' },
+        { id: '2', value: 'Second' },
+      ];
+      wrapper = mountComponent({ modelValue: items });
+
+      const dragHandles = wrapper.findAll('.drag-handle');
+      await dragHandles[1].trigger('keydown', { key: 'ArrowUp', altKey: false });
+
+      const emitted = wrapper.emitted('update:modelValue');
+      expect(emitted).toBeFalsy();
+    });
+
+    it('ignores other keys with Alt modifier', async () => {
+      const items: TestItem[] = [
+        { id: '1', value: 'First' },
+        { id: '2', value: 'Second' },
+      ];
+      wrapper = mountComponent({ modelValue: items });
+
+      const dragHandles = wrapper.findAll('.drag-handle');
+      await dragHandles[1].trigger('keydown', { key: 'a', altKey: true });
+
+      const emitted = wrapper.emitted('update:modelValue');
+      expect(emitted).toBeFalsy();
+    });
+  });
 });
