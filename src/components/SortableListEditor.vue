@@ -114,7 +114,6 @@ const handleDragEnd = () => {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin: 8px 16px;
 }
 
 .drag-handle {

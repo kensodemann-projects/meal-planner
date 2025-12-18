@@ -75,7 +75,7 @@
       :create-item="createIngredient"
       @list-modified="listChanged = true"
       test-id-prefix="ingredient"
-      list-class="ingredient-list"
+      list-class="ingredient-list editable-list"
     >
       <template #item="{ item, onChange, onDelete }">
         <IngredientEditorRow :ingredient="item" @changed="onChange" @delete="onDelete" />
@@ -89,7 +89,7 @@
       :create-item="createStep"
       @list-modified="listChanged = true"
       test-id-prefix="step"
-      list-class="step-list"
+      list-class="step-list editable-list"
     >
       <template #item="{ item, onChange, onDelete }">
         <StepEditorRow :step="item" @changed="onChange" @delete="onDelete" />
