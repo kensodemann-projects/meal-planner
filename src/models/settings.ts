@@ -1,4 +1,9 @@
 /**
+ * Days of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+ */
+export type WeekDay = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+
+/**
  * User settings for meal planning and nutritional goals
  */
 export interface Settings {
@@ -16,7 +21,7 @@ export interface Settings {
   /** Number of cheat days allowed per week */
   cheatDays: number;
   /** First day of the week (0 = Sunday, 1 = Monday, etc.) */
-  weekStartDay: number;
+  weekStartDay: WeekDay;
 }
 
 /**
