@@ -52,7 +52,7 @@
 </template>
 
 <script setup lang="ts" generic="T extends { id: string }">
-import { computed } from 'vue';
+import { computed, nextTick } from 'vue';
 import draggable from 'vuedraggable';
 
 const props = withDefaults(
@@ -129,14 +129,14 @@ const handleKeydown = (event: KeyboardEvent, index: number) => {
     updated[newIndex] = temp;
     internalList.value = updated;
 
-    // Focus the drag handle at the new position after a short delay
-    setTimeout(() => {
+    // Focus the drag handle at the new position after DOM update
+    nextTick(() => {
       const dragHandles = document.querySelectorAll('.drag-handle');
       const targetHandle = dragHandles[newIndex] as HTMLElement;
       if (targetHandle) {
         targetHandle.focus();
       }
-    }, 50);
+    });
   }
 };
 </script>
