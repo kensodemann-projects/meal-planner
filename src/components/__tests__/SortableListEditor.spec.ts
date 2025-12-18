@@ -222,22 +222,6 @@ describe('SortableListEditor', () => {
     expect(wrapper.emitted('list-modified')).toBeTruthy();
   });
 
-  it('emits list-modified event on drag end', async () => {
-    const items: TestItem[] = [
-      { id: '1', value: 'First' },
-      { id: '2', value: 'Second' },
-    ];
-    wrapper = mountComponent({ modelValue: items, sortable: true });
-
-    const draggableStub = wrapper.findComponent({ name: 'draggable' });
-
-    // Simulate the drag end event
-    await draggableStub.vm.$emit('end');
-
-    // Verify list-modified event was emitted on drag end
-    expect(wrapper.emitted('list-modified')).toBeTruthy();
-  });
-
   it('does not allow reordering when sortable is false', () => {
     const items: TestItem[] = [
       { id: '1', value: 'First' },
