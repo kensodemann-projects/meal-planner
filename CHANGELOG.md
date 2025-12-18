@@ -1,5 +1,13 @@
 # meal-planner
 
+## 0.5.1
+
+### Patch Changes
+
+- daab3e3: Make the ingredients and steps sortable
+- 3b0cd51: add cuisines to recipes
+- 45589cf: remove foodId from RecipeIngredient - make ingredients text-only
+
 ## 0.5.0
 
 ### Minor Changes
