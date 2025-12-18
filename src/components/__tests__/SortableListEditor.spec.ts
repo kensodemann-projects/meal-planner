@@ -189,4 +189,65 @@ describe('SortableListEditor', () => {
     const emittedValue = emitted?.[0]?.[0] as TestItem[];
     expect(emittedValue?.[0]?.id).toBe('original-id');
   });
+
+  it('reorders items when dragged and emits list-modified event', async () => {
+    const items: TestItem[] = [
+      { id: '1', value: 'First' },
+      { id: '2', value: 'Second' },
+      { id: '3', value: 'Third' },
+    ];
+    wrapper = mountComponent({ modelValue: items, sortable: true });
+
+    // Simulate dragging by updating the v-model of the draggable stub
+    const draggableStub = wrapper.findComponent({ name: 'draggable' });
+    expect(draggableStub.exists()).toBe(true);
+
+    // Simulate reordering: move first item to last position
+    const reorderedItems = [
+      { id: '2', value: 'Second' },
+      { id: '3', value: 'Third' },
+      { id: '1', value: 'First' },
+    ];
+
+    // Update the v-model by emitting update:modelValue from the stub
+    await draggableStub.vm.$emit('update:modelValue', reorderedItems);
+
+    // Verify that the parent component emitted the reordered list
+    const emitted = wrapper.emitted('update:modelValue');
+    expect(emitted).toBeTruthy();
+    const emittedValue = emitted?.[0]?.[0] as TestItem[];
+    expect(emittedValue).toEqual(reorderedItems);
+
+    // Verify list-modified event was emitted
+    expect(wrapper.emitted('list-modified')).toBeTruthy();
+  });
+
+  it('emits list-modified event on drag end', async () => {
+    const items: TestItem[] = [
+      { id: '1', value: 'First' },
+      { id: '2', value: 'Second' },
+    ];
+    wrapper = mountComponent({ modelValue: items, sortable: true });
+
+    const draggableStub = wrapper.findComponent({ name: 'draggable' });
+
+    // Simulate the drag end event
+    await draggableStub.vm.$emit('end');
+
+    // Verify list-modified event was emitted on drag end
+    expect(wrapper.emitted('list-modified')).toBeTruthy();
+  });
+
+  it('does not allow reordering when sortable is false', () => {
+    const items: TestItem[] = [
+      { id: '1', value: 'First' },
+      { id: '2', value: 'Second' },
+    ];
+    wrapper = mountComponent({ modelValue: items, sortable: false });
+
+    const draggableStub = wrapper.findComponent({ name: 'draggable' });
+
+    // Verify that the draggable component is disabled
+    expect(draggableStub.props('disabled')).toBe(true);
+  });
 });
