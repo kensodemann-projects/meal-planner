@@ -5,9 +5,9 @@ export interface Settings {
   /** Daily calorie target in kcal */
   calories: number;
   /** Daily sugar limit in grams */
-  sugars: number;
+  sugar: number;
   /** Daily protein target in grams */
-  proteins: number;
+  protein: number;
   /** Acceptable percentage deviation from nutritional targets before the day counts as a cheat day (0-100) */
   tolerance: number;
   /** Number of cheat days allowed per week */
@@ -21,8 +21,8 @@ export interface Settings {
  */
 export const DEFAULT_SETTINGS: Settings = {
   calories: 2000,
-  sugars: 50,
-  proteins: 75,
+  sugar: 50,
+  protein: 75,
   tolerance: 10,
   cheatDays: 1,
   weekStartDay: 0, // Sunday
