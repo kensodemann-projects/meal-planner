@@ -62,8 +62,8 @@ describe('Validation Rules', () => {
       expect(validationRules.positive(-42.73)).toBe('Must be a positive number');
     });
 
-    it('returns "Must be a positive number" for NaN', () => {
-      expect(validationRules.positive(NaN)).toBe('Must be a positive number');
+    it('returns "Must be a valid positive number" for NaN', () => {
+      expect(validationRules.positive(NaN)).toBe('Must be a valid positive number');
     });
 
     it('returns true for Infinity', () => {
@@ -99,8 +99,8 @@ describe('Validation Rules', () => {
       expect(validationRules.zeroOrGreater(-42.73)).toBe('Must be zero or greater');
     });
 
-    it('returns "Must be zero or greater" for NaN', () => {
-      expect(validationRules.zeroOrGreater(NaN)).toBe('Must be zero or greater');
+    it('returns "Must be a valid number zero or greater" for NaN', () => {
+      expect(validationRules.zeroOrGreater(NaN)).toBe('Must be a valid number zero or greater');
     });
 
     it('returns true for Infinity', () => {
