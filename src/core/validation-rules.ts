@@ -5,8 +5,14 @@ export const validationRules = {
     return (value !== null && value !== undefined) || 'Required';
   },
   email: (value: string | null | undefined) => !value?.trim() || /.+@.+\..+/.test(value) || 'Invalid e-mail',
-  positive: (value: number | null | undefined) =>
-    value === null || value === undefined || value > 0 || 'Must be a positive number',
-  zeroOrGreater: (value: number | null | undefined) =>
-    value === null || value === undefined || value >= 0 || 'Must be zero or greater',
+  positive: (value: number | null | undefined) => {
+    if (value === null || value === undefined) return true;
+    if (Number.isNaN(value)) return 'Must be a valid positive number';
+    return value > 0 || 'Must be a positive number';
+  },
+  zeroOrGreater: (value: number | null | undefined) => {
+    if (value === null || value === undefined) return true;
+    if (Number.isNaN(value)) return 'Must be a valid number zero or greater';
+    return value >= 0 || 'Must be zero or greater';
+  },
 };

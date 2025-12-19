@@ -61,6 +61,20 @@ describe('Validation Rules', () => {
       expect(validationRules.positive(-73)).toBe('Must be a positive number');
       expect(validationRules.positive(-42.73)).toBe('Must be a positive number');
     });
+
+    it('returns "Must be a valid positive number" for NaN', () => {
+      expect(validationRules.positive(NaN)).toBe('Must be a valid positive number');
+    });
+
+    it('returns true for Infinity', () => {
+      expect(validationRules.positive(Infinity)).toBe(true);
+    });
+
+    it('returns true for very small positive numbers', () => {
+      expect(validationRules.positive(0.0001)).toBe(true);
+      expect(validationRules.positive(0.000001)).toBe(true);
+      expect(validationRules.positive(Number.MIN_VALUE)).toBe(true);
+    });
   });
 
   describe('zero or greater', () => {
@@ -83,12 +97,21 @@ describe('Validation Rules', () => {
       expect(validationRules.zeroOrGreater(-42)).toBe('Must be zero or greater');
       expect(validationRules.zeroOrGreater(-73)).toBe('Must be zero or greater');
       expect(validationRules.zeroOrGreater(-42.73)).toBe('Must be zero or greater');
+      expect(validationRules.zeroOrGreater(-Infinity)).toBe('Must be zero or greater');
     });
 
-    it('handles edge cases for special numeric values', () => {
-      expect(validationRules.zeroOrGreater(NaN)).toBe('Must be zero or greater');
+    it('returns "Must be a valid number zero or greater" for NaN', () => {
+      expect(validationRules.zeroOrGreater(NaN)).toBe('Must be a valid number zero or greater');
+    });
+
+    it('returns true for Infinity', () => {
       expect(validationRules.zeroOrGreater(Infinity)).toBe(true);
-      expect(validationRules.zeroOrGreater(-Infinity)).toBe('Must be zero or greater');
+    });
+
+    it('returns true for very small positive numbers', () => {
+      expect(validationRules.zeroOrGreater(0.0001)).toBe(true);
+      expect(validationRules.zeroOrGreater(0.000001)).toBe(true);
+      expect(validationRules.zeroOrGreater(Number.MIN_VALUE)).toBe(true);
     });
   });
 });
