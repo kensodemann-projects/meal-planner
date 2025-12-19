@@ -97,6 +97,21 @@ describe('Validation Rules', () => {
       expect(validationRules.zeroOrGreater(-42)).toBe('Must be zero or greater');
       expect(validationRules.zeroOrGreater(-73)).toBe('Must be zero or greater');
       expect(validationRules.zeroOrGreater(-42.73)).toBe('Must be zero or greater');
+      expect(validationRules.zeroOrGreater(-Infinity)).toBe('Must be zero or greater');
+    });
+
+    it('returns "Must be a valid number zero or greater" for NaN', () => {
+      expect(validationRules.zeroOrGreater(NaN)).toBe('Must be a valid number zero or greater');
+    });
+
+    it('returns true for Infinity', () => {
+      expect(validationRules.zeroOrGreater(Infinity)).toBe(true);
+    });
+
+    it('returns true for very small positive numbers', () => {
+      expect(validationRules.zeroOrGreater(0.0001)).toBe(true);
+      expect(validationRules.zeroOrGreater(0.000001)).toBe(true);
+      expect(validationRules.zeroOrGreater(Number.MIN_VALUE)).toBe(true);
     });
 
     it('returns "Must be a valid number zero or greater" for NaN', () => {
