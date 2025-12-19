@@ -60,6 +60,7 @@ describe('Validation Rules', () => {
       expect(validationRules.positive(-42)).toBe('Must be a positive number');
       expect(validationRules.positive(-73)).toBe('Must be a positive number');
       expect(validationRules.positive(-42.73)).toBe('Must be a positive number');
+      expect(validationRules.positive(-Infinity)).toBe('Must be a positive number');
     });
 
     it('returns "Must be a valid positive number" for NaN', () => {
