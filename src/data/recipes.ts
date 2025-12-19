@@ -1,5 +1,5 @@
 import type { Recipe } from '@/models/recipe';
-import { addDoc, collection, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { computed } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
 
@@ -31,5 +31,5 @@ export const useRecipesData = () => {
     return recipes.value.find((f) => f.id === id) || null;
   };
 
-  return { addRecipe, error, recipes, getRecipe, loading, removeRecipe, updateRecipe };
+  return { addRecipe, error, getRecipe, loading, recipes, removeRecipe, updateRecipe };
 };
