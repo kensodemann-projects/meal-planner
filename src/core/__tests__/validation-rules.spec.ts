@@ -84,5 +84,11 @@ describe('Validation Rules', () => {
       expect(validationRules.zeroOrGreater(-73)).toBe('Must be zero or greater');
       expect(validationRules.zeroOrGreater(-42.73)).toBe('Must be zero or greater');
     });
+
+    it('handles edge cases for special numeric values', () => {
+      expect(validationRules.zeroOrGreater(NaN)).toBe('Must be zero or greater');
+      expect(validationRules.zeroOrGreater(Infinity)).toBe(true);
+      expect(validationRules.zeroOrGreater(-Infinity)).toBe('Must be zero or greater');
+    });
   });
 });
