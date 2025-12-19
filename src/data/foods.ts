@@ -1,5 +1,6 @@
 import type { FoodItem } from '@/models/food';
-import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { computed } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
 
 export const useFoodsData = () => {
@@ -7,6 +8,9 @@ export const useFoodsData = () => {
   const path = 'foods';
   const foodsCollection = collection(db, path);
   const foods = useCollection<FoodItem>(foodsCollection);
+
+  const loading = computed(() => foods.pending.value);
+  const error = computed(() => foods.error.value);
 
   const addFood = async (food: FoodItem): Promise<string> => {
     const item = await addDoc(foodsCollection, food);
@@ -29,5 +33,5 @@ export const useFoodsData = () => {
 
   const fdcFoodItemExists = (fdcId: number): boolean => !!foods.value.find((f) => f.fdcId === fdcId);
 
-  return { addFood, fdcFoodItemExists, foods, getFood, removeFood, updateFood };
+  return { addFood, error, fdcFoodItemExists, foods, getFood, loading, removeFood, updateFood };
 };

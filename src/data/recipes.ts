@@ -1,5 +1,6 @@
 import type { Recipe } from '@/models/recipe';
-import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { computed } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
 
 export const useRecipesData = () => {
@@ -7,6 +8,9 @@ export const useRecipesData = () => {
   const path = 'recipes';
   const recipesCollection = collection(db, path);
   const recipes = useCollection<Recipe>(recipesCollection);
+
+  const loading = computed(() => recipes.pending.value);
+  const error = computed(() => recipes.error.value);
 
   const addRecipe = async (recipe: Recipe): Promise<string> => {
     const item = await addDoc(recipesCollection, recipe);
@@ -27,5 +31,5 @@ export const useRecipesData = () => {
     return recipes.value.find((f) => f.id === id) || null;
   };
 
-  return { addRecipe, recipes, getRecipe, removeRecipe, updateRecipe };
+  return { addRecipe, error, recipes, getRecipe, loading, removeRecipe, updateRecipe };
 };
