@@ -1,5 +1,5 @@
 import type { Recipe } from '@/models/recipe';
-import { addDoc, collection, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { useCollection, useFirestore } from 'vuefire';
 
 export const useRecipesData = () => {
@@ -22,17 +22,10 @@ export const useRecipesData = () => {
     await updateDoc(doc(db, `${path}/${id}`), fields);
   };
 
-  const getRecipeFromDatabase = async (id: string): Promise<Recipe | null> => {
-    try {
-      const snapshot = await getDoc(doc(db, path, id));
-      return snapshot.exists() ? { ...(snapshot.data() as Recipe), id } : null;
-    } catch {
-      return null;
-    }
+  const getRecipe = async (id: string): Promise<Recipe | null> => {
+    await recipes.promise.value;
+    return (recipes.value.find((f) => f.id === id) as Recipe) || null;
   };
-
-  const getRecipe = async (id: string): Promise<Recipe | null> =>
-    (recipes.value.find((f) => f.id === id) as Recipe) || getRecipeFromDatabase(id);
 
   return { addRecipe, recipes, getRecipe, removeRecipe, updateRecipe };
 };

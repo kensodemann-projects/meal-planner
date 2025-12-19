@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { type Mock, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ref } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
@@ -64,28 +64,20 @@ describe('Recipe Data Service', () => {
   });
 
   describe('get recipe', () => {
+    beforeEach(() => {
+      const recipes = ref(TEST_RECIPES);
+      (recipes as any).promise = { value: Promise.resolve() };
+      (useCollection as Mock).mockReturnValueOnce(recipes);
+    });
+
     it('finds the recipe in the list', async () => {
-      (useCollection as Mock).mockReturnValueOnce(ref(TEST_RECIPES));
       const { getRecipe } = useRecipesData();
       expect(await getRecipe(TEST_RECIPES[2]?.id || '')).toEqual(TEST_RECIPES[2]);
     });
 
-    it('goes to the database if the recipe is not in the list', async () => {
-      (useCollection as Mock).mockReturnValueOnce(ref(TEST_RECIPES));
+    it('resolves null if the recipe is not in the list', () => {
       const { getRecipe } = useRecipesData();
-      expect(await getRecipe('4885298slasdfk')).toBeNull();
-      expect(doc).toHaveBeenCalledExactlyOnceWith({ id: 42, name: 'my fake fire store' }, 'recipes', '4885298slasdfk');
-      expect(getDoc).toHaveBeenCalledExactlyOnceWith('42:doc:recipes:4885298slasdfk');
-    });
-
-    it('resolves the recipe from the database if found', async () => {
-      (useCollection as Mock).mockReturnValueOnce(ref(TEST_RECIPES));
-      (getDoc as Mock).mockResolvedValueOnce({
-        exists: vi.fn().mockReturnValue(true),
-        data: vi.fn().mockReturnValue(TEST_RECIPE),
-      });
-      const { getRecipe } = useRecipesData();
-      expect(await getRecipe('4885298slasdfk')).toEqual({ ...TEST_RECIPE, id: '4885298slasdfk' });
+      expect(getRecipe('non-existent-id')).resolves.toBeNull();
     });
   });
 

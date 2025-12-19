@@ -1,5 +1,5 @@
 import type { FoodItem } from '@/models/food';
-import { addDoc, collection, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { useCollection, useFirestore } from 'vuefire';
 
 export const useFoodsData = () => {
@@ -22,17 +22,10 @@ export const useFoodsData = () => {
     await updateDoc(doc(db, `${path}/${id}`), fields);
   };
 
-  const getFoodFromDatabase = async (id: string): Promise<FoodItem | null> => {
-    try {
-      const snapshot = await getDoc(doc(db, path, id));
-      return snapshot.exists() ? { ...(snapshot.data() as FoodItem), id } : null;
-    } catch {
-      return null;
-    }
+  const getFood = async (id: string): Promise<FoodItem | null> => {
+    await foods.promise.value;
+    return foods.value.find((f) => f.id === id) || null;
   };
-
-  const getFood = async (id: string): Promise<FoodItem | null> =>
-    foods.value.find((f) => f.id === id) || getFoodFromDatabase(id);
 
   const fdcFoodItemExists = (fdcId: number): boolean => !!foods.value.find((f) => f.fdcId === fdcId);
 
