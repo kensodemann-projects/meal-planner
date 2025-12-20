@@ -30,6 +30,13 @@
       :rules="[validationRules.required, validationRules.zeroOrGreater]"
       data-testid="cheat-days-input"
     ></v-number-input>
+    <v-autocomplete
+      label="Week Start Day"
+      v-model="weekStartDay"
+      :items="daysOfTheWeek"
+      :rules="[validationRules.required]"
+      data-testid="week-start-day-input"
+    ></v-autocomplete>
   </v-form>
 </template>
 
@@ -40,6 +47,16 @@ import { ref } from 'vue';
 
 const props = defineProps<{ settings: Settings }>();
 
+const daysOfTheWeek = [
+  { title: 'Sunday', value: 0 },
+  { title: 'Monday', value: 1 },
+  { title: 'Tuesday', value: 2 },
+  { title: 'Wednesday', value: 3 },
+  { title: 'Thursday', value: 4 },
+  { title: 'Friday', value: 5 },
+  { title: 'Saturday', value: 6 },
+];
+
 // Reactive properties to control the editor
 const valid = ref(false);
 const dailyCalorieLimit = ref<number>(props.settings.dailyCalorieLimit);
@@ -47,4 +64,5 @@ const dailySugarLimit = ref<number>(props.settings.dailySugarLimit);
 const dailyProteinTarget = ref<number>(props.settings.dailyProteinTarget);
 const tolerance = ref<number>(props.settings.tolerance);
 const cheatDays = ref<number>(props.settings.cheatDays);
+const weekStartDay = ref<number>(props.settings.weekStartDay);
 </script>

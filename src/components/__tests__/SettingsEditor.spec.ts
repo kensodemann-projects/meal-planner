@@ -184,4 +184,40 @@ describe('SettingsEditor', () => {
       expect(caloriesInput.props('modelValue')).toBe(3);
     });
   });
+
+  describe('Week Start Day', () => {
+    it('renders', () => {
+      wrapper = mountComponent();
+      const weekStartDayInput = wrapper.findComponent(
+        '[data-testid="week-start-day-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      expect(weekStartDayInput.exists()).toBe(true);
+      expect(weekStartDayInput.props('label')).toBe('Week Start Day');
+    });
+
+    it('has the correct items', () => {
+      wrapper = mountComponent();
+      const weekStartDayInput = wrapper.findComponent(
+        '[data-testid="week-start-day-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      const items = weekStartDayInput.props('items');
+      expect(items).toEqual([
+        { title: 'Sunday', value: 0 },
+        { title: 'Monday', value: 1 },
+        { title: 'Tuesday', value: 2 },
+        { title: 'Wednesday', value: 3 },
+        { title: 'Thursday', value: 4 },
+        { title: 'Friday', value: 5 },
+        { title: 'Saturday', value: 6 },
+      ]);
+    });
+
+    it('is initialized based on the settings', () => {
+      wrapper = mountComponent();
+      const weekStartDayInput = wrapper.findComponent(
+        '[data-testid="week-start-day-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      expect(weekStartDayInput.props('modelValue')).toBe(2);
+    });
+  });
 });
