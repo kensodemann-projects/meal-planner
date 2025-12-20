@@ -52,6 +52,24 @@ export const numberInputIsNotRequired = async <T>(wrapper: VueWrapper<T>, testId
   expect(wrapper.text()).not.toContain('Required');
 };
 
+export const numberInputMustBePositive = async <T>(wrapper: VueWrapper<T>, testId: string) => {
+  const numberInput = wrapper.findComponent(`[data-testid="${testId}"]`) as VueWrapper<components.VNumberInput>;
+  const input = numberInput.find('input');
+
+  expect(wrapper.text()).not.toContain('Must be a positive number');
+  await input.trigger('focus');
+  await input.setValue(0);
+  await input.trigger('blur');
+  expect(wrapper.text()).toContain('Must be a positive number');
+  await input.setValue(2);
+  await input.trigger('blur');
+  expect(wrapper.text()).not.toContain('Must be a positive number');
+
+  await input.setValue(-2);
+  await input.trigger('blur');
+  expect(wrapper.text()).toContain('Must be a positive number');
+};
+
 export const autocompleteIsRequired = async <T>(wrapper: VueWrapper<T>, testId: string) => {
   const autocomplete = wrapper.findComponent(`[data-testid="${testId}"]`) as VueWrapper<components.VAutocomplete>;
   const input = autocomplete.find('input');

@@ -2,11 +2,15 @@
   <div class="text-center">
     <h1>{{ packageInfo.description }} - v{{ packageInfo.version }}</h1>
   </div>
+
+  <div v-if="settings" class="my-6">
+    <SettingsEditor :settings="settings" />
+  </div>
 </template>
 
 <script setup lang="ts">
 import { useSettingsData } from '@/data/settings';
 import packageInfo from '../../package.json';
 
-useSettingsData();
+const { settings } = useSettingsData();
 </script>
