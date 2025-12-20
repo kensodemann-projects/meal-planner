@@ -1,7 +1,9 @@
-import { doc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { type Mock, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { useFirestore } from 'vuefire';
+import { useDocument, useFirestore } from 'vuefire';
 import { useSettingsData } from '../settings';
+import { flushPromises } from '@vue/test-utils';
+import { DEFAULT_SETTINGS } from '@/models/settings';
 
 vi.mock('firebase/firestore', async () => {
   const actual = (await vi.importActual('firebase/firestore')) as any;
@@ -21,6 +23,7 @@ vi.mock('firebase/firestore', async () => {
     updateDoc: vi.fn(),
     getDocs: vi.fn().mockResolvedValue([]),
     getDoc: vi.fn().mockResolvedValue({ exists: vi.fn().mockResolvedValue(false) }),
+    setDoc: vi.fn().mockResolvedValue({ id: '123' }),
     doc: vi.fn().mockImplementation((col: any, ...paths: string[]) => col + ':doc:' + paths.join(':')),
   };
 });
@@ -28,7 +31,12 @@ vi.mock('vuefire', async () => {
   const actual = (await vi.importActual('vuefire')) as any;
   return {
     ...actual,
-    useDocument: vi.fn(),
+    useDocument: vi.fn().mockReturnValue({
+      value: null,
+      pending: { value: false },
+      error: { value: null },
+      promise: { value: Promise.resolve(null) },
+    }),
     useFirestore: vi.fn(),
   };
 });
@@ -42,7 +50,25 @@ describe('Settings Data Service', () => {
 
   it('uses the application document from the settings collection', () => {
     useSettingsData();
-    expect(doc).toHaveBeenCalledOnce();
-    expect(doc).toHaveBeenCalledWith('42:col:settings', 'application');
+    expect(doc).toHaveBeenCalledExactlyOnceWith('42:col:settings', 'application');
+    expect(useDocument).toHaveBeenCalledExactlyOnceWith('42:col:settings:doc:application');
+  });
+
+  it('sets the default settings if they do not exist', async () => {
+    useSettingsData();
+    await flushPromises();
+    expect(setDoc).toHaveBeenCalledExactlyOnceWith('42:col:settings:doc:application', DEFAULT_SETTINGS);
+  });
+
+  it('does not set the settings doc if it already exists', async () => {
+    (useDocument as Mock).mockReturnValueOnce({
+      value: { ...DEFAULT_SETTINGS, calories: 2500 },
+      pending: { value: false },
+      error: { value: null },
+      promise: { value: Promise.resolve({ ...DEFAULT_SETTINGS, calories: 2500 }) },
+    });
+    useSettingsData();
+    await flushPromises();
+    expect(setDoc).not.toHaveBeenCalled();
   });
 });
