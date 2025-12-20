@@ -40,30 +40,30 @@ describe('SettingsEditor', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  describe('Calories Per Day Input', () => {
+  describe('Daily Calorie Limit Input', () => {
     it('renders', () => {
       wrapper = mountComponent();
       const caloriesInput = wrapper.findComponent(
-        '[data-testid="calories-per-day-input"]',
+        '[data-testid="daily-calorie-limit-input"]',
       ) as VueWrapper<components.VNumberInput>;
       expect(caloriesInput.exists()).toBe(true);
-      expect(caloriesInput.props('label')).toBe('Calories per day');
+      expect(caloriesInput.props('label')).toBe('Daily Calorie Limit (kcal)');
     });
 
     it('is required', async () => {
       wrapper = mountComponent();
-      await numberInputIsRequired(wrapper, 'calories-per-day-input');
+      await numberInputIsRequired(wrapper, 'daily-calorie-limit-input');
     });
 
     it('must be positive', async () => {
       wrapper = mountComponent();
-      await numberInputMustBePositive(wrapper, 'calories-per-day-input');
+      await numberInputMustBePositive(wrapper, 'daily-calorie-limit-input');
     });
 
     it('is initialized based ok the settings', () => {
       wrapper = mountComponent();
       const caloriesInput = wrapper.findComponent(
-        '[data-testid="calories-per-day-input"]',
+        '[data-testid="daily-calorie-limit-input"]',
       ) as VueWrapper<components.VNumberInput>;
       expect(caloriesInput.props('modelValue')).toBe(1875);
     });

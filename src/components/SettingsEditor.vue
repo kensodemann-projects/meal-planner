@@ -1,10 +1,10 @@
 <template>
   <v-form v-model="valid">
     <v-number-input
-      label="Calories per day"
-      v-model="caloriesPerDay"
+      label="Daily Calorie Limit (kcal)"
+      v-model="dailyCalorieLimit"
       :rules="[validationRules.required, validationRules.positive]"
-      data-testid="calories-per-day-input"
+      data-testid="daily-calorie-limit-input"
     ></v-number-input>
   </v-form>
 </template>
@@ -18,5 +18,5 @@ const props = defineProps<{ settings: Settings }>();
 
 // Reactive properties to control the editor
 const valid = ref(false);
-const caloriesPerDay = ref<number | null>(props.settings.dailyCalorieLimit);
+const dailyCalorieLimit = ref<number | null>(props.settings.dailyCalorieLimit);
 </script>
