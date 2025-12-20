@@ -75,9 +75,9 @@ describe('Recipe Data Service', () => {
       expect(await getRecipe(TEST_RECIPES[2]?.id || '')).toEqual(TEST_RECIPES[2]);
     });
 
-    it('resolves null if the recipe is not in the list', () => {
+    it('resolves null if the recipe is not in the list', async () => {
       const { getRecipe } = useRecipesData();
-      expect(getRecipe('non-existent-id')).resolves.toBeNull();
+      await expect(getRecipe('non-existent-id')).resolves.toBeNull();
     });
   });
 

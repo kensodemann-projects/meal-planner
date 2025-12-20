@@ -86,14 +86,14 @@ describe('Food Data Service', () => {
       (useCollection as Mock).mockReturnValueOnce(foods);
     });
 
-    it('finds the food in the list', () => {
+    it('finds the food in the list', async () => {
       const { getFood } = useFoodsData();
-      expect(getFood(TEST_FOODS[2]?.id || '')).resolves.toEqual(TEST_FOODS[2]);
+      await expect(getFood(TEST_FOODS[2]?.id || '')).resolves.toEqual(TEST_FOODS[2]);
     });
 
-    it('resolves null if the food is not found', () => {
+    it('resolves null if the food is not found', async () => {
       const { getFood } = useFoodsData();
-      expect(getFood('non-existent-id')).resolves.toBeNull();
+      await expect(getFood('non-existent-id')).resolves.toBeNull();
     });
   });
 
