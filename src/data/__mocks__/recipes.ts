@@ -6,6 +6,8 @@ import { ref } from 'vue';
 interface RecipesData {
   addRecipe: (recipe: Recipe) => Promise<string>;
   recipes: Ref<Recipe[]>;
+  error: Ref<Error | null>;
+  loading: Ref<boolean>;
   getRecipe: (id: string) => Promise<Recipe | null>;
   removeRecipe: (id: string) => Promise<void>;
   updateRecipe: (recipe: Recipe) => Promise<void>;
@@ -16,11 +18,15 @@ const getRecipe = vi.fn().mockResolvedValue(null);
 const removeRecipe = vi.fn();
 const updateRecipe = vi.fn();
 const recipes = ref<Recipe[]>([]);
+const error = ref<Error | null>(null);
+const loading = ref<boolean>(false);
 
 export const useRecipesData: () => RecipesData = vi.fn().mockReturnValue({
   addRecipe,
-  recipes,
+  error,
   getRecipe,
+  loading,
+  recipes,
   removeRecipe,
   updateRecipe,
 });
