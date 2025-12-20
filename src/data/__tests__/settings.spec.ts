@@ -1,4 +1,4 @@
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, updateDoc } from 'firebase/firestore';
 import { type Mock, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useDocument, useFirestore } from 'vuefire';
 import { useSettingsData } from '../settings';
@@ -70,5 +70,14 @@ describe('Settings Data Service', () => {
     useSettingsData();
     await flushPromises();
     expect(setDoc).not.toHaveBeenCalled();
+  });
+
+  describe('update settings', () => {
+    it('updates the " application" document', () => {
+      const { updateSettings } = useSettingsData();
+      const newSettings = { ...DEFAULT_SETTINGS, calories: 3000 };
+      updateSettings(newSettings);
+      expect(updateDoc).toHaveBeenCalledExactlyOnceWith('42:col:settings:doc:application', newSettings);
+    });
   });
 });
