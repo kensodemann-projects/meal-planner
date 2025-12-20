@@ -126,4 +126,48 @@ describe('Recipe Data Service', () => {
       });
     });
   });
+
+  describe('loading state', () => {
+    it('exposes the pending state from the collection', () => {
+      const recipes = ref([]);
+      (recipes as any).pending = ref(true);
+      (useCollection as Mock).mockReturnValueOnce(recipes);
+      const { loading } = useRecipesData();
+      expect(loading.value).toBe(true);
+    });
+
+    it('reflects changes in the pending state', () => {
+      const recipes = ref([]);
+      const pending = ref(false);
+      (recipes as any).pending = pending;
+      (useCollection as Mock).mockReturnValueOnce(recipes);
+      const { loading } = useRecipesData();
+      expect(loading.value).toBe(false);
+      pending.value = true;
+      expect(loading.value).toBe(true);
+    });
+  });
+
+  describe('error state', () => {
+    it('exposes the error state from the collection', () => {
+      const recipes = ref([]);
+      const testError = new Error('Test error');
+      (recipes as any).error = ref(testError);
+      (useCollection as Mock).mockReturnValueOnce(recipes);
+      const { error } = useRecipesData();
+      expect(error.value).toBe(testError);
+    });
+
+    it('reflects changes in the error state', () => {
+      const recipes = ref([]);
+      const errorRef = ref(null);
+      (recipes as any).error = errorRef;
+      (useCollection as Mock).mockReturnValueOnce(recipes);
+      const { error } = useRecipesData();
+      expect(error.value).toBeNull();
+      const testError = new Error('Test error');
+      errorRef.value = testError;
+      expect(error.value).toBe(testError);
+    });
+  });
 });
