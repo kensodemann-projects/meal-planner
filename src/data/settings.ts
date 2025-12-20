@@ -9,7 +9,7 @@ const DEFAULT_SETTINGS: Settings = {
   protein: 75,
   tolerance: 10,
   cheatDays: 1,
-  weekStartDay: 0,
+  weekStartDay: 0, // Sunday
 };
 
 export const useSettingsData = () => {
