@@ -12,6 +12,12 @@
       :rules="[validationRules.required, validationRules.positive]"
       data-testid="daily-sugar-limit-input"
     ></v-number-input>
+    <v-number-input
+      label="Daily Protein Target (grams)"
+      v-model="dailyProteinTarget"
+      :rules="[validationRules.required, validationRules.positive]"
+      data-testid="daily-protein-target-input"
+    ></v-number-input>
   </v-form>
 </template>
 
@@ -26,4 +32,5 @@ const props = defineProps<{ settings: Settings }>();
 const valid = ref(false);
 const dailyCalorieLimit = ref<number | null>(props.settings.dailyCalorieLimit);
 const dailySugarLimit = ref<number | null>(props.settings.dailySugarLimit);
+const dailyProteinTarget = ref<number | null>(props.settings.dailyProteinTarget);
 </script>

@@ -97,4 +97,33 @@ describe('SettingsEditor', () => {
       expect(caloriesInput.props('modelValue')).toBe(45);
     });
   });
+
+  describe('Daily Protein Target Input', () => {
+    it('renders', () => {
+      wrapper = mountComponent();
+      const caloriesInput = wrapper.findComponent(
+        '[data-testid="daily-protein-target-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(caloriesInput.exists()).toBe(true);
+      expect(caloriesInput.props('label')).toBe('Daily Protein Target (grams)');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsRequired(wrapper, 'daily-protein-target-input');
+    });
+
+    it('must be positive', async () => {
+      wrapper = mountComponent();
+      await numberInputMustBePositive(wrapper, 'daily-protein-target-input');
+    });
+
+    it('is initialized based on the settings', () => {
+      wrapper = mountComponent();
+      const caloriesInput = wrapper.findComponent(
+        '[data-testid="daily-protein-target-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(caloriesInput.props('modelValue')).toBe(65);
+    });
+  });
 });
