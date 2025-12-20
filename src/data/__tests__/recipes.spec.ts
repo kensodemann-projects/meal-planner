@@ -160,7 +160,7 @@ describe('Recipe Data Service', () => {
 
     it('reflects changes in the error state', () => {
       const recipes = ref([]);
-      const errorRef = ref(null);
+      const errorRef = ref<Error | null>(null);
       (recipes as any).error = errorRef;
       (useCollection as Mock).mockReturnValueOnce(recipes);
       const { error } = useRecipesData();
