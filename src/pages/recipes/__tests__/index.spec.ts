@@ -1,13 +1,14 @@
+import RecipeListItem from '@/components/RecipeListItem.vue';
+import { TEST_RECIPES } from '@/data/__tests__/test-data';
+import { useRecipesData } from '@/data/recipes';
+import type { Recipe } from '@/models/recipe';
 import { mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+import { useRouter } from 'vue-router';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import IndexPage from '../index.vue';
-import { useRouter } from 'vue-router';
-import RecipeListItem from '@/components/RecipeListItem.vue';
-import { useRecipesData } from '@/data/recipes';
-import { TEST_RECIPES } from '@/data/__tests__/test-data';
 
 const vuetify = createVuetify({
   components,
@@ -34,7 +35,7 @@ describe('Recipes List Page', () => {
       push: vi.fn(),
     });
     const { recipes } = useRecipesData();
-    recipes.value = TEST_RECIPES;
+    (recipes.value as Recipe[]) = TEST_RECIPES;
   });
 
   it('renders', () => {
@@ -57,7 +58,7 @@ describe('Recipes List Page', () => {
   it('navigates to the given recipe on click', async () => {
     const router = useRouter();
     const { recipes } = useRecipesData();
-    recipes.value = TEST_RECIPES;
+    (recipes.value as Recipe[]) = TEST_RECIPES;
     wrapper = mountPage();
     const listItems = wrapper.findAllComponents(RecipeListItem);
     const listItem = listItems[0]?.findComponent(components.VListItem);
