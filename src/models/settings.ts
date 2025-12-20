@@ -23,15 +23,3 @@ export interface Settings {
   /** First day of the week (0 = Sunday, 1 = Monday, etc.) */
   weekStartDay: WeekDay;
 }
-
-/**
- * Default user settings with standard nutritional targets
- */
-export const DEFAULT_SETTINGS: Settings = {
-  calories: 2000,
-  sugar: 50,
-  protein: 75,
-  tolerance: 10,
-  cheatDays: 1,
-  weekStartDay: 0, // Sunday
-};
