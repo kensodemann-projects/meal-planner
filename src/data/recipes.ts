@@ -6,7 +6,7 @@ export const useRecipesData = () => {
   const db = useFirestore();
   const path = 'recipes';
   const recipesCollection = collection(db, path);
-  const recipes = useCollection(recipesCollection);
+  const recipes = useCollection<Recipe>(recipesCollection);
 
   const addRecipe = async (recipe: Recipe): Promise<string> => {
     const item = await addDoc(recipesCollection, recipe);
