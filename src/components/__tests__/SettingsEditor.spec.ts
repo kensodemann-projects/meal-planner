@@ -4,7 +4,7 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import SettingsEditor from '../SettingsEditor.vue';
-import { numberInputIsRequired, numberInputMustBePositive } from './test-utils';
+import { numberInputIsRequired, numberInputMustBePositive, numberInputMustBeZeroOrGreater } from './test-utils';
 import type { Settings } from '@/models/settings';
 
 const vuetify = createVuetify({
@@ -124,6 +124,64 @@ describe('SettingsEditor', () => {
         '[data-testid="daily-protein-target-input"]',
       ) as VueWrapper<components.VNumberInput>;
       expect(caloriesInput.props('modelValue')).toBe(65);
+    });
+  });
+
+  describe('Tolerance', () => {
+    it('renders', () => {
+      wrapper = mountComponent();
+      const caloriesInput = wrapper.findComponent(
+        '[data-testid="tolerance-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(caloriesInput.exists()).toBe(true);
+      expect(caloriesInput.props('label')).toBe('Tolerance (%)');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsRequired(wrapper, 'tolerance-input');
+    });
+
+    it('must be positive', async () => {
+      wrapper = mountComponent();
+      await numberInputMustBePositive(wrapper, 'tolerance-input');
+    });
+
+    it('is initialized based on the settings', () => {
+      wrapper = mountComponent();
+      const caloriesInput = wrapper.findComponent(
+        '[data-testid="tolerance-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(caloriesInput.props('modelValue')).toBe(8);
+    });
+  });
+
+  describe('Cheat Days', () => {
+    it('renders', () => {
+      wrapper = mountComponent();
+      const caloriesInput = wrapper.findComponent(
+        '[data-testid="cheat-days-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(caloriesInput.exists()).toBe(true);
+      expect(caloriesInput.props('label')).toBe('Cheat Days per Week');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsRequired(wrapper, 'cheat-days-input');
+    });
+
+    it('must be zero or greater', async () => {
+      wrapper = mountComponent();
+      await numberInputMustBeZeroOrGreater(wrapper, 'cheat-days-input');
+    });
+
+    it('is initialized based on the settings', () => {
+      wrapper = mountComponent();
+      const caloriesInput = wrapper.findComponent(
+        '[data-testid="cheat-days-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(caloriesInput.props('modelValue')).toBe(3);
     });
   });
 });

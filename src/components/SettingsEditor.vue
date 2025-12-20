@@ -18,6 +18,18 @@
       :rules="[validationRules.required, validationRules.positive]"
       data-testid="daily-protein-target-input"
     ></v-number-input>
+    <v-number-input
+      label="Tolerance (%)"
+      v-model="tolerance"
+      :rules="[validationRules.required, validationRules.positive]"
+      data-testid="tolerance-input"
+    ></v-number-input>
+    <v-number-input
+      label="Cheat Days per Week"
+      v-model="cheatDays"
+      :rules="[validationRules.required, validationRules.zeroOrGreater]"
+      data-testid="cheat-days-input"
+    ></v-number-input>
   </v-form>
 </template>
 
@@ -30,7 +42,9 @@ const props = defineProps<{ settings: Settings }>();
 
 // Reactive properties to control the editor
 const valid = ref(false);
-const dailyCalorieLimit = ref<number | null>(props.settings.dailyCalorieLimit);
-const dailySugarLimit = ref<number | null>(props.settings.dailySugarLimit);
-const dailyProteinTarget = ref<number | null>(props.settings.dailyProteinTarget);
+const dailyCalorieLimit = ref<number>(props.settings.dailyCalorieLimit);
+const dailySugarLimit = ref<number>(props.settings.dailySugarLimit);
+const dailyProteinTarget = ref<number>(props.settings.dailyProteinTarget);
+const tolerance = ref<number>(props.settings.tolerance);
+const cheatDays = ref<number>(props.settings.cheatDays);
 </script>
