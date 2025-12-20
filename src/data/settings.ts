@@ -1,7 +1,16 @@
-import { DEFAULT_SETTINGS, type Settings } from '@/models/settings';
+import { type Settings } from '@/models/settings';
 import { collection, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { computed } from 'vue';
 import { useDocument, useFirestore } from 'vuefire';
+
+const DEFAULT_SETTINGS: Settings = {
+  calories: 2000,
+  sugar: 50,
+  protein: 75,
+  tolerance: 10,
+  cheatDays: 1,
+  weekStartDay: 0, // Sunday
+};
 
 export const useSettingsData = () => {
   const db = useFirestore();

@@ -1,9 +1,9 @@
+import { type Settings } from '@/models/settings';
+import { flushPromises } from '@vue/test-utils';
 import { doc, setDoc, updateDoc } from 'firebase/firestore';
 import { type Mock, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useDocument, useFirestore } from 'vuefire';
 import { useSettingsData } from '../settings';
-import { flushPromises } from '@vue/test-utils';
-import { DEFAULT_SETTINGS } from '@/models/settings';
 
 vi.mock('firebase/firestore', async () => {
   const actual = (await vi.importActual('firebase/firestore')) as any;
@@ -130,3 +130,12 @@ describe('Settings Data Service', () => {
     });
   });
 });
+
+const DEFAULT_SETTINGS: Settings = {
+  calories: 2000,
+  sugar: 50,
+  protein: 75,
+  tolerance: 10,
+  cheatDays: 1,
+  weekStartDay: 0,
+};
