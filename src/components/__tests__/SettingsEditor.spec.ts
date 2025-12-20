@@ -14,9 +14,9 @@ const vuetify = createVuetify({
 const mountComponent = (
   props: { settings: Settings } = {
     settings: {
-      calories: 1875,
-      sugar: 45,
-      protein: 65,
+      dailyCalorieLimit: 1875,
+      dailySugarLimit: 45,
+      dailyProteinTarget: 65,
       tolerance: 8,
       cheatDays: 3,
       weekStartDay: 2,
@@ -60,12 +60,12 @@ describe('SettingsEditor', () => {
       await numberInputMustBePositive(wrapper, 'calories-per-day-input');
     });
 
-    it('is initialized based on the settings', () => {
+    it('is initialized based ok the settings', () => {
       wrapper = mountComponent();
       const caloriesInput = wrapper.findComponent(
         '[data-testid="calories-per-day-input"]',
       ) as VueWrapper<components.VNumberInput>;
-      expect(caloriesInput.props('modelValue')).toBe(2000);
+      expect(caloriesInput.props('modelValue')).toBe(1875);
     });
   });
 });

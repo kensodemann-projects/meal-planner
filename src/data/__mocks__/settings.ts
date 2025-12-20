@@ -12,9 +12,9 @@ interface SettingsData {
 
 const updateSettings = vi.fn();
 const settings = ref<Settings>({
-  calories: 2500,
-  sugar: 35,
-  protein: 85,
+  dailyCalorieLimit: 2500,
+  dailySugarLimit: 35,
+  dailyProteinTarget: 85,
   tolerance: 15,
   cheatDays: 2,
   weekStartDay: 1,

@@ -18,5 +18,5 @@ const props = defineProps<{ settings: Settings }>();
 
 // Reactive properties to control the editor
 const valid = ref(false);
-const caloriesPerDay = ref<number | null>(props.settings.calories);
+const caloriesPerDay = ref<number | null>(props.settings.dailyCalorieLimit);
 </script>
