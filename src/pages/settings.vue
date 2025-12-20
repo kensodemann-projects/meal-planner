@@ -1,9 +1,9 @@
 <template>
-  <div>
-    <h1>This is the Settings page</h1>
+  <div class="text-center">
+    <h1>{{ packageInfo.description }} - v{{ packageInfo.version }}</h1>
   </div>
 </template>
 
 <script setup lang="ts">
-//
+import packageInfo from '../../package.json';
 </script>
