@@ -72,6 +72,55 @@ describe('Settings Data Service', () => {
     expect(setDoc).not.toHaveBeenCalled();
   });
 
+  describe('loading state', () => {
+    it('exposes the pending state from useDocument', () => {
+      (useDocument as Mock).mockReturnValueOnce({
+        value: null,
+        pending: { value: true },
+        error: { value: null },
+        promise: { value: Promise.resolve(null) },
+      });
+      const { loading } = useSettingsData();
+      expect(loading.value).toBe(true);
+    });
+
+    it('reflects changes in the pending state', () => {
+      (useDocument as Mock).mockReturnValueOnce({
+        value: null,
+        pending: { value: false },
+        error: { value: null },
+        promise: { value: Promise.resolve(null) },
+      });
+      const { loading } = useSettingsData();
+      expect(loading.value).toBe(false);
+    });
+  });
+
+  describe('error state', () => {
+    it('exposes the error state from useDocument', () => {
+      const testError = new Error('Test error');
+      (useDocument as Mock).mockReturnValueOnce({
+        value: null,
+        pending: { value: false },
+        error: { value: testError },
+        promise: { value: Promise.resolve(null) },
+      });
+      const { error } = useSettingsData();
+      expect(error.value).toBe(testError);
+    });
+
+    it('reflects null when no error exists', () => {
+      (useDocument as Mock).mockReturnValueOnce({
+        value: null,
+        pending: { value: false },
+        error: { value: null },
+        promise: { value: Promise.resolve(null) },
+      });
+      const { error } = useSettingsData();
+      expect(error.value).toBeNull();
+    });
+  });
+
   describe('update settings', () => {
     it('updates the " application" document', () => {
       const { updateSettings } = useSettingsData();
