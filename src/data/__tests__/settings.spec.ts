@@ -122,7 +122,7 @@ describe('Settings Data Service', () => {
   });
 
   describe('update settings', () => {
-    it('updates the " application" document', () => {
+    it('updates the "application" document', () => {
       const { updateSettings } = useSettingsData();
       const newSettings = { ...DEFAULT_SETTINGS, calories: 3000 };
       updateSettings(newSettings);
