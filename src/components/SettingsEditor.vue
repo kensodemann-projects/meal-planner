@@ -6,6 +6,12 @@
       :rules="[validationRules.required, validationRules.positive]"
       data-testid="daily-calorie-limit-input"
     ></v-number-input>
+    <v-number-input
+      label="Daily Sugar Limit (grams)"
+      v-model="dailySugarLimit"
+      :rules="[validationRules.required, validationRules.positive]"
+      data-testid="daily-sugar-limit-input"
+    ></v-number-input>
   </v-form>
 </template>
 
@@ -19,4 +25,5 @@ const props = defineProps<{ settings: Settings }>();
 // Reactive properties to control the editor
 const valid = ref(false);
 const dailyCalorieLimit = ref<number | null>(props.settings.dailyCalorieLimit);
+const dailySugarLimit = ref<number | null>(props.settings.dailySugarLimit);
 </script>

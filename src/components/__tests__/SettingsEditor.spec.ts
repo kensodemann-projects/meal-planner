@@ -60,12 +60,41 @@ describe('SettingsEditor', () => {
       await numberInputMustBePositive(wrapper, 'daily-calorie-limit-input');
     });
 
-    it('is initialized based ok the settings', () => {
+    it('is initialized based on the settings', () => {
       wrapper = mountComponent();
       const caloriesInput = wrapper.findComponent(
         '[data-testid="daily-calorie-limit-input"]',
       ) as VueWrapper<components.VNumberInput>;
       expect(caloriesInput.props('modelValue')).toBe(1875);
+    });
+  });
+
+  describe('Daily Sugar Limit Input', () => {
+    it('renders', () => {
+      wrapper = mountComponent();
+      const caloriesInput = wrapper.findComponent(
+        '[data-testid="daily-sugar-limit-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(caloriesInput.exists()).toBe(true);
+      expect(caloriesInput.props('label')).toBe('Daily Sugar Limit (grams)');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsRequired(wrapper, 'daily-sugar-limit-input');
+    });
+
+    it('must be positive', async () => {
+      wrapper = mountComponent();
+      await numberInputMustBePositive(wrapper, 'daily-sugar-limit-input');
+    });
+
+    it('is initialized based on the settings', () => {
+      wrapper = mountComponent();
+      const caloriesInput = wrapper.findComponent(
+        '[data-testid="daily-sugar-limit-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(caloriesInput.props('modelValue')).toBe(45);
     });
   });
 });
