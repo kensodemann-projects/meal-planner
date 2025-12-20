@@ -24,7 +24,7 @@ export const useRecipesData = () => {
 
   const getRecipe = async (id: string): Promise<Recipe | null> => {
     await recipes.promise.value;
-    return (recipes.value.find((f) => f.id === id) as Recipe) || null;
+    return recipes.value.find((f) => f.id === id) || null;
   };
 
   return { addRecipe, recipes, getRecipe, removeRecipe, updateRecipe };
