@@ -220,5 +220,30 @@ describe('Recipe Data Service', () => {
       const { recipeMatches } = useRecipesData();
       expect(recipeMatches(TEST_RECIPE, { keywords: 'olive bogus Pan-seared simple' })).toBe(false);
     });
+
+    it('returns true if the category matches', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, { category: TEST_RECIPE.category })).toBe(true);
+    });
+
+    it('returns false if the category does not match', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, { category: 'Lamb' })).toBe(false);
+    });
+
+    it('returns true if the category and keywords match', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, { category: TEST_RECIPE.category, keywords: TEST_RECIPE.name })).toBe(true);
+    });
+
+    it('returns false if the category matches but keywords do not', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, { category: TEST_RECIPE.category, keywords: 'BogusKeyword' })).toBe(false);
+    });
+
+    it('returns false if the keyword matches but the category does not', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, { category: 'Lamb', keywords: TEST_RECIPE.name })).toBe(false);
+    });
   });
 });
