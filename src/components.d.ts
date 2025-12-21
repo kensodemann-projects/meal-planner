@@ -31,6 +31,7 @@ declare module 'vue' {
     RecipeEditor: typeof import('./components/RecipeEditor.vue')['default']
     RecipeListItem: typeof import('./components/RecipeListItem.vue')['default']
     RecipeView: typeof import('./components/RecipeView.vue')['default']
+    ResetButton: typeof import('./components/buttons/ResetButton.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SaveButton: typeof import('./components/buttons/SaveButton.vue')['default']
