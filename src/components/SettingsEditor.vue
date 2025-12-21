@@ -53,7 +53,7 @@ import type { Settings, WeekDay } from '@/models/settings';
 import { computed, ref } from 'vue';
 
 const props = defineProps<{ settings: Settings }>();
-const emit = defineEmits<{ (event: 'save', payload: Settings): void; (event: 'cancel'): void }>();
+const emit = defineEmits<{ (event: 'save', payload: Settings): void }>();
 
 const daysOfTheWeek = [
   { title: 'Sunday', value: 0 },
