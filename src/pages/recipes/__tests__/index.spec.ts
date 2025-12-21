@@ -75,4 +75,66 @@ describe('Recipes List Page', () => {
       expect(router.push).toHaveBeenCalledExactlyOnceWith('recipes/add');
     });
   });
+
+  describe('search and filter UI', () => {
+    beforeEach(() => {
+      wrapper = mountPage();
+    });
+
+    it('renders the search input field', () => {
+      const searchInput = wrapper.findComponent('[data-testid="search-input"]');
+      expect(searchInput.exists()).toBe(true);
+    });
+
+    it('renders the category filter dropdown', () => {
+      const categoryFilter = wrapper.findComponent('[data-testid="filter-category"]');
+      expect(categoryFilter.exists()).toBe(true);
+    });
+
+    it('renders the cuisine filter dropdown', () => {
+      const cuisineFilter = wrapper.findComponent('[data-testid="filter-cuisine"]');
+      expect(cuisineFilter.exists()).toBe(true);
+    });
+
+    it('renders the calorie range filter dropdown', () => {
+      const calorieRangeFilter = wrapper.findComponent('[data-testid="filter-calorie-range"]');
+      expect(calorieRangeFilter.exists()).toBe(true);
+    });
+
+    it('displays the recipe count', () => {
+      const countDisplay = wrapper.find('[data-testid="recipe-count"]');
+      expect(countDisplay.exists()).toBe(true);
+      expect(countDisplay.text()).toContain(`Displaying ${TEST_RECIPES.length} of ${TEST_RECIPES.length} recipe`);
+    });
+  });
+
+  describe('empty state', () => {
+    it('displays "No recipes found" message when there are no recipes and not loading', () => {
+      const { recipes, loading } = useRecipesData();
+      (recipes.value as Recipe[]) = [];
+      (loading.value as boolean) = false;
+      wrapper = mountPage();
+      const emptyStateMessage = wrapper.find('h2');
+      expect(emptyStateMessage.exists()).toBe(true);
+      expect(emptyStateMessage.text()).toBe('No recipes found.');
+    });
+
+    it('does not display "No recipes found" message when loading', () => {
+      const { recipes, loading } = useRecipesData();
+      (recipes.value as Recipe[]) = [];
+      (loading.value as boolean) = true;
+      wrapper = mountPage();
+      const emptyStateMessage = wrapper.find('h2');
+      expect(emptyStateMessage.exists()).toBe(false);
+    });
+
+    it('does not display "No recipes found" message when there are recipes', () => {
+      const { recipes, loading } = useRecipesData();
+      (recipes.value as Recipe[]) = TEST_RECIPES;
+      (loading.value as boolean) = false;
+      wrapper = mountPage();
+      const emptyStateMessage = wrapper.find('h2');
+      expect(emptyStateMessage.exists()).toBe(false);
+    });
+  });
 });
