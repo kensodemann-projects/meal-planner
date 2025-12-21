@@ -172,6 +172,11 @@ describe('Recipe Data Service', () => {
   });
 
   describe('recipe matches', () => {
+    it('returns true if there are no filter parameters', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, '')).toBe(true);
+    });
+
     it('returns false if the recipe does not match the keyword', () => {
       const { recipeMatches } = useRecipesData();
       expect(recipeMatches(TEST_RECIPE, 'nonexistentkeyword')).toBe(false);

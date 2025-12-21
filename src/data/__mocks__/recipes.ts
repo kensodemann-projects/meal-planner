@@ -9,12 +9,14 @@ interface RecipesData {
   error: Ref<Error | null>;
   loading: Ref<boolean>;
   getRecipe: (id: string) => Promise<Recipe | null>;
+  recipeMatches: (recipe: Recipe, searchString: string) => boolean;
   removeRecipe: (id: string) => Promise<void>;
   updateRecipe: (recipe: Recipe) => Promise<void>;
 }
 
 const addRecipe = vi.fn();
 const getRecipe = vi.fn().mockResolvedValue(null);
+const recipeMatches = vi.fn().mockReturnValue(false);
 const removeRecipe = vi.fn();
 const updateRecipe = vi.fn();
 const recipes = ref<Recipe[]>([]);
@@ -26,6 +28,7 @@ export const useRecipesData: () => RecipesData = vi.fn().mockReturnValue({
   error,
   getRecipe,
   loading,
+  recipeMatches,
   recipes,
   removeRecipe,
   updateRecipe,
