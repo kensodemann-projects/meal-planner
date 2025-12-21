@@ -41,4 +41,39 @@ describe('SettingsPage', () => {
     wrapper = mountPage();
     expect(useSettingsData).toHaveBeenCalledExactlyOnceWith();
   });
+
+  it('renders SettingsEditor with settings prop', () => {
+    wrapper = mountPage();
+    const settingsEditor = wrapper.findComponent({ name: 'SettingsEditor' });
+    expect(settingsEditor.exists()).toBe(true);
+    expect(settingsEditor.props('settings')).toEqual({
+      dailyCalorieLimit: 2500,
+      dailySugarLimit: 35,
+      dailyProteinTarget: 85,
+      tolerance: 15,
+      cheatDays: 2,
+      weekStartDay: 1,
+    });
+  });
+
+  it('calls updateSettings when SettingsEditor emits save event', async () => {
+    wrapper = mountPage();
+    const settingsEditor = wrapper.findComponent({ name: 'SettingsEditor' });
+
+    const mockUpdateSettings = vi.mocked(useSettingsData).mock.results[0]?.value.updateSettings;
+
+    const updatedSettings = {
+      dailyCalorieLimit: 2100,
+      dailySugarLimit: 45,
+      dailyProteinTarget: 90,
+      tolerance: 12,
+      cheatDays: 1,
+      weekStartDay: 0,
+    };
+
+    await settingsEditor.vm.$emit('save', updatedSettings);
+
+    expect(mockUpdateSettings).toHaveBeenCalledOnce();
+    expect(mockUpdateSettings).toHaveBeenCalledWith(updatedSettings);
+  });
 });

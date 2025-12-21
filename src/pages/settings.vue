@@ -4,7 +4,7 @@
   </div>
 
   <div v-if="settings" class="my-6">
-    <SettingsEditor :settings="settings" />
+    <SettingsEditor :settings="settings" @save="updateSettings" />
   </div>
 </template>
 
@@ -12,5 +12,5 @@
 import { useSettingsData } from '@/data/settings';
 import packageInfo from '../../package.json';
 
-const { settings } = useSettingsData();
+const { settings, updateSettings } = useSettingsData();
 </script>
