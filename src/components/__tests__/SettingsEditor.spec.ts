@@ -142,9 +142,9 @@ describe('SettingsEditor', () => {
       await numberInputIsRequired(wrapper, 'tolerance-input');
     });
 
-    it('must be positive', async () => {
+    it('must be zero or greater', async () => {
       wrapper = mountComponent();
-      await numberInputMustBePositive(wrapper, 'tolerance-input');
+      await numberInputMustBeZeroOrGreater(wrapper, 'tolerance-input');
     });
 
     it('is initialized based on the settings', () => {

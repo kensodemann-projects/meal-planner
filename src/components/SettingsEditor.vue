@@ -21,7 +21,7 @@
     <v-number-input
       label="Tolerance (%)"
       v-model="tolerance"
-      :rules="[validationRules.required, validationRules.positive]"
+      :rules="[validationRules.required, validationRules.zeroOrGreater]"
       data-testid="tolerance-input"
     ></v-number-input>
     <v-number-input
