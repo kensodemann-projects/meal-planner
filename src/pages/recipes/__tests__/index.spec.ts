@@ -76,6 +76,38 @@ describe('Recipes List Page', () => {
     });
   });
 
+  describe('search and filter UI', () => {
+    beforeEach(() => {
+      wrapper = mountPage();
+    });
+
+    it('renders the search input field', () => {
+      const searchInput = wrapper.findComponent('[data-testid="search-input"]');
+      expect(searchInput.exists()).toBe(true);
+    });
+
+    it('renders the category filter dropdown', () => {
+      const categoryFilter = wrapper.findComponent('[data-testid="filter-category"]');
+      expect(categoryFilter.exists()).toBe(true);
+    });
+
+    it('renders the cuisine filter dropdown', () => {
+      const cuisineFilter = wrapper.findComponent('[data-testid="filter-cuisine"]');
+      expect(cuisineFilter.exists()).toBe(true);
+    });
+
+    it('renders the calorie range filter dropdown', () => {
+      const calorieRangeFilter = wrapper.findComponent('[data-testid="filter-calorie-range"]');
+      expect(calorieRangeFilter.exists()).toBe(true);
+    });
+
+    it('displays the recipe count', () => {
+      const countDisplay = wrapper.find('.text-right.text-medium-emphasis.font-weight-light');
+      expect(countDisplay.exists()).toBe(true);
+      expect(countDisplay.text()).toContain(`Displaying ${TEST_RECIPES.length} of ${TEST_RECIPES.length} recipe`);
+    });
+  });
+
   describe('empty state', () => {
     it('displays "No recipes found" message when there are no recipes and not loading', () => {
       const { recipes, loading } = useRecipesData();
