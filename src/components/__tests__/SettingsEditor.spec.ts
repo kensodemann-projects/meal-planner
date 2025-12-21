@@ -176,6 +176,23 @@ describe('SettingsEditor', () => {
       await numberInputMustBeZeroOrGreater(wrapper, 'cheat-days-input');
     });
 
+    it('must be seven or less', async () => {
+      wrapper = mountComponent();
+      const caloriesInput = wrapper.findComponent(
+        '[data-testid="cheat-days-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const input = caloriesInput.find('input');
+
+      expect(caloriesInput.text()).not.toContain('must be 7 or fewer');
+      await input.trigger('focus');
+      await input.setValue(8);
+      await input.trigger('blur');
+      expect(caloriesInput.text()).toContain('must be 7 or fewer');
+      await input.setValue(7);
+      await input.trigger('blur');
+      expect(caloriesInput.text()).not.toContain('must be 7 or fewer');
+    });
+
     it('is initialized based on the settings', () => {
       wrapper = mountComponent();
       const caloriesInput = wrapper.findComponent(
