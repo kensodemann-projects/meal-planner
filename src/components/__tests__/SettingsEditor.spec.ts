@@ -1,4 +1,4 @@
-import { mount, VueWrapper } from '@vue/test-utils';
+import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
@@ -221,19 +221,69 @@ describe('SettingsEditor', () => {
     });
   });
 
-  describe('Cancel Button', () => {
+  describe('Reset Button', () => {
     it('renders', () => {
       wrapper = mountComponent();
-      const cancelButton = wrapper.find('[data-testid="cancel-button"]');
-      expect(cancelButton.exists()).toBe(true);
+      const resetButton = wrapper.find('[data-testid="reset-button"]');
+      expect(resetButton.exists()).toBe(true);
     });
 
-    it('emits cancel event when clicked', async () => {
+    it('resets the settings values when clicked', async () => {
       wrapper = mountComponent();
-      const cancelButton = wrapper.find('[data-testid="cancel-button"]');
-      await cancelButton.trigger('click');
-      expect(wrapper.emitted('cancel')).toBeTruthy();
-      expect(wrapper.emitted('cancel')?.length).toBe(1);
+
+      // Modify multiple fields
+      const caloriesInput = wrapper.findComponent(
+        '[data-testid="daily-calorie-limit-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const sugarInput = wrapper.findComponent(
+        '[data-testid="daily-sugar-limit-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const proteinInput = wrapper.findComponent(
+        '[data-testid="daily-protein-target-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const toleranceInput = wrapper.findComponent(
+        '[data-testid="tolerance-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const cheatDaysInput = wrapper.findComponent(
+        '[data-testid="cheat-days-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const weekStartDayInput = wrapper.findComponent(
+        '[data-testid="week-start-day-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+
+      await caloriesInput.setValue(2100);
+      await sugarInput.setValue(55);
+      await proteinInput.setValue(80);
+      await toleranceInput.setValue(12);
+      await cheatDaysInput.setValue(2);
+      await weekStartDayInput.setValue(1);
+
+      const resetButton = wrapper.find('[data-testid="reset-button"]');
+      await resetButton.trigger('click');
+
+      expect(caloriesInput.props('modelValue')).toBe(1875);
+      expect(sugarInput.props('modelValue')).toBe(45);
+      expect(proteinInput.props('modelValue')).toBe(65);
+      expect(toleranceInput.props('modelValue')).toBe(8);
+      expect(cheatDaysInput.props('modelValue')).toBe(3);
+      expect(weekStartDayInput.props('modelValue')).toBe(2);
+    });
+
+    it('disables the save button on click', async () => {
+      wrapper = mountComponent();
+
+      const saveButton = wrapper.find('[data-testid="save-button"]');
+      const caloriesInput = wrapper.findComponent(
+        '[data-testid="daily-calorie-limit-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      await caloriesInput.setValue(2100);
+      await flushPromises();
+      expect(saveButton.attributes('disabled')).toBeUndefined();
+
+      const resetButton = wrapper.find('[data-testid="reset-button"]');
+      await resetButton.trigger('click');
+      await flushPromises();
+      expect(saveButton.attributes('disabled')).toBeDefined();
     });
   });
 
@@ -257,7 +307,7 @@ describe('SettingsEditor', () => {
       ) as VueWrapper<components.VNumberInput>;
 
       await caloriesInput.setValue(2000);
-      await wrapper.vm.$nextTick();
+      await flushPromises();
 
       const saveButton = wrapper.find('[data-testid="save-button"]');
       expect(saveButton.attributes('disabled')).toBeUndefined();
@@ -292,7 +342,7 @@ describe('SettingsEditor', () => {
       await toleranceInput.setValue(12);
       await cheatDaysInput.setValue(2);
       await weekStartDayInput.setValue(1);
-      await wrapper.vm.$nextTick();
+      await flushPromises();
 
       const saveButton = wrapper.find('[data-testid="save-button"]');
       await saveButton.trigger('click');

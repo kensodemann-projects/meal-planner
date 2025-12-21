@@ -40,7 +40,7 @@
 
     <v-container fluid>
       <v-row class="pa-4" justify="end">
-        <CancelButton class="mr-4" @click="$emit('cancel')" />
+        <ResetButton class="mr-4" @click="reset" />
         <SaveButton :disabled="!(valid && isModified)" @click="save" />
       </v-row>
     </v-container>
@@ -84,6 +84,15 @@ const isModified = computed(() => {
     weekStartDay.value !== props.settings.weekStartDay
   );
 });
+
+const reset = () => {
+  dailyCalorieLimit.value = props.settings.dailyCalorieLimit;
+  dailySugarLimit.value = props.settings.dailySugarLimit;
+  dailyProteinTarget.value = props.settings.dailyProteinTarget;
+  tolerance.value = props.settings.tolerance;
+  cheatDays.value = props.settings.cheatDays;
+  weekStartDay.value = props.settings.weekStartDay;
+};
 
 const save = () => {
   const updatedSettings: Settings = {
