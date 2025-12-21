@@ -13,26 +13,21 @@
         <v-col cols="12" md="4">
           <v-autocomplete
             label="Category"
-            :items="['Breakfast', 'Lunch', 'Dinner', 'Dessert']"
+            :items="recipeCategories"
             data-testid="filter-category"
             clearable
           ></v-autocomplete>
         </v-col>
 
         <v-col cols="12" md="4">
-          <v-autocomplete
-            label="Cuisine"
-            :items="['Italian', 'Chinese', 'Mexican', 'Indian']"
-            data-testid="filter-cuisine"
-            clearable
-          ></v-autocomplete>
+          <v-autocomplete label="Cuisine" :items="cuisines" data-testid="filter-cuisine" clearable></v-autocomplete>
         </v-col>
 
         <v-col cols="12" md="4">
           <v-autocomplete
-            label="Difficulty"
-            :items="['Easy', 'Medium', 'Hard']"
-            data-testid="filter-difficulty"
+            label="Calorie Range"
+            :items="['0-500', '501-750', '751-1000', '1001+']"
+            data-testid="filter-calorie-range"
             clearable
           ></v-autocomplete>
         </v-col>
@@ -76,6 +71,8 @@
 import { useRecipesData } from '@/data/recipes';
 import { useRouter } from 'vue-router';
 import type { Recipe } from '@/models/recipe';
+import { recipeCategories } from '@/data/recipe-categories';
+import { cuisines } from '@/data/cuisines';
 
 const router = useRouter();
 const { loading, recipes } = useRecipesData();
