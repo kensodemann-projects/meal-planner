@@ -220,4 +220,95 @@ describe('SettingsEditor', () => {
       expect(weekStartDayInput.props('modelValue')).toBe(2);
     });
   });
+
+  describe('Cancel Button', () => {
+    it('renders', () => {
+      wrapper = mountComponent();
+      const cancelButton = wrapper.find('[data-testid="cancel-button"]');
+      expect(cancelButton.exists()).toBe(true);
+    });
+
+    it('emits cancel event when clicked', async () => {
+      wrapper = mountComponent();
+      const cancelButton = wrapper.find('[data-testid="cancel-button"]');
+      await cancelButton.trigger('click');
+      expect(wrapper.emitted('cancel')).toBeTruthy();
+      expect(wrapper.emitted('cancel')?.length).toBe(1);
+    });
+  });
+
+  describe('Save Button', () => {
+    it('renders', () => {
+      wrapper = mountComponent();
+      const saveButton = wrapper.find('[data-testid="save-button"]');
+      expect(saveButton.exists()).toBe(true);
+    });
+
+    it('is disabled when form is not modified', () => {
+      wrapper = mountComponent();
+      const saveButton = wrapper.find('[data-testid="save-button"]');
+      expect(saveButton.attributes('disabled')).toBeDefined();
+    });
+
+    it('is enabled when form is valid and modified', async () => {
+      wrapper = mountComponent();
+      const caloriesInput = wrapper.findComponent(
+        '[data-testid="daily-calorie-limit-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+
+      await caloriesInput.setValue(2000);
+      await wrapper.vm.$nextTick();
+
+      const saveButton = wrapper.find('[data-testid="save-button"]');
+      expect(saveButton.attributes('disabled')).toBeUndefined();
+    });
+
+    it('emits save event with updated settings when clicked', async () => {
+      wrapper = mountComponent();
+
+      // Modify multiple fields
+      const caloriesInput = wrapper.findComponent(
+        '[data-testid="daily-calorie-limit-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const sugarInput = wrapper.findComponent(
+        '[data-testid="daily-sugar-limit-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const proteinInput = wrapper.findComponent(
+        '[data-testid="daily-protein-target-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const toleranceInput = wrapper.findComponent(
+        '[data-testid="tolerance-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const cheatDaysInput = wrapper.findComponent(
+        '[data-testid="cheat-days-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const weekStartDayInput = wrapper.findComponent(
+        '[data-testid="week-start-day-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+
+      await caloriesInput.setValue(2100);
+      await sugarInput.setValue(55);
+      await proteinInput.setValue(80);
+      await toleranceInput.setValue(12);
+      await cheatDaysInput.setValue(2);
+      await weekStartDayInput.setValue(1);
+      await wrapper.vm.$nextTick();
+
+      const saveButton = wrapper.find('[data-testid="save-button"]');
+      await saveButton.trigger('click');
+
+      expect(wrapper.emitted('save')).toBeTruthy();
+      expect(wrapper.emitted('save')?.length).toBe(1);
+      expect(wrapper.emitted('save')?.[0]).toEqual([
+        {
+          dailyCalorieLimit: 2100,
+          dailySugarLimit: 55,
+          dailyProteinTarget: 80,
+          tolerance: 12,
+          cheatDays: 2,
+          weekStartDay: 1,
+        },
+      ]);
+    });
+  });
 });

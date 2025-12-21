@@ -37,15 +37,23 @@
       :rules="[validationRules.required]"
       data-testid="week-start-day-input"
     ></v-autocomplete>
+
+    <v-container fluid>
+      <v-row class="pa-4" justify="end">
+        <CancelButton class="mr-4" @click="$emit('cancel')" />
+        <SaveButton :disabled="!(valid && isModified)" @click="save" />
+      </v-row>
+    </v-container>
   </v-form>
 </template>
 
 <script setup lang="ts">
 import { validationRules } from '@/core/validation-rules';
-import type { Settings } from '@/models/settings';
-import { ref } from 'vue';
+import type { Settings, WeekDay } from '@/models/settings';
+import { computed, ref } from 'vue';
 
 const props = defineProps<{ settings: Settings }>();
+const emit = defineEmits<{ (event: 'save', payload: Settings): void; (event: 'cancel'): void }>();
 
 const daysOfTheWeek = [
   { title: 'Sunday', value: 0 },
@@ -65,4 +73,27 @@ const dailyProteinTarget = ref<number>(props.settings.dailyProteinTarget);
 const tolerance = ref<number>(props.settings.tolerance);
 const cheatDays = ref<number>(props.settings.cheatDays);
 const weekStartDay = ref<number>(props.settings.weekStartDay);
+
+const isModified = computed(() => {
+  return (
+    dailyCalorieLimit.value !== props.settings.dailyCalorieLimit ||
+    dailySugarLimit.value !== props.settings.dailySugarLimit ||
+    dailyProteinTarget.value !== props.settings.dailyProteinTarget ||
+    tolerance.value !== props.settings.tolerance ||
+    cheatDays.value !== props.settings.cheatDays ||
+    weekStartDay.value !== props.settings.weekStartDay
+  );
+});
+
+const save = () => {
+  const updatedSettings: Settings = {
+    dailyCalorieLimit: dailyCalorieLimit.value,
+    dailySugarLimit: dailySugarLimit.value,
+    dailyProteinTarget: dailyProteinTarget.value,
+    tolerance: tolerance.value,
+    cheatDays: cheatDays.value,
+    weekStartDay: weekStartDay.value as WeekDay,
+  };
+  emit('save', updatedSettings);
+};
 </script>
