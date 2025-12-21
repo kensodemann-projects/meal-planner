@@ -36,20 +36,20 @@
       <v-row dense>
         <v-col class="text-right text-medium-emphasis font-weight-light">
           <div>
-            Displaying {{ recipes.length }} of {{ recipes.length }} recipe{{ recipes.length === 1 ? '' : 's' }}.
+            Displaying {{ filteredRecipes.length }} of {{ recipes.length }} recipe{{ recipes.length === 1 ? '' : 's' }}.
           </div>
         </v-col>
       </v-row>
     </v-container>
   </div>
 
-  <div class="text-center my-12" v-if="!loading && recipes.length === 0">
+  <div class="text-center my-12" v-if="!loading && filteredRecipes.length === 0">
     <h2>No recipes found.</h2>
   </div>
 
   <v-list v-else two-line>
     <RecipeListItem
-      v-for="recipe in recipes"
+      v-for="recipe in filteredRecipes"
       :key="recipe.id"
       :recipe="recipe as Recipe"
       @click="router.push(`recipes/${recipe.id}`)"
@@ -73,7 +73,13 @@ import { useRouter } from 'vue-router';
 import type { Recipe } from '@/models/recipe';
 import { recipeCategories } from '@/data/recipe-categories';
 import { cuisines } from '@/data/cuisines';
+import { computed } from 'vue';
 
 const router = useRouter();
 const { loading, recipes } = useRecipesData();
+
+const filteredRecipes = computed<Recipe[]>(() => {
+  // Filtering logic will go here in the future
+  return recipes.value;
+});
 </script>
