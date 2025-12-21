@@ -27,7 +27,11 @@
     <v-number-input
       label="Cheat Days per Week"
       v-model="cheatDays"
-      :rules="[validationRules.required, validationRules.zeroOrGreater]"
+      :rules="[
+        validationRules.required,
+        validationRules.zeroOrGreater,
+        (value) => value <= 7 || 'Cheat days must be 7 or fewer',
+      ]"
       data-testid="cheat-days-input"
     ></v-number-input>
     <v-autocomplete
