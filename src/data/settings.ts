@@ -4,9 +4,9 @@ import { computed } from 'vue';
 import { useDocument, useFirestore } from 'vuefire';
 
 const DEFAULT_SETTINGS: Settings = {
-  calories: 2000,
-  sugar: 50,
-  protein: 75,
+  dailyCalorieLimit: 2000,
+  dailySugarLimit: 50,
+  dailyProteinTarget: 75,
   tolerance: 10,
   cheatDays: 1,
   weekStartDay: 0, // Sunday

@@ -1,5 +1,6 @@
 {
   "name": "meal-planner",
+  "description": "Meal Planner",
   "private": true,
   "type": "module",
   "version": "0.5.1",

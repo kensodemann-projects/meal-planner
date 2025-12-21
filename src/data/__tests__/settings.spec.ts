@@ -62,10 +62,10 @@ describe('Settings Data Service', () => {
 
   it('does not set the settings doc if it already exists', async () => {
     (useDocument as Mock).mockReturnValueOnce({
-      value: { ...DEFAULT_SETTINGS, calories: 2500 },
+      value: { ...DEFAULT_SETTINGS, dailyCalorieLimit: 2500 },
       pending: { value: false },
       error: { value: null },
-      promise: { value: Promise.resolve({ ...DEFAULT_SETTINGS, calories: 2500 }) },
+      promise: { value: Promise.resolve({ ...DEFAULT_SETTINGS, dailyCalorieLimit: 2500 }) },
     });
     useSettingsData();
     await flushPromises();
@@ -124,7 +124,7 @@ describe('Settings Data Service', () => {
   describe('update settings', () => {
     it('updates the "application" document', () => {
       const { updateSettings } = useSettingsData();
-      const newSettings = { ...DEFAULT_SETTINGS, calories: 3000 };
+      const newSettings = { ...DEFAULT_SETTINGS, dailyCalorieLimit: 3000 };
       updateSettings(newSettings);
       expect(updateDoc).toHaveBeenCalledExactlyOnceWith('42:col:settings:doc:application', newSettings);
     });
@@ -132,9 +132,9 @@ describe('Settings Data Service', () => {
 });
 
 const DEFAULT_SETTINGS: Settings = {
-  calories: 2000,
-  sugar: 50,
-  protein: 75,
+  dailyCalorieLimit: 2000,
+  dailySugarLimit: 50,
+  dailyProteinTarget: 75,
   tolerance: 10,
   cheatDays: 1,
   weekStartDay: 0,
