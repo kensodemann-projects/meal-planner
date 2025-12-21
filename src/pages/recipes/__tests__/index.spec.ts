@@ -75,4 +75,34 @@ describe('Recipes List Page', () => {
       expect(router.push).toHaveBeenCalledExactlyOnceWith('recipes/add');
     });
   });
+
+  describe('empty state', () => {
+    it('displays "No recipes found" message when there are no recipes and not loading', () => {
+      const { recipes, loading } = useRecipesData();
+      (recipes.value as Recipe[]) = [];
+      (loading.value as boolean) = false;
+      wrapper = mountPage();
+      const emptyStateMessage = wrapper.find('h2');
+      expect(emptyStateMessage.exists()).toBe(true);
+      expect(emptyStateMessage.text()).toBe('No recipes found.');
+    });
+
+    it('does not display "No recipes found" message when loading', () => {
+      const { recipes, loading } = useRecipesData();
+      (recipes.value as Recipe[]) = [];
+      (loading.value as boolean) = true;
+      wrapper = mountPage();
+      const emptyStateMessage = wrapper.find('h2');
+      expect(emptyStateMessage.exists()).toBe(false);
+    });
+
+    it('does not display "No recipes found" message when there are recipes', () => {
+      const { recipes, loading } = useRecipesData();
+      (recipes.value as Recipe[]) = TEST_RECIPES;
+      (loading.value as boolean) = false;
+      wrapper = mountPage();
+      const emptyStateMessage = wrapper.find('h2');
+      expect(emptyStateMessage.exists()).toBe(false);
+    });
+  });
 });
