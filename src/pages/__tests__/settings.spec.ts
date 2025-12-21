@@ -59,8 +59,7 @@ describe('SettingsPage', () => {
   it('calls updateSettings when SettingsEditor emits save event', async () => {
     wrapper = mountPage();
     const settingsEditor = wrapper.findComponent({ name: 'SettingsEditor' });
-
-    const mockUpdateSettings = vi.mocked(useSettingsData).mock.results[0]?.value.updateSettings;
+    const { updateSettings } = useSettingsData();
 
     const updatedSettings = {
       dailyCalorieLimit: 2100,
@@ -73,7 +72,7 @@ describe('SettingsPage', () => {
 
     await settingsEditor.vm.$emit('save', updatedSettings);
 
-    expect(mockUpdateSettings).toHaveBeenCalledOnce();
-    expect(mockUpdateSettings).toHaveBeenCalledWith(updatedSettings);
+    expect(updateSettings).toHaveBeenCalledOnce();
+    expect(updateSettings).toHaveBeenCalledWith(updatedSettings);
   });
 });
