@@ -170,4 +170,17 @@ describe('Recipe Data Service', () => {
       expect(error.value).toBe(testError);
     });
   });
+
+  describe('recipe matches', () => {
+    it('returns false if the recipe does not match the keyword', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, 'nonexistentkeyword')).toBe(false);
+    });
+
+    it('returns true if the recipe contains the keyword in the name', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, 'Pan-Seared')).toBe(true);
+      expect(recipeMatches(TEST_RECIPE, 'pAN-sEAREd')).toBe(true);
+    });
+  });
 });

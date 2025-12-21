@@ -31,5 +31,14 @@ export const useRecipesData = () => {
     return recipes.value.find((f) => f.id === id) || null;
   };
 
-  return { addRecipe, error, getRecipe, loading, recipes, removeRecipe, updateRecipe };
+  const recipeMatches = (recipe: Recipe, searchTerm: string): boolean => {
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    return (
+      recipe.name.toLowerCase().includes(lowerSearchTerm) ||
+      (recipe.description && recipe.description.toLowerCase().includes(lowerSearchTerm)) ||
+      recipe.ingredients.some((ingredient) => ingredient.name.toLowerCase().includes(lowerSearchTerm))
+    );
+  };
+
+  return { addRecipe, error, getRecipe, loading, recipeMatches, recipes, removeRecipe, updateRecipe };
 };
