@@ -102,7 +102,7 @@ describe('Recipes List Page', () => {
     });
 
     it('displays the recipe count', () => {
-      const countDisplay = wrapper.find('.text-right.text-medium-emphasis.font-weight-light');
+      const countDisplay = wrapper.find('[data-testid="recipe-count"]');
       expect(countDisplay.exists()).toBe(true);
       expect(countDisplay.text()).toContain(`Displaying ${TEST_RECIPES.length} of ${TEST_RECIPES.length} recipe`);
     });
