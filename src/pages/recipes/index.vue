@@ -43,10 +43,13 @@
     </v-container>
   </div>
 
-  <div class="text-center my-12" v-if="!loading && filteredRecipes.length === 0">
+  <div class="text-center my-12" v-if="!loading && recipes.length === 0">
     <h2>No recipes found.</h2>
   </div>
 
+  <div class="text-center my-12" v-else-if="!loading && filteredRecipes.length === 0">
+    <h2>No recipes match your search criteria.</h2>
+  </div>
   <v-list v-else two-line>
     <RecipeListItem
       v-for="recipe in filteredRecipes"
