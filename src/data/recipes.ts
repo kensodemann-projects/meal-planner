@@ -3,6 +3,10 @@ import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestor
 import { computed } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
 
+export interface RecipeSearchCriteria {
+  keywords?: string;
+}
+
 export const useRecipesData = () => {
   const db = useFirestore();
   const path = 'recipes';
@@ -40,8 +44,8 @@ export const useRecipesData = () => {
     );
   };
 
-  const recipeMatches = (recipe: Recipe, searchString: string) => {
-    const keywords = searchString.split(' ').filter((k) => k.trim().length > 0);
+  const recipeMatches = (recipe: Recipe, criteria: RecipeSearchCriteria) => {
+    const keywords = criteria.keywords?.split(' ').filter((k) => k.trim().length > 0) || [];
     return keywords.every((keyword) => recipeMatchesKeyword(recipe, keyword));
   };
 

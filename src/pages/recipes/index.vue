@@ -89,6 +89,6 @@ const { loading, recipeMatches, recipes } = useRecipesData();
 const searchKeywords = ref('');
 
 const filteredRecipes = computed<Recipe[]>(() =>
-  recipes.value.filter((recipe) => recipeMatches(recipe, searchKeywords.value)),
+  recipes.value.filter((recipe) => recipeMatches(recipe, { keywords: searchKeywords.value })),
 );
 </script>
