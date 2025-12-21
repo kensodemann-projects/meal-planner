@@ -5,7 +5,12 @@
     <v-container fluid dense>
       <v-row dense>
         <v-col cols="12">
-          <v-text-field placeholder="Search for a recipe..." data-testid="search-input" clearable></v-text-field>
+          <v-text-field
+            placeholder="Search for a recipe..."
+            v-model="searchKeywords"
+            clearable
+            data-testid="search-input"
+          ></v-text-field>
         </v-col>
       </v-row>
 
@@ -36,7 +41,7 @@
       <v-row dense>
         <v-col class="text-right text-medium-emphasis font-weight-light">
           <div v-if="!loading" data-testid="recipe-count">
-            Displaying {{ filteredRecipes.length }} of {{ recipes.length }} recipe{{ recipes.length === 1 ? '' : 's' }}.
+            Displaying {{ filteredRecipes.length }} of {{ recipes.length }} recipe{{ recipes.length === 1 ? '' : 's' }}
           </div>
         </v-col>
       </v-row>
@@ -71,18 +76,19 @@
 </template>
 
 <script lang="ts" setup>
-import { useRecipesData } from '@/data/recipes';
-import { useRouter } from 'vue-router';
-import type { Recipe } from '@/models/recipe';
-import { recipeCategories } from '@/data/recipe-categories';
 import { cuisines } from '@/data/cuisines';
-import { computed } from 'vue';
+import { recipeCategories } from '@/data/recipe-categories';
+import { useRecipesData } from '@/data/recipes';
+import type { Recipe } from '@/models/recipe';
+import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const { loading, recipes } = useRecipesData();
+const { loading, recipeMatches, recipes } = useRecipesData();
 
-const filteredRecipes = computed<Recipe[]>(() => {
-  // Filtering logic will go here in the future
-  return recipes.value;
-});
+const searchKeywords = ref('');
+
+const filteredRecipes = computed<Recipe[]>(() =>
+  recipes.value.filter((recipe) => recipeMatches(recipe, searchKeywords.value)),
+);
 </script>

@@ -34,8 +34,9 @@ describe('Recipes List Page', () => {
     (useRouter as Mock).mockReturnValue({
       push: vi.fn(),
     });
-    const { recipes } = useRecipesData();
+    const { recipeMatches, recipes } = useRecipesData();
     (recipes.value as Recipe[]) = TEST_RECIPES;
+    (recipeMatches as Mock).mockReturnValue(true);
   });
 
   it('renders', () => {
@@ -53,6 +54,14 @@ describe('Recipes List Page', () => {
     wrapper = mountPage();
     const items = wrapper.findAllComponents(RecipeListItem);
     expect(items.length).toBe(TEST_RECIPES.length);
+  });
+
+  it('displays the matching recipes', () => {
+    const { recipeMatches } = useRecipesData();
+    (recipeMatches as Mock).mockImplementation((recipe: Recipe) => ['1', '3', '4'].some((x) => recipe.id === x));
+    wrapper = mountPage();
+    const items = wrapper.findAllComponents(RecipeListItem);
+    expect(items.length).toBe(3);
   });
 
   it('navigates to the given recipe on click', async () => {
@@ -81,9 +90,20 @@ describe('Recipes List Page', () => {
       wrapper = mountPage();
     });
 
-    it('renders the search input field', () => {
-      const searchInput = wrapper.findComponent('[data-testid="search-input"]');
-      expect(searchInput.exists()).toBe(true);
+    describe('search input', () => {
+      it('renders', () => {
+        const searchInput = wrapper.findComponent('[data-testid="search-input"]');
+        expect(searchInput.exists()).toBe(true);
+      });
+
+      it('re-runs the filter on new search text', async () => {
+        const searchInput = wrapper.findComponent('[data-testid="search-input"]');
+        const { recipeMatches } = useRecipesData();
+        (recipeMatches as Mock).mockClear();
+        await searchInput.setValue('test');
+        expect(recipeMatches).toHaveBeenCalledTimes(TEST_RECIPES.length);
+        expect(recipeMatches).toHaveBeenCalledWith(expect.any(Object), 'test');
+      });
     });
 
     it('renders the category filter dropdown', () => {
@@ -101,10 +121,21 @@ describe('Recipes List Page', () => {
       expect(calorieRangeFilter.exists()).toBe(true);
     });
 
-    it('displays the recipe count', () => {
-      const countDisplay = wrapper.find('[data-testid="recipe-count"]');
-      expect(countDisplay.exists()).toBe(true);
-      expect(countDisplay.text()).toContain(`Displaying ${TEST_RECIPES.length} of ${TEST_RECIPES.length} recipe`);
+    describe('recipe count', () => {
+      it('displays the recipe count', () => {
+        const countDisplay = wrapper.find('[data-testid="recipe-count"]');
+        expect(countDisplay.exists()).toBe(true);
+        expect(countDisplay.text()).toEqual(`Displaying ${TEST_RECIPES.length} of ${TEST_RECIPES.length} recipes`);
+      });
+
+      it('displays filtered count', async () => {
+        const { recipeMatches } = useRecipesData();
+        (recipeMatches as Mock).mockImplementation((recipe: Recipe) => ['1', '3', '4'].some((x) => recipe.id === x));
+        const countDisplay = wrapper.find('[data-testid="recipe-count"]');
+        const searchInput = wrapper.findComponent('[data-testid="search-input"]');
+        await searchInput.setValue('test');
+        expect(countDisplay.text()).toEqual(`Displaying 3 of ${TEST_RECIPES.length} recipes`);
+      });
     });
   });
 
@@ -119,7 +150,18 @@ describe('Recipes List Page', () => {
       expect(emptyStateMessage.text()).toBe('No recipes found.');
     });
 
-    it('does not display "No recipes found" message when loading', () => {
+    it('displays "No recipes match your search criteria" when recipes are loaded but no matches are found', () => {
+      const { recipeMatches, recipes, loading } = useRecipesData();
+      (recipes.value as Recipe[]) = TEST_RECIPES;
+      (loading.value as boolean) = false;
+      (recipeMatches as Mock).mockImplementation(() => false);
+      wrapper = mountPage();
+      const emptyStateMessage = wrapper.find('h2');
+      expect(emptyStateMessage.exists()).toBe(true);
+      expect(emptyStateMessage.text()).toBe('No recipes match your search criteria.');
+    });
+
+    it('does not display a message when loading', () => {
       const { recipes, loading } = useRecipesData();
       (recipes.value as Recipe[]) = [];
       (loading.value as boolean) = true;
@@ -128,7 +170,7 @@ describe('Recipes List Page', () => {
       expect(emptyStateMessage.exists()).toBe(false);
     });
 
-    it('does not display "No recipes found" message when there are recipes', () => {
+    it('does not display a message when there are matching recipes', () => {
       const { recipes, loading } = useRecipesData();
       (recipes.value as Recipe[]) = TEST_RECIPES;
       (loading.value as boolean) = false;

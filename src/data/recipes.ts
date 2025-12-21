@@ -31,5 +31,19 @@ export const useRecipesData = () => {
     return recipes.value.find((f) => f.id === id) || null;
   };
 
-  return { addRecipe, error, getRecipe, loading, recipes, removeRecipe, updateRecipe };
+  const recipeMatchesKeyword = (recipe: Recipe, keyword: string): boolean => {
+    const lowerSearchTerm = keyword.toLowerCase();
+    return (
+      recipe.name.toLowerCase().includes(lowerSearchTerm) ||
+      (recipe.description && recipe.description.toLowerCase().includes(lowerSearchTerm)) ||
+      recipe.ingredients.some((ingredient) => ingredient.name.toLowerCase().includes(lowerSearchTerm))
+    );
+  };
+
+  const recipeMatches = (recipe: Recipe, searchString: string) => {
+    const keywords = searchString.split(' ').filter((k) => k.trim().length > 0);
+    return keywords.every((keyword) => recipeMatchesKeyword(recipe, keyword));
+  };
+
+  return { addRecipe, error, getRecipe, loading, recipeMatches, recipes, removeRecipe, updateRecipe };
 };

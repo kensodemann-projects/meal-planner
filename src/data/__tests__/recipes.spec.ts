@@ -170,4 +170,54 @@ describe('Recipe Data Service', () => {
       expect(error.value).toBe(testError);
     });
   });
+
+  describe('recipe matches', () => {
+    it('returns true if there are no filter parameters', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, '')).toBe(true);
+    });
+
+    it('returns false if the recipe does not match the keyword', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, 'nonexistentkeyword')).toBe(false);
+    });
+
+    it('returns true if the recipe contains the keyword in the name', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, 'Pan-Seared')).toBe(true);
+      expect(recipeMatches(TEST_RECIPE, 'pAN-sEAREd')).toBe(true);
+    });
+
+    it('returns true if the recipe contains the keyword in the description', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, 'caramelized')).toBe(true);
+      expect(recipeMatches(TEST_RECIPE, 'CarAmeliZEd')).toBe(true);
+    });
+
+    it('returns true if the recipe contains the keyword in an ingredient name', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, 'olive')).toBe(true);
+      expect(recipeMatches(TEST_RECIPE, 'OliVE')).toBe(true);
+    });
+
+    it('returns true if the recipe contains the keywords in the name, but not together', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, 'Pan-Seared sauce')).toBe(true);
+    });
+
+    it('returns true if the recipe contains the keywords in the description, but not together', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, 'caramelized simple')).toBe(true);
+    });
+
+    it('returns true if the keywords are spread between name, description, and ingredients', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, 'olive Pan-seared simple')).toBe(true);
+    });
+
+    it('returns false if most but not all keywords match', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, 'olive bogus Pan-seared simple')).toBe(false);
+    });
+  });
 });
