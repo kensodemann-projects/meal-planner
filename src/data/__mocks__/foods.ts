@@ -10,6 +10,7 @@ interface FoodsData {
   getFood: (id: string) => Promise<FoodItem | null>;
   removeFood: (id: string) => Promise<void>;
   updateFood: (food: FoodItem) => Promise<void>;
+  fdcFoodItemExists: (fdcId: number) => boolean;
 }
 
 const addFood = vi.fn();
