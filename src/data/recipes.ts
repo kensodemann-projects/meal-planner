@@ -31,13 +31,18 @@ export const useRecipesData = () => {
     return recipes.value.find((f) => f.id === id) || null;
   };
 
-  const recipeMatches = (recipe: Recipe, searchTerm: string): boolean => {
-    const lowerSearchTerm = searchTerm.toLowerCase();
+  const recipeMatchesKeyword = (recipe: Recipe, keyword: string): boolean => {
+    const lowerSearchTerm = keyword.toLowerCase();
     return (
       recipe.name.toLowerCase().includes(lowerSearchTerm) ||
       (recipe.description && recipe.description.toLowerCase().includes(lowerSearchTerm)) ||
       recipe.ingredients.some((ingredient) => ingredient.name.toLowerCase().includes(lowerSearchTerm))
     );
+  };
+
+  const recipeMatches = (recipe: Recipe, searchString: string) => {
+    const keywords = searchString.split(' ').filter((k) => k.trim().length > 0);
+    return keywords.every((keyword) => recipeMatchesKeyword(recipe, keyword));
   };
 
   return { addRecipe, error, getRecipe, loading, recipeMatches, recipes, removeRecipe, updateRecipe };
