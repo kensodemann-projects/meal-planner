@@ -50,7 +50,7 @@
 <script setup lang="ts">
 import { validationRules } from '@/core/validation-rules';
 import type { Settings, WeekDay } from '@/models/settings';
-import { computed, ref } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 
 const props = defineProps<{ settings: Settings }>();
 const emit = defineEmits<{ (event: 'save', payload: Settings): void }>();
@@ -93,6 +93,8 @@ const reset = () => {
   cheatDays.value = props.settings.cheatDays;
   weekStartDay.value = props.settings.weekStartDay;
 };
+
+watchEffect(() => reset());
 
 const save = () => {
   const updatedSettings: Settings = {

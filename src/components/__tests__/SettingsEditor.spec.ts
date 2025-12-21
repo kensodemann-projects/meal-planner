@@ -361,4 +361,115 @@ describe('SettingsEditor', () => {
       ]);
     });
   });
+
+  describe('watchEffect (Props Update)', () => {
+    it('resets form when settings prop changes', async () => {
+      wrapper = mountComponent({
+        settings: {
+          dailyCalorieLimit: 1800,
+          dailySugarLimit: 40,
+          dailyProteinTarget: 60,
+          tolerance: 5,
+          cheatDays: 2,
+          weekStartDay: 1,
+        },
+      });
+
+      // Verify initial values
+      const caloriesInput = wrapper.findComponent(
+        '[data-testid="daily-calorie-limit-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(caloriesInput.props('modelValue')).toBe(1800);
+
+      // Change the form value
+      await caloriesInput.setValue(2500);
+      await flushPromises();
+      expect(caloriesInput.props('modelValue')).toBe(2500);
+
+      // Update props - watchEffect should reset the form
+      await wrapper.setProps({
+        settings: {
+          dailyCalorieLimit: 2200,
+          dailySugarLimit: 50,
+          dailyProteinTarget: 70,
+          tolerance: 10,
+          cheatDays: 1,
+          weekStartDay: 0,
+        },
+      });
+      await flushPromises();
+
+      // Verify all fields were reset to new prop values
+      expect(caloriesInput.props('modelValue')).toBe(2200);
+
+      const sugarInput = wrapper.findComponent(
+        '[data-testid="daily-sugar-limit-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(sugarInput.props('modelValue')).toBe(50);
+
+      const proteinInput = wrapper.findComponent(
+        '[data-testid="daily-protein-target-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(proteinInput.props('modelValue')).toBe(70);
+
+      const toleranceInput = wrapper.findComponent(
+        '[data-testid="tolerance-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(toleranceInput.props('modelValue')).toBe(10);
+
+      const cheatDaysInput = wrapper.findComponent(
+        '[data-testid="cheat-days-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(cheatDaysInput.props('modelValue')).toBe(1);
+
+      const weekStartDayInput = wrapper.findComponent(
+        '[data-testid="week-start-day-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      expect(weekStartDayInput.props('modelValue')).toBe(0);
+    });
+
+    it('resets isModified state when props change', async () => {
+      wrapper = mountComponent({
+        settings: {
+          dailyCalorieLimit: 1800,
+          dailySugarLimit: 40,
+          dailyProteinTarget: 60,
+          tolerance: 5,
+          cheatDays: 2,
+          weekStartDay: 1,
+        },
+      });
+
+      const saveButton = wrapper.find('[data-testid="save-button"]');
+
+      // Initially unmodified
+      expect(saveButton.attributes('disabled')).toBeDefined();
+
+      // Modify the form
+      const caloriesInput = wrapper.findComponent(
+        '[data-testid="daily-calorie-limit-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      await caloriesInput.setValue(2000);
+      await flushPromises();
+
+      // Should be enabled after modification
+      expect(saveButton.attributes('disabled')).toBeUndefined();
+
+      // Update props - should reset and disable save button
+      await wrapper.setProps({
+        settings: {
+          dailyCalorieLimit: 2200,
+          dailySugarLimit: 50,
+          dailyProteinTarget: 70,
+          tolerance: 10,
+          cheatDays: 1,
+          weekStartDay: 0,
+        },
+      });
+      await flushPromises();
+
+      // Save button should be disabled again (not modified)
+      expect(saveButton.attributes('disabled')).toBeDefined();
+    });
+  });
 });
