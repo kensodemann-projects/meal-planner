@@ -35,7 +35,7 @@
 
       <v-row dense>
         <v-col class="text-right text-medium-emphasis font-weight-light">
-          <div v-if="!loading">
+          <div v-if="!loading" data-testid="recipe-count">
             Displaying {{ filteredRecipes.length }} of {{ recipes.length }} recipe{{ recipes.length === 1 ? '' : 's' }}.
           </div>
         </v-col>
