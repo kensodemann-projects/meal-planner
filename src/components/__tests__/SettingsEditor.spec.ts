@@ -147,6 +147,23 @@ describe('SettingsEditor', () => {
       await numberInputMustBeZeroOrGreater(wrapper, 'tolerance-input');
     });
 
+    it('must be seven or less', async () => {
+      wrapper = mountComponent();
+      const toleranceInput = wrapper.findComponent(
+        '[data-testid="tolerance-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const input = toleranceInput.find('input');
+
+      expect(toleranceInput.text()).not.toContain('must be 100 or less');
+      await input.trigger('focus');
+      await input.setValue(101);
+      await input.trigger('blur');
+      expect(toleranceInput.text()).toContain('must be 100 or less');
+      await input.setValue(100);
+      await input.trigger('blur');
+      expect(toleranceInput.text()).not.toContain('must be 100 or less');
+    });
+
     it('is initialized based on the settings', () => {
       wrapper = mountComponent();
       const caloriesInput = wrapper.findComponent(
