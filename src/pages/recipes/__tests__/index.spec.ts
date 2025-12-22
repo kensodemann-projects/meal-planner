@@ -112,7 +112,7 @@ describe('Recipes List Page', () => {
         expect(categoryFilter.exists()).toBe(true);
       });
 
-      it('re-runs the filter on new search text', async () => {
+      it('re-runs the filter on category change', async () => {
         const categoryFilter = wrapper.findComponent('[data-testid="filter-category"]');
         const { recipeMatches } = useRecipesData();
         (recipeMatches as Mock).mockClear();
