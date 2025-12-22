@@ -1,4 +1,4 @@
-import type { Recipe, RecipeCategory } from '@/models/recipe';
+import type { Cuisine, Recipe, RecipeCategory } from '@/models/recipe';
 import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { computed } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
@@ -6,7 +6,7 @@ import { useCollection, useFirestore } from 'vuefire';
 export interface RecipeSearchCriteria {
   keywords?: string;
   category?: RecipeCategory;
-  cuisine?: string;
+  cuisine?: Cuisine;
 }
 
 export const useRecipesData = () => {
