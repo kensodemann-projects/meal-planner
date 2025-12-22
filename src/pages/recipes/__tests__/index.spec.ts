@@ -102,7 +102,11 @@ describe('Recipes List Page', () => {
         (recipeMatches as Mock).mockClear();
         await searchInput.setValue('test');
         expect(recipeMatches).toHaveBeenCalledTimes(TEST_RECIPES.length);
-        expect(recipeMatches).toHaveBeenCalledWith(expect.any(Object), { keywords: 'test', category: undefined });
+        expect(recipeMatches).toHaveBeenCalledWith(expect.any(Object), {
+          keywords: 'test',
+          category: undefined,
+          cuisine: undefined,
+        });
       });
     });
 
@@ -118,7 +122,11 @@ describe('Recipes List Page', () => {
         (recipeMatches as Mock).mockClear();
         await categoryFilter.setValue('Bread');
         expect(recipeMatches).toHaveBeenCalledTimes(TEST_RECIPES.length);
-        expect(recipeMatches).toHaveBeenCalledWith(expect.any(Object), { keywords: '', category: 'Bread' });
+        expect(recipeMatches).toHaveBeenCalledWith(expect.any(Object), {
+          keywords: '',
+          category: 'Bread',
+          cuisine: undefined,
+        });
       });
     });
 
@@ -126,6 +134,19 @@ describe('Recipes List Page', () => {
       it('renders', () => {
         const cuisineFilter = wrapper.findComponent('[data-testid="filter-cuisine"]');
         expect(cuisineFilter.exists()).toBe(true);
+      });
+
+      it('re-runs the filter on cuisine change', async () => {
+        const cuisineFilter = wrapper.findComponent('[data-testid="filter-cuisine"]');
+        const { recipeMatches } = useRecipesData();
+        (recipeMatches as Mock).mockClear();
+        await cuisineFilter.setValue('Italian');
+        expect(recipeMatches).toHaveBeenCalledTimes(TEST_RECIPES.length);
+        expect(recipeMatches).toHaveBeenCalledWith(expect.any(Object), {
+          keywords: '',
+          category: undefined,
+          cuisine: 'Italian',
+        });
       });
     });
 
