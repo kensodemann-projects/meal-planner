@@ -241,6 +241,70 @@ describe('Recipe Data Service', () => {
       expect(recipeMatches(TEST_RECIPE, { category: TEST_RECIPE.category, keywords: 'BogusKeyword' })).toBe(false);
     });
 
+    it('returns true if the cuisine matches', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, { cuisine: TEST_RECIPE.cuisine })).toBe(true);
+    });
+
+    it('returns false if the cuisine does not match', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, { cuisine: 'American' })).toBe(false);
+    });
+
+    it('returns true if the cuisine and keywords match', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, { cuisine: TEST_RECIPE.cuisine, keywords: TEST_RECIPE.name })).toBe(true);
+    });
+
+    it('returns false if the cuisine matches but keywords do not', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, { cuisine: TEST_RECIPE.cuisine, keywords: 'BogusKeyword' })).toBe(false);
+    });
+
+    it('returns true if the cuisine, category, and keywords match', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(
+        recipeMatches(TEST_RECIPE, {
+          cuisine: TEST_RECIPE.cuisine,
+          category: TEST_RECIPE.category,
+          keywords: TEST_RECIPE.name,
+        }),
+      ).toBe(true);
+    });
+
+    it('returns false if the cuisine and keywords match but not the category', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(
+        recipeMatches(TEST_RECIPE, {
+          cuisine: TEST_RECIPE.cuisine,
+          category: 'Lamb',
+          keywords: TEST_RECIPE.name,
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false if the category and keywords match but not the cuisine', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(
+        recipeMatches(TEST_RECIPE, {
+          cuisine: 'American',
+          category: TEST_RECIPE.category,
+          keywords: TEST_RECIPE.name,
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false if the cuisine and category match but not the keywords', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(
+        recipeMatches(TEST_RECIPE, {
+          cuisine: TEST_RECIPE.cuisine,
+          category: TEST_RECIPE.category,
+          keywords: 'BogusKeyword',
+        }),
+      ).toBe(false);
+    });
+
     it('returns false if the keyword matches but the category does not', () => {
       const { recipeMatches } = useRecipesData();
       expect(recipeMatches(TEST_RECIPE, { category: 'Lamb', keywords: TEST_RECIPE.name })).toBe(false);
