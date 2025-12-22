@@ -241,6 +241,11 @@ describe('Recipe Data Service', () => {
       expect(recipeMatches(TEST_RECIPE, { category: TEST_RECIPE.category, keywords: 'BogusKeyword' })).toBe(false);
     });
 
+    it('returns false if the keyword matches but the category does not', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, { category: 'Lamb', keywords: TEST_RECIPE.name })).toBe(false);
+    });
+
     it('returns true if the cuisine matches', () => {
       const { recipeMatches } = useRecipesData();
       expect(recipeMatches(TEST_RECIPE, { cuisine: TEST_RECIPE.cuisine })).toBe(true);
@@ -305,9 +310,99 @@ describe('Recipe Data Service', () => {
       ).toBe(false);
     });
 
-    it('returns false if the keyword matches but the category does not', () => {
+    it('returns true if the calories are in range', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, { category: 'Lamb', keywords: TEST_RECIPE.name })).toBe(false);
+      expect(
+        recipeMatches(TEST_RECIPE, {
+          minCalories: TEST_RECIPE.calories! - 100,
+          maxCalories: TEST_RECIPE.calories! + 100,
+        }),
+      ).toBe(true);
+    });
+
+    it('returns false if the calories are too high', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(
+        recipeMatches(TEST_RECIPE, {
+          minCalories: 0,
+          maxCalories: TEST_RECIPE.calories! - 1,
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false if the calories are too low', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(
+        recipeMatches(TEST_RECIPE, {
+          minCalories: TEST_RECIPE.calories! + 1,
+          maxCalories: TEST_RECIPE.calories! + 100,
+        }),
+      ).toBe(false);
+    });
+
+    it('returns true if all parameters match', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(
+        recipeMatches(TEST_RECIPE, {
+          cuisine: TEST_RECIPE.cuisine,
+          category: TEST_RECIPE.category,
+          keywords: TEST_RECIPE.name,
+          minCalories: TEST_RECIPE.calories! - 100,
+          maxCalories: TEST_RECIPE.calories! + 100,
+        }),
+      ).toBe(true);
+    });
+
+    it('returns false if all match except cuisine', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(
+        recipeMatches(TEST_RECIPE, {
+          cuisine: 'American',
+          category: TEST_RECIPE.category,
+          keywords: TEST_RECIPE.name,
+          minCalories: TEST_RECIPE.calories! - 100,
+          maxCalories: TEST_RECIPE.calories! + 100,
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false if all parameters match except category', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(
+        recipeMatches(TEST_RECIPE, {
+          cuisine: TEST_RECIPE.cuisine,
+          category: 'Lamb',
+          keywords: TEST_RECIPE.name,
+          minCalories: TEST_RECIPE.calories! - 100,
+          maxCalories: TEST_RECIPE.calories! + 100,
+        }),
+      ).toBe(false);
+    });
+
+    it('returns true if all parameters match except keywords', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(
+        recipeMatches(TEST_RECIPE, {
+          cuisine: TEST_RECIPE.cuisine,
+          category: TEST_RECIPE.category,
+          keywords: 'BogusKeyword',
+          minCalories: TEST_RECIPE.calories! - 100,
+          maxCalories: TEST_RECIPE.calories! + 100,
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false if all parameters match except calories', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(
+        recipeMatches(TEST_RECIPE, {
+          cuisine: TEST_RECIPE.cuisine,
+          category: TEST_RECIPE.category,
+          keywords: TEST_RECIPE.name,
+          minCalories: TEST_RECIPE.calories! + 1,
+          maxCalories: TEST_RECIPE.calories! + 100,
+        }),
+      ).toBe(false);
     });
   });
 });

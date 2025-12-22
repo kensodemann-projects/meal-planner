@@ -7,6 +7,8 @@ export interface RecipeSearchCriteria {
   keywords?: string;
   category?: RecipeCategory;
   cuisine?: Cuisine;
+  minCalories?: number;
+  maxCalories?: number;
 }
 
 export const useRecipesData = () => {
@@ -51,7 +53,9 @@ export const useRecipesData = () => {
     return (
       keywords.every((keyword) => recipeMatchesKeyword(recipe, keyword)) &&
       (!criteria.category || recipe.category === criteria.category) &&
-      (!criteria.cuisine || recipe.cuisine === criteria.cuisine)
+      (!criteria.cuisine || recipe.cuisine === criteria.cuisine) &&
+      (criteria.minCalories === undefined || recipe.calories >= criteria.minCalories) &&
+      (criteria.maxCalories === undefined || recipe.calories <= criteria.maxCalories)
     );
   };
 
