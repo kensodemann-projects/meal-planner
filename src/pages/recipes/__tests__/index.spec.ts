@@ -106,9 +106,20 @@ describe('Recipes List Page', () => {
       });
     });
 
-    it('renders the category filter dropdown', () => {
-      const categoryFilter = wrapper.findComponent('[data-testid="filter-category"]');
-      expect(categoryFilter.exists()).toBe(true);
+    describe('category filter', () => {
+      it('renders', () => {
+        const categoryFilter = wrapper.findComponent('[data-testid="filter-category"]');
+        expect(categoryFilter.exists()).toBe(true);
+      });
+
+      it('re-runs the filter on new search text', async () => {
+        const categoryFilter = wrapper.findComponent('[data-testid="filter-category"]');
+        const { recipeMatches } = useRecipesData();
+        (recipeMatches as Mock).mockClear();
+        await categoryFilter.setValue('Bread');
+        expect(recipeMatches).toHaveBeenCalledTimes(TEST_RECIPES.length);
+        expect(recipeMatches).toHaveBeenCalledWith(expect.any(Object), { keywords: '', category: 'Bread' });
+      });
     });
 
     it('renders the cuisine filter dropdown', () => {

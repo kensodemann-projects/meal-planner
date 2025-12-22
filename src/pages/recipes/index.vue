@@ -18,9 +18,10 @@
         <v-col cols="12" md="4">
           <v-autocomplete
             label="Category"
+            v-model="categoryFilter"
             :items="recipeCategories"
-            data-testid="filter-category"
             clearable
+            data-testid="filter-category"
           ></v-autocomplete>
         </v-col>
 
@@ -79,7 +80,7 @@
 import { cuisines } from '@/data/cuisines';
 import { recipeCategories } from '@/data/recipe-categories';
 import { useRecipesData } from '@/data/recipes';
-import type { Recipe } from '@/models/recipe';
+import type { Recipe, RecipeCategory } from '@/models/recipe';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -87,8 +88,11 @@ const router = useRouter();
 const { loading, recipeMatches, recipes } = useRecipesData();
 
 const searchKeywords = ref('');
+const categoryFilter = ref<RecipeCategory>();
 
 const filteredRecipes = computed<Recipe[]>(() =>
-  recipes.value.filter((recipe) => recipeMatches(recipe, { keywords: searchKeywords.value })),
+  recipes.value.filter((recipe) =>
+    recipeMatches(recipe, { keywords: searchKeywords.value, category: categoryFilter.value }),
+  ),
 );
 </script>
