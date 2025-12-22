@@ -102,7 +102,7 @@ describe('Recipes List Page', () => {
         (recipeMatches as Mock).mockClear();
         await searchInput.setValue('test');
         expect(recipeMatches).toHaveBeenCalledTimes(TEST_RECIPES.length);
-        expect(recipeMatches).toHaveBeenCalledWith(expect.any(Object), { keywords: 'test' });
+        expect(recipeMatches).toHaveBeenCalledWith(expect.any(Object), { keywords: 'test', category: undefined });
       });
     });
 
