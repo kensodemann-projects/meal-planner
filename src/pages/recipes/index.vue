@@ -38,7 +38,10 @@
         <v-col cols="12" md="4">
           <v-autocomplete
             label="Calorie Range"
-            :items="['0-500', '501-750', '751-1000', '1001+']"
+            v-model="calorieFilterId"
+            :items="calorieRanges"
+            item-title="label"
+            item-value="id"
             data-testid="filter-calorie-range"
             clearable
           ></v-autocomplete>
@@ -93,17 +96,28 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const { loading, recipeMatches, recipes } = useRecipesData();
 
+const calorieRanges = [
+  { id: 1, label: '0-500', min: 0, max: 500 },
+  { id: 2, label: '501-750', min: 501, max: 750 },
+  { id: 3, label: '751-1000', min: 751, max: 1000 },
+  { id: 4, label: '1001+', min: 1001, max: Infinity },
+];
+
 const searchKeywords = ref('');
 const categoryFilter = ref<RecipeCategory>();
 const cuisineFilter = ref<Cuisine>();
+const calorieFilterId = ref<number>();
 
-const filteredRecipes = computed<Recipe[]>(() =>
-  recipes.value.filter((recipe) =>
+const filteredRecipes = computed<Recipe[]>(() => {
+  const selectedCalorieRange = calorieRanges.find((range) => range.id === calorieFilterId.value);
+  return recipes.value.filter((recipe) =>
     recipeMatches(recipe, {
       keywords: searchKeywords.value,
       category: categoryFilter.value,
       cuisine: cuisineFilter.value,
+      minCalories: selectedCalorieRange?.min,
+      maxCalories: selectedCalorieRange?.max,
     }),
-  ),
-);
+  );
+});
 </script>
