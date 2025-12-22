@@ -122,14 +122,18 @@ describe('Recipes List Page', () => {
       });
     });
 
-    it('renders the cuisine filter dropdown', () => {
-      const cuisineFilter = wrapper.findComponent('[data-testid="filter-cuisine"]');
-      expect(cuisineFilter.exists()).toBe(true);
+    describe('cuisine filter', () => {
+      it('renders', () => {
+        const cuisineFilter = wrapper.findComponent('[data-testid="filter-cuisine"]');
+        expect(cuisineFilter.exists()).toBe(true);
+      });
     });
 
-    it('renders the calorie range filter dropdown', () => {
-      const calorieRangeFilter = wrapper.findComponent('[data-testid="filter-calorie-range"]');
-      expect(calorieRangeFilter.exists()).toBe(true);
+    describe('calorie range filter', () => {
+      it('renders', () => {
+        const calorieRangeFilter = wrapper.findComponent('[data-testid="filter-calorie-range"]');
+        expect(calorieRangeFilter.exists()).toBe(true);
+      });
     });
 
     describe('recipe count', () => {
