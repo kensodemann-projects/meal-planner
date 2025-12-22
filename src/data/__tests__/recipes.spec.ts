@@ -314,8 +314,8 @@ describe('Recipe Data Service', () => {
       const { recipeMatches } = useRecipesData();
       expect(
         recipeMatches(TEST_RECIPE, {
-          minCalories: TEST_RECIPE.calories! - 100,
-          maxCalories: TEST_RECIPE.calories! + 100,
+          minCalories: TEST_RECIPE.calories - 100,
+          maxCalories: TEST_RECIPE.calories + 100,
         }),
       ).toBe(true);
     });
@@ -325,7 +325,7 @@ describe('Recipe Data Service', () => {
       expect(
         recipeMatches(TEST_RECIPE, {
           minCalories: 0,
-          maxCalories: TEST_RECIPE.calories! - 1,
+          maxCalories: TEST_RECIPE.calories - 1,
         }),
       ).toBe(false);
     });
@@ -334,8 +334,8 @@ describe('Recipe Data Service', () => {
       const { recipeMatches } = useRecipesData();
       expect(
         recipeMatches(TEST_RECIPE, {
-          minCalories: TEST_RECIPE.calories! + 1,
-          maxCalories: TEST_RECIPE.calories! + 100,
+          minCalories: TEST_RECIPE.calories + 1,
+          maxCalories: TEST_RECIPE.calories + 100,
         }),
       ).toBe(false);
     });
@@ -347,8 +347,8 @@ describe('Recipe Data Service', () => {
           cuisine: TEST_RECIPE.cuisine,
           category: TEST_RECIPE.category,
           keywords: TEST_RECIPE.name,
-          minCalories: TEST_RECIPE.calories! - 100,
-          maxCalories: TEST_RECIPE.calories! + 100,
+          minCalories: TEST_RECIPE.calories - 100,
+          maxCalories: TEST_RECIPE.calories + 100,
         }),
       ).toBe(true);
     });
@@ -360,8 +360,8 @@ describe('Recipe Data Service', () => {
           cuisine: 'American',
           category: TEST_RECIPE.category,
           keywords: TEST_RECIPE.name,
-          minCalories: TEST_RECIPE.calories! - 100,
-          maxCalories: TEST_RECIPE.calories! + 100,
+          minCalories: TEST_RECIPE.calories - 100,
+          maxCalories: TEST_RECIPE.calories + 100,
         }),
       ).toBe(false);
     });
@@ -373,8 +373,8 @@ describe('Recipe Data Service', () => {
           cuisine: TEST_RECIPE.cuisine,
           category: 'Lamb',
           keywords: TEST_RECIPE.name,
-          minCalories: TEST_RECIPE.calories! - 100,
-          maxCalories: TEST_RECIPE.calories! + 100,
+          minCalories: TEST_RECIPE.calories - 100,
+          maxCalories: TEST_RECIPE.calories + 100,
         }),
       ).toBe(false);
     });
@@ -386,8 +386,8 @@ describe('Recipe Data Service', () => {
           cuisine: TEST_RECIPE.cuisine,
           category: TEST_RECIPE.category,
           keywords: 'BogusKeyword',
-          minCalories: TEST_RECIPE.calories! - 100,
-          maxCalories: TEST_RECIPE.calories! + 100,
+          minCalories: TEST_RECIPE.calories - 100,
+          maxCalories: TEST_RECIPE.calories + 100,
         }),
       ).toBe(false);
     });
@@ -399,8 +399,8 @@ describe('Recipe Data Service', () => {
           cuisine: TEST_RECIPE.cuisine,
           category: TEST_RECIPE.category,
           keywords: TEST_RECIPE.name,
-          minCalories: TEST_RECIPE.calories! + 1,
-          maxCalories: TEST_RECIPE.calories! + 100,
+          minCalories: TEST_RECIPE.calories + 1,
+          maxCalories: TEST_RECIPE.calories + 100,
         }),
       ).toBe(false);
     });
