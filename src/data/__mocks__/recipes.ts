@@ -1,3 +1,4 @@
+import type { RecipeSearchCriteria } from './../recipes';
 import type { Recipe } from '@/models/recipe';
 import { vi } from 'vitest';
 import type { Ref } from 'vue';
@@ -9,7 +10,7 @@ interface RecipesData {
   error: Ref<Error | null>;
   loading: Ref<boolean>;
   getRecipe: (id: string) => Promise<Recipe | null>;
-  recipeMatches: (recipe: Recipe, searchString: string) => boolean;
+  recipeMatches: (recipe: Recipe, criteria: RecipeSearchCriteria) => boolean;
   removeRecipe: (id: string) => Promise<void>;
   updateRecipe: (recipe: Recipe) => Promise<void>;
 }

@@ -174,50 +174,76 @@ describe('Recipe Data Service', () => {
   describe('recipe matches', () => {
     it('returns true if there are no filter parameters', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, '')).toBe(true);
+      expect(recipeMatches(TEST_RECIPE, { keywords: '' })).toBe(true);
+      expect(recipeMatches(TEST_RECIPE, {})).toBe(true);
     });
 
     it('returns false if the recipe does not match the keyword', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, 'nonexistentkeyword')).toBe(false);
+      expect(recipeMatches(TEST_RECIPE, { keywords: 'nonexistentkeyword' })).toBe(false);
     });
 
     it('returns true if the recipe contains the keyword in the name', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, 'Pan-Seared')).toBe(true);
-      expect(recipeMatches(TEST_RECIPE, 'pAN-sEAREd')).toBe(true);
+      expect(recipeMatches(TEST_RECIPE, { keywords: 'Pan-Seared' })).toBe(true);
+      expect(recipeMatches(TEST_RECIPE, { keywords: 'pAN-sEAREd' })).toBe(true);
     });
 
     it('returns true if the recipe contains the keyword in the description', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, 'caramelized')).toBe(true);
-      expect(recipeMatches(TEST_RECIPE, 'CarAmeliZEd')).toBe(true);
+      expect(recipeMatches(TEST_RECIPE, { keywords: 'caramelized' })).toBe(true);
+      expect(recipeMatches(TEST_RECIPE, { keywords: 'CarAmeliZEd' })).toBe(true);
     });
 
     it('returns true if the recipe contains the keyword in an ingredient name', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, 'olive')).toBe(true);
-      expect(recipeMatches(TEST_RECIPE, 'OliVE')).toBe(true);
+      expect(recipeMatches(TEST_RECIPE, { keywords: 'olive' })).toBe(true);
+      expect(recipeMatches(TEST_RECIPE, { keywords: 'OliVE' })).toBe(true);
     });
 
     it('returns true if the recipe contains the keywords in the name, but not together', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, 'Pan-Seared sauce')).toBe(true);
+      expect(recipeMatches(TEST_RECIPE, { keywords: 'Pan-Seared sauce' })).toBe(true);
     });
 
     it('returns true if the recipe contains the keywords in the description, but not together', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, 'caramelized simple')).toBe(true);
+      expect(recipeMatches(TEST_RECIPE, { keywords: 'caramelized simple' })).toBe(true);
     });
 
     it('returns true if the keywords are spread between name, description, and ingredients', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, 'olive Pan-seared simple')).toBe(true);
+      expect(recipeMatches(TEST_RECIPE, { keywords: 'olive Pan-seared simple' })).toBe(true);
     });
 
     it('returns false if most but not all keywords match', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, 'olive bogus Pan-seared simple')).toBe(false);
+      expect(recipeMatches(TEST_RECIPE, { keywords: 'olive bogus Pan-seared simple' })).toBe(false);
+    });
+
+    it('returns true if the category matches', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, { category: TEST_RECIPE.category })).toBe(true);
+    });
+
+    it('returns false if the category does not match', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, { category: 'Lamb' })).toBe(false);
+    });
+
+    it('returns true if the category and keywords match', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, { category: TEST_RECIPE.category, keywords: TEST_RECIPE.name })).toBe(true);
+    });
+
+    it('returns false if the category matches but keywords do not', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, { category: TEST_RECIPE.category, keywords: 'BogusKeyword' })).toBe(false);
+    });
+
+    it('returns false if the keyword matches but the category does not', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, { category: 'Lamb', keywords: TEST_RECIPE.name })).toBe(false);
     });
   });
 });

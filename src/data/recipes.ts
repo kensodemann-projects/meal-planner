@@ -1,7 +1,12 @@
-import type { Recipe } from '@/models/recipe';
+import type { Recipe, RecipeCategory } from '@/models/recipe';
 import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { computed } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
+
+export interface RecipeSearchCriteria {
+  keywords?: string;
+  category?: RecipeCategory;
+}
 
 export const useRecipesData = () => {
   const db = useFirestore();
@@ -40,9 +45,12 @@ export const useRecipesData = () => {
     );
   };
 
-  const recipeMatches = (recipe: Recipe, searchString: string) => {
-    const keywords = searchString.split(' ').filter((k) => k.trim().length > 0);
-    return keywords.every((keyword) => recipeMatchesKeyword(recipe, keyword));
+  const recipeMatches = (recipe: Recipe, criteria: RecipeSearchCriteria) => {
+    const keywords = criteria.keywords?.split(' ').filter((k) => k.trim().length > 0) || [];
+    return (
+      keywords.every((keyword) => recipeMatchesKeyword(recipe, keyword)) &&
+      (!criteria.category || recipe.category === criteria.category)
+    );
   };
 
   return { addRecipe, error, getRecipe, loading, recipeMatches, recipes, removeRecipe, updateRecipe };

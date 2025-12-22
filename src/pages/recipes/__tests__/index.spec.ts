@@ -102,23 +102,38 @@ describe('Recipes List Page', () => {
         (recipeMatches as Mock).mockClear();
         await searchInput.setValue('test');
         expect(recipeMatches).toHaveBeenCalledTimes(TEST_RECIPES.length);
-        expect(recipeMatches).toHaveBeenCalledWith(expect.any(Object), 'test');
+        expect(recipeMatches).toHaveBeenCalledWith(expect.any(Object), { keywords: 'test', category: undefined });
       });
     });
 
-    it('renders the category filter dropdown', () => {
-      const categoryFilter = wrapper.findComponent('[data-testid="filter-category"]');
-      expect(categoryFilter.exists()).toBe(true);
+    describe('category filter', () => {
+      it('renders', () => {
+        const categoryFilter = wrapper.findComponent('[data-testid="filter-category"]');
+        expect(categoryFilter.exists()).toBe(true);
+      });
+
+      it('re-runs the filter on category change', async () => {
+        const categoryFilter = wrapper.findComponent('[data-testid="filter-category"]');
+        const { recipeMatches } = useRecipesData();
+        (recipeMatches as Mock).mockClear();
+        await categoryFilter.setValue('Bread');
+        expect(recipeMatches).toHaveBeenCalledTimes(TEST_RECIPES.length);
+        expect(recipeMatches).toHaveBeenCalledWith(expect.any(Object), { keywords: '', category: 'Bread' });
+      });
     });
 
-    it('renders the cuisine filter dropdown', () => {
-      const cuisineFilter = wrapper.findComponent('[data-testid="filter-cuisine"]');
-      expect(cuisineFilter.exists()).toBe(true);
+    describe('cuisine filter', () => {
+      it('renders', () => {
+        const cuisineFilter = wrapper.findComponent('[data-testid="filter-cuisine"]');
+        expect(cuisineFilter.exists()).toBe(true);
+      });
     });
 
-    it('renders the calorie range filter dropdown', () => {
-      const calorieRangeFilter = wrapper.findComponent('[data-testid="filter-calorie-range"]');
-      expect(calorieRangeFilter.exists()).toBe(true);
+    describe('calorie range filter', () => {
+      it('renders', () => {
+        const calorieRangeFilter = wrapper.findComponent('[data-testid="filter-calorie-range"]');
+        expect(calorieRangeFilter.exists()).toBe(true);
+      });
     });
 
     describe('recipe count', () => {
