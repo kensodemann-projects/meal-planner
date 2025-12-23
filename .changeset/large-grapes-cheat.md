@@ -2,4 +2,4 @@
 'meal-planner': minor
 ---
 
-add filtering on the recipes
+Add calorie range filter to recipe browsing page.
