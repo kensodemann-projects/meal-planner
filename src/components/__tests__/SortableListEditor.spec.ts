@@ -46,10 +46,11 @@ describe('SortableListEditor', () => {
         },
       },
       slots: {
-        item: `<template #item="{ item, onChange, onDelete }">
+        item: `<template #item="{ item, onChange, onDelete, onAddNext }">
           <div class="test-item">
             <input :value="item.value" @input="(e) => onChange({ ...item, value: e.target.value })" />
             <button @click="onDelete">Delete</button>
+            <button class="add-next-button" @click="onAddNext">Add Next</button>
           </div>
         </template>`,
       },
@@ -233,5 +234,75 @@ describe('SortableListEditor', () => {
 
     // Verify that the draggable component is disabled
     expect(draggableStub.props('disabled')).toBe(true);
+  });
+
+  describe('onAddNext callback', () => {
+    it('adds a new item when onAddNext is called from slot', async () => {
+      const items: TestItem[] = [{ id: '1', value: 'First' }];
+      wrapper = mountComponent({ modelValue: items });
+
+      const addNextButton = wrapper.find('.add-next-button');
+      await addNextButton.trigger('click');
+
+      const emitted = wrapper.emitted('update:modelValue');
+      expect(emitted).toBeTruthy();
+      const emittedValue = emitted?.[0]?.[0] as TestItem[];
+      expect(emittedValue).toHaveLength(2);
+      expect(emittedValue?.[0]?.id).toBe('1');
+      expect(emittedValue?.[0]?.value).toBe('First');
+      expect(emittedValue?.[1]).toHaveProperty('id');
+      expect(emittedValue?.[1]).toHaveProperty('value', '');
+    });
+
+    it('emits list-modified when onAddNext is called', async () => {
+      const items: TestItem[] = [{ id: '1', value: 'First' }];
+      wrapper = mountComponent({ modelValue: items });
+
+      const addNextButton = wrapper.find('.add-next-button');
+      await addNextButton.trigger('click');
+
+      expect(wrapper.emitted('list-modified')).toBeTruthy();
+    });
+
+    it('can add multiple items via onAddNext', async () => {
+      wrapper = mountComponent({ modelValue: [] });
+
+      const addButton = wrapper.find('[data-testid="add-test-item-button"]');
+      await addButton.trigger('click');
+
+      // First item should be added
+      let emitted = wrapper.emitted('update:modelValue');
+      let emittedValue = emitted?.[0]?.[0] as TestItem[];
+      expect(emittedValue).toHaveLength(1);
+
+      // Remount with the new item to simulate the parent updating the prop
+      wrapper = mountComponent({ modelValue: emittedValue });
+
+      const addNextButton = wrapper.find('.add-next-button');
+      await addNextButton.trigger('click');
+
+      // Second item should be added
+      emitted = wrapper.emitted('update:modelValue');
+      emittedValue = emitted?.[0]?.[0] as TestItem[];
+      expect(emittedValue).toHaveLength(2);
+    });
+
+    it('preserves existing items when adding via onAddNext', async () => {
+      const items: TestItem[] = [
+        { id: '1', value: 'First' },
+        { id: '2', value: 'Second' },
+      ];
+      wrapper = mountComponent({ modelValue: items });
+
+      const addNextButtons = wrapper.findAll('.add-next-button');
+      await addNextButtons[0]!.trigger('click');
+
+      const emitted = wrapper.emitted('update:modelValue');
+      const emittedValue = emitted?.[0]?.[0] as TestItem[];
+      expect(emittedValue).toHaveLength(3);
+      expect(emittedValue?.[0]?.id).toBe('1');
+      expect(emittedValue?.[1]?.id).toBe('2');
+      expect(emittedValue?.[2]).toHaveProperty('id');
+    });
   });
 });

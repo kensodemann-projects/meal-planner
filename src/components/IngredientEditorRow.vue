@@ -9,6 +9,7 @@
         :rules="[validationRules.required]"
         v-model="units"
         data-testid="units-input"
+        ref="unitsInput"
       ></v-number-input>
     </div>
     <div class="ingredient-editor-row__unit-of-measure">
@@ -31,6 +32,7 @@
         :rules="[validationRules.required]"
         v-model="ingredientName"
         data-testid="ingredient-name-input"
+        @keydown.ctrl.enter="$emit('add-next')"
       ></v-text-field>
     </div>
     <div class="ingredient-editor-row__delete">
@@ -63,14 +65,20 @@ import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import { validationRules } from '@/core/validation-rules';
 import { unitsOfMeasure } from '@/data/units-of-measure';
 import type { RecipeIngredient } from '@/models/recipe';
-import { computed, shallowRef } from 'vue';
+import { computed, onMounted, shallowRef } from 'vue';
+import type { VNumberInput } from 'vuetify/components';
 
 const props = defineProps<{
-  ingredient: RecipeIngredient;
+  ingredient: Partial<RecipeIngredient>;
 }>();
-const emit = defineEmits<{ (event: 'changed', payload: RecipeIngredient): void; (event: 'delete'): void }>();
+const emit = defineEmits<{
+  (event: 'changed', payload: Partial<RecipeIngredient>): void;
+  (event: 'add-next'): void;
+  (event: 'delete'): void;
+}>();
 
 const showConfirmDelete = shallowRef(false);
+const unitsInput = shallowRef<VNumberInput | null>(null);
 
 const units = computed({
   get: () => props.ingredient.units,
@@ -82,7 +90,7 @@ const units = computed({
 });
 
 const unitOfMeasureId = computed({
-  get: () => props.ingredient.unitOfMeasure.id,
+  get: () => props.ingredient.unitOfMeasure?.id,
   set: (id: string) => {
     const unitOfMeasure = findUnitOfMeasure(id);
     emit('changed', {
@@ -101,6 +109,8 @@ const ingredientName = computed({
     });
   },
 });
+
+onMounted(() => unitsInput.value?.focus());
 </script>
 
 <style scoped>

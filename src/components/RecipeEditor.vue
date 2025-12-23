@@ -71,28 +71,28 @@
     <SortableListEditor
       v-model="ingredients"
       title="Ingredients"
-      :validate-item="(item) => !!(item.units && item.name && item.unitOfMeasure)"
+      :validate-item="isValidIngredient"
       :create-item="createIngredient"
       @list-modified="listChanged = true"
       test-id-prefix="ingredient"
       list-class="ingredient-list editable-list"
     >
-      <template #item="{ item, onChange, onDelete }">
-        <IngredientEditorRow :ingredient="item" @changed="onChange" @delete="onDelete" />
+      <template #item="{ item, onAddNext, onChange, onDelete }">
+        <IngredientEditorRow :ingredient="item" @add-next="onAddNext" @changed="onChange" @delete="onDelete" />
       </template>
     </SortableListEditor>
 
     <SortableListEditor
       v-model="steps"
       title="Steps"
-      :validate-item="(item) => !!item.instruction?.trim()"
+      :validate-item="isValidStep"
       :create-item="createStep"
       @list-modified="listChanged = true"
       test-id-prefix="step"
       list-class="step-list editable-list"
     >
-      <template #item="{ item, onChange, onDelete }">
-        <StepEditorRow :step="item" @changed="onChange" @delete="onDelete" />
+      <template #item="{ item, onAddNext, onChange, onDelete }">
+        <StepEditorRow :step="item" @add-next="onAddNext" @changed="onChange" @delete="onDelete" />
       </template>
     </SortableListEditor>
 
@@ -233,23 +233,29 @@ const sugar = ref<number>(props.recipe?.sugar || 0);
 const carbs = ref<number>(props.recipe?.carbs || 0);
 const fat = ref<number>(props.recipe?.fat || 0);
 const protein = ref<number>(props.recipe?.protein || 0);
-const ingredients = ref<RecipeIngredient[]>(props.recipe ? [...props.recipe.ingredients] : []);
-const steps = ref<RecipeStep[]>(props.recipe ? [...props.recipe.steps] : []);
+const ingredients = ref<Partial<RecipeIngredient>[]>(props.recipe ? [...props.recipe.ingredients] : []);
+const steps = ref<Partial<RecipeStep>[]>(props.recipe ? [...props.recipe.steps] : []);
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 const listChanged = ref(false);
 
-const createIngredient = (): RecipeIngredient => ({
+const createIngredient = (): Partial<RecipeIngredient> => ({
   id: globalThis.crypto.randomUUID(),
-  units: 1,
-  unitOfMeasure: findUnitOfMeasure('item'),
-  name: '',
 });
 
-const createStep = (): RecipeStep => ({
+const createStep = (): Partial<RecipeStep> => ({
   id: globalThis.crypto.randomUUID(),
-  instruction: '',
 });
+
+const isValidIngredient = (item: Partial<RecipeIngredient>): item is RecipeIngredient => {
+  return (
+    'units' in item && 'name' in item && 'unitOfMeasure' in item && !!(item.units && item.name && item.unitOfMeasure)
+  );
+};
+
+const isValidStep = (item: Partial<RecipeStep>): item is RecipeStep => {
+  return 'instruction' in item && !!item.instruction?.trim();
+};
 
 const isModified = computed((): boolean => {
   if (!props.recipe) return true;
@@ -289,8 +295,8 @@ const save = () => {
     carbs: carbs.value,
     fat: fat.value,
     protein: protein.value,
-    ingredients: ingredients.value,
-    steps: steps.value,
+    ingredients: ingredients.value.filter(isValidIngredient),
+    steps: steps.value.filter(isValidStep),
   };
   emit('save', {
     ...(props.recipe ? { ...recipe, id: props.recipe.id } : recipe),
