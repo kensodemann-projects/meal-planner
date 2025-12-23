@@ -379,7 +379,7 @@ describe('Recipe Data Service', () => {
       ).toBe(false);
     });
 
-    it('returns true if all parameters match except keywords', () => {
+    it('returns false if all parameters match except keywords', () => {
       const { recipeMatches } = useRecipesData();
       expect(
         recipeMatches(TEST_RECIPE, {
