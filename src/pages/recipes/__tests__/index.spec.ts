@@ -106,6 +106,8 @@ describe('Recipes List Page', () => {
           keywords: 'test',
           category: undefined,
           cuisine: undefined,
+          minCalories: undefined,
+          maxCalories: undefined,
         });
       });
     });
@@ -126,6 +128,8 @@ describe('Recipes List Page', () => {
           keywords: '',
           category: 'Bread',
           cuisine: undefined,
+          minCalories: undefined,
+          maxCalories: undefined,
         });
       });
     });
@@ -146,6 +150,8 @@ describe('Recipes List Page', () => {
           keywords: '',
           category: undefined,
           cuisine: 'Italian',
+          minCalories: undefined,
+          maxCalories: undefined,
         });
       });
     });
@@ -154,6 +160,41 @@ describe('Recipes List Page', () => {
       it('renders', () => {
         const calorieRangeFilter = wrapper.findComponent('[data-testid="filter-calorie-range"]');
         expect(calorieRangeFilter.exists()).toBe(true);
+      });
+
+      it('re-runs the filter on calorie range change', async () => {
+        const calorieRangeFilter = wrapper.findComponent('[data-testid="filter-calorie-range"]');
+        const { recipeMatches } = useRecipesData();
+        (recipeMatches as Mock).mockClear();
+        await calorieRangeFilter.setValue(2);
+        expect(recipeMatches).toHaveBeenCalledTimes(TEST_RECIPES.length);
+        expect(recipeMatches).toHaveBeenCalledWith(expect.any(Object), {
+          keywords: '',
+          category: undefined,
+          cuisine: undefined,
+          minCalories: 501,
+          maxCalories: 750,
+        });
+      });
+
+      it('resets minCalories and maxCalories to undefined when filter is cleared', async () => {
+        const calorieRangeFilter = wrapper.findComponent('[data-testid="filter-calorie-range"]');
+        const { recipeMatches } = useRecipesData();
+
+        // First set a calorie range
+        await calorieRangeFilter.setValue(2);
+        (recipeMatches as Mock).mockClear();
+
+        // Then clear the filter
+        await calorieRangeFilter.setValue(null);
+        expect(recipeMatches).toHaveBeenCalledTimes(TEST_RECIPES.length);
+        expect(recipeMatches).toHaveBeenCalledWith(expect.any(Object), {
+          keywords: '',
+          category: undefined,
+          cuisine: undefined,
+          minCalories: undefined,
+          maxCalories: undefined,
+        });
       });
     });
 
