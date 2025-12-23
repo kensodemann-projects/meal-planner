@@ -295,7 +295,7 @@ describe('SortableListEditor', () => {
       wrapper = mountComponent({ modelValue: items });
 
       const addNextButtons = wrapper.findAll('.add-next-button');
-      await addNextButtons[0].trigger('click');
+      await addNextButtons[0]!.trigger('click');
 
       const emitted = wrapper.emitted('update:modelValue');
       const emittedValue = emitted?.[0]?.[0] as TestItem[];

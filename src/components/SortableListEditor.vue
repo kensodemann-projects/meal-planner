@@ -31,7 +31,7 @@
               name="item"
               :item="element"
               :index="index"
-              :on-change="(updatedItem: T) => changeItem(updatedItem, index)"
+              :on-change="(updatedItem: Partial<T>) => changeItem(updatedItem, index)"
               :on-delete="() => deleteItem(index)"
               :on-add-next="addItem"
             ></slot>
@@ -48,10 +48,10 @@ import draggable from 'vuedraggable';
 
 const props = withDefaults(
   defineProps<{
-    modelValue: T[];
+    modelValue: Partial<T>[];
     title: string;
-    validateItem: (item: T) => boolean;
-    createItem: () => T;
+    validateItem: (item: Partial<T>) => item is T;
+    createItem: () => Partial<T>;
     sortable?: boolean;
     testIdPrefix?: string;
     listClass?: string;
@@ -64,13 +64,13 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  'update:modelValue': [value: T[]];
+  'update:modelValue': [value: Partial<T>[]];
   'list-modified': [];
 }>();
 
 const internalList = computed({
   get: () => props.modelValue,
-  set: (value: T[]) => {
+  set: (value: Partial<T>[]) => {
     emit('update:modelValue', value);
     emit('list-modified');
   },
@@ -85,7 +85,7 @@ const addItem = () => {
   internalList.value = [...props.modelValue, newItem];
 };
 
-const changeItem = (updatedItem: T, index: number) => {
+const changeItem = (updatedItem: Partial<T>, index: number) => {
   const updated = [...props.modelValue];
   updated[index] = updatedItem;
   internalList.value = updated;

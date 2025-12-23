@@ -69,10 +69,10 @@ import { computed, onMounted, shallowRef } from 'vue';
 import type { VNumberInput } from 'vuetify/components';
 
 const props = defineProps<{
-  ingredient: RecipeIngredient;
+  ingredient: Partial<RecipeIngredient>;
 }>();
 const emit = defineEmits<{
-  (event: 'changed', payload: RecipeIngredient): void;
+  (event: 'changed', payload: Partial<RecipeIngredient>): void;
   (event: 'add-next'): void;
   (event: 'delete'): void;
 }>();
@@ -90,7 +90,7 @@ const units = computed({
 });
 
 const unitOfMeasureId = computed({
-  get: () => props.ingredient.unitOfMeasure.id,
+  get: () => props.ingredient.unitOfMeasure?.id,
   set: (id: string) => {
     const unitOfMeasure = findUnitOfMeasure(id);
     emit('changed', {
