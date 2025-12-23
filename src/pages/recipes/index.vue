@@ -90,7 +90,7 @@ import { cuisines } from '@/data/cuisines';
 import { recipeCategories } from '@/data/recipe-categories';
 import { useRecipesData } from '@/data/recipes';
 import type { Cuisine, Recipe, RecipeCategory } from '@/models/recipe';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -144,8 +144,15 @@ onMounted(() => {
   }
 });
 
-// Debounced search update
+// Clean up debounce timer on unmount
 let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+onUnmounted(() => {
+  if (searchDebounceTimer) {
+    clearTimeout(searchDebounceTimer);
+  }
+});
+
+// Debounced search update
 watch(searchKeywords, () => {
   if (searchDebounceTimer) {
     clearTimeout(searchDebounceTimer);
