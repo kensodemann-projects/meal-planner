@@ -9,7 +9,7 @@
         v-model="instruction"
         data-testid="instruction-input"
         @keydown.ctrl.enter="$emit('add-next')"
-        ref="stepInput"
+        ref="instructionInput"
       ></v-text-field>
     </div>
     <div class="step-editor-row__delete">
@@ -43,7 +43,7 @@ import type { RecipeStep } from '@/models/recipe';
 import { computed, onMounted, shallowRef } from 'vue';
 import type { VTextField } from 'vuetify/components';
 
-const stepInput = shallowRef<VTextField | null>(null);
+const instructionInput = shallowRef<VTextField | null>(null);
 
 const props = defineProps<{
   step: RecipeStep;
@@ -65,7 +65,7 @@ const instruction = computed({
     }),
 });
 
-onMounted(() => stepInput.value?.focus());
+onMounted(() => instructionInput.value?.focus());
 </script>
 
 <style scoped>
