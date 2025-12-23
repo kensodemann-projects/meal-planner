@@ -128,6 +128,17 @@ describe('Ingredient Editor Row', () => {
       expect(emitted?.length).toBe(1);
       expect((emitted![0]![0] as RecipeIngredient).name).toBe('silver bells');
     });
+
+    it('emits add-next when Ctrl+Enter is pressed', async () => {
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
+      const textField = wrapper.findComponent('[data-testid="ingredient-name-input"]');
+
+      await textField.trigger('keydown.ctrl.enter');
+
+      const emitted = wrapper.emitted('add-next');
+      expect(emitted).toBeTruthy();
+      expect(emitted?.length).toBe(1);
+    });
   });
 
   describe('delete button', () => {

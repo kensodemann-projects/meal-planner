@@ -72,6 +72,17 @@ describe('StepEditorRow', () => {
       expect(emitted?.length).toBe(1);
       expect((emitted![0]![0] as RecipeStep).instruction).toBe('Dump the stuff in the thing and mix');
     });
+
+    it('emits add-next when Ctrl+Enter is pressed', async () => {
+      wrapper = mountComponent({ step: TEST_STEPS[1]! });
+      const input = wrapper.findComponent('[data-testid="instruction-input"]');
+
+      await input.trigger('keydown.ctrl.enter');
+
+      const emitted = wrapper.emitted('add-next');
+      expect(emitted).toBeTruthy();
+      expect(emitted?.length).toBe(1);
+    });
   });
 
   describe('delete button', () => {
