@@ -4,7 +4,7 @@ import { useRecipesData } from '@/data/recipes';
 import type { Recipe } from '@/models/recipe';
 import { mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -21,6 +21,8 @@ vi.mock('@/data/recipes');
 
 describe('Recipes List Page', () => {
   let wrapper: ReturnType<typeof mountPage>;
+  let mockRouter: { push: Mock; replace: Mock };
+  let mockRoute: { query: Record<string, string> };
 
   afterEach(() => {
     wrapper?.unmount();
@@ -31,9 +33,15 @@ describe('Recipes List Page', () => {
   });
 
   beforeEach(() => {
-    (useRouter as Mock).mockReturnValue({
+    mockRouter = {
       push: vi.fn(),
-    });
+      replace: vi.fn(),
+    };
+    mockRoute = {
+      query: {},
+    };
+    (useRouter as Mock).mockReturnValue(mockRouter);
+    (useRoute as Mock).mockReturnValue(mockRoute);
     const { recipeMatches, recipes } = useRecipesData();
     (recipes.value as Recipe[]) = TEST_RECIPES;
     (recipeMatches as Mock).mockReturnValue(true);
@@ -65,23 +73,21 @@ describe('Recipes List Page', () => {
   });
 
   it('navigates to the given recipe on click', async () => {
-    const router = useRouter();
     const { recipes } = useRecipesData();
     (recipes.value as Recipe[]) = TEST_RECIPES;
     wrapper = mountPage();
     const listItems = wrapper.findAllComponents(RecipeListItem);
     const listItem = listItems[0]?.findComponent(components.VListItem);
     await listItem?.trigger('click');
-    expect(router.push).toHaveBeenCalledExactlyOnceWith(`recipes/${TEST_RECIPES[0]?.id}`);
+    expect(mockRouter.push).toHaveBeenCalledExactlyOnceWith(`recipes/${TEST_RECIPES[0]?.id}`);
   });
 
   describe('add button', () => {
     it('navigates to the recipe add page', async () => {
-      const router = useRouter();
       wrapper = mountPage();
       const btn = wrapper.findComponent('[data-testid="add-button"]');
       await btn.trigger('click');
-      expect(router.push).toHaveBeenCalledExactlyOnceWith('recipes/add');
+      expect(mockRouter.push).toHaveBeenCalledExactlyOnceWith('recipes/add');
     });
   });
 
@@ -254,6 +260,166 @@ describe('Recipes List Page', () => {
       wrapper = mountPage();
       const emptyStateMessage = wrapper.find('h2');
       expect(emptyStateMessage.exists()).toBe(false);
+    });
+  });
+
+  describe('URL query parameters', () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    it('initializes search from URL query parameter', async () => {
+      mockRoute.query = { search: 'chicken' };
+      wrapper = mountPage();
+      await wrapper.vm.$nextTick();
+      expect((wrapper.vm as any).searchKeywords).toBe('chicken');
+    });
+
+    it('initializes category filter from URL query parameter', async () => {
+      mockRoute.query = { category: 'Soup' };
+      wrapper = mountPage();
+      await wrapper.vm.$nextTick();
+      expect((wrapper.vm as any).categoryFilter).toBe('Soup');
+    });
+
+    it('initializes cuisine filter from URL query parameter', async () => {
+      mockRoute.query = { cuisine: 'Italian' };
+      wrapper = mountPage();
+      await wrapper.vm.$nextTick();
+      expect((wrapper.vm as any).cuisineFilter).toBe('Italian');
+    });
+
+    it('initializes calorie range filter from URL query parameter', async () => {
+      mockRoute.query = { calorieRange: '2' };
+      wrapper = mountPage();
+      await wrapper.vm.$nextTick();
+      expect((wrapper.vm as any).calorieFilterId).toBe(2);
+    });
+
+    it('initializes multiple filters from URL query parameters', async () => {
+      mockRoute.query = {
+        search: 'rice',
+        category: 'Soup',
+        cuisine: 'Italian',
+        calorieRange: '1',
+      };
+      wrapper = mountPage();
+      await wrapper.vm.$nextTick();
+      expect((wrapper.vm as any).searchKeywords).toBe('rice');
+      expect((wrapper.vm as any).categoryFilter).toBe('Soup');
+      expect((wrapper.vm as any).cuisineFilter).toBe('Italian');
+      expect((wrapper.vm as any).calorieFilterId).toBe(1);
+    });
+
+    it('updates URL when search input changes (debounced)', async () => {
+      wrapper = mountPage();
+      const searchInput = wrapper.findComponent('[data-testid="search-input"]');
+      await searchInput.setValue('chicken');
+
+      // Should not update immediately
+      expect(mockRouter.replace).not.toHaveBeenCalled();
+
+      // Should update after debounce delay
+      vi.advanceTimersByTime(500);
+      expect(mockRouter.replace).toHaveBeenCalledWith({ query: { search: 'chicken' } });
+    });
+
+    it('updates URL when category filter changes', async () => {
+      wrapper = mountPage();
+      const categoryFilter = wrapper.findComponent('[data-testid="filter-category"]');
+      await categoryFilter.setValue('Bread');
+      expect(mockRouter.replace).toHaveBeenCalledWith({ query: { category: 'Bread' } });
+    });
+
+    it('updates URL when cuisine filter changes', async () => {
+      wrapper = mountPage();
+      const cuisineFilter = wrapper.findComponent('[data-testid="filter-cuisine"]');
+      await cuisineFilter.setValue('Mexican');
+      expect(mockRouter.replace).toHaveBeenCalledWith({ query: { cuisine: 'Mexican' } });
+    });
+
+    it('updates URL when calorie range filter changes', async () => {
+      wrapper = mountPage();
+      const calorieFilter = wrapper.findComponent('[data-testid="filter-calorie-range"]');
+      await calorieFilter.setValue(3);
+      expect(mockRouter.replace).toHaveBeenCalledWith({ query: { calorieRange: '3' } });
+    });
+
+    it('updates URL with multiple filters', async () => {
+      wrapper = mountPage();
+      const searchInput = wrapper.findComponent('[data-testid="search-input"]');
+      const categoryFilter = wrapper.findComponent('[data-testid="filter-category"]');
+      const cuisineFilter = wrapper.findComponent('[data-testid="filter-cuisine"]');
+
+      await categoryFilter.setValue('Soup');
+      await cuisineFilter.setValue('Italian');
+      mockRouter.replace.mockClear();
+
+      await searchInput.setValue('rice');
+      vi.advanceTimersByTime(500);
+
+      expect(mockRouter.replace).toHaveBeenCalledWith({
+        query: { search: 'rice', category: 'Soup', cuisine: 'Italian' },
+      });
+    });
+
+    it('removes filter from URL when cleared', async () => {
+      mockRoute.query = { category: 'Soup', cuisine: 'Italian' };
+      wrapper = mountPage();
+      const categoryFilter = wrapper.findComponent('[data-testid="filter-category"]');
+
+      await categoryFilter.setValue(null);
+      expect(mockRouter.replace).toHaveBeenCalledWith({ query: { cuisine: 'Italian' } });
+    });
+
+    it('handles invalid category gracefully', async () => {
+      mockRoute.query = { category: 'InvalidCategory' };
+      wrapper = mountPage();
+      await wrapper.vm.$nextTick();
+      expect((wrapper.vm as any).categoryFilter).toBeUndefined();
+    });
+
+    it('handles invalid cuisine gracefully', async () => {
+      mockRoute.query = { cuisine: 'InvalidCuisine' };
+      wrapper = mountPage();
+      await wrapper.vm.$nextTick();
+      expect((wrapper.vm as any).cuisineFilter).toBeUndefined();
+    });
+
+    it('handles invalid calorie range gracefully', async () => {
+      mockRoute.query = { calorieRange: '999' };
+      wrapper = mountPage();
+      await wrapper.vm.$nextTick();
+      expect((wrapper.vm as any).calorieFilterId).toBeUndefined();
+    });
+
+    it('handles non-numeric calorie range gracefully', async () => {
+      mockRoute.query = { calorieRange: 'invalid' };
+      wrapper = mountPage();
+      await wrapper.vm.$nextTick();
+      expect((wrapper.vm as any).calorieFilterId).toBeUndefined();
+    });
+
+    it('debounces search input to avoid excessive URL updates', async () => {
+      wrapper = mountPage();
+      const searchInput = wrapper.findComponent('[data-testid="search-input"]');
+
+      await searchInput.setValue('c');
+      vi.advanceTimersByTime(200);
+      await searchInput.setValue('ch');
+      vi.advanceTimersByTime(200);
+      await searchInput.setValue('chi');
+      vi.advanceTimersByTime(200);
+
+      // Should not have updated yet
+      expect(mockRouter.replace).not.toHaveBeenCalled();
+
+      // Complete the debounce
+      vi.advanceTimersByTime(500);
+
+      // Should only update once with final value
+      expect(mockRouter.replace).toHaveBeenCalledTimes(1);
+      expect(mockRouter.replace).toHaveBeenCalledWith({ query: { search: 'chi' } });
     });
   });
 });
