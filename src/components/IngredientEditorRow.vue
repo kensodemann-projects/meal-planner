@@ -9,6 +9,7 @@
         :rules="[validationRules.required]"
         v-model="units"
         data-testid="units-input"
+        ref="unitsInput"
       ></v-number-input>
     </div>
     <div class="ingredient-editor-row__unit-of-measure">
@@ -64,7 +65,8 @@ import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import { validationRules } from '@/core/validation-rules';
 import { unitsOfMeasure } from '@/data/units-of-measure';
 import type { RecipeIngredient } from '@/models/recipe';
-import { computed, shallowRef } from 'vue';
+import { computed, onMounted, shallowRef } from 'vue';
+import type { VNumberInput } from 'vuetify/components';
 
 const props = defineProps<{
   ingredient: RecipeIngredient;
@@ -76,6 +78,7 @@ const emit = defineEmits<{
 }>();
 
 const showConfirmDelete = shallowRef(false);
+const unitsInput = shallowRef<VNumberInput | null>(null);
 
 const units = computed({
   get: () => props.ingredient.units,
@@ -106,6 +109,8 @@ const ingredientName = computed({
     });
   },
 });
+
+onMounted(() => unitsInput.value?.focus());
 </script>
 
 <style scoped>
