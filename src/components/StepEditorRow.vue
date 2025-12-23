@@ -8,6 +8,7 @@
         :rules="[validationRules.required]"
         v-model="instruction"
         data-testid="instruction-input"
+        @keydown.ctrl.enter="$emit('add-next')"
       ></v-text-field>
     </div>
     <div class="step-editor-row__delete">
@@ -43,7 +44,11 @@ import { computed, shallowRef } from 'vue';
 const props = defineProps<{
   step: RecipeStep;
 }>();
-const emit = defineEmits<{ (event: 'changed', payload: RecipeStep): void; (event: 'delete'): void }>();
+const emit = defineEmits<{
+  (event: 'changed', payload: RecipeStep): void;
+  (event: 'add-next'): void;
+  (event: 'delete'): void;
+}>();
 
 const showConfirmDelete = shallowRef(false);
 

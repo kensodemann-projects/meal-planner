@@ -77,8 +77,8 @@
       test-id-prefix="ingredient"
       list-class="ingredient-list editable-list"
     >
-      <template #item="{ item, onChange, onDelete }">
-        <IngredientEditorRow :ingredient="item" @changed="onChange" @delete="onDelete" />
+      <template #item="{ item, onAddNext, onChange, onDelete }">
+        <IngredientEditorRow :ingredient="item" @add-next="onAddNext" @changed="onChange" @delete="onDelete" />
       </template>
     </SortableListEditor>
 
@@ -91,8 +91,8 @@
       test-id-prefix="step"
       list-class="step-list editable-list"
     >
-      <template #item="{ item, onChange, onDelete }">
-        <StepEditorRow :step="item" @changed="onChange" @delete="onDelete" />
+      <template #item="{ item, onAddNext, onChange, onDelete }">
+        <StepEditorRow :step="item" @add-next="onAddNext" @changed="onChange" @delete="onDelete" />
       </template>
     </SortableListEditor>
 

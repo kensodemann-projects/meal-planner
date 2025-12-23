@@ -33,6 +33,7 @@
               :index="index"
               :on-change="(updatedItem: T) => changeItem(updatedItem, index)"
               :on-delete="() => deleteItem(index)"
+              :on-add-next="addItem"
             ></slot>
           </div>
         </div>

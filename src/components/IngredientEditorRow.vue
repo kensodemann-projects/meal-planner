@@ -31,6 +31,7 @@
         :rules="[validationRules.required]"
         v-model="ingredientName"
         data-testid="ingredient-name-input"
+        @keydown.ctrl.enter="$emit('add-next')"
       ></v-text-field>
     </div>
     <div class="ingredient-editor-row__delete">
@@ -68,7 +69,11 @@ import { computed, shallowRef } from 'vue';
 const props = defineProps<{
   ingredient: RecipeIngredient;
 }>();
-const emit = defineEmits<{ (event: 'changed', payload: RecipeIngredient): void; (event: 'delete'): void }>();
+const emit = defineEmits<{
+  (event: 'changed', payload: RecipeIngredient): void;
+  (event: 'add-next'): void;
+  (event: 'delete'): void;
+}>();
 
 const showConfirmDelete = shallowRef(false);
 
