@@ -176,6 +176,26 @@ describe('Recipes List Page', () => {
           maxCalories: 750,
         });
       });
+
+      it('resets minCalories and maxCalories to undefined when filter is cleared', async () => {
+        const calorieRangeFilter = wrapper.findComponent('[data-testid="filter-calorie-range"]');
+        const { recipeMatches } = useRecipesData();
+
+        // First set a calorie range
+        await calorieRangeFilter.setValue(2);
+        (recipeMatches as Mock).mockClear();
+
+        // Then clear the filter
+        await calorieRangeFilter.setValue(null);
+        expect(recipeMatches).toHaveBeenCalledTimes(TEST_RECIPES.length);
+        expect(recipeMatches).toHaveBeenCalledWith(expect.any(Object), {
+          keywords: '',
+          category: undefined,
+          cuisine: undefined,
+          minCalories: undefined,
+          maxCalories: undefined,
+        });
+      });
     });
 
     describe('recipe count', () => {
