@@ -79,6 +79,9 @@ export default defineConfig({
       ],
     },
     clearMocks: true,
+    env: {
+      NODE_OPTIONS: '--no-webstorage', // Prevent "Error: Web Storage API is not available in the current environment."
+    },
     environment: 'jsdom',
     server: {
       deps: {
