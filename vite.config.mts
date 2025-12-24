@@ -79,6 +79,9 @@ export default defineConfig({
       ],
     },
     clearMocks: true,
+    env: {
+      NODE_OPTIONS: '--no-webstorage', // or the correct flag
+    },
     environment: 'jsdom',
     server: {
       deps: {
