@@ -16,6 +16,6 @@ assignees: ''
 
 # Additional context
 
-# Accpetance Criteria
+# Acceptance Criteria
 
 - [ ]
