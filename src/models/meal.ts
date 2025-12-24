@@ -2,7 +2,7 @@ import type { FoodItem } from './food';
 import type { Recipe } from './recipe';
 import type { UnitOfMeasure } from './unit-of-measure';
 
-export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
+export type MealType = 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack';
 
 export interface Meal {
   id: string;
