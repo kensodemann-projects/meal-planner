@@ -10,11 +10,9 @@ export interface Meal {
   name: string;
   type: MealType;
   nutrition: Nutrition;
-  items: [
-    {
-      units: number;
-      unitOfMeasure: UnitOfMeasure;
-      item: FoodItem | Recipe;
-    },
-  ];
+  items: {
+    units: number;
+    unitOfMeasure: UnitOfMeasure;
+    item: FoodItem | Recipe;
+  }[];
 }
