@@ -15,9 +15,9 @@
     "preview": "vite preview",
     "release": "run-p build && firebase deploy",
     "save-seed": "firebase emulators:export ./seed-data --force",
-    "test": "(export NODE_OPTIONS=\"--no-webstorage\"; vitest run)",
-    "test:cov": "(export NODE_OPTIONS=\"--no-webstorage\"; vitest run --coverage)",
-    "test:dev": "(export NODE_OPTIONS=\"--no-webstorage\"; vitest)",
+    "test": "cross-env NODE_OPTIONS=\"--no-warnings\" vitest run",
+    "test:cov": "cross-env NODE_OPTIONS=\"--no-warnings\" vitest run --coverage",
+    "test:dev": "cross-env NODE_OPTIONS=\"--no-warnings\" vitest",
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
@@ -41,6 +41,7 @@
     "@vue/eslint-config-typescript": "^14.6.0",
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.8.1",
+    "cross-env": "^10.1.0",
     "eslint": "^9.39.2",
     "eslint-config-vuetify": "4.3.3",
     "eslint-plugin-vue": "^10.6.2",
