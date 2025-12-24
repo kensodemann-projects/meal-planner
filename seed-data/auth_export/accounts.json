@@ -4,12 +4,12 @@
     {
       "localId": "3Y3aYbfJgARBU3OAXiiELWD2ZY1R",
       "createdAt": "1763233447263",
-      "lastLoginAt": "1763233447263",
+      "lastLoginAt": "1766533137517",
       "displayName": "Tester Ken",
       "photoUrl": "",
       "passwordHash": "fakeHash:salt=fakeSaltN2tUH9O3sNQ84tGTHAHb:password=tester",
       "salt": "fakeSaltN2tUH9O3sNQ84tGTHAHb",
-      "passwordUpdatedAt": 1766411681924,
+      "passwordUpdatedAt": 1766532392870,
       "providerUserInfo": [
         {
           "providerId": "password",
@@ -20,11 +20,11 @@
           "photoUrl": ""
         }
       ],
-      "validSince": "1766411681",
+      "validSince": "1766532392",
       "email": "ken.sodemann@gmail.com",
       "emailVerified": false,
       "disabled": false,
-      "lastRefreshAt": "2025-12-23T22:22:24.339Z"
+      "lastRefreshAt": "2025-12-24T00:36:16.004Z"
     }
   ]
 }
