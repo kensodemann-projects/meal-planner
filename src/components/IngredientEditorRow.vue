@@ -18,7 +18,7 @@
         hide-details
         :items="unitsOfMeasure"
         :rules="[validationRules.required]"
-        item-title="id"
+        item-title="name"
         item-value="id"
         v-model="unitOfMeasureId"
         data-testid="unit-of-measure-input"
