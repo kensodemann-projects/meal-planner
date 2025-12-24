@@ -3,17 +3,13 @@
   "users": [
     {
       "localId": "3Y3aYbfJgARBU3OAXiiELWD2ZY1R",
-      "lastLoginAt": "1763233447263",
+      "createdAt": "1763233447263",
+      "lastLoginAt": "1766533137517",
       "displayName": "Tester Ken",
       "photoUrl": "",
-      "emailVerified": false,
-      "email": "ken.sodemann@gmail.com",
-      "salt": "fakeSaltN2tUH9O3sNQ84tGTHAHb",
       "passwordHash": "fakeHash:salt=fakeSaltN2tUH9O3sNQ84tGTHAHb:password=tester",
-      "passwordUpdatedAt": 1763233447263,
-      "validSince": "1763233447",
-      "mfaInfo": [],
-      "createdAt": "1763233447263",
+      "salt": "fakeSaltN2tUH9O3sNQ84tGTHAHb",
+      "passwordUpdatedAt": 1766532392870,
       "providerUserInfo": [
         {
           "providerId": "password",
@@ -23,7 +19,12 @@
           "displayName": "Tester Ken",
           "photoUrl": ""
         }
-      ]
+      ],
+      "validSince": "1766532392",
+      "email": "ken.sodemann@gmail.com",
+      "emailVerified": false,
+      "disabled": false,
+      "lastRefreshAt": "2025-12-24T00:36:16.004Z"
     }
   ]
 }

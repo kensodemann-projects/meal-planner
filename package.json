@@ -14,6 +14,7 @@
     "prepare": "husky",
     "preview": "vite preview",
     "release": "run-p build && firebase deploy",
+    "save-seed": "firebase emulators:export ./seed-data --force",
     "test": "vitest run",
     "test:cov": "vitest run --coverage",
     "test:dev": "vitest",
