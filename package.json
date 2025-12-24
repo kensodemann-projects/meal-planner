@@ -15,9 +15,9 @@
     "preview": "vite preview",
     "release": "run-p build && firebase deploy",
     "save-seed": "firebase emulators:export ./seed-data --force",
-    "test": "(export NODE_OPTIONS=\"--no-webstorage\"; vitest run)",
-    "test:cov": "(export NODE_OPTIONS=\"--no-webstorage\"; vitest run --coverage)",
-    "test:dev": "(export NODE_OPTIONS=\"--no-webstorage\"; vitest)",
+    "test": "vitest run",
+    "test:cov": "vitest run --coverage",
+    "test:dev": "vitest",
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
