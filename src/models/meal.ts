@@ -6,6 +6,7 @@ export interface MealItem {
   name: string;
   units: number;
   unitOfMeasure: UnitOfMeasure;
+  nutrition: Nutrition;
 }
 
 export type MealType = 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack';
@@ -14,6 +15,5 @@ export interface Meal {
   id: string;
   name: string;
   type: MealType;
-  nutrition: Nutrition;
   items: MealItem[];
 }
