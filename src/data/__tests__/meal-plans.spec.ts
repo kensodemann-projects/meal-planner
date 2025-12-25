@@ -113,16 +113,10 @@ describe('Meal Plans Data Service', () => {
       updateMealPlan({
         ...TEST_MEAL_PLAN,
         id: '43334-22343-893',
-        calories: 600,
-        sodium: 800,
-        brand: "John's",
       });
       expect(updateDoc).toHaveBeenCalledOnce();
       expect(updateDoc).toHaveBeenCalledWith('42:doc:meal-plans/43334-22343-893', {
         ...TEST_MEAL_PLAN,
-        calories: 600,
-        sodium: 800,
-        brand: "John's",
       });
     });
   });
