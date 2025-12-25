@@ -8,8 +8,6 @@ vi.mock('@/core/recipe-generator');
 
 import IndexPage from '../index.vue';
 
-vi.mock('@/core/recipe-generator');
-
 const vuetify = createVuetify({
   components,
   directives,
