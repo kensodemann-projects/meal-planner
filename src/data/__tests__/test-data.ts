@@ -1065,7 +1065,7 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
               sodium: 118,
               fat: 9,
               protein: 12,
-              carbs: -6,
+              carbs: 6,
               sugar: 0,
             },
           },
