@@ -7,7 +7,10 @@
   <v-container fluid dense>
     <v-row dense>
       <v-col cols="12" md="6">
-        <v-card outlined>
+        <v-card
+          outlined
+          @click="router.push({ path: './week', query: { dt: format(nextWeek!.startDate, 'yyyy-MM-dd') } })"
+        >
           <v-card-title>Next Week (Planning)</v-card-title>
           <v-card-subtitle>
             {{ nextWeek?.startDate.toLocaleDateString() }} - {{ nextWeek?.endDate.toLocaleDateString() }}
@@ -66,8 +69,9 @@
 
 <script lang="ts" setup>
 import { useSettingsData } from '@/data/settings';
-import { addWeeks, differenceInWeeks, endOfWeek, startOfWeek } from 'date-fns';
+import { addWeeks, differenceInWeeks, endOfWeek, format, startOfWeek } from 'date-fns';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 interface WeeklyData {
   startDate: Date;
@@ -85,6 +89,7 @@ const previousWeeks = ref<WeeklyData[]>([]);
 const { settings } = useSettingsData();
 
 const randomDays = (): number => Math.floor(Math.random() * 7) + 1;
+const router = useRouter();
 
 const randomCalories = (): number => Math.floor(Math.random() * 2000) + 1000;
 const randomProtein = (): number => Math.floor(Math.random() * 150) + 50;
