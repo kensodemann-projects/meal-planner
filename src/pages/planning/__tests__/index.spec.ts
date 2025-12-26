@@ -61,7 +61,7 @@ describe('Planning', () => {
         const nextWeekCard = weekCards[0]!;
         await nextWeekCard.trigger('click');
         expect(router.push).toHaveBeenCalledExactlyOnceWith({
-          path: './week',
+          path: 'planning/week',
           query: { dt: '2025-12-29' },
         });
       });
