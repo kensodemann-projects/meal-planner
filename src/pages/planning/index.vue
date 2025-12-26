@@ -25,7 +25,10 @@
         </v-card>
       </v-col>
       <v-col cols="12" md="6">
-        <v-card outlined>
+        <v-card
+          outlined
+          @click="router.push({ path: 'planning/week', query: { dt: format(thisWeek!.startDate, 'yyyy-MM-dd') } })"
+        >
           <v-card-title>This Week</v-card-title>
           <v-card-subtitle>
             {{ thisWeek?.startDate.toLocaleDateString() }} - {{ thisWeek?.endDate.toLocaleDateString() }}
