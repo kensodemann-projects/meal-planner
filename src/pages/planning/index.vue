@@ -9,7 +9,7 @@
       <v-col cols="12" md="6">
         <v-card
           outlined
-          @click="router.push({ path: './week', query: { dt: format(nextWeek!.startDate, 'yyyy-MM-dd') } })"
+          @click="router.push({ path: 'planning/week', query: { dt: format(nextWeek!.startDate, 'yyyy-MM-dd') } })"
         >
           <v-card-title>Next Week (Planning)</v-card-title>
           <v-card-subtitle>
