@@ -43,9 +43,11 @@
   <v-divider class="my-4"></v-divider>
   <v-container fluid dense>
     <v-row dense>
-      <v-col cols="12" md="6" v-for="(week, index) in previousWeeks" :key="index">
+      <v-col cols="12" md="6" v-for="week in previousWeeks" :key="week.startDate.getDate()">
         <v-card outlined>
-          <v-card-title>Week {{ index + 1 }} (Past)</v-card-title>
+          <v-card-title
+            >Weeks Ago: {{ differenceInWeeks(thisWeek?.startDate || new Date(), week.startDate) }}</v-card-title
+          >
           <v-card-subtitle>
             {{ week.startDate.toLocaleDateString() }} - {{ week.endDate.toLocaleDateString() }}
           </v-card-subtitle>
@@ -64,7 +66,7 @@
 
 <script lang="ts" setup>
 import { useSettingsData } from '@/data/settings';
-import { addWeeks, endOfWeek, startOfWeek } from 'date-fns';
+import { addWeeks, differenceInWeeks, endOfWeek, startOfWeek } from 'date-fns';
 import { ref } from 'vue';
 
 interface WeeklyData {
@@ -123,5 +125,6 @@ settings.promise.value.then(() => {
       cheatDays: randomCheatDays(),
     });
   });
+  previousWeeks.value.reverse();
 });
 </script>
