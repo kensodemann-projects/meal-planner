@@ -23,6 +23,7 @@
   "dependencies": {
     "@fontsource/roboto": "5.2.9",
     "@mdi/font": "7.4.47",
+    "date-fns": "^4.1.0",
     "firebase": "^12.7.0",
     "vue": "^3.5.26",
     "vue-router": "^4.6.4",
