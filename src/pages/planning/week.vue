@@ -29,16 +29,11 @@ const [year, month, day] = startDate.split('-').map(Number);
 const weekDays = [0, 1, 2, 3, 4, 5, 6].map((offset) => addDays(new Date(year!, month! - 1, day), offset));
 const dateToISO = (date: Date) => format(date, 'yyyy-MM-dd');
 
-const dailyPlans: MealPlan[] = MEAL_PLANS.filter(
-  (plan) => plan.date >= dateToISO(weekDays[0]!) && plan.date <= dateToISO(weekDays[6]!),
-);
-// Look up the plan per day without a Map
-
 type DayRow = { day: Date; iso: string; plan: MealPlan | null };
 const weekRows = computed<DayRow[]>(() =>
   weekDays.map((d) => {
     const iso = dateToISO(d);
-    const plan = dailyPlans.find((p) => p.date === iso) ?? null;
+    const plan = MEAL_PLANS.find((p) => p.date === iso) ?? null;
     return { day: d, iso, plan };
   }),
 );
