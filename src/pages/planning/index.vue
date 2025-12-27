@@ -50,7 +50,10 @@
   <v-container fluid dense>
     <v-row dense>
       <v-col cols="12" md="6" v-for="week in previousWeeks" :key="week.startDate.getDate()">
-        <v-card outlined>
+        <v-card
+          outlined
+          @click="router.push({ path: 'planning/week', query: { dt: format(week.startDate, 'yyyy-MM-dd') } })"
+        >
           <v-card-title
             >Weeks Ago: {{ differenceInWeeks(thisWeek?.startDate || new Date(), week.startDate) }}</v-card-title
           >
