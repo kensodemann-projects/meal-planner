@@ -9,7 +9,8 @@ const vuetify = createVuetify({
   components,
   directives,
 });
-const mountComponent = (props = {}) => mount(PageLoadError, { props, global: { plugins: [vuetify] } });
+const mountComponent = (props = { message: 'whatever, dude' }) =>
+  mount(PageLoadError, { props, global: { plugins: [vuetify] } });
 
 describe('PageLoadError', () => {
   let wrapper: ReturnType<typeof mountComponent>;
@@ -25,5 +26,15 @@ describe('PageLoadError', () => {
   it('renders', () => {
     wrapper = mountComponent();
     expect(wrapper.exists()).toBe(true);
+  });
+
+  it('displays a snarky title', () => {
+    wrapper = mountComponent();
+    expect(wrapper.find('.title').text()).toBe('I find your lack of URL hacking skills disturbing.');
+  });
+
+  it('displays the message', () => {
+    wrapper = mountComponent({ message: 'This station will soon be operational.' });
+    expect(wrapper.find('.subtitle').text()).toBe('This station will soon be operational.');
   });
 });
