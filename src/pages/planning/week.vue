@@ -22,9 +22,12 @@ import type { MealPlan } from '@/models/meal-plan';
 import { addDays, format, intlFormat } from 'date-fns';
 import { computed } from 'vue';
 import { MEAL_PLANS } from './mock-data';
+import { useRoute } from 'vue-router';
 
-// start date and end date will be obtained from the route
-const startDate = '2025-12-28';
+const route = useRoute();
+
+// TODO: only use `dt`, and validate it properly. Display errors if invalid or missing.
+const startDate = (route.query.dt as string) || format(new Date(), 'yyyy-MM-dd');
 const [year, month, day] = startDate.split('-').map(Number);
 const weekDays = [0, 1, 2, 3, 4, 5, 6].map((offset) => addDays(new Date(year!, month! - 1, day), offset));
 const dateToISO = (date: Date) => format(date, 'yyyy-MM-dd');
