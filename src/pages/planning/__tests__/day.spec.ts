@@ -1,9 +1,12 @@
 import { mount } from '@vue/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+import { useRoute } from 'vue-router';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import day from '../day.vue';
+
+vi.mock('vue-router');
 
 const vuetify = createVuetify({
   components,
@@ -13,6 +16,12 @@ const mountPage = (props = {}) => mount(day, { props, global: { plugins: [vuetif
 
 describe('day', () => {
   let wrapper: ReturnType<typeof mountPage>;
+
+  beforeEach(() => {
+    (useRoute as Mock).mockReturnValue({
+      query: { dt: '2025-12-29' },
+    });
+  });
 
   afterEach(() => {
     wrapper?.unmount();

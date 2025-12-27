@@ -20,24 +20,20 @@
 </template>
 
 <script setup lang="ts">
+import PageLoadError from '@/components/PageLoadError.vue';
 import type { MealPlan } from '@/models/meal-plan';
 import { addDays, format, intlFormat, isValid } from 'date-fns';
-import { computed, shallowRef } from 'vue';
-import { MEAL_PLANS } from './mock-data';
+import { computed } from 'vue';
 import { useRoute } from 'vue-router';
-import PageLoadError from '@/components/PageLoadError.vue';
+import { MEAL_PLANS } from './mock-data';
 
 const route = useRoute();
-const paramsValid = shallowRef(false);
-
-const validateQueryParams = () => {
+const paramsValid = (() => {
   const dt = route.query.dt as string | undefined;
-  paramsValid.value = !!(dt && isValid(new Date(dt)));
-};
+  return !!(dt && isValid(new Date(dt)));
+})();
 
-validateQueryParams();
-
-const startDate = paramsValid.value ? (route.query.dt as string) : format(new Date(), 'yyyy-MM-dd');
+const startDate = paramsValid ? (route.query.dt as string) : format(new Date(), 'yyyy-MM-dd');
 const [year, month, day] = startDate.split('-').map(Number);
 const weekDays = [0, 1, 2, 3, 4, 5, 6].map((offset) => addDays(new Date(year!, month! - 1, day), offset));
 const dateToISO = (date: Date) => format(date, 'yyyy-MM-dd');
