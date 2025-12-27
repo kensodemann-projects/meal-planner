@@ -1,7 +1,7 @@
 <template>
   <div class="page-load-error text-center">
     <v-icon class="death-icon" icon="mdi-death-star-variant" />
-    <div class="title">I find your lack of URL hacking skills disturbing.</div>
+    <div class="title">I find this failure to load to be disturbing.</div>
     <div class="subtitle">{{ message }}</div>
   </div>
 </template>

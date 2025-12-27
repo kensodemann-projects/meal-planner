@@ -30,7 +30,7 @@ describe('PageLoadError', () => {
 
   it('displays a snarky title', () => {
     wrapper = mountComponent();
-    expect(wrapper.find('.title').text()).toBe('I find your lack of URL hacking skills disturbing.');
+    expect(wrapper.find('.title').text()).toBe('I find this failure to load to be disturbing.');
   });
 
   it('displays the message', () => {
