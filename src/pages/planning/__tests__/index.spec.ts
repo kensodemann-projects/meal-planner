@@ -21,7 +21,7 @@ describe('Planning', () => {
 
   beforeEach(() => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date('2025-12-25'));
+    vi.setSystemTime(new Date(2025, 11, 25));
     (useRouter as Mock).mockReturnValue({
       push: vi.fn(),
     });
@@ -52,12 +52,12 @@ describe('Planning', () => {
     });
 
     describe('this week', () => {
-      it('is the second card', async () => {
+      it('is the first card', async () => {
         wrapper = mountPage();
         await flushPromises();
         const weekCards = wrapper.findAllComponents(components.VCard);
-        const title = weekCards[1]?.findComponent(components.VCardTitle);
-        const subTitle = weekCards[1]?.findComponent(components.VCardSubtitle);
+        const title = weekCards[0]?.findComponent(components.VCardTitle);
+        const subTitle = weekCards[0]?.findComponent(components.VCardSubtitle);
         expect(title?.text()).toBe('This Week');
         expect(subTitle?.text()).toBe('12/22/2025 - 12/28/2025');
       });
@@ -67,7 +67,7 @@ describe('Planning', () => {
         wrapper = mountPage();
         await flushPromises();
         const weekCards = wrapper.findAllComponents(components.VCard);
-        const nextWeekCard = weekCards[1]!;
+        const nextWeekCard = weekCards[0]!;
         await nextWeekCard.trigger('click');
         expect(router.push).toHaveBeenCalledExactlyOnceWith({
           path: 'planning/week',
@@ -77,12 +77,12 @@ describe('Planning', () => {
     });
 
     describe('next week', () => {
-      it('is the first card', async () => {
+      it('is the second card', async () => {
         wrapper = mountPage();
         await flushPromises();
         const weekCards = wrapper.findAllComponents(components.VCard);
-        const title = weekCards[0]?.findComponent(components.VCardTitle);
-        const subTitle = weekCards[0]?.findComponent(components.VCardSubtitle);
+        const title = weekCards[1]?.findComponent(components.VCardTitle);
+        const subTitle = weekCards[1]?.findComponent(components.VCardSubtitle);
         expect(title?.text()).toBe('Next Week (Planning)');
         expect(subTitle?.text()).toBe('12/29/2025 - 1/4/2026');
       });
@@ -92,7 +92,7 @@ describe('Planning', () => {
         wrapper = mountPage();
         await flushPromises();
         const weekCards = wrapper.findAllComponents(components.VCard);
-        const nextWeekCard = weekCards[0]!;
+        const nextWeekCard = weekCards[1]!;
         await nextWeekCard.trigger('click');
         expect(router.push).toHaveBeenCalledExactlyOnceWith({
           path: 'planning/week',

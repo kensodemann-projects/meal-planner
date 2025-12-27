@@ -9,34 +9,6 @@
       <v-col cols="12" md="6">
         <v-card
           outlined
-          @click="router.push({ path: 'planning/week', query: { dt: format(nextWeek!.startDate, 'yyyy-MM-dd') } })"
-        >
-          <v-card-title>Next Week (Planning)</v-card-title>
-          <v-card-subtitle>
-            {{ nextWeek?.startDate.toLocaleDateString() }} - {{ nextWeek?.endDate.toLocaleDateString() }}
-          </v-card-subtitle>
-          <v-card-text>
-            <div>
-              Days with Meals: <strong>{{ nextWeek?.daysWithMeals }}</strong>
-            </div>
-            <div>
-              Highest Calories: <strong>{{ nextWeek?.highestCalories }}</strong>
-            </div>
-            <div>
-              Highest Protein: <strong>{{ nextWeek?.highestProtein }}g</strong>
-            </div>
-            <div>
-              Highest Carbs: <strong>{{ nextWeek?.highestCarbs }}g</strong>
-            </div>
-            <div>
-              Cheat Days: <strong>{{ nextWeek?.cheatDays }}</strong>
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-col>
-      <v-col cols="12" md="6">
-        <v-card
-          outlined
           @click="router.push({ path: 'planning/week', query: { dt: format(thisWeek!.startDate, 'yyyy-MM-dd') } })"
         >
           <v-card-title>This Week</v-card-title>
@@ -58,6 +30,34 @@
             </div>
             <div>
               Cheat Days: <strong>{{ thisWeek?.cheatDays }}</strong>
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-card
+          outlined
+          @click="router.push({ path: 'planning/week', query: { dt: format(nextWeek!.startDate, 'yyyy-MM-dd') } })"
+        >
+          <v-card-title>Next Week (Planning)</v-card-title>
+          <v-card-subtitle>
+            {{ nextWeek?.startDate.toLocaleDateString() }} - {{ nextWeek?.endDate.toLocaleDateString() }}
+          </v-card-subtitle>
+          <v-card-text>
+            <div>
+              Days with Meals: <strong>{{ nextWeek?.daysWithMeals }}</strong>
+            </div>
+            <div>
+              Highest Calories: <strong>{{ nextWeek?.highestCalories }}</strong>
+            </div>
+            <div>
+              Highest Protein: <strong>{{ nextWeek?.highestProtein }}g</strong>
+            </div>
+            <div>
+              Highest Carbs: <strong>{{ nextWeek?.highestCarbs }}g</strong>
+            </div>
+            <div>
+              Cheat Days: <strong>{{ nextWeek?.cheatDays }}</strong>
             </div>
           </v-card-text>
         </v-card>
