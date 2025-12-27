@@ -16,11 +16,21 @@
             {{ nextWeek?.startDate.toLocaleDateString() }} - {{ nextWeek?.endDate.toLocaleDateString() }}
           </v-card-subtitle>
           <v-card-text>
-            <div>Days with Meals: {{ nextWeek?.daysWithMeals }}</div>
-            <div>Highest Calories: {{ nextWeek?.highestCalories }}</div>
-            <div>Highest Protein: {{ nextWeek?.highestProtein }}g</div>
-            <div>Highest Carbs: {{ nextWeek?.highestCarbs }}g</div>
-            <div>Cheat Days: {{ nextWeek?.cheatDays }}</div>
+            <div>
+              Days with Meals: <strong>{{ nextWeek?.daysWithMeals }}</strong>
+            </div>
+            <div>
+              Highest Calories: <strong>{{ nextWeek?.highestCalories }}</strong>
+            </div>
+            <div>
+              Highest Protein: <strong>{{ nextWeek?.highestProtein }}g</strong>
+            </div>
+            <div>
+              Highest Carbs: <strong>{{ nextWeek?.highestCarbs }}g</strong>
+            </div>
+            <div>
+              Cheat Days: <strong>{{ nextWeek?.cheatDays }}</strong>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -34,11 +44,21 @@
             {{ thisWeek?.startDate.toLocaleDateString() }} - {{ thisWeek?.endDate.toLocaleDateString() }}
           </v-card-subtitle>
           <v-card-text>
-            <div>Days with Meals: {{ thisWeek?.daysWithMeals }}</div>
-            <div>Highest Calories: {{ thisWeek?.highestCalories }}</div>
-            <div>Highest Protein: {{ thisWeek?.highestProtein }}g</div>
-            <div>Highest Carbs: {{ thisWeek?.highestCarbs }}g</div>
-            <div>Cheat Days: {{ thisWeek?.cheatDays }}</div>
+            <div>
+              Days with Meals: <strong>{{ thisWeek?.daysWithMeals }}</strong>
+            </div>
+            <div>
+              Highest Calories: <strong>{{ thisWeek?.highestCalories }}</strong>
+            </div>
+            <div>
+              Highest Protein: <strong>{{ thisWeek?.highestProtein }}g</strong>
+            </div>
+            <div>
+              Highest Carbs: <strong>{{ thisWeek?.highestCarbs }}g</strong>
+            </div>
+            <div>
+              Cheat Days: <strong>{{ thisWeek?.cheatDays }}</strong>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -61,11 +81,21 @@
             {{ week.startDate.toLocaleDateString() }} - {{ week.endDate.toLocaleDateString() }}
           </v-card-subtitle>
           <v-card-text>
-            <div>Days with Meals: {{ week.daysWithMeals }}</div>
-            <div>Highest Calories: {{ week.highestCalories }}</div>
-            <div>Highest Protein: {{ week.highestProtein }}g</div>
-            <div>Highest Carbs: {{ week.highestCarbs }}g</div>
-            <div>Cheat Days: {{ week.cheatDays }}</div>
+            <div>
+              Days with Meals: <strong>{{ week.daysWithMeals }}</strong>
+            </div>
+            <div>
+              Highest Calories: <strong>{{ week.highestCalories }}</strong>
+            </div>
+            <div>
+              Highest Protein: <strong>{{ week.highestProtein }}g</strong>
+            </div>
+            <div>
+              Highest Carbs: <strong>{{ week.highestCarbs }}g</strong>
+            </div>
+            <div>
+              Cheat Days: <strong>{{ week.cheatDays }}</strong>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
