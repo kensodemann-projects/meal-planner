@@ -100,5 +100,38 @@ describe('Planning', () => {
         });
       });
     });
+
+    describe('previous weeks', () => {
+      it('are in the correct order', async () => {
+        wrapper = mountPage();
+        await flushPromises();
+        const weekCards = wrapper.findAllComponents(components.VCard);
+        const titles = weekCards.slice(2).map((card) => card.findComponent(components.VCardTitle).text());
+        const subTitles = weekCards.slice(2).map((card) => card.findComponent(components.VCardSubtitle).text());
+        expect(titles).toEqual(['Weeks Ago: 1', 'Weeks Ago: 2', 'Weeks Ago: 3', 'Weeks Ago: 4']);
+        expect(subTitles).toEqual([
+          '12/15/2025 - 12/21/2025',
+          '12/8/2025 - 12/14/2025',
+          '12/1/2025 - 12/7/2025',
+          '11/24/2025 - 11/30/2025',
+        ]);
+      });
+
+      it('navigates to the week page', async () => {
+        const router = useRouter();
+        wrapper = mountPage();
+        const targetDates = ['2025-12-15', '2025-12-08', '2025-12-01', '2025-11-24'];
+        await flushPromises();
+        const weekCards = wrapper.findAllComponents(components.VCard);
+        for (let i = 2; i < weekCards.length; i++) {
+          const weekCard = weekCards[i]!;
+          await weekCard.trigger('click');
+          expect(router.push).toHaveBeenCalledWith({
+            path: 'planning/week',
+            query: { dt: targetDates[i - 2] },
+          });
+        }
+      });
+    });
   });
 });
