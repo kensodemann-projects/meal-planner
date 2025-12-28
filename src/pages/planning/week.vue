@@ -28,12 +28,10 @@ import { useRoute } from 'vue-router';
 import { MEAL_PLANS } from './mock-data';
 
 const route = useRoute();
-const paramsValid = (() => {
-  const dt = route.query.dt as string | undefined;
-  return !!(dt && isValid(new Date(dt)));
-})();
+const dt = route.query.dt as string | undefined;
+const paramsValid = !!(dt && isValid(new Date(dt)));
 
-const startDate = paramsValid ? (route.query.dt as string) : format(new Date(), 'yyyy-MM-dd');
+const startDate = paramsValid ? dt : format(new Date(), 'yyyy-MM-dd');
 const [year, month, day] = startDate.split('-').map(Number);
 const weekDays = [0, 1, 2, 3, 4, 5, 6].map((offset) => addDays(new Date(year!, month! - 1, day), offset));
 const dateToISO = (date: Date) => format(date, 'yyyy-MM-dd');
