@@ -30,7 +30,9 @@ describe('Planning', () => {
   afterEach(() => {
     wrapper?.unmount();
     vi.clearAllTimers();
-    vi.useRealTimers();
+    try {
+      vi.useRealTimers();
+    } catch {}
   });
 
   it('renders', () => {
