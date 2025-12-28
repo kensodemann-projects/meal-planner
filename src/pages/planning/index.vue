@@ -69,7 +69,7 @@
   <v-divider class="my-4"></v-divider>
   <v-container fluid dense>
     <v-row dense>
-      <v-col cols="12" md="6" v-for="week in previousWeeks" :key="week.startDate.getDate()">
+      <v-col cols="12" md="6" v-for="week in previousWeeks" :key="week.startDate.getTime()">
         <v-card
           outlined
           @click="router.push({ path: 'planning/week', query: { dt: format(week.startDate, 'yyyy-MM-dd') } })"
