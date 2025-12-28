@@ -2,7 +2,7 @@
   <div class="week-planner">
     <h1 class="text-center">Weekly Plan</h1>
     <div v-for="row in weekRows" :key="row.iso" class="day-plan">
-      <h2 @click="router.push({ path: '/planning/day', query: route.query })">
+      <h2 @click="router.push({ path: '/planning/day', query: { dt: row.iso } })">
         {{ intlFormat(row.day, { dateStyle: 'full' }) }}
       </h2>
       <v-divider class="my-2" />
