@@ -2,7 +2,9 @@
   <div class="week-planner">
     <h1 class="text-center">Weekly Plan</h1>
     <div v-for="row in weekRows" :key="row.iso" class="day-plan">
-      <h2>{{ intlFormat(row.day, { dateStyle: 'full' }) }}</h2>
+      <h2 @click="router.push({ path: '/planning/day', query: route.query })">
+        {{ intlFormat(row.day, { dateStyle: 'full' }) }}
+      </h2>
       <v-divider class="my-2" />
       <div v-if="row.plan">
         <h4>Meals:</h4>
@@ -21,10 +23,11 @@
 import type { MealPlan } from '@/models/meal-plan';
 import { addDays, format, intlFormat } from 'date-fns';
 import { computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { MEAL_PLANS } from './mock-data';
 
 const route = useRoute();
+const router = useRouter();
 const dt = route.query.dt as string;
 const [year, month, day] = dt.split('-').map(Number);
 const weekDays = [0, 1, 2, 3, 4, 5, 6].map((offset) => addDays(new Date(year!, month! - 1, day), offset));

@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { intlFormat } from 'date-fns';
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -21,6 +21,9 @@ describe('week', () => {
   beforeEach(() => {
     (useRoute as Mock).mockReturnValue({
       query: { dt: '2025-12-29' },
+    });
+    (useRouter as Mock).mockReturnValue({
+      push: vi.fn(),
     });
   });
 
