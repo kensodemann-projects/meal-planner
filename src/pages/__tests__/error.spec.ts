@@ -9,10 +9,10 @@ const vuetify = createVuetify({
   components,
   directives,
 });
-const mountComponent = (props = {}) => mount(error, { props, global: { plugins: [vuetify] } });
+const mountPage = (props = {}) => mount(error, { props, global: { plugins: [vuetify] } });
 
 describe('error', () => {
-  let wrapper: ReturnType<typeof mountComponent>;
+  let wrapper: ReturnType<typeof mountPage>;
 
   afterEach(() => {
     wrapper?.unmount();
@@ -23,7 +23,17 @@ describe('error', () => {
   });
 
   it('renders', () => {
-    wrapper = mountComponent();
+    wrapper = mountPage();
     expect(wrapper.exists()).toBe(true);
+  });
+
+  it('displays a snarky title', () => {
+    wrapper = mountPage();
+    expect(wrapper.find('.title').text()).toBe('I find this failure to load to be disturbing.');
+  });
+
+  it('displays an equally snarky subtitle', () => {
+    wrapper = mountPage();
+    expect(wrapper.find('.subtitle').text()).toBe('This is not the page you are looking for.');
   });
 });
