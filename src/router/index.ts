@@ -9,6 +9,7 @@ import { createRouter, createWebHistory, type NavigationGuardNext, type RouteLoc
 import { setupLayouts } from 'virtual:generated-layouts';
 import { routes } from 'vue-router/auto-routes';
 import { useAuthentication } from '@/core/authentication';
+import { isValid } from 'date-fns';
 
 const checkAuthStatus = async (
   to: RouteLocationNormalized,
@@ -24,12 +25,23 @@ const checkAuthStatus = async (
   next();
 };
 
+const validateWeekParams = (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+  if (to.path === '/planning/week') {
+    const dt = to.query.dt as string | undefined;
+    if (!dt || !isValid(new Date(dt))) {
+      return next('/error');
+    }
+  }
+  next();
+};
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: setupLayouts(routes),
 });
 
 router.beforeEach(checkAuthStatus);
+router.beforeEach(validateWeekParams);
 
 // Workaround for https://github.com/vitejs/vite/issues/11804
 router.onError((err, to) => {
