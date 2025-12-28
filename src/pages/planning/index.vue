@@ -132,40 +132,46 @@ const randomProtein = (): number => Math.floor(Math.random() * 150) + 50;
 const randomCarbs = (): number => Math.floor(Math.random() * 300) + 100;
 const randomCheatDays = (): number => Math.floor(Math.random() * 3);
 
-settings.promise.value.then(() => {
-  const start = startOfWeek(new Date(), { weekStartsOn: settings.value?.weekStartDay });
-  const end = endOfWeek(new Date(), { weekStartsOn: settings.value?.weekStartDay });
-  thisWeek.value = {
-    startDate: start,
-    endDate: end,
-    daysWithMeals: randomDays(),
-    highestCalories: randomCalories(),
-    highestProtein: randomProtein(),
-    highestCarbs: randomCarbs(),
-    cheatDays: randomCheatDays(),
-  };
-  nextWeek.value = {
-    startDate: addWeeks(start, 1),
-    endDate: addWeeks(end, 1),
-    daysWithMeals: randomDays(),
-    highestCalories: randomCalories(),
-    highestProtein: randomProtein(),
-    highestCarbs: randomCarbs(),
-    cheatDays: randomCheatDays(),
-  };
-  [4, 3, 2, 1].forEach((i) => {
-    const prevStart = addWeeks(start, -i);
-    const prevEnd = addWeeks(end, -i);
-    previousWeeks.value.push({
-      startDate: prevStart,
-      endDate: prevEnd,
+settings.promise.value
+  .then(() => {
+    const start = startOfWeek(new Date(), { weekStartsOn: settings.value?.weekStartDay });
+    const end = endOfWeek(new Date(), { weekStartsOn: settings.value?.weekStartDay });
+    thisWeek.value = {
+      startDate: start,
+      endDate: end,
       daysWithMeals: randomDays(),
       highestCalories: randomCalories(),
       highestProtein: randomProtein(),
       highestCarbs: randomCarbs(),
       cheatDays: randomCheatDays(),
+    };
+    nextWeek.value = {
+      startDate: addWeeks(start, 1),
+      endDate: addWeeks(end, 1),
+      daysWithMeals: randomDays(),
+      highestCalories: randomCalories(),
+      highestProtein: randomProtein(),
+      highestCarbs: randomCarbs(),
+      cheatDays: randomCheatDays(),
+    };
+    [4, 3, 2, 1].forEach((i) => {
+      const prevStart = addWeeks(start, -i);
+      const prevEnd = addWeeks(end, -i);
+      previousWeeks.value.push({
+        startDate: prevStart,
+        endDate: prevEnd,
+        daysWithMeals: randomDays(),
+        highestCalories: randomCalories(),
+        highestProtein: randomProtein(),
+        highestCarbs: randomCarbs(),
+        cheatDays: randomCheatDays(),
+      });
     });
+    previousWeeks.value.reverse();
+  })
+  .catch((err) => {
+    if (import.meta.env.DEV) {
+      console.error('Failed to load settings for meal planning page', err);
+    }
   });
-  previousWeeks.value.reverse();
-});
 </script>
