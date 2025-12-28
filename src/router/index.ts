@@ -26,7 +26,7 @@ const checkAuthStatus = async (
 };
 
 const validateWeekParams = (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
-  if (to.path === '/planning/week') {
+  if (to.path === '/planning/week' || to.path === '/planning/day') {
     const dt = to.query.dt as string | undefined;
     if (!dt || !isValid(new Date(dt))) {
       return next('/error');

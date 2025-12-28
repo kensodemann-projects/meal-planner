@@ -35,4 +35,9 @@ describe('day', () => {
     wrapper = mountPage();
     expect(wrapper.exists()).toBe(true);
   });
+
+  it('parses the date properly', () => {
+    wrapper = mountPage();
+    expect(wrapper.text()).toContain('Monday, December 29, 2025');
+  });
 });
