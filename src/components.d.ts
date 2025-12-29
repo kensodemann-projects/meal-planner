@@ -30,7 +30,7 @@ declare module 'vue' {
     PortionEditorCard: typeof import('./components/PortionEditorCard.vue')['default']
     PrimaryButton: typeof import('./components/buttons/PrimaryButton.vue')['default']
     RecipeEditor: typeof import('./components/RecipeEditor.vue')['default']
-    RecipeListItem: typeof import('./components/RecipeListItem.vue')['default']
+    RecipeSummaryCard: typeof import('./components/RecipeSummaryCard.vue')['default']
     RecipeView: typeof import('./components/RecipeView.vue')['default']
     ResetButton: typeof import('./components/buttons/ResetButton.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

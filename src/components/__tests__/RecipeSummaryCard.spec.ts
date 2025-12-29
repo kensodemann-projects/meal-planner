@@ -1,18 +1,18 @@
+import { TEST_RECIPE } from '@/data/__tests__/test-data';
+import type { Recipe } from '@/models/recipe';
 import { mount } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import RecipeListItem from '../RecipeListItem.vue';
-import { TEST_RECIPE } from '@/data/__tests__/test-data';
-import type { Recipe } from '@/models/recipe';
+import RecipeSummaryCard from '../RecipeSummaryCard.vue';
 
 const vuetify = createVuetify({
   components,
   directives,
 });
 const mountComponent = (props: { recipe: Recipe } = { recipe: TEST_RECIPE }) =>
-  mount(RecipeListItem, { props, global: { plugins: [vuetify] } });
+  mount(RecipeSummaryCard, { props, global: { plugins: [vuetify] } });
 
 describe('Recipe List Item', () => {
   let wrapper: ReturnType<typeof mountComponent>;

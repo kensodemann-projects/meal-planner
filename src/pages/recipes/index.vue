@@ -68,7 +68,7 @@
   <v-container v-else fluid dense>
     <v-row>
       <v-col cols="12" md="4" v-for="recipe in filteredRecipes" :key="recipe.id">
-        <RecipeListItem :recipe="recipe as Recipe" @click="router.push(`recipes/${recipe.id}`)" />
+        <RecipeSummaryCard :recipe="recipe as Recipe" @click="router.push(`recipes/${recipe.id}`)" />
       </v-col>
     </v-row>
   </v-container>
