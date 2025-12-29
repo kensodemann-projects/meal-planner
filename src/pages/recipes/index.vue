@@ -65,14 +65,13 @@
   <div class="text-center my-12" v-else-if="!loading && filteredRecipes.length === 0">
     <h2>No recipes match your search criteria.</h2>
   </div>
-  <v-list v-else two-line>
-    <RecipeListItem
-      v-for="recipe in filteredRecipes"
-      :key="recipe.id"
-      :recipe="recipe as Recipe"
-      @click="router.push(`recipes/${recipe.id}`)"
-    />
-  </v-list>
+  <v-container v-else fluid dense>
+    <v-row>
+      <v-col cols="12" md="4" v-for="recipe in filteredRecipes" :key="recipe.id">
+        <RecipeSummaryCard :recipe="recipe as Recipe" @click="router.push(`recipes/${recipe.id}`)" />
+      </v-col>
+    </v-row>
+  </v-container>
 
   <v-fab
     color="primary"

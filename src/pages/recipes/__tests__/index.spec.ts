@@ -1,4 +1,4 @@
-import RecipeListItem from '@/components/RecipeListItem.vue';
+import RecipeSummaryCard from '@/components/RecipeSummaryCard.vue';
 import { TEST_RECIPES } from '@/data/__tests__/test-data';
 import { useRecipesData } from '@/data/recipes';
 import type { Recipe } from '@/models/recipe';
@@ -52,7 +52,7 @@ describe('Recipes List Page', () => {
 
   it('displays each recipe', () => {
     wrapper = mountPage();
-    const items = wrapper.findAllComponents(RecipeListItem);
+    const items = wrapper.findAllComponents(RecipeSummaryCard);
     expect(items.length).toBe(TEST_RECIPES.length);
   });
 
@@ -60,7 +60,7 @@ describe('Recipes List Page', () => {
     const { recipeMatches } = useRecipesData();
     (recipeMatches as Mock).mockImplementation((recipe: Recipe) => ['1', '3', '4'].some((x) => recipe.id === x));
     wrapper = mountPage();
-    const items = wrapper.findAllComponents(RecipeListItem);
+    const items = wrapper.findAllComponents(RecipeSummaryCard);
     expect(items.length).toBe(3);
   });
 
@@ -69,8 +69,8 @@ describe('Recipes List Page', () => {
     const { recipes } = useRecipesData();
     (recipes.value as Recipe[]) = TEST_RECIPES;
     wrapper = mountPage();
-    const listItems = wrapper.findAllComponents(RecipeListItem);
-    const listItem = listItems[0]?.findComponent(components.VListItem);
+    const listItems = wrapper.findAllComponents(RecipeSummaryCard);
+    const listItem = listItems[0]?.findComponent(components.VCard);
     await listItem?.trigger('click');
     expect(router.push).toHaveBeenCalledExactlyOnceWith(`recipes/${TEST_RECIPES[0]?.id}`);
   });
