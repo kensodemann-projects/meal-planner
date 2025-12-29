@@ -7,7 +7,12 @@ import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import IngredientEditorRow from '../IngredientEditorRow.vue';
 import RecipeEditor from '../RecipeEditor.vue';
-import { autocompleteIsRequired, numberInputIsRequired, textFieldIsRequired } from './test-utils';
+import {
+  autocompleteIsRequired,
+  numberInputIsRequired,
+  numberInputMustBeZeroOrGreater,
+  textFieldIsRequired,
+} from './test-utils';
 import StepEditorRow from '../StepEditorRow.vue';
 
 vi.mock('@/data/foods');
@@ -205,6 +210,11 @@ describe('Recipe Editor', () => {
       wrapper = mountComponent();
       await numberInputIsRequired(wrapper, 'prep-time-input');
     });
+
+    it('must be zero or greater', async () => {
+      wrapper = mountComponent();
+      await numberInputMustBeZeroOrGreater(wrapper, 'prep-time-input');
+    });
   });
 
   describe('cook time', () => {
@@ -218,6 +228,11 @@ describe('Recipe Editor', () => {
     it('is required', async () => {
       wrapper = mountComponent();
       await numberInputIsRequired(wrapper, 'cook-time-input');
+    });
+
+    it('must be zero or greater', async () => {
+      wrapper = mountComponent();
+      await numberInputMustBeZeroOrGreater(wrapper, 'cook-time-input');
     });
   });
 
