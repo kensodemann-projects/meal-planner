@@ -14,7 +14,7 @@ const vuetify = createVuetify({
 const mountComponent = (props: { recipe: Recipe } = { recipe: TEST_RECIPE }) =>
   mount(RecipeSummaryCard, { props, global: { plugins: [vuetify] } });
 
-describe('RecipeSummaryCard', () => {
+describe('Recipe Summary Card', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
   afterEach(() => {
