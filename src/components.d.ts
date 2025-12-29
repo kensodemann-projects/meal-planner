@@ -23,6 +23,7 @@ declare module 'vue' {
     IngredientEditorRow: typeof import('./components/IngredientEditorRow.vue')['default']
     LoginCard: typeof import('./components/LoginCard.vue')['default']
     ModifyButton: typeof import('./components/buttons/ModifyButton.vue')['default']
+    NutritionData: typeof import('./components/NutritionData.vue')['default']
     PortionData: typeof import('./components/PortionData.vue')['default']
     PortionDataCard: typeof import('./components/PortionDataCard.vue')['default']
     PortionEditGrid: typeof import('./components/PortionEditGrid.vue')['default']

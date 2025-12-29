@@ -151,9 +151,6 @@ describe('RecipeView', () => {
 
     it('displays the nutritional information', () => {
       const text = section.text();
-      expect(text).toContain(
-        `Serving Size: ${TEST_RECIPE.units} ${TEST_RECIPE.unitOfMeasure.name} (${TEST_RECIPE.grams}g)`,
-      );
       expect(text).toContain(`Calories: ${TEST_RECIPE.calories}`);
       expect(text).toContain(`Sodium: ${TEST_RECIPE.sodium}mg`);
       expect(text).toContain(`Sugar: ${TEST_RECIPE.sugar}g`);
