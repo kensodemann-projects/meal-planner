@@ -2,8 +2,8 @@
   <h1>{{ recipe.name }}</h1>
 
   <section data-testid="description-section">
-    <div class="mt-4 mb-8 pre-formatted">{{ recipe.description }}</div>
-    <div class="d-flex ga-4">
+    <div class="ma-4 pre-formatted">{{ recipe.description }}</div>
+    <div class="d-flex ga-4 mx-4">
       <v-chip color="primary">{{ recipe.cuisine }}</v-chip>
       <v-chip color="secondary">{{ recipe.category }}</v-chip>
     </div>
@@ -89,7 +89,7 @@
   <v-divider class="my-4" />
 
   <section data-testid="nutritional-information-section">
-    <h2>Nutritional Information</h2>
+    <h2 class="mx-4">Nutritional Information</h2>
     <NutritionData :value="recipe" />
   </section>
 
