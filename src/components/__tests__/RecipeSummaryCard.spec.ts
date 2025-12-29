@@ -36,10 +36,10 @@ describe('Recipe List Item', () => {
     expect(title.text()).toBe(TEST_RECIPE.name);
   });
 
-  it('displays the description in the subtitle', () => {
+  it('displays the category in the subtitle', () => {
     wrapper = mountComponent();
     const subtitle = wrapper.findComponent(components.VCardSubtitle);
-    expect(subtitle.text()).toContain(TEST_RECIPE.description);
+    expect(subtitle.text()).toContain(TEST_RECIPE.category);
   });
 
   // it('displays the description', () => {
