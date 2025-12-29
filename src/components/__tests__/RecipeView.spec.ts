@@ -54,24 +54,19 @@ describe('RecipeView', () => {
       expect(header.exists()).toBe(false);
     });
 
-    it('renders the category', () => {
-      expect(section.text()).toContain(`Category: ${TEST_RECIPE.category}`);
+    it('renders the description', () => {
+      expect(section.text()).toContain(TEST_RECIPE.description);
     });
 
-    it('renders the cuisine', () => {
-      expect(section.text()).toContain(`Cuisine: ${TEST_RECIPE.cuisine}`);
-    });
-
-    it('renders the servings', () => {
-      expect(section.text()).toContain(`Servings: ${TEST_RECIPE.servings}`);
+    it('renders chips for the category and cuisine', () => {
+      const chips = section.findAllComponents(components.VChip);
+      expect(chips.length).toBe(2);
+      expect(chips[0].text()).toBe(TEST_RECIPE.cuisine);
+      expect(chips[1].text()).toBe(TEST_RECIPE.category);
     });
 
     it('renders the difficulty', () => {
       expect(section.text()).toContain(`Difficulty: ${TEST_RECIPE.difficulty}`);
-    });
-
-    it('renders the description', () => {
-      expect(section.text()).toContain(TEST_RECIPE.description);
     });
 
     it('renders the prep time', () => {
