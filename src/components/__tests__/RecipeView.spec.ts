@@ -73,6 +73,14 @@ describe('RecipeView', () => {
     it('renders the description', () => {
       expect(section.text()).toContain(TEST_RECIPE.description);
     });
+
+    it('renders the prep time', () => {
+      expect(section.text()).toContain(`Prep Time: ${TEST_RECIPE.prepTimeMinutes} minutes`);
+    });
+
+    it('renders the cook time', () => {
+      expect(section.text()).toContain(`Cook Time: ${TEST_RECIPE.cookTimeMinutes} minutes`);
+    });
   });
 
   describe('the ingredients section', () => {

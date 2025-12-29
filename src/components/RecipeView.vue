@@ -8,6 +8,8 @@
       <div><span class="font-weight-black">Cuisine:</span> {{ recipe.cuisine }}</div>
       <div><span class="font-weight-black">Difficulty:</span> {{ recipe.difficulty }}</div>
       <div><span class="font-weight-black">Servings:</span> {{ recipe.servings }}</div>
+      <div><span class="font-weight-black">Prep Time:</span> {{ recipe.prepTimeMinutes }} minutes</div>
+      <div><span class="font-weight-black">Cook Time:</span> {{ recipe.cookTimeMinutes }} minutes</div>
     </div>
   </section>
 
