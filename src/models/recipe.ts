@@ -1,4 +1,4 @@
-import type { Portion } from './portion';
+import type { Nutrition } from './nutrition';
 import type { UnitOfMeasure } from './unit-of-measure';
 
 export type Cuisine =
@@ -46,7 +46,7 @@ export interface RecipeStep {
   instruction: string;
 }
 
-export interface Recipe extends Portion {
+export interface Recipe extends Nutrition {
   id?: string;
   name: string;
   description: string | null;
@@ -54,6 +54,8 @@ export interface Recipe extends Portion {
   cuisine: Cuisine;
   difficulty: RecipeDifficulty;
   servings: number;
+  prepTimeMinutes: number;
+  cookTimeMinutes: number;
   ingredients: RecipeIngredient[];
   steps: RecipeStep[];
 }

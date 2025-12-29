@@ -51,7 +51,6 @@
             label="Servings"
             v-model="servings"
             :rules="[validationRules.required]"
-            :precision="null"
             data-testid="servings-input"
           ></v-number-input>
         </v-col>
@@ -64,6 +63,25 @@
             :rules="[validationRules.required]"
             data-testid="difficulty-input"
           ></v-autocomplete>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="12" md="6">
+          <v-number-input
+            label="Preparation Time (minutes)"
+            v-model="prepTimeMinutes"
+            :rules="[validationRules.required, validationRules.zeroOrGreater]"
+            data-testid="prep-time-input"
+          ></v-number-input>
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-number-input
+            label="Cooking Time (minutes)"
+            v-model="cookTimeMinutes"
+            :rules="[validationRules.required, validationRules.zeroOrGreater]"
+            data-testid="cook-time-input"
+          ></v-number-input>
         </v-col>
       </v-row>
     </v-container>
@@ -96,43 +114,8 @@
       </template>
     </SortableListEditor>
 
-    <h2>Nutritional Information</h2>
+    <h2>Nutritional Information Per Serving</h2>
     <v-divider class="mb-4"></v-divider>
-
-    <v-container fluid>
-      <v-row>
-        <v-col cols="12" md="4">
-          <v-number-input
-            label="Serving Size"
-            v-model="units"
-            :rules="[validationRules.required]"
-            :precision="null"
-            data-testid="recipe-units-input"
-          ></v-number-input>
-        </v-col>
-
-        <v-col cols="12" md="4">
-          <v-autocomplete
-            label="Serving Units"
-            v-model="unitOfMeasureId"
-            :items="unitOfMeasureOptions"
-            :rules="[validationRules.required]"
-            data-testid="recipe-unit-of-measure-input"
-          ></v-autocomplete>
-        </v-col>
-
-        <v-col cols="12" md="4">
-          <v-number-input
-            label="Grams per Serving"
-            v-model="grams"
-            :rules="[validationRules.required]"
-            data-testid="grams-input"
-          ></v-number-input>
-        </v-col>
-      </v-row>
-    </v-container>
-
-    <h3>Nutrients per Serving</h3>
 
     <v-container fluid>
       <v-row>
@@ -204,15 +187,13 @@
 </template>
 
 <script setup lang="ts">
-import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import { validationRules } from '@/core/validation-rules';
+import { cuisines } from '@/data/cuisines';
 import { recipeCategories } from '@/data/recipe-categories';
 import { recipeDifficulties } from '@/data/recipe-difficulties';
-import type { RecipeIngredient, Recipe, RecipeCategory, RecipeDifficulty, RecipeStep, Cuisine } from '@/models/recipe';
+import type { Cuisine, Recipe, RecipeCategory, RecipeDifficulty, RecipeIngredient, RecipeStep } from '@/models/recipe';
 import { computed, onMounted, ref } from 'vue';
 import type { VTextField } from 'vuetify/components';
-import { unitOfMeasureOptions } from '@/data/unit-of-measure';
-import { cuisines } from '@/data/cuisines';
 
 const emit = defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'cancel'): void }>();
 const props = defineProps<{ recipe?: Recipe }>();
@@ -224,9 +205,8 @@ const category = ref<RecipeCategory | undefined>(props.recipe?.category);
 const cuisine = ref<Cuisine | undefined>(props.recipe?.cuisine);
 const difficulty = ref<RecipeDifficulty | undefined>(props.recipe?.difficulty);
 const servings = ref<number | undefined>(props.recipe?.servings);
-const units = ref<number | undefined>(props.recipe?.units);
-const unitOfMeasureId = ref<string | undefined>(props.recipe?.unitOfMeasure?.id);
-const grams = ref<number | undefined>(props.recipe?.grams);
+const prepTimeMinutes = ref<number | undefined>(props.recipe?.prepTimeMinutes);
+const cookTimeMinutes = ref<number | undefined>(props.recipe?.cookTimeMinutes);
 const calories = ref<number | undefined>(props.recipe?.calories);
 const sodium = ref<number>(props.recipe?.sodium || 0);
 const sugar = ref<number>(props.recipe?.sugar || 0);
@@ -266,9 +246,8 @@ const isModified = computed((): boolean => {
     props.recipe.cuisine !== cuisine.value ||
     props.recipe.difficulty !== difficulty.value ||
     props.recipe.servings !== servings.value ||
-    props.recipe.units !== units.value ||
-    props.recipe.unitOfMeasure.id !== unitOfMeasureId.value ||
-    props.recipe.grams !== grams.value ||
+    props.recipe.prepTimeMinutes !== prepTimeMinutes.value ||
+    props.recipe.cookTimeMinutes !== cookTimeMinutes.value ||
     props.recipe.calories !== calories.value ||
     props.recipe.sodium !== sodium.value ||
     props.recipe.sugar !== sugar.value ||
@@ -286,9 +265,8 @@ const save = () => {
     cuisine: cuisine.value!,
     difficulty: difficulty.value!,
     servings: servings.value!,
-    units: units.value!,
-    unitOfMeasure: findUnitOfMeasure(unitOfMeasureId.value!),
-    grams: grams.value!,
+    prepTimeMinutes: prepTimeMinutes.value!,
+    cookTimeMinutes: cookTimeMinutes.value!,
     calories: calories.value!,
     sodium: sodium.value,
     sugar: sugar.value,

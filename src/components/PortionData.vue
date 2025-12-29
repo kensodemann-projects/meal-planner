@@ -19,5 +19,3 @@ import type { Portion } from '@/models/portion';
 
 defineProps<{ value: Portion; compact?: boolean }>();
 </script>
-
-<style scoped></style>

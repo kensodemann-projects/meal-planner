@@ -8,6 +8,8 @@
       <div><span class="font-weight-black">Cuisine:</span> {{ recipe.cuisine }}</div>
       <div><span class="font-weight-black">Difficulty:</span> {{ recipe.difficulty }}</div>
       <div><span class="font-weight-black">Servings:</span> {{ recipe.servings }}</div>
+      <div><span class="font-weight-black">Prep Time:</span> {{ recipe.prepTimeMinutes }} minutes</div>
+      <div><span class="font-weight-black">Cook Time:</span> {{ recipe.cookTimeMinutes }} minutes</div>
     </div>
   </section>
 
@@ -20,9 +22,7 @@
         <template v-if="ingredient.unitOfMeasure.id === 'item'">
           {{ ingredient.units }} {{ ingredient.name }}
         </template>
-        <template v-else>
-          {{ ingredient.units }} {{ ingredient.unitOfMeasure.id }} {{ ingredient.name }}
-        </template>
+        <template v-else> {{ ingredient.units }} {{ ingredient.unitOfMeasure.id }} {{ ingredient.name }} </template>
       </li>
     </ul>
   </section>
@@ -42,7 +42,7 @@
 
   <section data-testid="nutritional-information-section">
     <h2>Nutritional Information</h2>
-    <PortionData :value="recipe" />
+    <NutritionData :value="recipe" />
   </section>
 
   <hr class="my-4" />
@@ -50,7 +50,6 @@
 
 <script setup lang="ts">
 import type { Recipe } from '@/models/recipe';
-import PortionData from './PortionData.vue';
 
 defineProps<{ recipe: Recipe }>();
 </script>

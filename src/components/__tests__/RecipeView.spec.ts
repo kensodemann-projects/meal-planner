@@ -73,6 +73,14 @@ describe('RecipeView', () => {
     it('renders the description', () => {
       expect(section.text()).toContain(TEST_RECIPE.description);
     });
+
+    it('renders the prep time', () => {
+      expect(section.text()).toContain(`Prep Time: ${TEST_RECIPE.prepTimeMinutes} minutes`);
+    });
+
+    it('renders the cook time', () => {
+      expect(section.text()).toContain(`Cook Time: ${TEST_RECIPE.cookTimeMinutes} minutes`);
+    });
   });
 
   describe('the ingredients section', () => {
@@ -151,9 +159,6 @@ describe('RecipeView', () => {
 
     it('displays the nutritional information', () => {
       const text = section.text();
-      expect(text).toContain(
-        `Serving Size: ${TEST_RECIPE.units} ${TEST_RECIPE.unitOfMeasure.name} (${TEST_RECIPE.grams}g)`,
-      );
       expect(text).toContain(`Calories: ${TEST_RECIPE.calories}`);
       expect(text).toContain(`Sodium: ${TEST_RECIPE.sodium}mg`);
       expect(text).toContain(`Sugar: ${TEST_RECIPE.sugar}g`);
