@@ -1,7 +1,7 @@
 import { TEST_RECIPE } from '@/data/__tests__/test-data';
 import type { Recipe } from '@/models/recipe';
-import { mount } from '@vue/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { mount, VueWrapper } from '@vue/test-utils';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -42,9 +42,25 @@ describe('Recipe List Item', () => {
     expect(subtitle.text()).toContain(TEST_RECIPE.category);
   });
 
-  // it('displays the description', () => {
-  //   wrapper = mountComponent();
-  //   const item = wrapper.findComponent(components.VListItem);
-  //   expect(item.text()).toContain(TEST_RECIPE.description);
-  // });
+  describe('the card text area', () => {
+    let cardText: VueWrapper<components.VCardText>;
+    beforeEach(() => {
+      wrapper = mountComponent();
+      cardText = wrapper.findComponent(components.VCardText);
+    });
+
+    it('contains five chips', () => {
+      const chips = cardText.findAllComponents(components.VChip);
+      expect(chips).toHaveLength(5);
+      expect(chips[0]!.text()).toBe(TEST_RECIPE.cuisine);
+      expect(chips[1]!.text()).toBe(TEST_RECIPE.difficulty);
+      expect(chips[2]!.text()).toBe(String(TEST_RECIPE.servings));
+      expect(chips[3]!.text()).toBe(String(TEST_RECIPE.prepTimeMinutes + TEST_RECIPE.cookTimeMinutes));
+      expect(chips[4]!.text()).toBe(`${TEST_RECIPE.calories} kcal`);
+    });
+
+    it('displays the description', () => {
+      expect(cardText.text()).toContain(TEST_RECIPE.description);
+    });
+  });
 });
