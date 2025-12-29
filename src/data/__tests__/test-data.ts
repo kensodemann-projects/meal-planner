@@ -427,7 +427,7 @@ export const TEST_RECIPES: Recipe[] = [
     difficulty: 'Easy',
     servings: 1,
     prepTimeMinutes: 10,
-    cookTimeMinutes: 720,
+    cookTimeMinutes: 0,
     calories: 320,
     sodium: 100,
     sugar: 10,
