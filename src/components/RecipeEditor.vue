@@ -71,7 +71,7 @@
           <v-number-input
             label="Preparation Time (minutes)"
             v-model="prepTimeMinutes"
-            :rules="[validationRules.required]"
+            :rules="[validationRules.required, validationRules.zeroOrGreater]"
             data-testid="prep-time-input"
           ></v-number-input>
         </v-col>
@@ -79,7 +79,7 @@
           <v-number-input
             label="Cooking Time (minutes)"
             v-model="cookTimeMinutes"
-            :rules="[validationRules.required]"
+            :rules="[validationRules.required, validationRules.zeroOrGreater]"
             data-testid="cook-time-input"
           ></v-number-input>
         </v-col>
