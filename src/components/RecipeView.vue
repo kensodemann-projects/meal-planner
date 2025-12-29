@@ -53,39 +53,47 @@
     </v-container>
   </section>
 
-  <hr class="my-4" />
+  <v-divider class="my-4" />
 
-  <section data-testid="ingredients-section">
-    <h2>Ingredients</h2>
-    <ul class="mt-2">
-      <li v-for="ingredient in recipe.ingredients" :key="ingredient.id">
-        <template v-if="ingredient.unitOfMeasure.id === 'item'">
-          {{ ingredient.units }} {{ ingredient.name }}
-        </template>
-        <template v-else> {{ ingredient.units }} {{ ingredient.unitOfMeasure.id }} {{ ingredient.name }} </template>
-      </li>
-    </ul>
-  </section>
+  <v-container fluid dense>
+    <v-row>
+      <v-col cols="12" md="6">
+        <section data-testid="ingredients-section">
+          <h2>Ingredients</h2>
+          <ul class="mt-2">
+            <li v-for="ingredient in recipe.ingredients" :key="ingredient.id">
+              <template v-if="ingredient.unitOfMeasure.id === 'item'">
+                {{ ingredient.units }} {{ ingredient.name }}
+              </template>
+              <template v-else>
+                {{ ingredient.units }} {{ ingredient.unitOfMeasure.id }} {{ ingredient.name }}
+              </template>
+            </li>
+          </ul>
+        </section>
+      </v-col>
 
-  <hr class="my-4" />
+      <v-col cols="12" md="6">
+        <section data-testid="steps-section">
+          <h2>Steps</h2>
+          <ol class="mt-2">
+            <li v-for="step in recipe.steps" :key="step.id">
+              {{ step.instruction }}
+            </li>
+          </ol>
+        </section>
+      </v-col>
+    </v-row>
+  </v-container>
 
-  <section data-testid="steps-section">
-    <h2>Steps</h2>
-    <ol class="mt-2">
-      <li v-for="step in recipe.steps" :key="step.id">
-        {{ step.instruction }}
-      </li>
-    </ol>
-  </section>
-
-  <hr class="my-4" />
+  <v-divider class="my-4" />
 
   <section data-testid="nutritional-information-section">
     <h2>Nutritional Information</h2>
     <NutritionData :value="recipe" />
   </section>
 
-  <hr class="my-4" />
+  <v-divider class="my-4" />
 </template>
 
 <script setup lang="ts">
