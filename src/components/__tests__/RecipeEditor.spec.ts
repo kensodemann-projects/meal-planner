@@ -81,9 +81,8 @@ const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
   cuisine: wrapper.findComponent('[data-testid="cuisine-input"]').find('input'),
   difficulty: wrapper.findComponent('[data-testid="difficulty-input"]').find('input'),
   servings: wrapper.findComponent('[data-testid="servings-input"]').find('input'),
-  grams: wrapper.findComponent('[data-testid="grams-input"]').find('input'),
-  units: wrapper.findComponent('[data-testid="recipe-units-input"]').find('input'),
-  unitOfMeasure: wrapper.findComponent('[data-testid="recipe-unit-of-measure-input"]').find('input'),
+  prepTimeMinutes: wrapper.findComponent('[data-testid="prep-time-input"]').find('input'),
+  cookTimeMinutes: wrapper.findComponent('[data-testid="cook-time-input"]').find('input'),
   calories: wrapper.findComponent('[data-testid="calories-input"]').find('input'),
   sodium: wrapper.findComponent('[data-testid="sodium-input"]').find('input'),
   sugar: wrapper.findComponent('[data-testid="sugar-input"]').find('input'),
@@ -115,7 +114,7 @@ describe('Recipe Editor', () => {
     expect(subheaders[0]!.text()).toBe('Basic Information');
     expect(subheaders[1]!.text()).toBe('Ingredients');
     expect(subheaders[2]!.text()).toBe('Steps');
-    expect(subheaders[3]!.text()).toBe('Nutritional Information');
+    expect(subheaders[3]!.text()).toBe('Nutritional Information Per Serving');
   });
 
   describe('name', () => {
@@ -194,47 +193,31 @@ describe('Recipe Editor', () => {
     });
   });
 
-  describe('serving grams', () => {
+  describe('prep time', () => {
     it('exists', () => {
       wrapper = mountComponent();
-      const input = wrapper.findComponent('[data-testid="grams-input"]') as VueWrapper<components.VNumberInput>;
+      const input = wrapper.findComponent('[data-testid="prep-time-input"]') as VueWrapper<components.VNumberInput>;
       expect(input.exists()).toBe(true);
-      expect(input.props('label')).toBe('Grams per Serving');
+      expect(input.props('label')).toBe('Preparation Time (minutes)');
     });
 
     it('is required', async () => {
       wrapper = mountComponent();
-      await numberInputIsRequired(wrapper, 'grams-input');
+      await numberInputIsRequired(wrapper, 'prep-time-input');
     });
   });
 
-  describe('serving size', () => {
+  describe('cook time', () => {
     it('exists', () => {
       wrapper = mountComponent();
-      const input = wrapper.findComponent('[data-testid="recipe-units-input"]') as VueWrapper<components.VNumberInput>;
+      const input = wrapper.findComponent('[data-testid="cook-time-input"]') as VueWrapper<components.VNumberInput>;
       expect(input.exists()).toBe(true);
-      expect(input.props('label')).toBe('Serving Size');
+      expect(input.props('label')).toBe('Cooking Time (minutes)');
     });
 
     it('is required', async () => {
       wrapper = mountComponent();
-      await numberInputIsRequired(wrapper, 'recipe-units-input');
-    });
-  });
-
-  describe('unit of measure', () => {
-    it('exists', () => {
-      wrapper = mountComponent();
-      const input = wrapper.findComponent(
-        '[data-testid="recipe-unit-of-measure-input"]',
-      ) as VueWrapper<components.VAutocomplete>;
-      expect(input.exists()).toBe(true);
-      expect(input.props('label')).toBe('Serving Units');
-    });
-
-    it('is required', async () => {
-      wrapper = mountComponent();
-      await autocompleteIsRequired(wrapper, 'recipe-unit-of-measure-input');
+      await numberInputIsRequired(wrapper, 'cook-time-input');
     });
   });
 
@@ -359,9 +342,8 @@ describe('Recipe Editor', () => {
       expect(inputs.cuisine.element.value).toBe('');
       expect(inputs.difficulty.element.value).toBe('');
       expect(inputs.servings.element.value).toBe('');
-      expect(inputs.grams.element.value).toBe('');
-      expect(inputs.units.element.value).toBe('');
-      expect(inputs.unitOfMeasure.element.value).toBe('');
+      expect(inputs.prepTimeMinutes.element.value).toBe('');
+      expect(inputs.cookTimeMinutes.element.value).toBe('');
       expect(inputs.calories.element.value).toBe('');
       expect(inputs.sodium.element.value).toBe('0');
       expect(inputs.sugar.element.value).toBe('0');
@@ -504,12 +486,10 @@ describe('Recipe Editor', () => {
         expect(saveButton.attributes('disabled')).toBeDefined();
         await inputs.difficulty.setValue('Easy');
         (wrapper.vm as any).difficulty = 'Easy';
-        await inputs.unitOfMeasure.setValue('oz');
-        (wrapper.vm as any).unitOfMeasureId = 'oz';
         await inputs.name.setValue('Apple Pie');
-        await inputs.grams.setValue('200');
         await inputs.servings.setValue('2');
-        await inputs.units.setValue('12');
+        await inputs.prepTimeMinutes.setValue('30');
+        await inputs.cookTimeMinutes.setValue('45');
         await inputs.calories.setValue('325');
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
@@ -523,12 +503,10 @@ describe('Recipe Editor', () => {
         (wrapper.vm as any).category = 'Dessert';
         await inputs.difficulty.setValue('Easy');
         (wrapper.vm as any).difficulty = 'Easy';
-        await inputs.unitOfMeasure.setValue('oz');
-        (wrapper.vm as any).unitOfMeasureId = 'oz';
         await inputs.name.setValue('Apple Pie');
-        await inputs.grams.setValue('200');
         await inputs.servings.setValue('2');
-        await inputs.units.setValue('12');
+        await inputs.prepTimeMinutes.setValue('30');
+        await inputs.cookTimeMinutes.setValue('45');
         await inputs.calories.setValue('325');
         expect(saveButton.attributes('disabled')).toBeUndefined();
         const button = wrapper.find('[data-testid="add-ingredient-button"]');
@@ -545,12 +523,10 @@ describe('Recipe Editor', () => {
         (wrapper.vm as any).cuisine = 'American';
         await inputs.difficulty.setValue('Easy');
         (wrapper.vm as any).difficulty = 'Easy';
-        await inputs.unitOfMeasure.setValue('oz');
-        (wrapper.vm as any).unitOfMeasureId = 'oz';
         await inputs.name.setValue('Apple Pie');
-        await inputs.grams.setValue('200');
         await inputs.servings.setValue('2');
-        await inputs.units.setValue('12');
+        await inputs.prepTimeMinutes.setValue('30');
+        await inputs.cookTimeMinutes.setValue('45');
         await inputs.calories.setValue('325');
         expect(saveButton.attributes('disabled')).toBeUndefined();
         const button = wrapper.find('[data-testid="add-step-button"]');
@@ -568,12 +544,10 @@ describe('Recipe Editor', () => {
         expect(saveButton.attributes('disabled')).toBeDefined();
         await inputs.difficulty.setValue('Easy');
         (wrapper.vm as any).difficulty = 'Easy';
-        await inputs.unitOfMeasure.setValue('oz');
-        (wrapper.vm as any).unitOfMeasureId = 'oz';
         await inputs.name.setValue(' Apple Pie   ');
-        await inputs.grams.setValue('200');
         await inputs.servings.setValue('2');
-        await inputs.units.setValue('1');
+        await inputs.prepTimeMinutes.setValue('30');
+        await inputs.cookTimeMinutes.setValue('45');
         await inputs.calories.setValue('325');
         await saveButton.trigger('click');
         expect(wrapper.emitted('save')).toBeTruthy();
@@ -586,9 +560,8 @@ describe('Recipe Editor', () => {
             cuisine: 'American',
             difficulty: 'Easy',
             servings: 2,
-            units: 1,
-            unitOfMeasure: findUnitOfMeasure('oz'),
-            grams: 200,
+            prepTimeMinutes: 30,
+            cookTimeMinutes: 45,
             calories: 325,
             sodium: 0,
             sugar: 0,
@@ -611,12 +584,10 @@ describe('Recipe Editor', () => {
         expect(saveButton.attributes('disabled')).toBeDefined();
         await inputs.difficulty.setValue('Easy');
         (wrapper.vm as any).difficulty = 'Easy';
-        await inputs.unitOfMeasure.setValue('oz');
-        (wrapper.vm as any).unitOfMeasureId = 'oz';
         await inputs.name.setValue('Apple Pie');
         await inputs.servings.setValue('2');
-        await inputs.grams.setValue('200');
-        await inputs.units.setValue('1');
+        await inputs.prepTimeMinutes.setValue('30');
+        await inputs.cookTimeMinutes.setValue('45');
         await inputs.calories.setValue('325');
         await inputs.description.setValue('  A delicious apple pie recipe.   ');
         await saveButton.trigger('click');
@@ -640,9 +611,8 @@ describe('Recipe Editor', () => {
       expect((wrapper.vm as any).cuisine).toBe(BEER_CHEESE.cuisine);
       expect((wrapper.vm as any).difficulty).toBe(BEER_CHEESE.difficulty);
       expect(inputs.servings.element.value).toBe(BEER_CHEESE.servings.toString());
-      expect(inputs.grams.element.value).toBe(BEER_CHEESE.grams.toString());
-      expect(inputs.units.element.value).toBe(BEER_CHEESE.units.toString());
-      expect((wrapper.vm as any).unitOfMeasureId).toBe('cup');
+      expect(inputs.prepTimeMinutes.element.value).toBe(BEER_CHEESE.prepTimeMinutes.toString());
+      expect(inputs.cookTimeMinutes.element.value).toBe(BEER_CHEESE.cookTimeMinutes.toString());
       expect(inputs.calories.element.value).toBe(BEER_CHEESE.calories.toString());
       expect(inputs.sodium.element.value).toBe(BEER_CHEESE.sodium.toString());
       expect(inputs.sugar.element.value).toBe(BEER_CHEESE.sugar.toString());
@@ -843,9 +813,8 @@ describe('Recipe Editor', () => {
         expect(emittedData.cuisine).toBe(BEER_CHEESE.cuisine);
         expect(emittedData.difficulty).toBe('Normal');
         expect(emittedData.servings).toBe(BEER_CHEESE.servings);
-        expect(emittedData.units).toBe(BEER_CHEESE.units);
-        expect(emittedData.unitOfMeasure).toEqual(findUnitOfMeasure('cup'));
-        expect(emittedData.grams).toBe(BEER_CHEESE.grams);
+        expect(emittedData.prepTimeMinutes).toBe(BEER_CHEESE.prepTimeMinutes);
+        expect(emittedData.cookTimeMinutes).toBe(BEER_CHEESE.cookTimeMinutes);
         expect(emittedData.calories).toBe(325);
         expect(emittedData.sodium).toBe(BEER_CHEESE.sodium);
         expect(emittedData.sugar).toBe(BEER_CHEESE.sugar);
@@ -874,9 +843,8 @@ const BEER_CHEESE: Recipe = {
   cuisine: 'American',
   difficulty: 'Normal',
   servings: 6,
-  units: 1.5,
-  unitOfMeasure: findUnitOfMeasure('cup'),
-  grams: 350,
+  prepTimeMinutes: 15,
+  cookTimeMinutes: 30,
   calories: 410,
   sodium: 680,
   sugar: 5,
