@@ -1,11 +1,10 @@
 <template>
-  <v-list-item @click="$emit('click', recipe)">
-    <v-list-item-title>{{ recipe.name }}</v-list-item-title>
-    <v-list-item-subtitle>
-      {{ recipe.category }}
-    </v-list-item-subtitle>
-    {{ recipe.description }}
-  </v-list-item>
+  <v-card @click="$emit('click', recipe)">
+    <v-card-title>{{ recipe.name }}</v-card-title>
+    <v-card-subtitle>
+      {{ recipe.description }}
+    </v-card-subtitle>
+  </v-card>
 </template>
 
 <script setup lang="ts">

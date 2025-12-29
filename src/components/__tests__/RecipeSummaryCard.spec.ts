@@ -32,19 +32,19 @@ describe('Recipe List Item', () => {
 
   it('displays the name in the title', () => {
     wrapper = mountComponent();
-    const title = wrapper.findComponent(components.VListItemTitle);
+    const title = wrapper.findComponent(components.VCardTitle);
     expect(title.text()).toBe(TEST_RECIPE.name);
   });
 
-  it('displays the category in the subtitle', () => {
+  it('displays the description in the subtitle', () => {
     wrapper = mountComponent();
-    const subtitle = wrapper.findComponent(components.VListItemSubtitle);
-    expect(subtitle.text()).toContain(TEST_RECIPE.category);
+    const subtitle = wrapper.findComponent(components.VCardSubtitle);
+    expect(subtitle.text()).toContain(TEST_RECIPE.description);
   });
 
-  it('displays the description', () => {
-    wrapper = mountComponent();
-    const item = wrapper.findComponent(components.VListItem);
-    expect(item.text()).toContain(TEST_RECIPE.description);
-  });
+  // it('displays the description', () => {
+  //   wrapper = mountComponent();
+  //   const item = wrapper.findComponent(components.VListItem);
+  //   expect(item.text()).toContain(TEST_RECIPE.description);
+  // });
 });
