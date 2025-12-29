@@ -1,15 +1,13 @@
 <template>
-  <div class="page-load-error text-center" role="alert">
+  <div class="error-page text-center" role="alert">
     <v-icon class="death-icon" icon="mdi-death-star-variant" aria-hidden="true" />
     <div class="title">I find this failure to load to be disturbing.</div>
-    <div class="subtitle">{{ message }}</div>
+    <div class="subtitle">This is not the page you are looking for.</div>
   </div>
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  message: string;
-}>();
+//
 </script>
 
 <style scoped>
@@ -30,3 +28,8 @@ defineProps<{
   margin-top: 0.5rem;
 }
 </style>
+
+<route lang="yaml">
+meta:
+  allowAnonymous: true
+</route>

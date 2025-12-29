@@ -37,6 +37,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/error': RouteRecordInfo<
+      '/error',
+      '/error',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     '/foods/': RouteRecordInfo<
       '/foods/',
       '/foods',
@@ -82,6 +89,20 @@ declare module 'vue-router/auto-routes' {
     '/planning/': RouteRecordInfo<
       '/planning/',
       '/planning',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/planning/day': RouteRecordInfo<
+      '/planning/day',
+      '/planning/day',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/planning/week': RouteRecordInfo<
+      '/planning/week',
+      '/planning/week',
       Record<never, never>,
       Record<never, never>,
       | never
@@ -153,6 +174,12 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
+    'src/pages/error.vue': {
+      routes:
+        | '/error'
+      views:
+        | never
+    }
     'src/pages/foods/index.vue': {
       routes:
         | '/foods/'
@@ -192,6 +219,18 @@ declare module 'vue-router/auto-routes' {
     'src/pages/planning/index.vue': {
       routes:
         | '/planning/'
+      views:
+        | never
+    }
+    'src/pages/planning/day.vue': {
+      routes:
+        | '/planning/day'
+      views:
+        | never
+    }
+    'src/pages/planning/week.vue': {
+      routes:
+        | '/planning/week'
       views:
         | never
     }

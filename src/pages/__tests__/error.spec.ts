@@ -3,17 +3,16 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import PageLoadError from '../PageLoadError.vue';
+import error from '../error.vue';
 
 const vuetify = createVuetify({
   components,
   directives,
 });
-const mountComponent = (props = { message: 'whatever, dude' }) =>
-  mount(PageLoadError, { props, global: { plugins: [vuetify] } });
+const mountPage = (props = {}) => mount(error, { props, global: { plugins: [vuetify] } });
 
-describe('PageLoadError', () => {
-  let wrapper: ReturnType<typeof mountComponent>;
+describe('error', () => {
+  let wrapper: ReturnType<typeof mountPage>;
 
   afterEach(() => {
     wrapper?.unmount();
@@ -24,17 +23,17 @@ describe('PageLoadError', () => {
   });
 
   it('renders', () => {
-    wrapper = mountComponent();
+    wrapper = mountPage();
     expect(wrapper.exists()).toBe(true);
   });
 
   it('displays a snarky title', () => {
-    wrapper = mountComponent();
+    wrapper = mountPage();
     expect(wrapper.find('.title').text()).toBe('I find this failure to load to be disturbing.');
   });
 
-  it('displays the message', () => {
-    wrapper = mountComponent({ message: 'This station will soon be operational.' });
-    expect(wrapper.find('.subtitle').text()).toBe('This station will soon be operational.');
+  it('displays an equally snarky subtitle', () => {
+    wrapper = mountPage();
+    expect(wrapper.find('.subtitle').text()).toBe('This is not the page you are looking for.');
   });
 });
