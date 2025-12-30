@@ -1,9 +1,57 @@
-import { describe, expect, it } from 'vitest';
-import { dailyMealPlanNutrients, mealNutrients, multiDayMealPlanNutrients } from '../nutritional-calculations';
-import { TEST_MEAL_PLAN, TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
+import { beforeEach, describe, expect, it } from 'vitest';
+import {
+  dailyMealPlanNutrients,
+  foodItemNutrients,
+  mealNutrients,
+  multiDayMealPlanNutrients,
+} from '../nutritional-calculations';
+import { TEST_FOODS, TEST_MEAL_PLAN, TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
 import type { MealItem } from '@/models/meal';
+import type { FoodItem } from '@/models/food';
 
 describe('Nutritional Calculations', () => {
+  describe('for a food item', () => {
+    let foodItem: FoodItem;
+    beforeEach(() => {
+      foodItem = { ...TEST_FOODS.find((f) => f.id === '8')! };
+      foodItem.fat = 3;
+      foodItem.alternativePortions.forEach((portion) => {
+        const factor = portion.grams / foodItem.grams;
+        portion.sodium = Math.round(foodItem.sodium * factor);
+        portion.sugar = Math.round(foodItem.sugar * factor);
+        portion.carbs = Math.round(foodItem.carbs * factor);
+        portion.protein = Math.round(foodItem.protein * factor);
+        portion.fat = Math.round(foodItem.fat * factor);
+      });
+    });
+
+    it('uses the base portion if the Unit of Measure matches', () => {
+      const nutrients = foodItemNutrients(foodItem, 1, foodItem.unitOfMeasure);
+      expect(nutrients).toEqual({
+        calories: foodItem.calories,
+        protein: foodItem.protein,
+        fat: foodItem.fat,
+        carbs: foodItem.carbs,
+        sugar: foodItem.sugar,
+        sodium: foodItem.sodium,
+      });
+    });
+
+    it('uses the exact match alternative portion if one exists', () => {
+      foodItem.alternativePortions.forEach((portion) => {
+        const nutrients = foodItemNutrients(foodItem, portion.units, portion.unitOfMeasure);
+        expect(nutrients).toEqual({
+          calories: portion.calories,
+          protein: portion.protein,
+          fat: portion.fat,
+          carbs: portion.carbs,
+          sugar: portion.sugar,
+          sodium: portion.sodium,
+        });
+      });
+    });
+  });
+
   describe('for a meal', () => {
     it('sums the data for the nutritional information for the data items', () => {
       let calories = 0;
