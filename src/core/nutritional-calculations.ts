@@ -31,4 +31,5 @@ export const mealNutrients = (meal: Meal): Nutrition =>
 export const dailyMealPlanNutrients = (mealPlan: MealPlan): Nutrition =>
   mealPlan.meals.reduce((nutrients, meal) => sumNutrition(nutrients, mealNutrients(meal)), zeroNutrition);
 
-// export const multiDayMealPlanNutrients = (mealPlans: MealPlan[]): Nutrition => zeroNutrition;
+export const multiDayMealPlanNutrients = (mealPlans: MealPlan[]): Nutrition =>
+  mealPlans.reduce((nutrients, mealPlan) => sumNutrition(nutrients, dailyMealPlanNutrients(mealPlan)), zeroNutrition);
