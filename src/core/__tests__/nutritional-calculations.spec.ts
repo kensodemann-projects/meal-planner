@@ -87,6 +87,11 @@ describe('Nutritional Calculations', () => {
         sodium: Math.round((portion.sodium * 16) / 5),
       });
     });
+
+    it('return undefined if no good portion can be found', () => {
+      const foodItem = { ...TEST_FOODS.find((f) => f.id === '2')! };
+      expect(foodItemNutrients(foodItem, 1, unitsOfMeasure.find((u) => u.id === 'cup')!)).toBeUndefined();
+    });
   });
 
   describe('for a meal', () => {
