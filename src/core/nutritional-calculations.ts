@@ -28,8 +28,12 @@ const unitOfMeasureFit = (portion: Portion, units: number, unitOfMeasure: UnitOf
   try {
     const fit = quantityConversionFactor(portion, { unitOfMeasure, units });
     return fit > 1 ? 1 / fit : fit;
-  } catch {
-    return 0;
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('Invalid conversion')) {
+      // Incompatible unit conversion (e.g., 'each' to 'cup') – treat as no fit.
+      return 0;
+    }
+    throw error;
   }
 };
 
