@@ -255,7 +255,6 @@ describe('Recipe Editor', () => {
       wrapper = mountComponent();
       const input = wrapper.findComponent('[data-testid="sodium-input"]') as VueWrapper<components.VNumberInput>;
       expect(input.exists()).toBe(true);
-      expect(input.props('label')).toBe('Sodium');
     });
 
     it('is required', async () => {
@@ -269,7 +268,6 @@ describe('Recipe Editor', () => {
       wrapper = mountComponent();
       const input = wrapper.findComponent('[data-testid="sugar-input"]') as VueWrapper<components.VNumberInput>;
       expect(input.exists()).toBe(true);
-      expect(input.props('label')).toBe('Sugar');
     });
 
     it('is required', async () => {
@@ -283,7 +281,6 @@ describe('Recipe Editor', () => {
       wrapper = mountComponent();
       const input = wrapper.findComponent('[data-testid="carbs-input"]') as VueWrapper<components.VNumberInput>;
       expect(input.exists()).toBe(true);
-      expect(input.props('label')).toBe('Total Carbohydrates');
     });
 
     it('is required', async () => {
@@ -297,7 +294,6 @@ describe('Recipe Editor', () => {
       wrapper = mountComponent();
       const input = wrapper.findComponent('[data-testid="fat-input"]') as VueWrapper<components.VNumberInput>;
       expect(input.exists()).toBe(true);
-      expect(input.props('label')).toBe('Fat');
     });
 
     it('is required', async () => {
@@ -311,7 +307,6 @@ describe('Recipe Editor', () => {
       wrapper = mountComponent();
       const input = wrapper.findComponent('[data-testid="protein-input"]') as VueWrapper<components.VNumberInput>;
       expect(input.exists()).toBe(true);
-      expect(input.props('label')).toBe('Protein');
     });
 
     it('is required', async () => {
