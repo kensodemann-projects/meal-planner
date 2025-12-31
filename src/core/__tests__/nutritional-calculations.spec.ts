@@ -8,10 +8,10 @@ import {
 import { TEST_FOODS, TEST_MEAL_PLAN, TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
 import type { MealItem } from '@/models/meal';
 import type { FoodItem } from '@/models/food';
-import type { Nutrients } from '@/models/nutrients';
+import type { Nutrition } from '@/models/nutrition';
 import { unitsOfMeasure } from '@/data/units-of-measure';
 
-const sumMealItemNutrients = (items: MealItem[]): Nutrients => {
+const sumMealItemNutrients = (items: MealItem[]): Nutrition => {
   return items.reduce(
     (acc, item) => ({
       calories: acc.calories + item.nutrition.calories,
