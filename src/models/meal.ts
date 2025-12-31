@@ -4,6 +4,8 @@ import type { UnitOfMeasure } from './unit-of-measure';
 export interface MealItem {
   id: string;
   name: string;
+  recipeId?: string;
+  foodId?: string;
   units: number;
   unitOfMeasure: UnitOfMeasure;
   nutrition: Nutrition;
