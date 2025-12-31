@@ -55,7 +55,7 @@ const getConversionFactor = (from: UnitOfMeasure, to: UnitOfMeasure): number => 
   return reverse ? 1 / factor : factor;
 };
 
-export const getVolumeConversionFactor = (from: UnitOfMeasure, to: UnitOfMeasure): number => {
+const getVolumeConversionFactor = (from: UnitOfMeasure, to: UnitOfMeasure): number => {
   if (from.system === 'metric' && to.system === 'customary') {
     return getConversionFactor(from, milliLiter) * mlToFloz * getConversionFactor(fluidOunce, to);
   }
@@ -65,7 +65,7 @@ export const getVolumeConversionFactor = (from: UnitOfMeasure, to: UnitOfMeasure
   return getConversionFactor(from, to);
 };
 
-export const getWeightConversionFactor = (from: UnitOfMeasure, to: UnitOfMeasure): number => {
+const getWeightConversionFactor = (from: UnitOfMeasure, to: UnitOfMeasure): number => {
   if (from.system === 'metric' && to.system === 'customary') {
     return getConversionFactor(from, gram) * gToOz * getConversionFactor(ounce, to);
   }

@@ -218,7 +218,11 @@ export const TEST_FOODS: FoodItem[] = [
     protein: 17,
     carbs: 6,
     sugar: 4,
-    alternativePortions: [makePortion(1, findUnitOfMeasure('c'), 245, 163)],
+    alternativePortions: [
+      makePortion(1, findUnitOfMeasure('cup'), 245, 163),
+      makePortion(2, findUnitOfMeasure('quart'), 1960, 1304),
+      makePortion(5, findUnitOfMeasure('oz'), 140, 93),
+    ],
   },
 ];
 
