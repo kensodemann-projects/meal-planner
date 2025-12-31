@@ -1,5 +1,12 @@
 <template>
-  <div>This is the meal editor</div>
+  <h2>Recipes</h2>
+  <v-divider class="mb-4"></v-divider>
+
+  <h2>Additional Foods</h2>
+  <v-divider class="mb-4"></v-divider>
+
+  <h2>Total Nutrition</h2>
+  <v-divider class="mb-4"></v-divider>
 
   <v-container fluid>
     <v-row class="pa-4" justify="end">
