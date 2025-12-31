@@ -153,7 +153,7 @@ describe('Nutritional Calculations', () => {
   });
 
   describe('for several meal plans', () => {
-    it('sums the data for each meal', () => {
+    it('sums the nutritional data for each meal plan', () => {
       const mealPlans = [
         TEST_MEAL_PLANS[0]!,
         TEST_MEAL_PLANS[1]!,
