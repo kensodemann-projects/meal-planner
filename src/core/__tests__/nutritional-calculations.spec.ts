@@ -8,7 +8,22 @@ import {
 import { TEST_FOODS, TEST_MEAL_PLAN, TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
 import type { MealItem } from '@/models/meal';
 import type { FoodItem } from '@/models/food';
+import type { Nutrients } from '@/models/nutrients';
 import { unitsOfMeasure } from '@/data/units-of-measure';
+
+const sumMealItemNutrients = (items: MealItem[]): Nutrients => {
+  return items.reduce(
+    (acc, item) => ({
+      calories: acc.calories + item.nutrition.calories,
+      protein: acc.protein + item.nutrition.protein,
+      fat: acc.fat + item.nutrition.fat,
+      carbs: acc.carbs + item.nutrition.carbs,
+      sugar: acc.sugar + item.nutrition.sugar,
+      sodium: acc.sodium + item.nutrition.sodium,
+    }),
+    { calories: 0, protein: 0, fat: 0, carbs: 0, sugar: 0, sodium: 0 },
+  );
+};
 
 describe('Nutritional Calculations', () => {
   describe('for a food item', () => {
@@ -96,28 +111,8 @@ describe('Nutritional Calculations', () => {
 
   describe('for a meal', () => {
     it('sums the data for the nutritional information for the data items', () => {
-      let calories = 0;
-      let protein = 0;
-      let fat = 0;
-      let carbs = 0;
-      let sugar = 0;
-      let sodium = 0;
-      TEST_MEAL_PLAN.meals[0]!.items.forEach((item) => {
-        calories = calories + item.nutrition.calories;
-        protein = protein + item.nutrition.protein;
-        fat = fat + item.nutrition.fat;
-        carbs = carbs + item.nutrition.carbs;
-        sugar = sugar + item.nutrition.sugar;
-        sodium = sodium + item.nutrition.sodium;
-      });
-      expect(mealNutrients(TEST_MEAL_PLAN.meals[0]!)).toEqual({
-        calories,
-        protein,
-        fat,
-        carbs,
-        sugar,
-        sodium,
-      });
+      const expected = sumMealItemNutrients(TEST_MEAL_PLAN.meals[0]!.items);
+      expect(mealNutrients(TEST_MEAL_PLAN.meals[0]!)).toEqual(expected);
     });
   });
 
@@ -127,28 +122,8 @@ describe('Nutritional Calculations', () => {
       TEST_MEAL_PLAN.meals.forEach((meal) => {
         mealItems.push(...meal.items);
       });
-      let calories = 0;
-      let protein = 0;
-      let fat = 0;
-      let carbs = 0;
-      let sugar = 0;
-      let sodium = 0;
-      mealItems.forEach((item) => {
-        calories = calories + item.nutrition.calories;
-        protein = protein + item.nutrition.protein;
-        fat = fat + item.nutrition.fat;
-        carbs = carbs + item.nutrition.carbs;
-        sugar = sugar + item.nutrition.sugar;
-        sodium = sodium + item.nutrition.sodium;
-      });
-      expect(dailyMealPlanNutrients(TEST_MEAL_PLAN)).toEqual({
-        calories,
-        protein,
-        fat,
-        carbs,
-        sugar,
-        sodium,
-      });
+      const expected = sumMealItemNutrients(mealItems);
+      expect(dailyMealPlanNutrients(TEST_MEAL_PLAN)).toEqual(expected);
     });
   });
 
@@ -167,28 +142,8 @@ describe('Nutritional Calculations', () => {
           mealItems.push(...meal.items);
         });
       });
-      let calories = 0;
-      let protein = 0;
-      let fat = 0;
-      let carbs = 0;
-      let sugar = 0;
-      let sodium = 0;
-      mealItems.forEach((item) => {
-        calories = calories + item.nutrition.calories;
-        protein = protein + item.nutrition.protein;
-        fat = fat + item.nutrition.fat;
-        carbs = carbs + item.nutrition.carbs;
-        sugar = sugar + item.nutrition.sugar;
-        sodium = sodium + item.nutrition.sodium;
-      });
-      expect(multiDayMealPlanNutrients(mealPlans)).toEqual({
-        calories,
-        protein,
-        fat,
-        carbs,
-        sugar,
-        sodium,
-      });
+      const expected = sumMealItemNutrients(mealItems);
+      expect(multiDayMealPlanNutrients(mealPlans)).toEqual(expected);
     });
   });
 });
