@@ -41,7 +41,7 @@
     <h2>Nutritional Information</h2>
     <v-divider class="mb-4"></v-divider>
 
-    <PortionEditorGrid v-model="portion" />
+    <PortionEditorRows v-model="portion" />
 
     <h2>
       <div class="d-flex justify-space-between">

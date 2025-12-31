@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import PortionEditorGrid from '../PortionEditorGrid.vue';
+import PortionEditorRows from '../PortionEditorRows.vue';
 import { autocompleteIsRequired, numberInputIsRequired } from './test-utils';
 
 const vuetify = createVuetify({
@@ -14,7 +14,7 @@ const vuetify = createVuetify({
 });
 
 const mountComponent = (modelValue: Partial<Portion>) =>
-  mount(PortionEditorGrid, { props: { modelValue }, global: { plugins: [vuetify] } });
+  mount(PortionEditorRows, { props: { modelValue }, global: { plugins: [vuetify] } });
 
 describe('Portion Edit Grid', () => {
   let wrapper: ReturnType<typeof mountComponent>;
