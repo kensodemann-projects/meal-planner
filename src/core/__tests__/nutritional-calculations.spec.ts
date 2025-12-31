@@ -103,14 +103,14 @@ describe('Nutritional Calculations', () => {
       });
     });
 
-    it('return undefined if no good portion can be found', () => {
+    it('returns undefined if no good portion can be found', () => {
       const foodItem = { ...TEST_FOODS.find((f) => f.id === '2')! };
       expect(foodItemNutrients(foodItem, 1, unitsOfMeasure.find((u) => u.id === 'cup')!)).toBeUndefined();
     });
   });
 
   describe('for a meal', () => {
-    it('sums the data for the nutritional information for the data items', () => {
+    it('sums the nutritional information for the meal items', () => {
       const expected = sumMealItemNutrients(TEST_MEAL_PLAN.meals[0]!.items);
       expect(mealNutrients(TEST_MEAL_PLAN.meals[0]!)).toEqual(expected);
     });
@@ -128,7 +128,7 @@ describe('Nutritional Calculations', () => {
   });
 
   describe('for several meal plans', () => {
-    it('sums the data for each meal', () => {
+    it('sums the nutritional data for each meal plan', () => {
       const mealPlans = [
         TEST_MEAL_PLANS[0]!,
         TEST_MEAL_PLANS[1]!,
