@@ -67,12 +67,16 @@ const bestFitPortion = (foodItem: FoodItem, units: number, unitOfMeasure: UnitOf
  *          Callers should validate inputs upstream or handle the undefined case explicitly.
  *
  * @example
- * // Returns calculated nutrition for 2 cups of milk
- * const nutrition = foodItemNutrients(milkFoodItem, 2, cupUnit);
+ * // Returns calculated nutrition for a compatible unit conversion
+ * const foodItem = { ... }; // A FoodItem with volume-based portions
+ * const unitOfMeasure = { ... }; // A volume unit like "cup"
+ * const nutrition = foodItemNutrients(foodItem, 2, unitOfMeasure);
  *
  * @example
  * // Returns undefined for incompatible unit conversion
- * const nutrition = foodItemNutrients(appleFoodItem, 1, cupUnit); // apples measured in "each"
+ * const foodItem = { ... }; // A FoodItem measured in "each"
+ * const volumeUnit = { ... }; // A volume unit like "cup"
+ * const nutrition = foodItemNutrients(foodItem, 1, volumeUnit); // undefined
  */
 export const foodItemNutrients = (
   foodItem: FoodItem,
@@ -110,8 +114,8 @@ export const foodItemNutrients = (
  *   name: 'Breakfast',
  *   type: 'Breakfast',
  *   items: [
- *     { id: '1', name: 'Eggs', units: 2, unitOfMeasure: eachUnit, nutrition: { calories: 140, ... } },
- *     { id: '2', name: 'Toast', units: 2, unitOfMeasure: sliceUnit, nutrition: { calories: 160, ... } }
+ *     { id: '1', name: 'Eggs', units: 2, unitOfMeasure: {...}, nutrition: { calories: 140, ... } },
+ *     { id: '2', name: 'Toast', units: 2, unitOfMeasure: {...}, nutrition: { calories: 160, ... } }
  *   ]
  * };
  * const totalNutrition = mealNutrients(meal); // { calories: 300, ... }
@@ -131,7 +135,7 @@ export const mealNutrients = (meal: Meal): Nutrition =>
  * const dailyPlan: MealPlan = {
  *   id: '1',
  *   date: '2024-01-01',
- *   meals: [breakfastMeal, lunchMeal, dinnerMeal]
+ *   meals: [...] // Array of Meal objects
  * };
  * const dailyNutrition = dailyMealPlanNutrients(dailyPlan);
  */
@@ -148,7 +152,7 @@ export const dailyMealPlanNutrients = (mealPlan: MealPlan): Nutrition =>
  * @returns The total nutritional values across all provided meal plans
  *
  * @example
- * const weeklyPlans = [mondayPlan, tuesdayPlan, wednesdayPlan, thursdayPlan, fridayPlan];
+ * const weeklyPlans = [...]; // Array of MealPlan objects
  * const weeklyNutrition = multiDayMealPlanNutrients(weeklyPlans);
  */
 export const multiDayMealPlanNutrients = (mealPlans: MealPlan[]): Nutrition =>
