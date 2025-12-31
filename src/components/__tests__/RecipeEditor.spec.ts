@@ -88,6 +88,9 @@ const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
   servings: wrapper.findComponent('[data-testid="servings-input"]').find('input'),
   prepTimeMinutes: wrapper.findComponent('[data-testid="prep-time-input"]').find('input'),
   cookTimeMinutes: wrapper.findComponent('[data-testid="cook-time-input"]').find('input'),
+});
+
+const getNutritionInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
   calories: wrapper.findComponent('[data-testid="calories-input"]').find('input'),
   sodium: wrapper.findComponent('[data-testid="sodium-input"]').find('input'),
   sugar: wrapper.findComponent('[data-testid="sugar-input"]').find('input'),
@@ -236,82 +239,35 @@ describe('Recipe Editor', () => {
     });
   });
 
-  describe('calories', () => {
-    it('exists', () => {
+  describe('NutritionEditorRows integration', () => {
+    it('renders NutritionEditorRows component', () => {
       wrapper = mountComponent();
-      const input = wrapper.findComponent('[data-testid="calories-input"]') as VueWrapper<components.VNumberInput>;
-      expect(input.exists()).toBe(true);
-      expect(input.props('label')).toBe('Calories');
+      const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
+      expect(nutritionEditor.exists()).toBe(true);
     });
 
-    it('is required', async () => {
-      wrapper = mountComponent();
-      await numberInputIsRequired(wrapper, 'calories-input');
-    });
-  });
-
-  describe('sodium', () => {
-    it('exists', () => {
-      wrapper = mountComponent();
-      const input = wrapper.findComponent('[data-testid="sodium-input"]') as VueWrapper<components.VNumberInput>;
-      expect(input.exists()).toBe(true);
-    });
-
-    it('is required', async () => {
-      wrapper = mountComponent();
-      await numberInputIsRequired(wrapper, 'sodium-input');
-    });
-  });
-
-  describe('sugar', () => {
-    it('exists', () => {
-      wrapper = mountComponent();
-      const input = wrapper.findComponent('[data-testid="sugar-input"]') as VueWrapper<components.VNumberInput>;
-      expect(input.exists()).toBe(true);
-    });
-
-    it('is required', async () => {
-      wrapper = mountComponent();
-      await numberInputIsRequired(wrapper, 'sugar-input');
-    });
-  });
-
-  describe('total carbs', () => {
-    it('exists', () => {
-      wrapper = mountComponent();
-      const input = wrapper.findComponent('[data-testid="carbs-input"]') as VueWrapper<components.VNumberInput>;
-      expect(input.exists()).toBe(true);
-    });
-
-    it('is required', async () => {
-      wrapper = mountComponent();
-      await numberInputIsRequired(wrapper, 'carbs-input');
-    });
-  });
-
-  describe('fat', () => {
-    it('exists', () => {
-      wrapper = mountComponent();
-      const input = wrapper.findComponent('[data-testid="fat-input"]') as VueWrapper<components.VNumberInput>;
-      expect(input.exists()).toBe(true);
-    });
-
-    it('is required', async () => {
-      wrapper = mountComponent();
-      await numberInputIsRequired(wrapper, 'fat-input');
-    });
-  });
-
-  describe('protein', () => {
-    it('exists', () => {
-      wrapper = mountComponent();
-      const input = wrapper.findComponent('[data-testid="protein-input"]') as VueWrapper<components.VNumberInput>;
-      expect(input.exists()).toBe(true);
-    });
-
-    it('is required', async () => {
-      wrapper = mountComponent();
-      await numberInputIsRequired(wrapper, 'protein-input');
+    it('passes nutrition data to NutritionEditorRows', () => {
+      const recipe: Partial<Recipe> = {
+        name: 'Test Recipe',
+        calories: 250,
+        sodium: 400,
+        sugar: 12,
+        carbs: 30,
+        fat: 8,
+        protein: 15,
+        ingredients: [],
+        steps: [],
+      };
+      wrapper = mountComponent({ recipe });
+      const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
+      expect(nutritionEditor.props('modelValue')).toMatchObject({
+        calories: 250,
+        sodium: 400,
+        sugar: 12,
+        carbs: 30,
+        fat: 8,
+        protein: 15,
+      });
     });
   });
 
@@ -346,6 +302,7 @@ describe('Recipe Editor', () => {
 
     it('initializes the inputs with blank values', () => {
       const inputs = getInputs(wrapper);
+      const nutritionInputs = getNutritionInputs(wrapper);
       expect(inputs.name.element.value).toBe('');
       expect(inputs.description.element.value).toBe('');
       expect(inputs.category.element.value).toBe('');
@@ -354,12 +311,12 @@ describe('Recipe Editor', () => {
       expect(inputs.servings.element.value).toBe('');
       expect(inputs.prepTimeMinutes.element.value).toBe('');
       expect(inputs.cookTimeMinutes.element.value).toBe('');
-      expect(inputs.calories.element.value).toBe('');
-      expect(inputs.sodium.element.value).toBe('0');
-      expect(inputs.sugar.element.value).toBe('0');
-      expect(inputs.carbs.element.value).toBe('0');
-      expect(inputs.fat.element.value).toBe('0');
-      expect(inputs.protein.element.value).toBe('0');
+      expect(nutritionInputs.calories.element.value).toBe('');
+      expect(nutritionInputs.sodium.element.value).toBe('0');
+      expect(nutritionInputs.sugar.element.value).toBe('0');
+      expect(nutritionInputs.carbs.element.value).toBe('0');
+      expect(nutritionInputs.fat.element.value).toBe('0');
+      expect(nutritionInputs.protein.element.value).toBe('0');
     });
 
     describe('the ingredients list', () => {
@@ -489,6 +446,7 @@ describe('Recipe Editor', () => {
       it('is disabled until all required fields are filled in', async () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
         const inputs = getInputs(wrapper);
+        const nutritionInputs = getNutritionInputs(wrapper);
         await inputs.category.setValue('Dessert');
         (wrapper.vm as any).category = 'Dessert';
         await inputs.cuisine.setValue('American');
@@ -500,13 +458,14 @@ describe('Recipe Editor', () => {
         await inputs.servings.setValue('2');
         await inputs.prepTimeMinutes.setValue('30');
         await inputs.cookTimeMinutes.setValue('45');
-        await inputs.calories.setValue('325');
+        await nutritionInputs.calories.setValue('325');
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
 
       it('is disabled if an invalid ingredient exists in the ingredients list', async () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
         const inputs = getInputs(wrapper);
+        const nutritionInputs = getNutritionInputs(wrapper);
         await inputs.cuisine.setValue('American');
         (wrapper.vm as any).cuisine = 'American';
         await inputs.category.setValue('Dessert');
@@ -517,7 +476,7 @@ describe('Recipe Editor', () => {
         await inputs.servings.setValue('2');
         await inputs.prepTimeMinutes.setValue('30');
         await inputs.cookTimeMinutes.setValue('45');
-        await inputs.calories.setValue('325');
+        await nutritionInputs.calories.setValue('325');
         expect(saveButton.attributes('disabled')).toBeUndefined();
         const button = wrapper.find('[data-testid="add-ingredient-button"]');
         await button.trigger('click');
@@ -527,6 +486,7 @@ describe('Recipe Editor', () => {
       it('is disabled if an invalid step exists in the steps list', async () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
         const inputs = getInputs(wrapper);
+        const nutritionInputs = getNutritionInputs(wrapper);
         await inputs.category.setValue('Dessert');
         (wrapper.vm as any).category = 'Dessert';
         await inputs.cuisine.setValue('American');
@@ -537,7 +497,7 @@ describe('Recipe Editor', () => {
         await inputs.servings.setValue('2');
         await inputs.prepTimeMinutes.setValue('30');
         await inputs.cookTimeMinutes.setValue('45');
-        await inputs.calories.setValue('325');
+        await nutritionInputs.calories.setValue('325');
         expect(saveButton.attributes('disabled')).toBeUndefined();
         const button = wrapper.find('[data-testid="add-step-button"]');
         await button.trigger('click');
@@ -547,6 +507,7 @@ describe('Recipe Editor', () => {
       it('emits the entered data on click', async () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
         const inputs = getInputs(wrapper);
+        const nutritionInputs = getNutritionInputs(wrapper);
         await inputs.category.setValue('Dessert');
         (wrapper.vm as any).category = 'Dessert';
         await inputs.cuisine.setValue('American');
@@ -558,7 +519,7 @@ describe('Recipe Editor', () => {
         await inputs.servings.setValue('2');
         await inputs.prepTimeMinutes.setValue('30');
         await inputs.cookTimeMinutes.setValue('45');
-        await inputs.calories.setValue('325');
+        await nutritionInputs.calories.setValue('325');
         await saveButton.trigger('click');
         expect(wrapper.emitted('save')).toBeTruthy();
         expect(wrapper.emitted('save')).toHaveLength(1);
@@ -587,6 +548,7 @@ describe('Recipe Editor', () => {
       it('emits the entered description if entered', async () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
         const inputs = getInputs(wrapper);
+        const nutritionInputs = getNutritionInputs(wrapper);
         await inputs.category.setValue('Dessert');
         (wrapper.vm as any).category = 'Dessert';
         await inputs.cuisine.setValue('American');
@@ -598,7 +560,7 @@ describe('Recipe Editor', () => {
         await inputs.servings.setValue('2');
         await inputs.prepTimeMinutes.setValue('30');
         await inputs.cookTimeMinutes.setValue('45');
-        await inputs.calories.setValue('325');
+        await nutritionInputs.calories.setValue('325');
         await inputs.description.setValue('  A delicious apple pie recipe.   ');
         await saveButton.trigger('click');
         expect(wrapper.emitted('save')).toBeTruthy();
@@ -616,6 +578,7 @@ describe('Recipe Editor', () => {
 
     it('initializes the inputs with recipe values', () => {
       const inputs = getInputs(wrapper);
+      const nutritionInputs = getNutritionInputs(wrapper);
       expect(inputs.name.element.value).toBe(BEER_CHEESE.name);
       expect((wrapper.vm as any).category).toBe(BEER_CHEESE.category);
       expect((wrapper.vm as any).cuisine).toBe(BEER_CHEESE.cuisine);
@@ -623,12 +586,12 @@ describe('Recipe Editor', () => {
       expect(inputs.servings.element.value).toBe(BEER_CHEESE.servings.toString());
       expect(inputs.prepTimeMinutes.element.value).toBe(BEER_CHEESE.prepTimeMinutes.toString());
       expect(inputs.cookTimeMinutes.element.value).toBe(BEER_CHEESE.cookTimeMinutes.toString());
-      expect(inputs.calories.element.value).toBe(BEER_CHEESE.calories.toString());
-      expect(inputs.sodium.element.value).toBe(BEER_CHEESE.sodium.toString());
-      expect(inputs.sugar.element.value).toBe(BEER_CHEESE.sugar.toString());
-      expect(inputs.carbs.element.value).toBe(BEER_CHEESE.carbs.toString());
-      expect(inputs.fat.element.value).toBe(BEER_CHEESE.fat.toString());
-      expect(inputs.protein.element.value).toBe(BEER_CHEESE.protein.toString());
+      expect(nutritionInputs.calories.element.value).toBe(BEER_CHEESE.calories.toString());
+      expect(nutritionInputs.sodium.element.value).toBe(BEER_CHEESE.sodium.toString());
+      expect(nutritionInputs.sugar.element.value).toBe(BEER_CHEESE.sugar.toString());
+      expect(nutritionInputs.carbs.element.value).toBe(BEER_CHEESE.carbs.toString());
+      expect(nutritionInputs.fat.element.value).toBe(BEER_CHEESE.fat.toString());
+      expect(nutritionInputs.protein.element.value).toBe(BEER_CHEESE.protein.toString());
     });
 
     describe('the ingredients list', () => {
@@ -806,12 +769,13 @@ describe('Recipe Editor', () => {
       it('emits the entered data on click', async () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
         const inputs = getInputs(wrapper);
+        const nutritionInputs = getNutritionInputs(wrapper);
         await inputs.category.setValue('Dessert');
         (wrapper.vm as any).category = 'Dessert';
         await inputs.difficulty.setValue('Normal');
         (wrapper.vm as any).difficulty = 'Normal';
         await inputs.name.setValue('Apple Pie');
-        await inputs.calories.setValue('325');
+        await nutritionInputs.calories.setValue('325');
         await saveButton.trigger('click');
         expect(wrapper.emitted('save')).toBeTruthy();
         expect(wrapper.emitted('save')).toHaveLength(1);
