@@ -29,7 +29,9 @@ const isModified = computed((): boolean => false);
 
 const save = () => {
   const mealToSave: Meal = {
-    // Populate meal data
+    id: props.meal?.id ?? 'new-meal-id',
+    type: props.meal?.type ?? 'Lunch',
+    items: props.meal?.items ?? [],
   };
   emit('save', mealToSave);
 };
