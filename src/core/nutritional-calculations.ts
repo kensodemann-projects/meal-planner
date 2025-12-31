@@ -4,6 +4,7 @@ import type { MealPlan } from '@/models/meal-plan';
 import type { Nutrition } from '@/models/nutrition';
 import type { Portion } from '@/models/portion';
 import type { UnitOfMeasure } from '@/models/unit-of-measure';
+import { quantityConversionFactor } from './unit-conversion';
 
 const zeroNutrition: Nutrition = {
   calories: 0,
@@ -23,11 +24,29 @@ const sumNutrition = (a: Nutrition, b: Nutrition): Nutrition => ({
   sodium: a.sodium + b.sodium,
 });
 
-const bestFitPortion = (foodItem: FoodItem, unitOfMeasure: UnitOfMeasure): Portion | undefined => {
-  if (foodItem.unitOfMeasure.id === unitOfMeasure.id) {
-    return foodItem as Portion;
+const unitOfMeasureFit = (portion: Portion, units: number, unitOfMeasure: UnitOfMeasure): number => {
+  try {
+    const fit = quantityConversionFactor(portion, { unitOfMeasure, units });
+    return fit > 1 ? 1 / fit : fit;
+  } catch {
+    return 0;
   }
-  return foodItem.alternativePortions.find((portion) => portion.unitOfMeasure.id === unitOfMeasure.id);
+};
+
+const bestFitPortion = (foodItem: FoodItem, units: number, unitOfMeasure: UnitOfMeasure): Portion | undefined => {
+  let bestFitNumber = unitOfMeasureFit(foodItem, units, unitOfMeasure);
+  let bestFitPortion: Portion | undefined;
+  if (bestFitNumber > 0) {
+    bestFitPortion = foodItem as Portion;
+  }
+  foodItem.alternativePortions.forEach((portion) => {
+    const fitNumber = unitOfMeasureFit(portion, units, unitOfMeasure);
+    if (fitNumber > bestFitNumber) {
+      bestFitNumber = fitNumber;
+      bestFitPortion = portion;
+    }
+  });
+  return bestFitPortion;
 };
 
 export const foodItemNutrients = (
@@ -35,15 +54,16 @@ export const foodItemNutrients = (
   units: number,
   unitOfMeasure: UnitOfMeasure,
 ): Nutrition | undefined => {
-  const portion = bestFitPortion(foodItem, unitOfMeasure);
+  const portion = bestFitPortion(foodItem, units, unitOfMeasure);
   if (portion) {
+    const factor = quantityConversionFactor(portion, { unitOfMeasure, units });
     return {
-      calories: (portion.calories / portion.units) * units,
-      protein: (portion.protein / portion.units) * units,
-      fat: (portion.fat / portion.units) * units,
-      carbs: (portion.carbs / portion.units) * units,
-      sugar: (portion.sugar / portion.units) * units,
-      sodium: (portion.sodium / portion.units) * units,
+      calories: Math.round(portion.calories * factor),
+      protein: Math.round(portion.protein * factor),
+      fat: Math.round(portion.fat * factor),
+      carbs: Math.round(portion.carbs * factor),
+      sugar: Math.round(portion.sugar * factor),
+      sodium: Math.round(portion.sodium * factor),
     };
   }
 };

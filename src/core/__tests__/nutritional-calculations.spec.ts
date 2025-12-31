@@ -8,6 +8,7 @@ import {
 import { TEST_FOODS, TEST_MEAL_PLAN, TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
 import type { MealItem } from '@/models/meal';
 import type { FoodItem } from '@/models/food';
+import { unitsOfMeasure } from '@/data/units-of-measure';
 
 describe('Nutritional Calculations', () => {
   describe('for a food item', () => {
@@ -48,6 +49,42 @@ describe('Nutritional Calculations', () => {
           sugar: portion.sugar,
           sodium: portion.sodium,
         });
+      });
+    });
+
+    it('handles differing units', () => {
+      const portion = foodItem.alternativePortions[1]!;
+      expect(foodItemNutrients(foodItem, 1, portion.unitOfMeasure)).toEqual({
+        calories: Math.round(portion.calories / 2),
+        protein: Math.round(portion.protein / 2),
+        fat: Math.round(portion.fat / 2),
+        carbs: Math.round(portion.carbs / 2),
+        sugar: Math.round(portion.sugar / 2),
+        sodium: Math.round(portion.sodium / 2),
+      });
+    });
+
+    it('handles differing units of measure', () => {
+      let portion = foodItem.alternativePortions[0]!;
+      let um = unitsOfMeasure.find((u) => u.id === 'pint')!;
+      expect(foodItemNutrients(foodItem, 1, um)).toEqual({
+        calories: Math.round(portion.calories * 2),
+        protein: Math.round(portion.protein * 2),
+        fat: Math.round(portion.fat * 2),
+        carbs: Math.round(portion.carbs * 2),
+        sugar: Math.round(portion.sugar * 2),
+        sodium: Math.round(portion.sodium * 2),
+      });
+
+      portion = foodItem.alternativePortions[2]!;
+      um = unitsOfMeasure.find((u) => u.id === 'lb')!;
+      expect(foodItemNutrients(foodItem, 1, um)).toEqual({
+        calories: Math.round((portion.calories * 16) / 5),
+        protein: Math.round((portion.protein * 16) / 5),
+        fat: Math.round((portion.fat * 16) / 5),
+        carbs: Math.round((portion.carbs * 16) / 5),
+        sugar: Math.round((portion.sugar * 16) / 5),
+        sodium: Math.round((portion.sodium * 16) / 5),
       });
     });
   });
