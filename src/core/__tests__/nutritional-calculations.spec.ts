@@ -95,7 +95,7 @@ describe('Nutritional Calculations', () => {
   });
 
   describe('for a meal', () => {
-    it('sums the data for the nutritional information for the data items', () => {
+    it('sums the nutritional information for the meal items', () => {
       let calories = 0;
       let protein = 0;
       let fat = 0;
