@@ -1,37 +1,35 @@
 <template>
-  <v-container fluid>
-    <v-row>
-      <v-col cols="12" md="4">
-        <v-number-input
-          label="Units"
-          v-model="units"
-          :rules="[validationRules.required]"
-          data-testid="units-input"
-        ></v-number-input>
-      </v-col>
-      <v-col cols="12" md="4">
-        <v-autocomplete
-          label="Unit of Measure"
-          v-model="unitOfMeasureId"
-          :items="unitOfMeasureOptions"
-          :rules="[validationRules.required]"
-          data-testid="unit-of-measure-input"
-        ></v-autocomplete>
-      </v-col>
-      <v-col cols="12" md="4">
-        <v-number-input
-          label="Grams"
-          placeholder="Equivalent grams..."
-          v-model="grams"
-          :precision="null"
-          :rules="[validationRules.required]"
-          data-testid="grams-input"
-        ></v-number-input>
-      </v-col>
-    </v-row>
+  <v-row>
+    <v-col cols="12" md="4">
+      <v-number-input
+        label="Units"
+        v-model="units"
+        :rules="[validationRules.required]"
+        data-testid="units-input"
+      ></v-number-input>
+    </v-col>
+    <v-col cols="12" md="4">
+      <v-autocomplete
+        label="Unit of Measure"
+        v-model="unitOfMeasureId"
+        :items="unitOfMeasureOptions"
+        :rules="[validationRules.required]"
+        data-testid="unit-of-measure-input"
+      ></v-autocomplete>
+    </v-col>
+    <v-col cols="12" md="4">
+      <v-number-input
+        label="Grams"
+        placeholder="Equivalent grams..."
+        v-model="grams"
+        :precision="null"
+        :rules="[validationRules.required]"
+        data-testid="grams-input"
+      ></v-number-input>
+    </v-col>
+  </v-row>
 
-    <NutritionEditorRows v-model="portion" />
-  </v-container>
+  <NutritionEditorRows v-model="portion" />
 </template>
 
 <script setup lang="ts">
