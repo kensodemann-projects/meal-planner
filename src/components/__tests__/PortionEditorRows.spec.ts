@@ -16,7 +16,7 @@ const vuetify = createVuetify({
 const mountComponent = (modelValue: Partial<Portion>) =>
   mount(PortionEditorRows, { props: { modelValue }, global: { plugins: [vuetify] } });
 
-describe('PortionEditorRows', () => {
+describe('Portion Editor Rows', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
   afterEach(() => {
