@@ -5,8 +5,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
+import PortionData from '../../portions/PortionData.vue';
 import FoodView from '../FoodView.vue';
-import PortionData from '../PortionData.vue';
 
 const vuetify = createVuetify({
   components,

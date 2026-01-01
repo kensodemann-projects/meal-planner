@@ -1,4 +1,4 @@
-import FoodEditor from '@/components/FoodEditor.vue';
+import FoodEditor from '@/components/foods/FoodEditor.vue';
 import { TEST_FOOD } from '@/data/__tests__/test-data';
 import { useFoodsData } from '@/data/foods';
 import { flushPromises, mount } from '@vue/test-utils';

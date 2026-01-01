@@ -1,4 +1,4 @@
-import FoodListItem from '@/components/FoodListItem.vue';
+import FoodListItem from '@/components/foods/FoodListItem.vue';
 import { TEST_FOODS } from '@/data/__tests__/test-data';
 import { useFoodsData } from '@/data/foods';
 import type { FoodItem } from '@/models/food';

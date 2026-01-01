@@ -1,4 +1,4 @@
-import RecipeEditor from '@/components/RecipeEditor.vue';
+import RecipeEditor from '@/components/recipes/RecipeEditor.vue';
 import { TEST_RECIPE } from '@/data/__tests__/test-data';
 import { useRecipesData } from '@/data/recipes';
 import { flushPromises, mount } from '@vue/test-utils';

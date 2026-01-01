@@ -113,7 +113,7 @@ import type { FoodCategory, FoodItem } from '@/models/food';
 import type { Portion } from '@/models/portion';
 import { computed, onMounted, ref } from 'vue';
 import type { VTextField } from 'vuetify/components';
-import PortionDataCard from './PortionDataCard.vue';
+import PortionDataCard from '../portions/PortionDataCard.vue';
 
 interface WrappedPortion {
   portion: Portion;

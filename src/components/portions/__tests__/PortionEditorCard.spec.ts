@@ -1,3 +1,4 @@
+import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import { TEST_PORTION } from '@/data/__tests__/test-data';
 import type { Portion } from '@/models/portion';
 import { mount, VueWrapper } from '@vue/test-utils';
@@ -6,7 +7,6 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import PortionEditorCard from '../PortionEditorCard.vue';
-import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 
 const vuetify = createVuetify({
   components,

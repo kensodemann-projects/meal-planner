@@ -3,7 +3,6 @@
 </template>
 
 <script setup lang="ts">
-import FoodEditor from '@/components/FoodEditor.vue';
 import { useFoodsData } from '@/data/foods';
 import type { FoodItem } from '@/models/food';
 import { ref } from 'vue';

@@ -1,13 +1,13 @@
-import FoodEditor from '@/components/FoodEditor.vue';
+import FoodEditor from '@/components/foods/FoodEditor.vue';
+import { TEST_FOOD } from '@/data/__tests__/test-data';
+import { useFoodsData } from '@/data/foods';
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+import { useRouter } from 'vue-router';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import AddPage from '../add.vue';
-import { useFoodsData } from '@/data/foods';
-import { useRouter } from 'vue-router';
-import { TEST_FOOD } from '@/data/__tests__/test-data';
 
 vi.mock('vue-router');
 vi.mock('@/data/foods');

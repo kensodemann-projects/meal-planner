@@ -1,4 +1,3 @@
-import RecipeSummaryCard from '@/components/RecipeSummaryCard.vue';
 import { TEST_RECIPES } from '@/data/__tests__/test-data';
 import { useRecipesData } from '@/data/recipes';
 import type { Recipe } from '@/models/recipe';
@@ -9,6 +8,7 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import IndexPage from '../index.vue';
+import RecipeSummaryCard from '@/components/recipes/RecipeSummaryCard.vue';
 
 const vuetify = createVuetify({
   components,

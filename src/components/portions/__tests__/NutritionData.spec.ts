@@ -1,11 +1,11 @@
+import { TEST_FOOD, TEST_PORTION, TEST_RECIPE } from '@/data/__tests__/test-data';
+import type { Nutrition } from '@/models/nutrition';
 import { mount } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import NutritionData from '../NutritionData.vue';
-import { TEST_FOOD, TEST_PORTION, TEST_RECIPE } from '@/data/__tests__/test-data';
-import type { Nutrition } from '@/models/nutrition';
 
 const vuetify = createVuetify({
   components,

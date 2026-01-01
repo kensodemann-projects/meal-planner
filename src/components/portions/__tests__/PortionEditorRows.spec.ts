@@ -5,8 +5,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
+import { autocompleteIsRequired, numberInputIsRequired } from '../../__tests__/test-utils';
 import PortionEditorRows from '../PortionEditorRows.vue';
-import { autocompleteIsRequired, numberInputIsRequired } from './test-utils';
 
 const vuetify = createVuetify({
   components,

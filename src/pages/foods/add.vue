@@ -7,7 +7,6 @@
 </template>
 
 <script setup lang="ts">
-import FoodEditor from '@/components/FoodEditor.vue';
 import { useFoodsData } from '@/data/foods';
 import type { FoodItem } from '@/models/food';
 import { ref, shallowRef } from 'vue';
@@ -16,7 +15,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const { addFood } = useFoodsData();
 
-const editor = ref<InstanceType<typeof FoodEditor> | null>(null);
+const editor = ref<InstanceType<(typeof import('@/components/foods/FoodEditor.vue'))['default']> | null>(null);
 const showMessage = shallowRef(false);
 const messageColor = shallowRef('success');
 const message = shallowRef('');

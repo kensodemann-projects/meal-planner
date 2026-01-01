@@ -1,3 +1,9 @@
+import {
+  autocompleteIsRequired,
+  numberInputIsRequired,
+  textFieldIsNotRequired,
+  textFieldIsRequired,
+} from '@/components/__tests__/test-utils';
 import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import { TEST_PORTION } from '@/data/__tests__/test-data';
 import type { FoodItem } from '@/models/food';
@@ -6,16 +12,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import ConfirmDialog from '../ConfirmDialog.vue';
+import ConfirmDialog from '../../core/ConfirmDialog.vue';
+import PortionDataCard from '../../portions/PortionDataCard.vue';
+import PortionEditorCard from '../../portions/PortionEditorCard.vue';
 import FoodEditor from '../FoodEditor.vue';
-import PortionDataCard from '../PortionDataCard.vue';
-import PortionEditorCard from '../PortionEditorCard.vue';
-import {
-  autocompleteIsRequired,
-  numberInputIsRequired,
-  textFieldIsNotRequired,
-  textFieldIsRequired,
-} from './test-utils';
 
 const vuetify = createVuetify({
   components,
