@@ -269,6 +269,39 @@ describe('Recipe Editor', () => {
         protein: 15,
       });
     });
+
+    it('updates internal state when NutritionEditorRows emits changes', async () => {
+      const recipe: Partial<Recipe> = {
+        name: 'Test Recipe',
+        calories: 250,
+        sodium: 400,
+        sugar: 12,
+        carbs: 30,
+        fat: 8,
+        protein: 15,
+        ingredients: [],
+        steps: [],
+      };
+      wrapper = mountComponent({ recipe });
+      const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
+
+      await nutritionEditor.vm.$emit('update:modelValue', {
+        calories: 300,
+        sodium: 500,
+        sugar: 15,
+        carbs: 35,
+        fat: 10,
+        protein: 20,
+      });
+
+      const updatedProps = nutritionEditor.props('modelValue');
+      expect(updatedProps.calories).toBe(300);
+      expect(updatedProps.sodium).toBe(500);
+      expect(updatedProps.sugar).toBe(15);
+      expect(updatedProps.carbs).toBe(35);
+      expect(updatedProps.fat).toBe(10);
+      expect(updatedProps.protein).toBe(20);
+    });
   });
 
   describe('cancel button', () => {
