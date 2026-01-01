@@ -11,7 +11,7 @@ const vuetify = createVuetify({
 });
 const mountComponent = (props = {}) => mount(MealEditor, { props, global: { plugins: [vuetify] } });
 
-describe('MealEditor', () => {
+describe('Meal Editor', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
   afterEach(() => {
