@@ -118,63 +118,7 @@
     <v-divider class="mb-4"></v-divider>
 
     <v-container fluid>
-      <v-row>
-        <v-col cols="12" md="4">
-          <v-number-input
-            label="Calories"
-            v-model="calories"
-            :rules="[validationRules.required]"
-            data-testid="calories-input"
-          ></v-number-input>
-        </v-col>
-
-        <v-col cols="12" md="4">
-          <v-number-input
-            label="Sodium"
-            v-model="sodium"
-            :rules="[validationRules.required]"
-            data-testid="sodium-input"
-          ></v-number-input>
-        </v-col>
-
-        <v-col cols="12" md="4">
-          <v-number-input
-            label="Sugar"
-            v-model="sugar"
-            :rules="[validationRules.required]"
-            data-testid="sugar-input"
-          ></v-number-input>
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col cols="12" md="4">
-          <v-number-input
-            label="Total Carbohydrates"
-            v-model="carbs"
-            :rules="[validationRules.required]"
-            data-testid="carbs-input"
-          ></v-number-input>
-        </v-col>
-
-        <v-col cols="12" md="4">
-          <v-number-input
-            label="Fat"
-            v-model="fat"
-            :rules="[validationRules.required]"
-            data-testid="fat-input"
-          ></v-number-input>
-        </v-col>
-
-        <v-col cols="12" md="4">
-          <v-number-input
-            label="Protein"
-            :rules="[validationRules.required]"
-            v-model="protein"
-            data-testid="protein-input"
-          ></v-number-input>
-        </v-col>
-      </v-row>
+      <NutritionEditorRows v-model="nutrition" />
     </v-container>
 
     <v-container fluid>
@@ -191,6 +135,7 @@ import { validationRules } from '@/core/validation-rules';
 import { cuisines } from '@/data/cuisines';
 import { recipeCategories } from '@/data/recipe-categories';
 import { recipeDifficulties } from '@/data/recipe-difficulties';
+import type { Nutrition } from '@/models/nutrition';
 import type { Cuisine, Recipe, RecipeCategory, RecipeDifficulty, RecipeIngredient, RecipeStep } from '@/models/recipe';
 import { computed, onMounted, ref } from 'vue';
 import type { VTextField } from 'vuetify/components';
@@ -207,12 +152,14 @@ const difficulty = ref<RecipeDifficulty | undefined>(props.recipe?.difficulty);
 const servings = ref<number | undefined>(props.recipe?.servings);
 const prepTimeMinutes = ref<number | undefined>(props.recipe?.prepTimeMinutes);
 const cookTimeMinutes = ref<number | undefined>(props.recipe?.cookTimeMinutes);
-const calories = ref<number | undefined>(props.recipe?.calories);
-const sodium = ref<number>(props.recipe?.sodium || 0);
-const sugar = ref<number>(props.recipe?.sugar || 0);
-const carbs = ref<number>(props.recipe?.carbs || 0);
-const fat = ref<number>(props.recipe?.fat || 0);
-const protein = ref<number>(props.recipe?.protein || 0);
+const nutrition = ref<Partial<Nutrition>>({
+  calories: props.recipe?.calories,
+  sodium: props.recipe?.sodium || 0,
+  sugar: props.recipe?.sugar || 0,
+  carbs: props.recipe?.carbs || 0,
+  fat: props.recipe?.fat || 0,
+  protein: props.recipe?.protein || 0,
+});
 const ingredients = ref<Partial<RecipeIngredient>[]>(props.recipe ? [...props.recipe.ingredients] : []);
 const steps = ref<Partial<RecipeStep>[]>(props.recipe ? [...props.recipe.steps] : []);
 
@@ -248,12 +195,12 @@ const isModified = computed((): boolean => {
     props.recipe.servings !== servings.value ||
     props.recipe.prepTimeMinutes !== prepTimeMinutes.value ||
     props.recipe.cookTimeMinutes !== cookTimeMinutes.value ||
-    props.recipe.calories !== calories.value ||
-    props.recipe.sodium !== sodium.value ||
-    props.recipe.sugar !== sugar.value ||
-    props.recipe.carbs !== carbs.value ||
-    props.recipe.fat !== fat.value ||
-    props.recipe.protein !== protein.value
+    props.recipe.calories !== nutrition.value.calories ||
+    props.recipe.sodium !== nutrition.value.sodium ||
+    props.recipe.sugar !== nutrition.value.sugar ||
+    props.recipe.carbs !== nutrition.value.carbs ||
+    props.recipe.fat !== nutrition.value.fat ||
+    props.recipe.protein !== nutrition.value.protein
   );
 });
 
@@ -267,12 +214,12 @@ const save = () => {
     servings: servings.value!,
     prepTimeMinutes: prepTimeMinutes.value!,
     cookTimeMinutes: cookTimeMinutes.value!,
-    calories: calories.value!,
-    sodium: sodium.value,
-    sugar: sugar.value,
-    carbs: carbs.value,
-    fat: fat.value,
-    protein: protein.value,
+    calories: nutrition.value.calories!,
+    sodium: nutrition.value.sodium!,
+    sugar: nutrition.value.sugar!,
+    carbs: nutrition.value.carbs!,
+    fat: nutrition.value.fat!,
+    protein: nutrition.value.protein!,
     ingredients: ingredients.value.filter(isValidIngredient),
     steps: steps.value.filter(isValidStep),
   };

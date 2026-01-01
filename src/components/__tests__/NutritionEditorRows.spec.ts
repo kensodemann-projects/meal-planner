@@ -1,22 +1,21 @@
 import { TEST_FOOD } from '@/data/__tests__/test-data';
-import type { Portion } from '@/models/portion';
+import type { Nutrition } from '@/models/nutrition';
 import { mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import PortionEditGrid from '../PortionEditGrid.vue';
-import { autocompleteIsRequired, numberInputIsRequired } from './test-utils';
+import NutritionEditorRows from '../NutritionEditorRows.vue';
+import { numberInputIsRequired } from './test-utils';
 
 const vuetify = createVuetify({
   components,
   directives,
 });
+const mountComponent = (modelValue: Partial<Nutrition>) =>
+  mount(NutritionEditorRows, { props: { modelValue }, global: { plugins: [vuetify] } });
 
-const mountComponent = (modelValue: Partial<Portion>) =>
-  mount(PortionEditGrid, { props: { modelValue }, global: { plugins: [vuetify] } });
-
-describe('Portion Edit Grid', () => {
+describe('NutritionEditorRows', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
   afterEach(() => {
@@ -30,85 +29,6 @@ describe('Portion Edit Grid', () => {
   it('renders', () => {
     wrapper = mountComponent({});
     expect(wrapper.exists()).toBe(true);
-  });
-
-  describe('units', () => {
-    it('renders', () => {
-      wrapper = mountComponent({});
-      const unitsInput = wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
-      expect(unitsInput.exists()).toBe(true);
-      expect(unitsInput.props('label')).toBe('Units');
-    });
-
-    it('is required', async () => {
-      wrapper = mountComponent({});
-      await numberInputIsRequired(wrapper, 'units-input');
-    });
-
-    it('is initialized properly', () => {
-      wrapper = mountComponent({ ...TEST_FOOD, units: 42 });
-      const unitsInput = wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
-      expect(unitsInput.find('input').element.value).toBe('42');
-    });
-
-    it('is emitted on change', async () => {
-      wrapper = mountComponent({ ...TEST_FOOD, units: 42 });
-      const input = wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
-      await input.setValue(73);
-      const emitted = wrapper.emitted('update:modelValue');
-      expect(emitted?.length).toBe(1);
-      expect((emitted![0]![0] as Portion).units).toBe(73);
-    });
-  });
-
-  describe('unit of measure', () => {
-    it('renders', () => {
-      wrapper = mountComponent({});
-      const uomInput = wrapper.findComponent(
-        '[data-testid="unit-of-measure-input"]',
-      ) as VueWrapper<components.VAutocomplete>;
-      expect(uomInput.exists()).toBe(true);
-      expect(uomInput.props('label')).toBe('Unit of Measure');
-    });
-
-    it('is required', async () => {
-      wrapper = mountComponent({});
-      await autocompleteIsRequired(wrapper, 'unit-of-measure-input');
-    });
-
-    it('is initialized properly', () => {
-      wrapper = mountComponent(TEST_FOOD);
-      expect((wrapper.vm as any).unitOfMeasureId).toBe(TEST_FOOD.unitOfMeasure.id);
-    });
-  });
-
-  describe('grams', () => {
-    it('renders', () => {
-      wrapper = mountComponent({});
-      const gramsInput = wrapper.findComponent('[data-testid="grams-input"]') as VueWrapper<components.VNumberInput>;
-      expect(gramsInput.exists()).toBe(true);
-      expect(gramsInput.props('label')).toBe('Grams');
-    });
-
-    it('is required', async () => {
-      wrapper = mountComponent({});
-      await numberInputIsRequired(wrapper, 'grams-input');
-    });
-
-    it('is initialized properly', () => {
-      wrapper = mountComponent({ ...TEST_FOOD, grams: 420 });
-      const gramsInput = wrapper.findComponent('[data-testid="grams-input"]') as VueWrapper<components.VNumberInput>;
-      expect(gramsInput.find('input').element.value).toBe('420');
-    });
-
-    it('is emitted on change', async () => {
-      wrapper = mountComponent(TEST_FOOD);
-      const input = wrapper.findComponent('[data-testid="grams-input"]') as VueWrapper<components.VNumberInput>;
-      await input.setValue(124);
-      const emitted = wrapper.emitted('update:modelValue');
-      expect(emitted?.length).toBe(1);
-      expect((emitted![0]![0] as Portion).grams).toBe(124);
-    });
   });
 
   describe('calories', () => {
@@ -136,7 +56,7 @@ describe('Portion Edit Grid', () => {
       await input.setValue(173);
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
-      expect((emitted![0]![0] as Portion).calories).toBe(173);
+      expect((emitted![0]![0] as Nutrition).calories).toBe(173);
     });
   });
 
@@ -165,7 +85,7 @@ describe('Portion Edit Grid', () => {
       await input.setValue(267);
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
-      expect((emitted![0]![0] as Portion).sodium).toBe(267);
+      expect((emitted![0]![0] as Nutrition).sodium).toBe(267);
     });
   });
 
@@ -194,7 +114,7 @@ describe('Portion Edit Grid', () => {
       await input.setValue(486);
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
-      expect((emitted![0]![0] as Portion).sugar).toBe(486);
+      expect((emitted![0]![0] as Nutrition).sugar).toBe(486);
     });
   });
 
@@ -223,7 +143,7 @@ describe('Portion Edit Grid', () => {
       await input.setValue(27);
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
-      expect((emitted![0]![0] as Portion).carbs).toBe(27);
+      expect((emitted![0]![0] as Nutrition).carbs).toBe(27);
     });
   });
 
@@ -252,7 +172,7 @@ describe('Portion Edit Grid', () => {
       await input.setValue(19);
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
-      expect((emitted![0]![0] as Portion).fat).toBe(19);
+      expect((emitted![0]![0] as Nutrition).fat).toBe(19);
     });
   });
 
@@ -285,7 +205,7 @@ describe('Portion Edit Grid', () => {
       await input.setValue(23);
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
-      expect((emitted![0]![0] as Portion).protein).toBe(23);
+      expect((emitted![0]![0] as Nutrition).protein).toBe(23);
     });
   });
 });

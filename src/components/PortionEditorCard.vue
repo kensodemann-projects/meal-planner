@@ -2,7 +2,9 @@
   <v-form v-model="valid">
     <v-card>
       <v-card-text>
-        <PortionEditGrid v-model="editPortion" />
+        <v-container fluid>
+          <PortionEditorRows v-model="editPortion" />
+        </v-container>
       </v-card-text>
       <v-card-actions>
         <CancelButton @click="$emit('cancel')" />
