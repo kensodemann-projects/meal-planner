@@ -1,3 +1,6 @@
+import DeleteButton from '@/components/core/buttons/DeleteButton.vue';
+import ModifyButton from '@/components/core/buttons/ModifyButton.vue';
+import ConfirmDialog from '@/components/core/ConfirmDialog.vue';
 import { TEST_PORTION } from '@/data/__tests__/test-data';
 import { mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -6,9 +9,6 @@ import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import PortionData from '../PortionData.vue';
 import PortionDataCard from '../PortionDataCard.vue';
-import ModifyButton from '../buttons/ModifyButton.vue';
-import DeleteButton from '../buttons/DeleteButton.vue';
-import ConfirmDialog from '../ConfirmDialog.vue';
 
 const vuetify = createVuetify({
   components,

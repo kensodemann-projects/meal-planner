@@ -12,7 +12,7 @@ import {
   numberInputIsRequired,
   numberInputMustBeZeroOrGreater,
   textFieldIsRequired,
-} from './test-utils';
+} from '../../__tests__/test-utils';
 import StepEditorRow from '../StepEditorRow.vue';
 
 vi.mock('@/data/foods');

@@ -1,12 +1,12 @@
-import { mount, VueWrapper, flushPromises } from '@vue/test-utils';
+import ConfirmDialog from '@/components/core/ConfirmDialog.vue';
+import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
+import type { RecipeIngredient } from '@/models/recipe';
+import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import IngredientEditorRow from '../IngredientEditorRow.vue';
-import type { RecipeIngredient } from '@/models/recipe';
-import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
-import ConfirmDialog from '../ConfirmDialog.vue';
 
 const vuetify = createVuetify({
   components,

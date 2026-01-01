@@ -1,11 +1,15 @@
+import type { Settings } from '@/models/settings';
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
+import {
+  numberInputIsRequired,
+  numberInputMustBePositive,
+  numberInputMustBeZeroOrGreater,
+} from '../../__tests__/test-utils';
 import SettingsEditor from '../SettingsEditor.vue';
-import { numberInputIsRequired, numberInputMustBePositive, numberInputMustBeZeroOrGreater } from './test-utils';
-import type { Settings } from '@/models/settings';
 
 const vuetify = createVuetify({
   components,

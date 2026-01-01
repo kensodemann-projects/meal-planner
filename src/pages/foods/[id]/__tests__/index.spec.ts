@@ -1,5 +1,5 @@
-import ConfirmDialog from '@/components/ConfirmDialog.vue';
-import ViewPageActionButtons from '@/components/ViewPageActionButtons.vue';
+import ConfirmDialog from '@/components/core/ConfirmDialog.vue';
+import ViewPageActionButtons from '@/components/core/ViewPageActionButtons.vue';
 import { TEST_FOOD } from '@/data/__tests__/test-data';
 import { useFoodsData } from '@/data/foods';
 import { flushPromises, mount } from '@vue/test-utils';

@@ -1,6 +1,6 @@
-import ConfirmDialog from '@/components/ConfirmDialog.vue';
-import RecipeView from '@/components/RecipeView.vue';
-import ViewPageActionButtons from '@/components/ViewPageActionButtons.vue';
+import ConfirmDialog from '@/components/core/ConfirmDialog.vue';
+import ViewPageActionButtons from '@/components/core/ViewPageActionButtons.vue';
+import RecipeView from '@/components/recipes/RecipeView.vue';
 import { TEST_RECIPE } from '@/data/__tests__/test-data';
 import { useRecipesData } from '@/data/recipes';
 import { flushPromises, mount } from '@vue/test-utils';
