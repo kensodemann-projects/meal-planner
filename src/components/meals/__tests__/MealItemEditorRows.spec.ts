@@ -44,6 +44,16 @@ describe('Meal Item Input', () => {
         await numberInputIsRequired(wrapper, 'units-input');
       });
 
+      it('emits changes', async () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        const units = wrapper.findComponent('[data-testid="units-input"]');
+        await units.find('input').setValue('3');
+
+        const emitted = wrapper.emitted('update:modelValue');
+        expect(emitted?.length).toBe(1);
+        expect((emitted![0]![0] as MealItem).units).toBe(3);
+      });
+
       describe('for an existing food item', () => {
         it('is initialized based on the meal item', () => {
           wrapper = mountComponent({ modelValue: TEST_FOOD_MEAL_ITEM, type: 'food', values: TEST_FOODS });
@@ -62,6 +72,17 @@ describe('Meal Item Input', () => {
       it('is required', async () => {
         wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
         await autocompleteIsRequired(wrapper, 'unit-of-measure-input');
+      });
+
+      it('emits changes', async () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        const unitOfMeasure = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
+
+        await (unitOfMeasure as any).vm.$emit('update:modelValue', 'tbsp');
+
+        const emitted = wrapper.emitted('update:modelValue');
+        expect(emitted?.length).toBe(1);
+        expect((emitted![0]![0] as MealItem).unitOfMeasure?.id).toBe('tbsp');
       });
 
       describe('for an existing food item', () => {
