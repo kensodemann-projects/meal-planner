@@ -32,17 +32,20 @@
         ></v-autocomplete>
       </v-col>
     </v-row>
+
+    <NutritionEditorRows v-model="nutrition" />
   </v-container>
 </template>
 
 <script setup lang="ts">
+import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import { validationRules } from '@/core/validation-rules';
+import { unitOfMeasureOptions } from '@/data/unit-of-measure';
 import type { FoodItem } from '@/models/food';
 import type { MealItem } from '@/models/meal';
+import type { Nutrition } from '@/models/nutrition';
 import type { Recipe } from '@/models/recipe';
 import { computed } from 'vue';
-import { unitOfMeasureOptions } from '@/data/unit-of-measure';
-import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 
 const props = defineProps<{
   values: (FoodItem | Recipe)[];
@@ -77,6 +80,16 @@ const unitOfMeasureId = computed({
       ...modelValue.value,
       unitOfMeasure: findUnitOfMeasure(id || ''),
     }),
+});
+
+const nutrition = computed({
+  get: () => modelValue.value?.nutrition || {},
+  set: (value) => {
+    modelValue.value = {
+      ...modelValue.value,
+      nutrition: value as Nutrition,
+    };
+  },
 });
 </script>
 
