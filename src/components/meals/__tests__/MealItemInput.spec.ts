@@ -71,6 +71,47 @@ describe('Meal Item Input', () => {
         });
       });
     });
+
+    describe('nutritional information', () => {
+      it('renders NutritionEditorRows component', () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
+        expect(nutritionEditor.exists()).toBe(true);
+      });
+
+      it('initializes with empty nutrition object', () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
+        expect(nutritionEditor.props('modelValue')).toEqual({});
+      });
+
+      it('updates meal item when NutritionEditorRows emits changes', async () => {
+        const nutrition = {
+          calories: 300,
+          sodium: 250,
+          sugar: 23,
+          carbs: 24,
+          fat: 16,
+          protein: 16,
+        };
+        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+
+        const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
+        await nutritionEditor.vm.$emit('update:modelValue', nutrition);
+
+        const emitted = wrapper.emitted('update:modelValue');
+        expect(emitted?.length).toBe(1);
+        expect((emitted![0]![0] as MealItem).nutrition).toMatchObject(nutrition);
+      });
+
+      describe('for an existing food item', () => {
+        it('initializes the nutrition data', () => {
+          wrapper = mountComponent({ modelValue: TEST_FOOD_MEAL_ITEM, type: 'food', values: TEST_FOODS });
+          const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
+          expect(nutritionEditor.props('modelValue')).toMatchObject(TEST_FOOD_MEAL_ITEM.nutrition!);
+        });
+      });
+    });
   });
 
   describe('for recipes', () => {
@@ -102,6 +143,47 @@ describe('Meal Item Input', () => {
         expect(input.element.disabled).toBe(true);
       });
     });
+
+    describe('nutritional information', () => {
+      it('renders NutritionEditorRows component', () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+        const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
+        expect(nutritionEditor.exists()).toBe(true);
+      });
+
+      it('initializes with empty nutrition object', () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+        const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
+        expect(nutritionEditor.props('modelValue')).toEqual({});
+      });
+
+      it('updates meal item when NutritionEditorRows emits changes', async () => {
+        const nutrition = {
+          calories: 300,
+          sodium: 250,
+          sugar: 23,
+          carbs: 24,
+          fat: 16,
+          protein: 16,
+        };
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+
+        const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
+        await nutritionEditor.vm.$emit('update:modelValue', nutrition);
+
+        const emitted = wrapper.emitted('update:modelValue');
+        expect(emitted?.length).toBe(1);
+        expect((emitted![0]![0] as MealItem).nutrition).toMatchObject(nutrition);
+      });
+
+      describe('for an existing food item', () => {
+        it('initializes the nutrition data', () => {
+          wrapper = mountComponent({ modelValue: TEST_RECIPE_MEAL_ITEM, type: 'recipe', values: TEST_RECIPES });
+          const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
+          expect(nutritionEditor.props('modelValue')).toMatchObject(TEST_RECIPE_MEAL_ITEM.nutrition!);
+        });
+      });
+    });
   });
 });
 
@@ -117,5 +199,20 @@ const TEST_FOOD_MEAL_ITEM: Partial<MealItem> = {
     protein: 16,
     carbs: 24,
     sugar: 23,
+  },
+};
+
+const TEST_RECIPE_MEAL_ITEM: Partial<MealItem> = {
+  id: '4498eae8-b4c9-4327-b1c2-518f071981f2',
+  units: 1,
+  unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
+  foodItemId: TEST_RECIPES[0]!.id,
+  nutrition: {
+    calories: 630,
+    sodium: 780,
+    sugar: 3,
+    carbs: 55,
+    fat: 35,
+    protein: 28,
   },
 };
