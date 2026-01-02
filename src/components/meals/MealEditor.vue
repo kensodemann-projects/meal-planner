@@ -1,9 +1,11 @@
 <template>
   <h2>Recipes</h2>
   <v-divider class="mb-4"></v-divider>
+  <MealItemInput v-model="recipeMealItem" :values="[]" type="recipe" />
 
   <h2>Additional Foods</h2>
   <v-divider class="mb-4"></v-divider>
+  <MealItemInput v-model="foodMealItem" :values="[]" type="food" />
 
   <h2>Total Nutrition</h2>
   <v-divider class="mb-4"></v-divider>
@@ -17,11 +19,14 @@
 </template>
 
 <script setup lang="ts">
-import type { Meal } from '@/models/meal';
+import type { Meal, MealItem } from '@/models/meal';
 import { computed, ref } from 'vue';
 
 const emit = defineEmits<{ (event: 'save', payload: Meal): void; (event: 'cancel'): void }>();
 const props = defineProps<{ meal?: Meal }>();
+
+const foodMealItem = ref<MealItem>();
+const recipeMealItem = ref<MealItem>();
 
 const valid = ref(false);
 

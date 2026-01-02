@@ -6,13 +6,19 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import MealItemInput from '../MealItemInput.vue';
+import { TEST_FOODS, TEST_RECIPES } from '@/data/__tests__/test-data';
+import type { MealItem } from '@/models/meal';
+import { autocompleteIsRequired, numberInputIsRequired } from '@/components/__tests__/test-utils';
 
 const vuetify = createVuetify({
   components,
   directives,
 });
-const mountComponent = (props: { values: (FoodItem | Recipe)[] } = { values: [] }) =>
-  mount(MealItemInput, { props, global: { plugins: [vuetify] } });
+const mountComponent = (props: {
+  modelValue: Partial<MealItem>;
+  values: (FoodItem | Recipe)[];
+  type: 'food' | 'recipe';
+}) => mount(MealItemInput, { props, global: { plugins: [vuetify] } });
 
 describe('Meal Item Input', () => {
   let wrapper: ReturnType<typeof mountComponent>;
@@ -25,32 +31,91 @@ describe('Meal Item Input', () => {
     } catch {}
   });
 
-  it('renders', () => {
-    wrapper = mountComponent();
-    expect(wrapper.exists()).toBe(true);
-  });
-
   describe('for foods', () => {
-    it('placeholder', () => {
-      expect(true).toBe(true);
+    describe('units', () => {
+      it('does not default', () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        const units = wrapper.findComponent('[data-testid="units-input"]');
+        expect((units.find('input').element as HTMLInputElement).value).toBe('');
+      });
+
+      it('is required', async () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        await numberInputIsRequired(wrapper, 'units-input');
+      });
+
+      describe('for an existing food item', () => {
+        it('is initialized based on the meal item', () => {
+          wrapper = mountComponent({ modelValue: TEST_FOOD_MEAL_ITEM, type: 'food', values: TEST_FOODS });
+          const units = wrapper.findComponent('[data-testid="units-input"]');
+          expect((units.find('input').element as HTMLInputElement).value).toBe('2');
+        });
+      });
+    });
+
+    describe('unit of measure', () => {
+      it('does not default', () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        expect((wrapper.vm as any).unitOfMeasureId).toBeUndefined();
+      });
+
+      it('is required', async () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        await autocompleteIsRequired(wrapper, 'unit-of-measure-input');
+      });
+
+      describe('for an existing food item', () => {
+        it('is initialized based on the meal item', () => {
+          wrapper = mountComponent({ modelValue: TEST_FOOD_MEAL_ITEM, type: 'food', values: TEST_FOODS });
+          expect((wrapper.vm as any).unitOfMeasureId).toBe('cup');
+        });
+      });
     });
   });
 
   describe('for recipes', () => {
-    it('units defaults to one', () => {
-      expect(true).toBe(true);
+    describe('units', () => {
+      it('defaults to 1', () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+        const units = wrapper.findComponent('[data-testid="units-input"]');
+        expect((units.find('input').element as HTMLInputElement).value).toBe('1');
+      });
+
+      it('is disabled', () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+        const units = wrapper.findComponent('[data-testid="units-input"]');
+        const input = units.find('input');
+        expect(input.element.disabled).toBe(true);
+      });
     });
 
-    it('units cannot be changed', () => {
-      expect(true).toBe(true);
-    });
+    describe('unit of measure', () => {
+      it('defaults to serving', () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+        expect((wrapper.vm as any).unitOfMeasureId).toBe('serving');
+      });
 
-    it('unit of measure defaults to servings', () => {
-      expect(true).toBe(true);
-    });
-
-    it('unit of measure cannot be changed', () => {
-      expect(true).toBe(true);
+      it('is disabled', () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+        const unitOfMeasure = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
+        const input = unitOfMeasure.find('input');
+        expect(input.element.disabled).toBe(true);
+      });
     });
   });
 });
+
+const TEST_FOOD_MEAL_ITEM: Partial<MealItem> = {
+  id: 'c83a0eed-f113-4d83-af2f-27734807df99',
+  units: 2,
+  unitOfMeasure: { id: 'cup', name: 'Cup', type: 'volume', system: 'customary', fdcId: 1000 },
+  foodItemId: TEST_FOODS[0]!.id,
+  nutrition: {
+    calories: 300,
+    sodium: 250,
+    fat: 16,
+    protein: 16,
+    carbs: 24,
+    sugar: 23,
+  },
+};

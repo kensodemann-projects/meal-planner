@@ -5,7 +5,7 @@ export interface MealItem {
   id: string;
   name: string;
   recipeId?: string;
-  foodId?: string;
+  foodItemId?: string;
   units: number;
   unitOfMeasure: UnitOfMeasure;
   nutrition: Nutrition;
