@@ -1,11 +1,11 @@
 <template>
   <h2>Recipes</h2>
   <v-divider class="mb-4"></v-divider>
-  <MealItemEditorRows v-model="recipeMealItem" :values="[]" type="recipe" />
+  <MealItemEditorRows v-model="recipeMealItem" :values="recipes" type="recipe" />
 
   <h2>Additional Foods</h2>
   <v-divider class="mb-4"></v-divider>
-  <MealItemEditorRows v-model="foodMealItem" :values="[]" type="food" />
+  <MealItemEditorRows v-model="foodMealItem" :values="foods" type="food" />
 
   <h2>Total Nutrition</h2>
   <v-divider class="mb-4"></v-divider>
@@ -19,11 +19,16 @@
 </template>
 
 <script setup lang="ts">
+import { useFoodsData } from '@/data/foods';
+import { useRecipesData } from '@/data/recipes';
 import type { Meal, MealItem } from '@/models/meal';
 import { computed, ref } from 'vue';
 
 const emit = defineEmits<{ (event: 'save', payload: Meal): void; (event: 'cancel'): void }>();
 const props = defineProps<{ meal?: Meal }>();
+
+const { foods } = useFoodsData();
+const { recipes } = useRecipesData();
 
 const foodMealItem = ref<MealItem>();
 const recipeMealItem = ref<MealItem>();

@@ -3,13 +3,13 @@
     <v-row>
       <v-col cols="12" md="4">
         <v-autocomplete
-          label="Select Food Item or Recipe"
-          v-model="mealItemId"
+          :label="`Select ${props.type === 'food' ? 'Food' : 'Recipe'}`"
+          v-model="recipeOrFoodId"
           :items="values"
           item-title="name"
           item-value="id"
           :rules="[validationRules.required]"
-          data-testid="food-or-recipe-input"
+          data-testid="recipe-or-food-input"
         ></v-autocomplete>
       </v-col>
       <v-col cols="12" md="4">
@@ -53,12 +53,12 @@ const props = defineProps<{
 }>();
 const modelValue = defineModel<Partial<MealItem>>();
 
-const mealItemId = computed({
+const recipeOrFoodId = computed({
   get: () => (props.type === 'food' ? modelValue.value?.foodItemId : modelValue.value?.recipeId),
   set: (id: string) =>
     (modelValue.value = {
       ...modelValue.value,
-      [props.type === 'food' ? 'foodId' : 'recipeId']: id,
+      [props.type === 'food' ? 'foodItemId' : 'recipeId']: id,
       name: props.values.find((item) => item.id === id)?.name || '',
     }),
 });

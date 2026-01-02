@@ -3,7 +3,7 @@ import { TEST_FOODS, TEST_RECIPES } from '@/data/__tests__/test-data';
 import type { FoodItem } from '@/models/food';
 import type { MealItem } from '@/models/meal';
 import type { Recipe } from '@/models/recipe';
-import { mount } from '@vue/test-utils';
+import { mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
@@ -32,6 +32,45 @@ describe('Meal Item Input', () => {
   });
 
   describe('for foods', () => {
+    describe('food select', () => {
+      it('does not default', () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        expect((wrapper.vm as any).recipeOrFoodId).toBeUndefined();
+      });
+
+      it('has the proper label', () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        const foodSelect = wrapper.findComponent(
+          '[data-testid="recipe-or-food-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        expect(foodSelect.props('label')).toBe('Select Food');
+      });
+
+      it('is required', async () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        await autocompleteIsRequired(wrapper, 'recipe-or-food-input');
+      });
+
+      it('emits changes', async () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-or-food-input"]');
+
+        await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_FOODS[1]!.id);
+
+        const emitted = wrapper.emitted('update:modelValue');
+        expect(emitted?.length).toBe(1);
+        expect((emitted![0]![0] as MealItem).foodItemId).toBe(TEST_FOODS[1]!.id);
+        expect((emitted![0]![0] as MealItem).recipeId).toBeUndefined();
+      });
+
+      describe('for an existing food item', () => {
+        it('is initialized based on the meal item', () => {
+          wrapper = mountComponent({ modelValue: TEST_FOOD_MEAL_ITEM, type: 'food', values: TEST_FOODS });
+          expect((wrapper.vm as any).recipeOrFoodId).toBe(TEST_FOOD_MEAL_ITEM.foodItemId);
+        });
+      });
+    });
+
     describe('units', () => {
       it('does not default', () => {
         wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
@@ -136,6 +175,45 @@ describe('Meal Item Input', () => {
   });
 
   describe('for recipes', () => {
+    describe('food select', () => {
+      it('does not default', () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+        expect((wrapper.vm as any).recipeOrFoodId).toBeUndefined();
+      });
+
+      it('has the proper label', () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+        const foodSelect = wrapper.findComponent(
+          '[data-testid="recipe-or-food-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        expect(foodSelect.props('label')).toBe('Select Recipe');
+      });
+
+      it('is required', async () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+        await autocompleteIsRequired(wrapper, 'recipe-or-food-input');
+      });
+
+      it('emits changes', async () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+        const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-or-food-input"]');
+
+        await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_RECIPES[1]!.id);
+
+        const emitted = wrapper.emitted('update:modelValue');
+        expect(emitted?.length).toBe(1);
+        expect((emitted![0]![0] as MealItem).foodItemId).toBeUndefined();
+        expect((emitted![0]![0] as MealItem).recipeId).toBe(TEST_RECIPES[1]!.id);
+      });
+
+      describe('for an existing food item', () => {
+        it('is initialized based on the meal item', () => {
+          wrapper = mountComponent({ modelValue: TEST_RECIPE_MEAL_ITEM, type: 'recipe', values: TEST_RECIPES });
+          expect((wrapper.vm as any).recipeOrFoodId).toBe(TEST_RECIPE_MEAL_ITEM.recipeId);
+        });
+      });
+    });
+
     describe('units', () => {
       it('defaults to 1', () => {
         wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
@@ -227,7 +305,7 @@ const TEST_RECIPE_MEAL_ITEM: Partial<MealItem> = {
   id: '4498eae8-b4c9-4327-b1c2-518f071981f2',
   units: 1,
   unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
-  foodItemId: TEST_RECIPES[0]!.id,
+  recipeId: TEST_RECIPES[0]!.id,
   nutrition: {
     calories: 630,
     sodium: 780,
