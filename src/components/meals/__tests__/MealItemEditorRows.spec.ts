@@ -161,14 +161,14 @@ describe('Meal Item Input', () => {
 
         const emitted = wrapper.emitted('update:modelValue');
         expect(emitted?.length).toBe(1);
-        expect((emitted![0]![0] as MealItem).nutrition).toMatchObject(nutrition);
+        expect((emitted![0]![0] as MealItem).nutrition).toEqual(nutrition);
       });
 
       describe('for an existing food item', () => {
         it('initializes the nutrition data', () => {
           wrapper = mountComponent({ modelValue: TEST_FOOD_MEAL_ITEM, type: 'food', values: TEST_FOODS });
           const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
-          expect(nutritionEditor.props('modelValue')).toMatchObject(TEST_FOOD_MEAL_ITEM.nutrition!);
+          expect(nutritionEditor.props('modelValue')).toEqual(TEST_FOOD_MEAL_ITEM.nutrition!);
         });
       });
     });
@@ -206,7 +206,22 @@ describe('Meal Item Input', () => {
         expect((emitted![0]![0] as MealItem).recipeId).toBe(TEST_RECIPES[1]!.id);
       });
 
-      describe('for an existing food item', () => {
+      it('defaults the nutrition information', async () => {
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+        const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
+        const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-or-food-input"]');
+        await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_RECIPES[1]!.id);
+        expect(nutritionEditor.props('modelValue')).toEqual({
+          calories: TEST_RECIPES[1]!.calories,
+          sodium: TEST_RECIPES[1]!.sodium,
+          sugar: TEST_RECIPES[1]!.sugar,
+          carbs: TEST_RECIPES[1]!.carbs,
+          fat: TEST_RECIPES[1]!.fat,
+          protein: TEST_RECIPES[1]!.protein,
+        });
+      });
+
+      describe('for an existing recipe item', () => {
         it('is initialized based on the meal item', () => {
           wrapper = mountComponent({ modelValue: TEST_RECIPE_MEAL_ITEM, type: 'recipe', values: TEST_RECIPES });
           expect((wrapper.vm as any).recipeOrFoodId).toBe(TEST_RECIPE_MEAL_ITEM.recipeId);
@@ -272,14 +287,14 @@ describe('Meal Item Input', () => {
 
         const emitted = wrapper.emitted('update:modelValue');
         expect(emitted?.length).toBe(1);
-        expect((emitted![0]![0] as MealItem).nutrition).toMatchObject(nutrition);
+        expect((emitted![0]![0] as MealItem).nutrition).toEqual(nutrition);
       });
 
       describe('for an existing food item', () => {
         it('initializes the nutrition data', () => {
           wrapper = mountComponent({ modelValue: TEST_RECIPE_MEAL_ITEM, type: 'recipe', values: TEST_RECIPES });
           const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
-          expect(nutritionEditor.props('modelValue')).toMatchObject(TEST_RECIPE_MEAL_ITEM.nutrition!);
+          expect(nutritionEditor.props('modelValue')).toEqual(TEST_RECIPE_MEAL_ITEM.nutrition!);
         });
       });
     });

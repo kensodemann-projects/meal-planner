@@ -53,6 +53,28 @@ const props = defineProps<{
 }>();
 const modelValue = defineModel<Partial<MealItem>>();
 
+const getNutritionFromItem = (id: string): Nutrition => {
+  const item = props.values.find((v) => v.id === id);
+  if (item) {
+    return {
+      calories: item.calories,
+      sodium: item.sodium,
+      sugar: item.sugar,
+      protein: item.protein,
+      carbs: item.carbs,
+      fat: item.fat,
+    };
+  }
+  return {
+    calories: 0,
+    sodium: 0,
+    sugar: 0,
+    protein: 0,
+    carbs: 0,
+    fat: 0,
+  };
+};
+
 const recipeOrFoodId = computed({
   get: () => (props.type === 'food' ? modelValue.value?.foodItemId : modelValue.value?.recipeId),
   set: (id: string) =>
@@ -60,6 +82,7 @@ const recipeOrFoodId = computed({
       ...modelValue.value,
       [props.type === 'food' ? 'foodItemId' : 'recipeId']: id,
       name: props.values.find((item) => item.id === id)?.name || '',
+      nutrition: getNutritionFromItem(id),
     }),
 });
 
