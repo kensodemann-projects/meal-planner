@@ -1,11 +1,11 @@
 <template>
   <h2>Recipes</h2>
   <v-divider class="mb-4"></v-divider>
-  <MealItemInput v-model="recipeMealItem" :values="[]" type="recipe" />
+  <MealItemEditorRows v-model="recipeMealItem" :values="[]" type="recipe" />
 
   <h2>Additional Foods</h2>
   <v-divider class="mb-4"></v-divider>
-  <MealItemInput v-model="foodMealItem" :values="[]" type="food" />
+  <MealItemEditorRows v-model="foodMealItem" :values="[]" type="food" />
 
   <h2>Total Nutrition</h2>
   <v-divider class="mb-4"></v-divider>

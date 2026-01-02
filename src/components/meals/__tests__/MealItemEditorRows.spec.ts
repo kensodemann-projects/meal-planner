@@ -1,14 +1,14 @@
+import { autocompleteIsRequired, numberInputIsRequired } from '@/components/__tests__/test-utils';
+import { TEST_FOODS, TEST_RECIPES } from '@/data/__tests__/test-data';
 import type { FoodItem } from '@/models/food';
+import type { MealItem } from '@/models/meal';
 import type { Recipe } from '@/models/recipe';
 import { mount } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import MealItemInput from '../MealItemInput.vue';
-import { TEST_FOODS, TEST_RECIPES } from '@/data/__tests__/test-data';
-import type { MealItem } from '@/models/meal';
-import { autocompleteIsRequired, numberInputIsRequired } from '@/components/__tests__/test-utils';
+import MealItemEditorRows from '../MealItemEditorRows.vue';
 
 const vuetify = createVuetify({
   components,
@@ -18,7 +18,7 @@ const mountComponent = (props: {
   modelValue: Partial<MealItem>;
   values: (FoodItem | Recipe)[];
   type: 'food' | 'recipe';
-}) => mount(MealItemInput, { props, global: { plugins: [vuetify] } });
+}) => mount(MealItemEditorRows, { props, global: { plugins: [vuetify] } });
 
 describe('Meal Item Input', () => {
   let wrapper: ReturnType<typeof mountComponent>;
