@@ -91,22 +91,25 @@ const getNutrition = (
 
 const recipeOrFoodId = computed({
   get: () => (props.type === 'food' ? modelValue.value?.foodItemId : modelValue.value?.recipeId),
-  set: (id: string) =>
-    (modelValue.value = {
+  set: (id: string) => {
+    const unitOfMeasure = unitOfMeasureId.value ? findUnitOfMeasure(unitOfMeasureId.value) : undefined;
+    modelValue.value = {
       ...modelValue.value,
       [props.type === 'food' ? 'foodItemId' : 'recipeId']: id,
       name: props.values.find((item) => item.id === id)?.name || '',
-      nutrition: getNutrition(id, modelValue.value?.units, modelValue.value?.unitOfMeasure) || ({} as Nutrition),
-    }),
+      nutrition: getNutrition(id, units.value, unitOfMeasure) || ({} as Nutrition),
+    };
+  },
 });
 
 const units = computed({
   get: () => modelValue.value?.units || (props.type === 'recipe' ? 1 : undefined),
   set: (units: number) => {
+    const unitOfMeasure = unitOfMeasureId.value ? findUnitOfMeasure(unitOfMeasureId.value) : undefined;
     modelValue.value = {
       ...modelValue.value,
       units,
-      nutrition: getNutrition(recipeOrFoodId.value, units, modelValue.value?.unitOfMeasure) || ({} as Nutrition),
+      nutrition: getNutrition(recipeOrFoodId.value, units, unitOfMeasure) || ({} as Nutrition),
     };
   },
 });
@@ -118,7 +121,7 @@ const unitOfMeasureId = computed({
     modelValue.value = {
       ...modelValue.value,
       unitOfMeasure,
-      nutrition: getNutrition(recipeOrFoodId.value, modelValue.value?.units, unitOfMeasure) || ({} as Nutrition),
+      nutrition: getNutrition(recipeOrFoodId.value, units.value, unitOfMeasure) || ({} as Nutrition),
     };
   },
 });
