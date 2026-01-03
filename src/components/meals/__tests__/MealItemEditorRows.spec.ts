@@ -4,11 +4,14 @@ import type { FoodItem } from '@/models/food';
 import type { MealItem } from '@/models/meal';
 import type { Recipe } from '@/models/recipe';
 import { mount, VueWrapper } from '@vue/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import MealItemEditorRows from '../MealItemEditorRows.vue';
+import { foodItemNutrients } from '@/core/nutritional-calculations';
+
+vi.mock('@/core/nutritional-calculations');
 
 const vuetify = createVuetify({
   components,
@@ -142,6 +145,77 @@ describe('Meal Item Input', () => {
       it('initializes with empty nutrition object', () => {
         wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
         const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
+        expect(nutritionEditor.props('modelValue')).toEqual({});
+      });
+
+      it('is not set until a food item, number of units, and unit of measure are all set', async () => {
+        (foodItemNutrients as Mock).mockReturnValueOnce({
+          calories: 150,
+          sodium: 100,
+          sugar: 10,
+          carbs: 20,
+          fat: 5,
+          protein: 8,
+        });
+
+        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
+        const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-or-food-input"]');
+        await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_FOODS[1]!.id);
+        expect(foodItemNutrients).not.toHaveBeenCalled();
+        expect(nutritionEditor.props('modelValue')).toEqual({});
+
+        const units = wrapper.findComponent('[data-testid="units-input"]');
+        await units.find('input').setValue('3');
+        expect(foodItemNutrients).not.toHaveBeenCalled();
+        expect(nutritionEditor.props('modelValue')).toEqual({});
+
+        const unitOfMeasure = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
+        await (unitOfMeasure as any).vm.$emit('update:modelValue', 'tbsp');
+        expect(foodItemNutrients).toHaveBeenCalledExactlyOnceWith(TEST_FOODS[1], 3, {
+          id: 'tbsp',
+          name: 'Tablespoon',
+          type: 'volume',
+          system: 'customary',
+          fdcId: 1001,
+        });
+        expect(nutritionEditor.props('modelValue')).toEqual({
+          calories: 150,
+          sodium: 100,
+          sugar: 10,
+          carbs: 20,
+          fat: 5,
+          protein: 8,
+        });
+      });
+
+      it('clears the nutrition information if the food & unit of measure combo has no conversion', async () => {
+        (foodItemNutrients as Mock).mockReturnValueOnce({
+          calories: 150,
+          sodium: 100,
+          sugar: 10,
+          carbs: 20,
+          fat: 5,
+          protein: 8,
+        });
+
+        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
+        const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-or-food-input"]');
+        await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_FOODS[1]!.id);
+        const units = wrapper.findComponent('[data-testid="units-input"]');
+        await units.find('input').setValue('3');
+        const unitOfMeasure = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
+        await (unitOfMeasure as any).vm.$emit('update:modelValue', 'tbsp');
+        expect(nutritionEditor.props('modelValue')).toEqual({
+          calories: 150,
+          sodium: 100,
+          sugar: 10,
+          carbs: 20,
+          fat: 5,
+          protein: 8,
+        });
+        await (unitOfMeasure as any).vm.$emit('update:modelValue', 'oz');
         expect(nutritionEditor.props('modelValue')).toEqual({});
       });
 
