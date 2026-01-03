@@ -1,5 +1,6 @@
 <template>
   <div>{{ intlFormat(today, { dateStyle: 'full' }) }}</div>
+  <MealEditor />
 </template>
 
 <script setup lang="ts">

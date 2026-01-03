@@ -7,6 +7,8 @@ import * as directives from 'vuetify/directives';
 import day from '../day.vue';
 
 vi.mock('vue-router');
+vi.mock('@/data/foods');
+vi.mock('@/data/recipes');
 
 const vuetify = createVuetify({
   components,
