@@ -7,7 +7,6 @@ export const MEAL_PLANS: MealPlan[] = [
     meals: [
       {
         id: 'meal-1-1',
-        name: 'Oatmeal with Berries',
         type: 'Breakfast',
         items: [
           {
@@ -42,7 +41,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-1-2',
-        name: 'Grilled Chicken Salad',
         type: 'Lunch',
         items: [
           {
@@ -77,7 +75,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-1-3',
-        name: 'Salmon with Roasted Vegetables',
         type: 'Dinner',
         items: [
           {
@@ -112,7 +109,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-1-4',
-        name: 'Greek Yogurt with Honey',
         type: 'Snack',
         items: [
           {
@@ -139,7 +135,6 @@ export const MEAL_PLANS: MealPlan[] = [
     meals: [
       {
         id: 'meal-2-1',
-        name: 'Scrambled Eggs with Toast',
         type: 'Breakfast',
         items: [
           {
@@ -174,7 +169,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-2-2',
-        name: 'Turkey Sandwich',
         type: 'Lunch',
         items: [
           {
@@ -209,7 +203,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-2-3',
-        name: 'Beef Stir Fry',
         type: 'Dinner',
         items: [
           {
@@ -250,7 +243,6 @@ export const MEAL_PLANS: MealPlan[] = [
     meals: [
       {
         id: 'meal-3-1',
-        name: 'Smoothie Bowl',
         type: 'Breakfast',
         items: [
           {
@@ -285,7 +277,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-3-2',
-        name: 'Quinoa Buddha Bowl',
         type: 'Lunch',
         items: [
           {
@@ -320,7 +311,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-3-3',
-        name: 'Baked Cod with Sweet Potato',
         type: 'Dinner',
         items: [
           {
@@ -355,7 +345,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-3-4',
-        name: 'Apple with Almond Butter',
         type: 'Snack',
         items: [
           {
@@ -396,7 +385,6 @@ export const MEAL_PLANS: MealPlan[] = [
     meals: [
       {
         id: 'meal-4-1',
-        name: 'Protein Pancakes',
         type: 'Breakfast',
         items: [
           {
@@ -431,7 +419,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-4-2',
-        name: 'Mediterranean Wrap',
         type: 'Lunch',
         items: [
           {
@@ -466,7 +453,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-4-3',
-        name: 'Chicken Pasta Primavera',
         type: 'Dinner',
         items: [
           {
@@ -507,7 +493,6 @@ export const MEAL_PLANS: MealPlan[] = [
     meals: [
       {
         id: 'meal-5-1',
-        name: 'Avocado Toast with Eggs',
         type: 'Breakfast',
         items: [
           {
@@ -556,7 +541,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-5-2',
-        name: 'Asian Noodle Salad',
         type: 'Lunch',
         items: [
           {
@@ -591,7 +575,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-5-3',
-        name: 'Grilled Pork Chop with Brussels Sprouts',
         type: 'Dinner',
         items: [
           {
@@ -626,7 +609,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-5-4',
-        name: 'Protein Bar',
         type: 'Snack',
         items: [
           {
@@ -653,7 +635,6 @@ export const MEAL_PLANS: MealPlan[] = [
     meals: [
       {
         id: 'meal-6-1',
-        name: 'Veggie Omelet',
         type: 'Breakfast',
         items: [
           {
@@ -688,7 +669,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-6-2',
-        name: 'Tuna Salad',
         type: 'Lunch',
         items: [
           {
@@ -723,7 +703,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-6-3',
-        name: 'Shrimp Tacos',
         type: 'Dinner',
         items: [
           {
@@ -764,7 +743,6 @@ export const MEAL_PLANS: MealPlan[] = [
     meals: [
       {
         id: 'meal-7-1',
-        name: 'Breakfast Burrito',
         type: 'Breakfast',
         items: [
           {
@@ -813,7 +791,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-7-2',
-        name: 'Chicken Caesar Salad',
         type: 'Lunch',
         items: [
           {
@@ -848,7 +825,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-7-3',
-        name: 'Steak with Mashed Potatoes',
         type: 'Dinner',
         items: [
           {
@@ -883,7 +859,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-7-4',
-        name: 'Mixed Nuts',
         type: 'Snack',
         items: [
           {
@@ -910,7 +885,6 @@ export const MEAL_PLANS: MealPlan[] = [
     meals: [
       {
         id: 'meal-8-1',
-        name: 'Bagel with Cream Cheese',
         type: 'Breakfast',
         items: [
           {
@@ -945,7 +919,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-8-2',
-        name: 'Veggie Burger',
         type: 'Lunch',
         items: [
           {
@@ -980,7 +953,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-8-3',
-        name: 'Baked Chicken Thighs with Quinoa',
         type: 'Dinner',
         items: [
           {
@@ -1021,7 +993,6 @@ export const MEAL_PLANS: MealPlan[] = [
     meals: [
       {
         id: 'meal-9-1',
-        name: 'Chia Seed Pudding',
         type: 'Breakfast',
         items: [
           {
@@ -1056,7 +1027,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-9-2',
-        name: 'Caprese Sandwich',
         type: 'Lunch',
         items: [
           {
@@ -1091,7 +1061,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-9-3',
-        name: 'Turkey Meatballs with Zucchini Noodles',
         type: 'Dinner',
         items: [
           {
@@ -1126,7 +1095,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-9-4',
-        name: 'Cottage Cheese with Pineapple',
         type: 'Snack',
         items: [
           {
@@ -1167,7 +1135,6 @@ export const MEAL_PLANS: MealPlan[] = [
     meals: [
       {
         id: 'meal-10-1',
-        name: 'French Toast',
         type: 'Breakfast',
         items: [
           {
@@ -1202,7 +1169,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-10-2',
-        name: 'Black Bean Burrito Bowl',
         type: 'Lunch',
         items: [
           {
@@ -1237,7 +1203,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-10-3',
-        name: 'Grilled Lamb Chops with Asparagus',
         type: 'Dinner',
         items: [
           {
@@ -1272,7 +1237,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-10-4',
-        name: 'Dark Chocolate Square',
         type: 'Snack',
         items: [
           {
@@ -1299,7 +1263,6 @@ export const MEAL_PLANS: MealPlan[] = [
     meals: [
       {
         id: 'meal-11-1',
-        name: 'Greek Yogurt Parfait',
         type: 'Breakfast',
         items: [
           {
@@ -1348,7 +1311,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-11-2',
-        name: 'Chicken Caesar Wrap',
         type: 'Lunch',
         items: [
           {
@@ -1411,7 +1373,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-11-3',
-        name: 'Baked Ziti',
         type: 'Dinner',
         items: [
           {
@@ -1460,7 +1421,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-11-4',
-        name: 'Carrot Sticks with Hummus',
         type: 'Snack',
         items: [
           {
@@ -1501,7 +1461,6 @@ export const MEAL_PLANS: MealPlan[] = [
     meals: [
       {
         id: 'meal-12-1',
-        name: 'Avocado Toast with Egg',
         type: 'Breakfast',
         items: [
           {
@@ -1550,7 +1509,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-12-2',
-        name: 'Lentil Soup with Bread',
         type: 'Lunch',
         items: [
           {
@@ -1585,7 +1543,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-12-3',
-        name: 'Teriyaki Salmon with Rice',
         type: 'Dinner',
         items: [
           {
@@ -1648,7 +1605,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-12-4',
-        name: 'Cottage Cheese with Pineapple',
         type: 'Snack',
         items: [
           {
@@ -1689,7 +1645,6 @@ export const MEAL_PLANS: MealPlan[] = [
     meals: [
       {
         id: 'meal-13-1',
-        name: 'Green Smoothie',
         type: 'Breakfast',
         items: [
           {
@@ -1752,7 +1707,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-13-2',
-        name: 'Quinoa Taco Salad',
         type: 'Lunch',
         items: [
           {
@@ -1815,7 +1769,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-13-3',
-        name: 'Roast Chicken with Vegetables',
         type: 'Dinner',
         items: [
           {
@@ -1864,7 +1817,6 @@ export const MEAL_PLANS: MealPlan[] = [
       },
       {
         id: 'meal-13-4',
-        name: 'Trail Mix',
         type: 'Snack',
         items: [
           {

@@ -9,7 +9,7 @@
       <div v-if="row.plan">
         <h4>Meals:</h4>
         <ul>
-          <li v-for="meal in row.plan.meals" :key="meal.id">{{ meal.name }}</li>
+          <li v-for="meal in row.plan.meals" :key="meal.id">{{ meal.type }}</li>
         </ul>
       </div>
       <div v-else>
