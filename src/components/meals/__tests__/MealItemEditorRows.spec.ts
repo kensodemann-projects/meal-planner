@@ -175,7 +175,7 @@ describe('Meal Item Input', () => {
   });
 
   describe('for recipes', () => {
-    describe('food select', () => {
+    describe('recipe select', () => {
       it('does not default', () => {
         wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
         expect((wrapper.vm as any).recipeOrFoodId).toBeUndefined();
