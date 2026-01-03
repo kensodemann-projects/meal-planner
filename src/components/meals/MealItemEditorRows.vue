@@ -53,7 +53,7 @@ const props = defineProps<{
   values: (FoodItem | Recipe)[];
   type: 'food' | 'recipe';
 }>();
-const modelValue = defineModel<Partial<MealItem>>();
+const mealItem = defineModel<Partial<MealItem>>();
 
 const getNutritionFromFoodItem = (id: string, units: number, unitOfMeasure: UnitOfMeasure): Nutrition | undefined => {
   const item = props.values.find((v) => v.id === id);
@@ -90,11 +90,11 @@ const getNutrition = (
 };
 
 const recipeOrFoodId = computed({
-  get: () => (props.type === 'food' ? modelValue.value?.foodItemId : modelValue.value?.recipeId),
+  get: () => (props.type === 'food' ? mealItem.value?.foodItemId : mealItem.value?.recipeId),
   set: (id: string) => {
     const unitOfMeasure = unitOfMeasureId.value ? findUnitOfMeasure(unitOfMeasureId.value) : undefined;
-    modelValue.value = {
-      ...modelValue.value,
+    mealItem.value = {
+      ...mealItem.value,
       [props.type === 'food' ? 'foodItemId' : 'recipeId']: id,
       name: props.values.find((item) => item.id === id)?.name || '',
       nutrition: getNutrition(id, units.value, unitOfMeasure) || ({} as Nutrition),
@@ -103,11 +103,11 @@ const recipeOrFoodId = computed({
 });
 
 const units = computed({
-  get: () => modelValue.value?.units || (props.type === 'recipe' ? 1 : undefined),
+  get: () => mealItem.value?.units || (props.type === 'recipe' ? 1 : undefined),
   set: (units: number) => {
     const unitOfMeasure = unitOfMeasureId.value ? findUnitOfMeasure(unitOfMeasureId.value) : undefined;
-    modelValue.value = {
-      ...modelValue.value,
+    mealItem.value = {
+      ...mealItem.value,
       units,
       nutrition: getNutrition(recipeOrFoodId.value, units, unitOfMeasure) || ({} as Nutrition),
     };
@@ -115,11 +115,11 @@ const units = computed({
 });
 
 const unitOfMeasureId = computed({
-  get: () => modelValue.value?.unitOfMeasure?.id || (props.type === 'recipe' ? 'serving' : undefined),
+  get: () => mealItem.value?.unitOfMeasure?.id || (props.type === 'recipe' ? 'serving' : undefined),
   set: (id: string) => {
     const unitOfMeasure = findUnitOfMeasure(id);
-    modelValue.value = {
-      ...modelValue.value,
+    mealItem.value = {
+      ...mealItem.value,
       unitOfMeasure,
       nutrition: getNutrition(recipeOrFoodId.value, units.value, unitOfMeasure) || ({} as Nutrition),
     };
@@ -127,10 +127,10 @@ const unitOfMeasureId = computed({
 });
 
 const nutrition = computed({
-  get: () => modelValue.value?.nutrition || {},
+  get: () => mealItem.value?.nutrition || {},
   set: (value) => {
-    modelValue.value = {
-      ...modelValue.value,
+    mealItem.value = {
+      ...mealItem.value,
       nutrition: value as Nutrition,
     };
   },
