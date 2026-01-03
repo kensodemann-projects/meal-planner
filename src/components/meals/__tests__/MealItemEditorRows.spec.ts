@@ -23,7 +23,7 @@ const mountComponent = (props: {
   type: 'food' | 'recipe';
 }) => mount(MealItemEditorRows, { props, global: { plugins: [vuetify] } });
 
-describe('MealItemEditorRows', () => {
+describe('Meal Item Editor Rows', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
   afterEach(() => {
