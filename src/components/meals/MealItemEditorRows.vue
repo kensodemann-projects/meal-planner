@@ -106,8 +106,7 @@ const units = computed({
     modelValue.value = {
       ...modelValue.value,
       units,
-      nutrition:
-        getNutrition(modelValue.value?.foodItemId, units, modelValue.value?.unitOfMeasure) || ({} as Nutrition),
+      nutrition: getNutrition(recipeOrFoodId.value, units, modelValue.value?.unitOfMeasure) || ({} as Nutrition),
     };
   },
 });
@@ -119,8 +118,7 @@ const unitOfMeasureId = computed({
     modelValue.value = {
       ...modelValue.value,
       unitOfMeasure,
-      nutrition:
-        getNutrition(modelValue.value?.foodItemId, modelValue.value?.units, unitOfMeasure) || ({} as Nutrition),
+      nutrition: getNutrition(recipeOrFoodId.value, modelValue.value?.units, unitOfMeasure) || ({} as Nutrition),
     };
   },
 });
