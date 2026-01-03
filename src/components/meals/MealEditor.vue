@@ -1,4 +1,5 @@
 <template>
+  <!-- Currently a placeholder layout, this is being used as a testing harness for now -->
   <h2>Recipes</h2>
   <v-divider class="mb-4"></v-divider>
   <MealItemEditorRows v-model="recipeMealItem" :values="recipes" type="recipe" />
