@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils';
+import { mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
@@ -59,6 +59,20 @@ describe('Meal Item Editor Card', () => {
         expect(inputs.fatInput.element.value).toBe('');
         expect(inputs.proteinInput.element.value).toBe('');
       });
+
+      describe('the cancel button', () => {
+        it('renders', () => {
+          const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+          expect(cancelButton.exists()).toBe(true);
+        });
+
+        it('emits the "cancel" event on click', async () => {
+          const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+          await cancelButton.trigger('click');
+          expect(wrapper.emitted('cancel')).toBeTruthy();
+          expect(wrapper.emitted('cancel')).toHaveLength(1);
+        });
+      });
     });
 
     describe('a food', () => {
@@ -79,6 +93,20 @@ describe('Meal Item Editor Card', () => {
         expect(inputs.fatInput.element.value).toBe('');
         expect(inputs.proteinInput.element.value).toBe('');
       });
+
+      describe('the cancel button', () => {
+        it('renders', () => {
+          const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+          expect(cancelButton.exists()).toBe(true);
+        });
+
+        it('emits the "cancel" event on click', async () => {
+          const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+          await cancelButton.trigger('click');
+          expect(wrapper.emitted('cancel')).toBeTruthy();
+          expect(wrapper.emitted('cancel')).toHaveLength(1);
+        });
+      });
     });
   });
 
@@ -91,6 +119,20 @@ describe('Meal Item Editor Card', () => {
       it('placeholder', () => {
         expect(true).toBe(true);
       });
+
+      describe('the cancel button', () => {
+        it('renders', () => {
+          const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+          expect(cancelButton.exists()).toBe(true);
+        });
+
+        it('emits the "cancel" event on click', async () => {
+          const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+          await cancelButton.trigger('click');
+          expect(wrapper.emitted('cancel')).toBeTruthy();
+          expect(wrapper.emitted('cancel')).toHaveLength(1);
+        });
+      });
     });
 
     describe('a food', () => {
@@ -100,6 +142,20 @@ describe('Meal Item Editor Card', () => {
 
       it('placeholder', () => {
         expect(true).toBe(true);
+      });
+
+      describe('the cancel button', () => {
+        it('renders', () => {
+          const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+          expect(cancelButton.exists()).toBe(true);
+        });
+
+        it('emits the "cancel" event on click', async () => {
+          const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+          await cancelButton.trigger('click');
+          expect(wrapper.emitted('cancel')).toBeTruthy();
+          expect(wrapper.emitted('cancel')).toHaveLength(1);
+        });
       });
     });
   });
