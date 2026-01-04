@@ -2,7 +2,7 @@ import { TEST_FOODS, TEST_RECIPES } from '@/data/__tests__/test-data';
 import type { FoodItem } from '@/models/food';
 import type { MealItem } from '@/models/meal';
 import type { Recipe } from '@/models/recipe';
-import { mount, VueWrapper } from '@vue/test-utils';
+import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
@@ -76,6 +76,16 @@ describe('Meal Item Editor Card', () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
           expect(saveButton.attributes('disabled')).toBeDefined();
         });
+
+        it('is disabled until all required fields are filled in', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          // Choosing a recipe will default all of the other inputs, so this should enable the button
+          const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-or-food-input"]');
+          await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_RECIPE_MEAL_ITEM.recipeId);
+          await flushPromises();
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
       });
 
       describe('the cancel button', () => {
@@ -117,6 +127,24 @@ describe('Meal Item Editor Card', () => {
         it('begins disabled', () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
           expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('is disabled until all required fields are filled in', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-or-food-input"]');
+          const unitOfMeasureInput = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_FOOD_MEAL_ITEM.foodItemId);
+          await (unitOfMeasureInput as any).vm.$emit('update:modelValue', TEST_FOOD_MEAL_ITEM.unitOfMeasure.id);
+          await inputs.unitsInput.setValue(2);
+          await inputs.caloriesInput.setValue(200);
+          await inputs.sodiumInput.setValue(650);
+          await inputs.sugarInput.setValue(12);
+          await inputs.carbsInput.setValue(16);
+          await inputs.fatInput.setValue(24);
+          await inputs.proteinInput.setValue(18);
+          expect(saveButton.attributes('disabled')).toBeUndefined();
         });
       });
 
