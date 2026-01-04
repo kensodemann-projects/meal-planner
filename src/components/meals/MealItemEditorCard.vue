@@ -30,6 +30,7 @@ const props = defineProps<{
 
 const editMealItem = ref<Partial<MealItem>>(
   props.mealItem || {
+    id: globalThis.crypto.randomUUID(),
     units: props.type === 'recipe' ? 1 : undefined,
     unitOfMeasure: props.type === 'recipe' ? findUnitOfMeasure('serving') : undefined,
   },

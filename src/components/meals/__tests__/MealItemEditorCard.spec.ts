@@ -86,6 +86,38 @@ describe('Meal Item Editor Card', () => {
           await flushPromises();
           expect(saveButton.attributes('disabled')).toBeUndefined();
         });
+
+        it('emits "save" with the data', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-or-food-input"]');
+          await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_RECIPE_MEAL_ITEM.recipeId);
+          await flushPromises();
+          await saveButton.trigger('click');
+          expect(wrapper.emitted('save')).toBeTruthy();
+          expect(wrapper.emitted('save')).toHaveLength(1);
+          expect(wrapper.emitted('save')?.[0]).toEqual([
+            {
+              id: expect.any(String),
+              recipeId: '1',
+              name: 'Classic Spaghetti Carbonara',
+              units: 1,
+              unitOfMeasure: {
+                id: 'serving',
+                name: 'Serving',
+                system: 'none',
+                type: 'quantity',
+              },
+              nutrition: {
+                calories: 630,
+                carbs: 55,
+                fat: 35,
+                protein: 28,
+                sodium: 780,
+                sugar: 3,
+              },
+            },
+          ]);
+        });
       });
 
       describe('the cancel button', () => {
@@ -145,6 +177,48 @@ describe('Meal Item Editor Card', () => {
           await inputs.fatInput.setValue(24);
           await inputs.proteinInput.setValue(18);
           expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('emits "save" with the data', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-or-food-input"]');
+          const unitOfMeasureInput = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
+          await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_FOOD_MEAL_ITEM.foodItemId);
+          await (unitOfMeasureInput as any).vm.$emit('update:modelValue', TEST_FOOD_MEAL_ITEM.unitOfMeasure.id);
+          await inputs.unitsInput.setValue(2);
+          await inputs.caloriesInput.setValue(200);
+          await inputs.sodiumInput.setValue(650);
+          await inputs.sugarInput.setValue(12);
+          await inputs.carbsInput.setValue(16);
+          await inputs.fatInput.setValue(24);
+          await inputs.proteinInput.setValue(18);
+          await saveButton.trigger('click');
+          expect(wrapper.emitted('save')).toBeTruthy();
+          expect(wrapper.emitted('save')).toHaveLength(1);
+          expect(wrapper.emitted('save')?.[0]).toEqual([
+            {
+              id: expect.any(String),
+              foodItemId: '1',
+              name: 'Classic Whole Milk',
+              units: 2,
+              unitOfMeasure: {
+                fdcId: 1000,
+                id: 'cup',
+                name: 'Cup',
+                system: 'customary',
+                type: 'volume',
+              },
+              nutrition: {
+                calories: 200,
+                carbs: 16,
+                fat: 24,
+                protein: 18,
+                sodium: 650,
+                sugar: 12,
+              },
+            },
+          ]);
         });
       });
 
