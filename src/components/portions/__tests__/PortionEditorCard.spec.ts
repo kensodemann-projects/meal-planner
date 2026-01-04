@@ -1,7 +1,7 @@
 import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import { TEST_PORTION } from '@/data/__tests__/test-data';
 import type { Portion } from '@/models/portion';
-import { mount, VueWrapper } from '@vue/test-utils';
+import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
@@ -15,17 +15,14 @@ const vuetify = createVuetify({
 const mountComponent = (props: { portion?: Portion } = {}) =>
   mount(PortionEditorCard, { props, global: { plugins: [vuetify] } });
 
-const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
-  unitsInput: wrapper.findComponent('[data-testid="units-input"]').find('input'),
-  unitOfMeasureInput: wrapper.findComponent('[data-testid="unit-of-measure-input"]').find('input'),
-  gramsInput: wrapper.findComponent('[data-testid="grams-input"]').find('input'),
-  caloriesInput: wrapper.findComponent('[data-testid="calories-input"]').find('input'),
-  sodiumInput: wrapper.findComponent('[data-testid="sodium-input"]').find('input'),
-  sugarInput: wrapper.findComponent('[data-testid="sugar-input"]').find('input'),
-  carbsInput: wrapper.findComponent('[data-testid="carbs-input"]').find('input'),
-  fatInput: wrapper.findComponent('[data-testid="fat-input"]').find('input'),
-  proteinInput: wrapper.findComponent('[data-testid="protein-input"]').find('input'),
-});
+const updateEditPortion = async (wrapper: ReturnType<typeof mountComponent>, updates: Partial<Portion>) => {
+  (wrapper.vm as any).editPortion = {
+    ...(wrapper.vm as any).editPortion,
+    ...updates,
+  };
+  await wrapper.vm.$nextTick();
+  await flushPromises();
+};
 
 describe('Portion Editor', () => {
   let wrapper: ReturnType<typeof mountComponent>;
@@ -49,16 +46,16 @@ describe('Portion Editor', () => {
     });
 
     it('defaults the nutrients to zero', () => {
-      const inputs = getInputs(wrapper);
-      expect(inputs.unitsInput.element.value).toBe('');
-      expect(inputs.unitOfMeasureInput.element.value).toBe('');
-      expect(inputs.gramsInput.element.value).toBe('');
-      expect(inputs.caloriesInput.element.value).toBe('');
-      expect(inputs.sodiumInput.element.value).toBe('0');
-      expect(inputs.sugarInput.element.value).toBe('0');
-      expect(inputs.carbsInput.element.value).toBe('0');
-      expect(inputs.fatInput.element.value).toBe('0');
-      expect(inputs.proteinInput.element.value).toBe('0');
+      const editPortion = (wrapper.vm as any).editPortion;
+      expect(editPortion.units).toBeUndefined();
+      expect(editPortion.unitOfMeasure).toBeUndefined();
+      expect(editPortion.grams).toBeUndefined();
+      expect(editPortion.calories).toBeUndefined();
+      expect(editPortion.sodium).toBe(0);
+      expect(editPortion.sugar).toBe(0);
+      expect(editPortion.carbs).toBe(0);
+      expect(editPortion.fat).toBe(0);
+      expect(editPortion.protein).toBe(0);
     });
 
     describe('the cancel button', () => {
@@ -83,26 +80,26 @@ describe('Portion Editor', () => {
 
       it('is disabled until all required fields are filled in', async () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
-        await inputs.unitsInput.setValue(1);
-        (wrapper.vm as any).editPortion.unitOfMeasure = findUnitOfMeasure('each');
-        await inputs.gramsInput.setValue(56);
+        await updateEditPortion(wrapper, { units: 1 });
+        await updateEditPortion(wrapper, { unitOfMeasure: findUnitOfMeasure('each') });
+        await updateEditPortion(wrapper, { grams: 56 });
         expect(saveButton.attributes('disabled')).toBeDefined();
-        await inputs.caloriesInput.setValue(75);
+        await updateEditPortion(wrapper, { calories: 75 });
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
 
       it('emits "save" with the data', async () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
-        await inputs.unitsInput.setValue(1);
-        (wrapper.vm as any).editPortion.unitOfMeasure = findUnitOfMeasure('each');
-        await inputs.gramsInput.setValue(56);
-        await inputs.caloriesInput.setValue(75);
-        await inputs.carbsInput.setValue(14);
-        await inputs.sugarInput.setValue(8);
-        await inputs.fatInput.setValue(17);
-        await inputs.proteinInput.setValue(4);
+        await updateEditPortion(wrapper, {
+          units: 1,
+          unitOfMeasure: findUnitOfMeasure('each'),
+          grams: 56,
+          calories: 75,
+          carbs: 14,
+          sugar: 8,
+          fat: 17,
+          protein: 4,
+        });
         await saveButton.trigger('click');
         expect(wrapper.emitted('save')).toBeTruthy();
         expect(wrapper.emitted('save')).toHaveLength(1);
@@ -129,15 +126,15 @@ describe('Portion Editor', () => {
     });
 
     it('initializes the data to the portion values', () => {
-      const inputs = getInputs(wrapper);
-      expect(inputs.unitsInput.element.value).toBe(TEST_PORTION.units.toString());
-      expect(inputs.gramsInput.element.value).toBe(TEST_PORTION.grams.toString());
-      expect(inputs.caloriesInput.element.value).toBe(TEST_PORTION.calories.toString());
-      expect(inputs.sodiumInput.element.value).toBe(TEST_PORTION.sodium.toString());
-      expect(inputs.sugarInput.element.value).toBe(TEST_PORTION.sugar.toString());
-      expect(inputs.carbsInput.element.value).toBe(TEST_PORTION.carbs.toString());
-      expect(inputs.fatInput.element.value).toBe(TEST_PORTION.fat.toString());
-      expect(inputs.proteinInput.element.value).toBe(TEST_PORTION.protein.toString());
+      const editPortion = (wrapper.vm as any).editPortion;
+      expect(editPortion.units).toBe(TEST_PORTION.units);
+      expect(editPortion.grams).toBe(TEST_PORTION.grams);
+      expect(editPortion.calories).toBe(TEST_PORTION.calories);
+      expect(editPortion.sodium).toBe(TEST_PORTION.sodium);
+      expect(editPortion.sugar).toBe(TEST_PORTION.sugar);
+      expect(editPortion.carbs).toBe(TEST_PORTION.carbs);
+      expect(editPortion.fat).toBe(TEST_PORTION.fat);
+      expect(editPortion.protein).toBe(TEST_PORTION.protein);
     });
 
     describe('the cancel button', () => {
@@ -162,42 +159,42 @@ describe('Portion Editor', () => {
 
       it('is enabled when a value is validly changed', async () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
-        await inputs.unitsInput.setValue(1);
+        await updateEditPortion(wrapper, { units: 1 });
         expect(saveButton.attributes('disabled')).toBeUndefined();
-        await inputs.unitsInput.setValue(TEST_PORTION.units);
+        await updateEditPortion(wrapper, { units: TEST_PORTION.units });
         expect(saveButton.attributes('disabled')).toBeDefined();
-        await inputs.gramsInput.setValue(1);
+        await updateEditPortion(wrapper, { grams: 1 });
         expect(saveButton.attributes('disabled')).toBeUndefined();
-        await inputs.gramsInput.setValue(TEST_PORTION.grams);
+        await updateEditPortion(wrapper, { grams: TEST_PORTION.grams });
         expect(saveButton.attributes('disabled')).toBeDefined();
-        await inputs.caloriesInput.setValue(1);
+        await updateEditPortion(wrapper, { calories: 1 });
         expect(saveButton.attributes('disabled')).toBeUndefined();
-        await inputs.caloriesInput.setValue(TEST_PORTION.calories);
+        await updateEditPortion(wrapper, { calories: TEST_PORTION.calories });
         expect(saveButton.attributes('disabled')).toBeDefined();
-        await inputs.sugarInput.setValue(1);
+        await updateEditPortion(wrapper, { sugar: 1 });
         expect(saveButton.attributes('disabled')).toBeUndefined();
-        await inputs.sugarInput.setValue(TEST_PORTION.sugar);
+        await updateEditPortion(wrapper, { sugar: TEST_PORTION.sugar });
         expect(saveButton.attributes('disabled')).toBeDefined();
-        await inputs.carbsInput.setValue(1);
+        await updateEditPortion(wrapper, { carbs: 1 });
         expect(saveButton.attributes('disabled')).toBeUndefined();
-        await inputs.carbsInput.setValue(TEST_PORTION.carbs);
+        await updateEditPortion(wrapper, { carbs: TEST_PORTION.carbs });
         expect(saveButton.attributes('disabled')).toBeDefined();
-        await inputs.fatInput.setValue(1);
+        await updateEditPortion(wrapper, { fat: 1 });
         expect(saveButton.attributes('disabled')).toBeUndefined();
-        await inputs.fatInput.setValue(TEST_PORTION.fat);
+        await updateEditPortion(wrapper, { fat: TEST_PORTION.fat });
         expect(saveButton.attributes('disabled')).toBeDefined();
-        await inputs.proteinInput.setValue(1);
+        await updateEditPortion(wrapper, { protein: 1 });
         expect(saveButton.attributes('disabled')).toBeUndefined();
-        await inputs.proteinInput.setValue(TEST_PORTION.protein);
+        await updateEditPortion(wrapper, { protein: TEST_PORTION.protein });
         expect(saveButton.attributes('disabled')).toBeDefined();
       });
 
       it('emits "save" with the data', async () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
-        await inputs.unitsInput.setValue(1);
-        await inputs.sodiumInput.setValue(819);
+        await updateEditPortion(wrapper, {
+          units: 1,
+          sodium: 819,
+        });
         await saveButton.trigger('click');
         expect(wrapper.emitted('save')).toBeTruthy();
         expect(wrapper.emitted('save')).toHaveLength(1);
