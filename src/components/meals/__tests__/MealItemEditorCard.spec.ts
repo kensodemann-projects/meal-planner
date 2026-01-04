@@ -3,11 +3,14 @@ import type { FoodItem } from '@/models/food';
 import type { MealItem } from '@/models/meal';
 import type { Recipe } from '@/models/recipe';
 import { mount, VueWrapper } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import MealItemEditorCard from '../MealItemEditorCard.vue';
+import { foodItemNutrients } from '@/core/nutritional-calculations';
+
+vi.mock('@/core/nutritional-calculations');
 
 const vuetify = createVuetify({
   components,
@@ -152,11 +155,48 @@ describe('Meal Item Editor Card', () => {
           expect(wrapper.emitted('cancel')).toHaveLength(1);
         });
       });
+
+      describe('the save button', () => {
+        it('begins disabled', () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('is enabled when a value is validly changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          await inputs.caloriesInput.setValue(1);
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await inputs.caloriesInput.setValue(TEST_RECIPE_MEAL_ITEM.nutrition.calories);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.sugarInput.setValue(1);
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await inputs.sugarInput.setValue(TEST_RECIPE_MEAL_ITEM.nutrition.sugar);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.carbsInput.setValue(1);
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await inputs.carbsInput.setValue(TEST_RECIPE_MEAL_ITEM.nutrition.carbs);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.fatInput.setValue(1);
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await inputs.fatInput.setValue(TEST_RECIPE_MEAL_ITEM.nutrition.fat);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.proteinInput.setValue(1);
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await inputs.proteinInput.setValue(TEST_RECIPE_MEAL_ITEM.nutrition.protein);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.sodiumInput.setValue(1);
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await inputs.sodiumInput.setValue(TEST_RECIPE_MEAL_ITEM.nutrition.sodium);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+      });
     });
 
     describe('a food', () => {
       beforeEach(() => {
         wrapper = mountComponent({ type: 'food', items: TEST_FOODS, mealItem: TEST_FOOD_MEAL_ITEM });
+        (foodItemNutrients as Mock).mockReturnValue(TEST_FOOD_MEAL_ITEM.nutrition);
       });
 
       it('initializes the inputs', () => {
@@ -184,6 +224,46 @@ describe('Meal Item Editor Card', () => {
           await cancelButton.trigger('click');
           expect(wrapper.emitted('cancel')).toBeTruthy();
           expect(wrapper.emitted('cancel')).toHaveLength(1);
+        });
+      });
+
+      describe('the save button', () => {
+        it('begins disabled', () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('is enabled when a value is validly changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          await inputs.unitsInput.setValue(1);
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await inputs.unitsInput.setValue(TEST_FOOD_MEAL_ITEM.units);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.caloriesInput.setValue(1);
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await inputs.caloriesInput.setValue(TEST_FOOD_MEAL_ITEM.nutrition.calories);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.sugarInput.setValue(1);
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await inputs.sugarInput.setValue(TEST_FOOD_MEAL_ITEM.nutrition.sugar);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.carbsInput.setValue(1);
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await inputs.carbsInput.setValue(TEST_FOOD_MEAL_ITEM.nutrition.carbs);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.fatInput.setValue(1);
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await inputs.fatInput.setValue(TEST_FOOD_MEAL_ITEM.nutrition.fat);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.proteinInput.setValue(1);
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await inputs.proteinInput.setValue(TEST_FOOD_MEAL_ITEM.nutrition.protein);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.sodiumInput.setValue(1);
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await inputs.sodiumInput.setValue(TEST_FOOD_MEAL_ITEM.nutrition.sodium);
+          expect(saveButton.attributes('disabled')).toBeDefined();
         });
       });
     });

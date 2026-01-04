@@ -8,7 +8,7 @@
       </v-card-text>
       <v-card-actions>
         <CancelButton @click="$emit('cancel')" />
-        <SaveButton :disabled="!(isModified() && valid)" @click="$emit('save', editPortion as Portion)" />
+        <SaveButton :disabled="!(isModified && valid)" @click="$emit('save', editPortion as Portion)" />
       </v-card-actions>
     </v-card>
   </v-form>
@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import type { Portion } from '@/models/portion';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 const props = defineProps<{ portion?: Portion }>();
 defineEmits<{ (event: 'save', payload: Portion): void; (event: 'cancel'): void }>();
@@ -31,12 +31,12 @@ const editPortion = ref<Partial<Portion>>(
   },
 );
 
-const isModified = () => {
+const isModified = computed(() => {
   if (!props.portion) return true;
   const fields: (keyof Portion)[] = ['units', 'grams', 'calories', 'sodium', 'sugar', 'carbs', 'fat', 'protein'];
   if (editPortion.value.unitOfMeasure?.id !== props.portion.unitOfMeasure.id) {
     return true;
   }
   return fields.some((field) => editPortion.value[field] !== props.portion![field]);
-};
+});
 </script>
