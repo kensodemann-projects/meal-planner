@@ -71,6 +71,13 @@ describe('Meal Item Editor Card', () => {
         expect(inputs.proteinInput.element.value).toBe('');
       });
 
+      describe('the save button', () => {
+        it('begins disabled', () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+      });
+
       describe('the cancel button', () => {
         it('renders', () => {
           const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
@@ -104,6 +111,13 @@ describe('Meal Item Editor Card', () => {
         expect(inputs.carbsInput.element.value).toBe('');
         expect(inputs.fatInput.element.value).toBe('');
         expect(inputs.proteinInput.element.value).toBe('');
+      });
+
+      describe('the save button', () => {
+        it('begins disabled', () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
       });
 
       describe('the cancel button', () => {
@@ -165,6 +179,12 @@ describe('Meal Item Editor Card', () => {
         it('is enabled when a value is validly changed', async () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
           const inputs = getInputs(wrapper);
+          const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-or-food-input"]');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_RECIPES[1]!.id);
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_RECIPE_MEAL_ITEM.recipeId);
+          expect(saveButton.attributes('disabled')).toBeDefined();
           await inputs.caloriesInput.setValue(1);
           expect(saveButton.attributes('disabled')).toBeUndefined();
           await inputs.caloriesInput.setValue(TEST_RECIPE_MEAL_ITEM.nutrition.calories);
@@ -236,6 +256,12 @@ describe('Meal Item Editor Card', () => {
         it('is enabled when a value is validly changed', async () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
           const inputs = getInputs(wrapper);
+          const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-or-food-input"]');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_FOODS[1]!.id);
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_FOOD_MEAL_ITEM.foodItemId);
+          expect(saveButton.attributes('disabled')).toBeDefined();
           await inputs.unitsInput.setValue(1);
           expect(saveButton.attributes('disabled')).toBeUndefined();
           await inputs.unitsInput.setValue(TEST_FOOD_MEAL_ITEM.units);

@@ -40,6 +40,8 @@ const isModified = computed(() => {
   if (!props.mealItem) return true;
   const fields: (keyof Nutrition)[] = ['calories', 'sodium', 'sugar', 'carbs', 'fat', 'protein'];
   if (
+    editMealItem.value.foodItemId !== props.mealItem?.foodItemId ||
+    editMealItem.value.recipeId !== props.mealItem?.recipeId ||
     editMealItem.value.unitOfMeasure?.id !== props.mealItem?.unitOfMeasure?.id ||
     editMealItem.value.units !== props.mealItem?.units
   ) {
