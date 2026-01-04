@@ -103,7 +103,7 @@ const recipeOrFoodId = computed({
 });
 
 const units = computed({
-  get: () => mealItem.value?.units || (props.type === 'recipe' ? 1 : undefined),
+  get: () => mealItem.value?.units,
   set: (units: number) => {
     const unitOfMeasure = unitOfMeasureId.value ? findUnitOfMeasure(unitOfMeasureId.value) : undefined;
     mealItem.value = {
@@ -115,7 +115,7 @@ const units = computed({
 });
 
 const unitOfMeasureId = computed({
-  get: () => mealItem.value?.unitOfMeasure?.id || (props.type === 'recipe' ? 'serving' : undefined),
+  get: () => mealItem.value?.unitOfMeasure?.id,
   set: (id: string) => {
     const unitOfMeasure = findUnitOfMeasure(id);
     mealItem.value = {

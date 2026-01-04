@@ -75,12 +75,6 @@ describe('Meal Item Editor Rows', () => {
     });
 
     describe('units', () => {
-      it('does not default', () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
-        const units = wrapper.findComponent('[data-testid="units-input"]');
-        expect((units.find('input').element as HTMLInputElement).value).toBe('');
-      });
-
       it('is required', async () => {
         wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
         await numberInputIsRequired(wrapper, 'units-input');
@@ -106,11 +100,6 @@ describe('Meal Item Editor Rows', () => {
     });
 
     describe('unit of measure', () => {
-      it('does not default', () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
-        expect((wrapper.vm as any).unitOfMeasureId).toBeUndefined();
-      });
-
       it('is required', async () => {
         wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
         await autocompleteIsRequired(wrapper, 'unit-of-measure-input');
@@ -304,12 +293,6 @@ describe('Meal Item Editor Rows', () => {
     });
 
     describe('units', () => {
-      it('defaults to 1', () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
-        const units = wrapper.findComponent('[data-testid="units-input"]');
-        expect((units.find('input').element as HTMLInputElement).value).toBe('1');
-      });
-
       it('is disabled', () => {
         wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
         const units = wrapper.findComponent('[data-testid="units-input"]');
@@ -319,11 +302,6 @@ describe('Meal Item Editor Rows', () => {
     });
 
     describe('unit of measure', () => {
-      it('defaults to serving', () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
-        expect((wrapper.vm as any).unitOfMeasureId).toBe('serving');
-      });
-
       it('is disabled', () => {
         wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
         const unitOfMeasure = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
