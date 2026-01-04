@@ -3,7 +3,7 @@
     <v-card>
       <v-card-text>
         <v-container fluid>
-          <MealItemEditorRows v-model="editMealItem" :type="type" :values="[]" />
+          <MealItemEditorRows v-model="editMealItem" :type="type" :items="[]" />
         </v-container>
       </v-card-text>
       <v-card-actions>
@@ -16,16 +16,19 @@
 
 <script setup lang="ts">
 import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
+import type { FoodItem } from '@/models/food';
 import type { MealItem } from '@/models/meal';
+import type { Recipe } from '@/models/recipe';
 import { computed, ref } from 'vue';
 
 const props = defineProps<{
-  item?: Partial<MealItem>;
+  mealItem?: Partial<MealItem>;
+  items: (FoodItem | Recipe)[];
   type: 'food' | 'recipe';
 }>();
 
 const editMealItem = ref<Partial<MealItem>>(
-  props.item || {
+  props.mealItem || {
     units: props.type === 'recipe' ? 1 : undefined,
     unitOfMeasure: props.type === 'recipe' ? findUnitOfMeasure('serving') : undefined,
   },

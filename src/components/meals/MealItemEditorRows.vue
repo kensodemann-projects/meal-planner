@@ -5,7 +5,7 @@
         <v-autocomplete
           :label="`Select ${props.type === 'food' ? 'Food' : 'Recipe'}`"
           v-model="recipeOrFoodId"
-          :items="values"
+          :items="items"
           item-title="name"
           item-value="id"
           :rules="[validationRules.required]"
@@ -50,20 +50,20 @@ import type { UnitOfMeasure } from '@/models/unit-of-measure';
 import { computed } from 'vue';
 
 const props = defineProps<{
-  values: (FoodItem | Recipe)[];
+  items: (FoodItem | Recipe)[];
   type: 'food' | 'recipe';
 }>();
 const mealItem = defineModel<Partial<MealItem>>();
 
 const getNutritionFromFoodItem = (id: string, units: number, unitOfMeasure: UnitOfMeasure): Nutrition | undefined => {
-  const item = props.values.find((v) => v.id === id);
+  const item = props.items.find((v) => v.id === id);
   if (item) {
     return foodItemNutrients(item as FoodItem, units, unitOfMeasure);
   }
 };
 
 const getNutritionFromRecipe = (id: string): Nutrition | undefined => {
-  const item = props.values.find((v) => v.id === id);
+  const item = props.items.find((v) => v.id === id);
   if (item) {
     return {
       calories: item.calories,
@@ -96,7 +96,7 @@ const recipeOrFoodId = computed({
     mealItem.value = {
       ...mealItem.value,
       [props.type === 'food' ? 'foodItemId' : 'recipeId']: id,
-      name: props.values.find((item) => item.id === id)?.name || '',
+      name: props.items.find((item) => item.id === id)?.name || '',
       nutrition: getNutrition(id, units.value, unitOfMeasure) || ({} as Nutrition),
     };
   },

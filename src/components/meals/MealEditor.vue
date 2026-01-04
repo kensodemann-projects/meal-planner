@@ -2,11 +2,11 @@
   <!-- Currently a placeholder layout, this is being used as a testing harness for now -->
   <h2>Recipes</h2>
   <v-divider class="mb-4"></v-divider>
-  <MealItemEditorRows v-model="recipeMealItem" :values="recipes" type="recipe" />
+  <MealItemEditorRows v-model="recipeMealItem" :items="recipes" type="recipe" />
 
   <h2>Additional Foods</h2>
   <v-divider class="mb-4"></v-divider>
-  <MealItemEditorRows v-model="foodMealItem" :values="foods" type="food" />
+  <MealItemEditorRows v-model="foodMealItem" :items="foods" type="food" />
 
   <h2>Total Nutrition</h2>
   <v-divider class="mb-4"></v-divider>
