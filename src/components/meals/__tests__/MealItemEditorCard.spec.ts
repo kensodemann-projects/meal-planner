@@ -12,17 +12,17 @@ const vuetify = createVuetify({
 const mountComponent = (props: { type: 'food' | 'recipe' } = { type: 'food' }) =>
   mount(MealItemEditorCard, { props, global: { plugins: [vuetify] } });
 
-// const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
-//   recipeOrFoodInput: wrapper.findComponent('[data-testid="recipe-or-food-input"]').find('input'),
-//   unitsInput: wrapper.findComponent('[data-testid="units-input"]').find('input'),
-//   unitOfMeasureInput: wrapper.findComponent('[data-testid="unit-of-measure-input"]').find('input'),
-//   caloriesInput: wrapper.findComponent('[data-testid="calories-input"]').find('input'),
-//   sodiumInput: wrapper.findComponent('[data-testid="sodium-input"]').find('input'),
-//   sugarInput: wrapper.findComponent('[data-testid="sugar-input"]').find('input'),
-//   carbsInput: wrapper.findComponent('[data-testid="carbs-input"]').find('input'),
-//   fatInput: wrapper.findComponent('[data-testid="fat-input"]').find('input'),
-//   proteinInput: wrapper.findComponent('[data-testid="protein-input"]').find('input'),
-// });
+const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
+  recipeOrFoodInput: wrapper.findComponent('[data-testid="recipe-or-food-input"]').find('input'),
+  unitsInput: wrapper.findComponent('[data-testid="units-input"]').find('input'),
+  unitOfMeasureInput: wrapper.findComponent('[data-testid="unit-of-measure-input"]').find('input'),
+  caloriesInput: wrapper.findComponent('[data-testid="calories-input"]').find('input'),
+  sodiumInput: wrapper.findComponent('[data-testid="sodium-input"]').find('input'),
+  sugarInput: wrapper.findComponent('[data-testid="sugar-input"]').find('input'),
+  carbsInput: wrapper.findComponent('[data-testid="carbs-input"]').find('input'),
+  fatInput: wrapper.findComponent('[data-testid="fat-input"]').find('input'),
+  proteinInput: wrapper.findComponent('[data-testid="protein-input"]').find('input'),
+});
 
 describe('Meal Item Editor Card', () => {
   let wrapper: ReturnType<typeof mountComponent>;
@@ -46,8 +46,18 @@ describe('Meal Item Editor Card', () => {
         wrapper = mountComponent({ type: 'recipe' });
       });
 
-      it('placeholder', () => {
-        expect(true).toBe(true);
+      it('defaults the units and unit of measure', () => {
+        const inputs = getInputs(wrapper);
+        expect(inputs.recipeOrFoodInput.element.value).toBe('');
+        expect(inputs.unitsInput.element.value).toBe('1');
+        // it is hard to directly test the autocomplete value, so we check the underlying model
+        expect((wrapper.vm as any).editMealItem.unitOfMeasure.id).toBe('serving');
+        expect(inputs.caloriesInput.element.value).toBe('');
+        expect(inputs.sodiumInput.element.value).toBe('');
+        expect(inputs.sugarInput.element.value).toBe('');
+        expect(inputs.carbsInput.element.value).toBe('');
+        expect(inputs.fatInput.element.value).toBe('');
+        expect(inputs.proteinInput.element.value).toBe('');
       });
     });
 
@@ -56,8 +66,18 @@ describe('Meal Item Editor Card', () => {
         wrapper = mountComponent({ type: 'food' });
       });
 
-      it('placeholder', () => {
-        expect(true).toBe(true);
+      it('does not default anything', () => {
+        const inputs = getInputs(wrapper);
+        expect(inputs.recipeOrFoodInput.element.value).toBe('');
+        expect(inputs.unitsInput.element.value).toBe('');
+        // it is hard to directly test the autocomplete value, so we check the underlying model
+        expect((wrapper.vm as any).editMealItem.unitOfMeasure?.id).toBeUndefined();
+        expect(inputs.caloriesInput.element.value).toBe('');
+        expect(inputs.sodiumInput.element.value).toBe('');
+        expect(inputs.sugarInput.element.value).toBe('');
+        expect(inputs.carbsInput.element.value).toBe('');
+        expect(inputs.fatInput.element.value).toBe('');
+        expect(inputs.proteinInput.element.value).toBe('');
       });
     });
   });
