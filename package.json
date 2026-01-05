@@ -29,7 +29,7 @@
     "vue-router": "^4.6.4",
     "vuedraggable": "^4.1.0",
     "vuefire": "^3.2.2",
-    "vuetify": "^3.11.5"
+    "vuetify": "^3.11.6"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
@@ -45,7 +45,7 @@
     "eslint": "^9.39.2",
     "eslint-config-vuetify": "4.3.4",
     "eslint-plugin-vue": "^10.6.2",
-    "globals": "^16.5.0",
+    "globals": "^17.0.0",
     "husky": "^9.1.7",
     "jsdom": "^27.4.0",
     "lint-staged": "^16.2.7",
