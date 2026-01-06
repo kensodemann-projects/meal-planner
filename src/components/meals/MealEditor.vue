@@ -2,11 +2,11 @@
   <!-- Currently a placeholder layout, this is being used as a testing harness for now -->
   <h2>Recipes</h2>
   <v-divider class="mb-4"></v-divider>
-  <MealItemEditorCard v-model="recipeMealItem" :items="recipes" :meal-item="{}" type="recipe" />
+  <MealItemEditorCard v-if="recipeMealItem !== null" v-model="recipeMealItem" :items="recipes" type="recipe" />
 
   <h2>Additional Foods</h2>
   <v-divider class="mb-4"></v-divider>
-  <MealItemEditorCard v-model="foodMealItem" :items="foods" :meal-item="{}" type="food" />
+  <MealItemEditorCard v-if="foodMealItem !== null" v-model="foodMealItem" :items="foods" type="food" />
 
   <h2>Total Nutrition</h2>
   <v-divider class="mb-4"></v-divider>
@@ -31,8 +31,8 @@ const props = defineProps<{ meal?: Meal }>();
 const { foods } = useFoodsData();
 const { recipes } = useRecipesData();
 
-const foodMealItem = ref<MealItem>();
-const recipeMealItem = ref<MealItem>();
+const foodMealItem = ref<Partial<MealItem> | null>(null);
+const recipeMealItem = ref<Partial<MealItem> | null>(null);
 
 const valid = ref(false);
 

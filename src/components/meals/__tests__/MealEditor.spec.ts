@@ -4,6 +4,8 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import MealEditor from '../MealEditor.vue';
+import { useFoodsData } from '@/data/foods';
+import { useRecipesData } from '@/data/recipes';
 
 vi.mock('@/data/foods');
 vi.mock('@/data/recipes');
@@ -28,5 +30,16 @@ describe('Meal Editor', () => {
   it('renders', () => {
     wrapper = mountComponent();
     expect(wrapper.exists()).toBe(true);
+  });
+
+  it('gets references to the food items and recipes', () => {
+    wrapper = mountComponent();
+    expect(useFoodsData).toHaveBeenCalledExactlyOnceWith();
+    expect(useRecipesData).toHaveBeenCalledExactlyOnceWith();
+  });
+
+  it('does not have any active meal item editors', () => {
+    wrapper = mountComponent();
+    expect(wrapper.findAllComponents({ name: 'MealItemEditorCard' }).length).toBe(0);
   });
 });
