@@ -52,7 +52,9 @@ const isModified = computed(() => {
   ) {
     return true;
   }
-  return fields.some((field) => editMealItem.value.nutrition?.[field] !== props.mealItem!.nutrition![field]);
+  return fields.some(
+    (field) => editMealItem.value.nutrition?.[field] !== props.mealItem?.nutrition?.[field],
+  );
 });
 </script>
 
