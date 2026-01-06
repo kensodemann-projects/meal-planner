@@ -143,7 +143,7 @@ describe('Meal Item Editor Card', () => {
       it('does not default anything', () => {
         const inputs = getInputs(wrapper);
         // it is hard to directly test the autocomplete value, so we check the underlying model
-        expect((wrapper.vm as any).editMealItem.foodId).toBeUndefined();
+        expect((wrapper.vm as any).editMealItem.foodItemId).toBeUndefined();
         expect((wrapper.vm as any).editMealItem.unitOfMeasure?.id).toBeUndefined();
         expect(inputs.recipeOrFoodInput.element.value).toBe('');
         expect(inputs.unitsInput.element.value).toBe('');
