@@ -35,6 +35,38 @@ const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
   proteinInput: wrapper.findComponent('[data-testid="protein-input"]').find('input'),
 });
 
+const TEST_FOOD_MEAL_ITEM: MealItem = {
+  id: 'c83a0eed-f113-4d83-af2f-27734807df99',
+  units: 2,
+  unitOfMeasure: { id: 'cup', name: 'Cup', type: 'volume', system: 'customary', fdcId: 1000 },
+  name: TEST_FOODS[0]!.name,
+  foodItemId: TEST_FOODS[0]!.id,
+  nutrition: {
+    calories: 300,
+    sodium: 250,
+    fat: 16,
+    protein: 16,
+    carbs: 24,
+    sugar: 23,
+  },
+};
+
+const TEST_RECIPE_MEAL_ITEM: MealItem = {
+  id: '4498eae8-b4c9-4327-b1c2-518f071981f2',
+  units: 1,
+  unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
+  name: TEST_RECIPES[0]!.name,
+  recipeId: TEST_RECIPES[0]!.id,
+  nutrition: {
+    calories: 630,
+    sodium: 780,
+    sugar: 3,
+    carbs: 55,
+    fat: 35,
+    protein: 28,
+  },
+};
+
 describe('Meal Item Editor Card', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
@@ -437,35 +469,3 @@ describe('Meal Item Editor Card', () => {
     });
   });
 });
-
-const TEST_FOOD_MEAL_ITEM: MealItem = {
-  id: 'c83a0eed-f113-4d83-af2f-27734807df99',
-  units: 2,
-  unitOfMeasure: { id: 'cup', name: 'Cup', type: 'volume', system: 'customary', fdcId: 1000 },
-  name: TEST_FOODS[0]!.name,
-  foodItemId: TEST_FOODS[0]!.id,
-  nutrition: {
-    calories: 300,
-    sodium: 250,
-    fat: 16,
-    protein: 16,
-    carbs: 24,
-    sugar: 23,
-  },
-};
-
-const TEST_RECIPE_MEAL_ITEM: MealItem = {
-  id: '4498eae8-b4c9-4327-b1c2-518f071981f2',
-  units: 1,
-  unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
-  name: TEST_RECIPES[0]!.name,
-  recipeId: TEST_RECIPES[0]!.id,
-  nutrition: {
-    calories: 630,
-    sodium: 780,
-    sugar: 3,
-    carbs: 55,
-    fat: 35,
-    protein: 28,
-  },
-};
