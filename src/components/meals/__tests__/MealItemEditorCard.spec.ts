@@ -312,6 +312,26 @@ describe('Meal Item Editor Card', () => {
           await inputs.sodiumInput.setValue(TEST_RECIPE_MEAL_ITEM.nutrition.sodium);
           expect(saveButton.attributes('disabled')).toBeDefined();
         });
+
+        it('emits "save" with the data as updated', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          await inputs.caloriesInput.setValue(631);
+          await inputs.sodiumInput.setValue(781);
+          await saveButton.trigger('click');
+          expect(wrapper.emitted('save')).toBeTruthy();
+          expect(wrapper.emitted('save')).toHaveLength(1);
+          expect(wrapper.emitted('save')?.[0]).toEqual([
+            {
+              ...TEST_RECIPE_MEAL_ITEM,
+              nutrition: {
+                ...TEST_RECIPE_MEAL_ITEM.nutrition,
+                calories: 631,
+                sodium: 781,
+              },
+            },
+          ]);
+        });
       });
     });
 
@@ -392,6 +412,26 @@ describe('Meal Item Editor Card', () => {
           expect(saveButton.attributes('disabled')).toBeUndefined();
           await inputs.sodiumInput.setValue(TEST_FOOD_MEAL_ITEM.nutrition.sodium);
           expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('emits "save" with the data as updated', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          await inputs.caloriesInput.setValue(331);
+          await inputs.sodiumInput.setValue(281);
+          await saveButton.trigger('click');
+          expect(wrapper.emitted('save')).toBeTruthy();
+          expect(wrapper.emitted('save')).toHaveLength(1);
+          expect(wrapper.emitted('save')?.[0]).toEqual([
+            {
+              ...TEST_FOOD_MEAL_ITEM,
+              nutrition: {
+                ...TEST_FOOD_MEAL_ITEM.nutrition,
+                calories: 331,
+                sodium: 281,
+              },
+            },
+          ]);
         });
       });
     });

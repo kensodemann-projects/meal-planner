@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid dense>
     <v-row>
       <v-col cols="12" md="4">
         <v-autocomplete
