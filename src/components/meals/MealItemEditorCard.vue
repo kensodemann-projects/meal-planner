@@ -28,7 +28,7 @@ const props = defineProps<{
   type: 'food' | 'recipe';
 }>();
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'save', value: MealItem): void;
   (e: 'cancel'): void;
 }>();
@@ -52,9 +52,7 @@ const isModified = computed(() => {
   ) {
     return true;
   }
-  return fields.some(
-    (field) => editMealItem.value.nutrition?.[field] !== props.mealItem?.nutrition?.[field],
-  );
+  return fields.some((field) => editMealItem.value.nutrition?.[field] !== props.mealItem?.nutrition?.[field]);
 });
 </script>
 
