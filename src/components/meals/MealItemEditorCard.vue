@@ -28,6 +28,10 @@ const props = defineProps<{
   type: 'food' | 'recipe';
 }>();
 
+const emit = defineEmits<{
+  (e: 'save', value: MealItem): void;
+  (e: 'cancel'): void;
+}>();
 const editMealItem = ref<Partial<MealItem>>(
   props.mealItem || {
     id: globalThis.crypto.randomUUID(),
