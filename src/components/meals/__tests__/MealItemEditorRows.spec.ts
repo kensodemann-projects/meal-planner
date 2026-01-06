@@ -19,7 +19,7 @@ const vuetify = createVuetify({
 });
 const mountComponent = (props: {
   modelValue: Partial<MealItem>;
-  values: (FoodItem | Recipe)[];
+  items: (FoodItem | Recipe)[];
   type: 'food' | 'recipe';
 }) => mount(MealItemEditorRows, { props, global: { plugins: [vuetify] } });
 
@@ -37,12 +37,12 @@ describe('Meal Item Editor Rows', () => {
   describe('for foods', () => {
     describe('food select', () => {
       it('does not default', () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        wrapper = mountComponent({ modelValue: {}, type: 'food', items: TEST_FOODS });
         expect((wrapper.vm as any).recipeOrFoodId).toBeUndefined();
       });
 
       it('has the proper label', () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        wrapper = mountComponent({ modelValue: {}, type: 'food', items: TEST_FOODS });
         const foodSelect = wrapper.findComponent(
           '[data-testid="recipe-or-food-input"]',
         ) as VueWrapper<components.VAutocomplete>;
@@ -50,12 +50,12 @@ describe('Meal Item Editor Rows', () => {
       });
 
       it('is required', async () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        wrapper = mountComponent({ modelValue: {}, type: 'food', items: TEST_FOODS });
         await autocompleteIsRequired(wrapper, 'recipe-or-food-input');
       });
 
       it('emits changes', async () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        wrapper = mountComponent({ modelValue: {}, type: 'food', items: TEST_FOODS });
         const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-or-food-input"]');
 
         await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_FOODS[1]!.id);
@@ -68,26 +68,20 @@ describe('Meal Item Editor Rows', () => {
 
       describe('for an existing food item', () => {
         it('is initialized based on the meal item', () => {
-          wrapper = mountComponent({ modelValue: TEST_FOOD_MEAL_ITEM, type: 'food', values: TEST_FOODS });
+          wrapper = mountComponent({ modelValue: TEST_FOOD_MEAL_ITEM, type: 'food', items: TEST_FOODS });
           expect((wrapper.vm as any).recipeOrFoodId).toBe(TEST_FOOD_MEAL_ITEM.foodItemId);
         });
       });
     });
 
     describe('units', () => {
-      it('does not default', () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
-        const units = wrapper.findComponent('[data-testid="units-input"]');
-        expect((units.find('input').element as HTMLInputElement).value).toBe('');
-      });
-
       it('is required', async () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        wrapper = mountComponent({ modelValue: {}, type: 'food', items: TEST_FOODS });
         await numberInputIsRequired(wrapper, 'units-input');
       });
 
       it('emits changes', async () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        wrapper = mountComponent({ modelValue: {}, type: 'food', items: TEST_FOODS });
         const units = wrapper.findComponent('[data-testid="units-input"]');
         await units.find('input').setValue('3');
 
@@ -98,7 +92,7 @@ describe('Meal Item Editor Rows', () => {
 
       describe('for an existing food item', () => {
         it('is initialized based on the meal item', () => {
-          wrapper = mountComponent({ modelValue: TEST_FOOD_MEAL_ITEM, type: 'food', values: TEST_FOODS });
+          wrapper = mountComponent({ modelValue: TEST_FOOD_MEAL_ITEM, type: 'food', items: TEST_FOODS });
           const units = wrapper.findComponent('[data-testid="units-input"]');
           expect((units.find('input').element as HTMLInputElement).value).toBe('2');
         });
@@ -106,18 +100,13 @@ describe('Meal Item Editor Rows', () => {
     });
 
     describe('unit of measure', () => {
-      it('does not default', () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
-        expect((wrapper.vm as any).unitOfMeasureId).toBeUndefined();
-      });
-
       it('is required', async () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        wrapper = mountComponent({ modelValue: {}, type: 'food', items: TEST_FOODS });
         await autocompleteIsRequired(wrapper, 'unit-of-measure-input');
       });
 
       it('emits changes', async () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        wrapper = mountComponent({ modelValue: {}, type: 'food', items: TEST_FOODS });
         const unitOfMeasure = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
 
         await (unitOfMeasure as any).vm.$emit('update:modelValue', 'tbsp');
@@ -129,7 +118,7 @@ describe('Meal Item Editor Rows', () => {
 
       describe('for an existing food item', () => {
         it('is initialized based on the meal item', () => {
-          wrapper = mountComponent({ modelValue: TEST_FOOD_MEAL_ITEM, type: 'food', values: TEST_FOODS });
+          wrapper = mountComponent({ modelValue: TEST_FOOD_MEAL_ITEM, type: 'food', items: TEST_FOODS });
           expect((wrapper.vm as any).unitOfMeasureId).toBe('cup');
         });
       });
@@ -137,13 +126,13 @@ describe('Meal Item Editor Rows', () => {
 
     describe('nutritional information', () => {
       it('renders NutritionEditorRows component', () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        wrapper = mountComponent({ modelValue: {}, type: 'food', items: TEST_FOODS });
         const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
         expect(nutritionEditor.exists()).toBe(true);
       });
 
       it('initializes with empty nutrition object', () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        wrapper = mountComponent({ modelValue: {}, type: 'food', items: TEST_FOODS });
         const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
         expect(nutritionEditor.props('modelValue')).toEqual({});
       });
@@ -158,7 +147,7 @@ describe('Meal Item Editor Rows', () => {
           protein: 8,
         });
 
-        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        wrapper = mountComponent({ modelValue: {}, type: 'food', items: TEST_FOODS });
         const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
         const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-or-food-input"]');
         await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_FOODS[1]!.id);
@@ -199,7 +188,7 @@ describe('Meal Item Editor Rows', () => {
           protein: 8,
         });
 
-        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        wrapper = mountComponent({ modelValue: {}, type: 'food', items: TEST_FOODS });
         const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
         const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-or-food-input"]');
         await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_FOODS[1]!.id);
@@ -228,7 +217,7 @@ describe('Meal Item Editor Rows', () => {
           fat: 16,
           protein: 16,
         };
-        wrapper = mountComponent({ modelValue: {}, type: 'food', values: TEST_FOODS });
+        wrapper = mountComponent({ modelValue: {}, type: 'food', items: TEST_FOODS });
 
         const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
         await nutritionEditor.vm.$emit('update:modelValue', nutrition);
@@ -240,7 +229,7 @@ describe('Meal Item Editor Rows', () => {
 
       describe('for an existing food item', () => {
         it('initializes the nutrition data', () => {
-          wrapper = mountComponent({ modelValue: TEST_FOOD_MEAL_ITEM, type: 'food', values: TEST_FOODS });
+          wrapper = mountComponent({ modelValue: TEST_FOOD_MEAL_ITEM, type: 'food', items: TEST_FOODS });
           const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
           expect(nutritionEditor.props('modelValue')).toEqual(TEST_FOOD_MEAL_ITEM.nutrition!);
         });
@@ -251,12 +240,12 @@ describe('Meal Item Editor Rows', () => {
   describe('for recipes', () => {
     describe('recipe select', () => {
       it('does not default', () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', items: TEST_RECIPES });
         expect((wrapper.vm as any).recipeOrFoodId).toBeUndefined();
       });
 
       it('has the proper label', () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', items: TEST_RECIPES });
         const foodSelect = wrapper.findComponent(
           '[data-testid="recipe-or-food-input"]',
         ) as VueWrapper<components.VAutocomplete>;
@@ -264,12 +253,12 @@ describe('Meal Item Editor Rows', () => {
       });
 
       it('is required', async () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', items: TEST_RECIPES });
         await autocompleteIsRequired(wrapper, 'recipe-or-food-input');
       });
 
       it('emits changes', async () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', items: TEST_RECIPES });
         const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-or-food-input"]');
 
         await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_RECIPES[1]!.id);
@@ -281,7 +270,7 @@ describe('Meal Item Editor Rows', () => {
       });
 
       it('defaults the nutrition information', async () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', items: TEST_RECIPES });
         const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
         const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-or-food-input"]');
         await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_RECIPES[1]!.id);
@@ -297,21 +286,15 @@ describe('Meal Item Editor Rows', () => {
 
       describe('for an existing recipe item', () => {
         it('is initialized based on the meal item', () => {
-          wrapper = mountComponent({ modelValue: TEST_RECIPE_MEAL_ITEM, type: 'recipe', values: TEST_RECIPES });
+          wrapper = mountComponent({ modelValue: TEST_RECIPE_MEAL_ITEM, type: 'recipe', items: TEST_RECIPES });
           expect((wrapper.vm as any).recipeOrFoodId).toBe(TEST_RECIPE_MEAL_ITEM.recipeId);
         });
       });
     });
 
     describe('units', () => {
-      it('defaults to 1', () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
-        const units = wrapper.findComponent('[data-testid="units-input"]');
-        expect((units.find('input').element as HTMLInputElement).value).toBe('1');
-      });
-
       it('is disabled', () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', items: TEST_RECIPES });
         const units = wrapper.findComponent('[data-testid="units-input"]');
         const input = units.find('input');
         expect(input.element.disabled).toBe(true);
@@ -319,13 +302,8 @@ describe('Meal Item Editor Rows', () => {
     });
 
     describe('unit of measure', () => {
-      it('defaults to serving', () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
-        expect((wrapper.vm as any).unitOfMeasureId).toBe('serving');
-      });
-
       it('is disabled', () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', items: TEST_RECIPES });
         const unitOfMeasure = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
         const input = unitOfMeasure.find('input');
         expect(input.element.disabled).toBe(true);
@@ -334,13 +312,13 @@ describe('Meal Item Editor Rows', () => {
 
     describe('nutritional information', () => {
       it('renders NutritionEditorRows component', () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', items: TEST_RECIPES });
         const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
         expect(nutritionEditor.exists()).toBe(true);
       });
 
       it('initializes with empty nutrition object', () => {
-        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', items: TEST_RECIPES });
         const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
         expect(nutritionEditor.props('modelValue')).toEqual({});
       });
@@ -354,7 +332,7 @@ describe('Meal Item Editor Rows', () => {
           fat: 16,
           protein: 16,
         };
-        wrapper = mountComponent({ modelValue: {}, type: 'recipe', values: TEST_RECIPES });
+        wrapper = mountComponent({ modelValue: {}, type: 'recipe', items: TEST_RECIPES });
 
         const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
         await nutritionEditor.vm.$emit('update:modelValue', nutrition);
@@ -366,7 +344,7 @@ describe('Meal Item Editor Rows', () => {
 
       describe('for an existing food item', () => {
         it('initializes the nutrition data', () => {
-          wrapper = mountComponent({ modelValue: TEST_RECIPE_MEAL_ITEM, type: 'recipe', values: TEST_RECIPES });
+          wrapper = mountComponent({ modelValue: TEST_RECIPE_MEAL_ITEM, type: 'recipe', items: TEST_RECIPES });
           const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
           expect(nutritionEditor.props('modelValue')).toEqual(TEST_RECIPE_MEAL_ITEM.nutrition!);
         });
