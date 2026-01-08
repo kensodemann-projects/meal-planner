@@ -1,12 +1,36 @@
 <template>
   <!-- Currently a placeholder layout, this is being used as a testing harness for now -->
-  <h2>Recipes</h2>
+  <h2>
+    <div class="d-flex justify-space-between">
+      <div>Recipes</div>
+      <v-btn
+        density="compact"
+        variant="text"
+        icon="mdi-plus"
+        :disabled="recipeMealItem !== null"
+        @click="() => (recipeMealItem = {})"
+        data-testid="add-portion-button"
+      ></v-btn>
+    </div>
+  </h2>
   <v-divider class="mb-4"></v-divider>
-  <MealItemEditorCard v-if="recipeMealItem !== null" v-model="recipeMealItem" :items="recipes" type="recipe" />
+  <MealItemEditorCard v-if="recipeMealItem !== null" :meal-item="recipeMealItem" :items="recipes" type="recipe" />
 
-  <h2>Additional Foods</h2>
+  <h2>
+    <div class="d-flex justify-space-between">
+      <div>Additional Foods</div>
+      <v-btn
+        density="compact"
+        variant="text"
+        icon="mdi-plus"
+        :disabled="foodMealItem !== null"
+        @click="() => (foodMealItem = {})"
+        data-testid="add-portion-button"
+      ></v-btn>
+    </div>
+  </h2>
   <v-divider class="mb-4"></v-divider>
-  <MealItemEditorCard v-if="foodMealItem !== null" v-model="foodMealItem" :items="foods" type="food" />
+  <MealItemEditorCard v-if="foodMealItem !== null" :meal-item="foodMealItem" :items="foods" type="food" />
 
   <h2>Total Nutrition</h2>
   <v-divider class="mb-4"></v-divider>
