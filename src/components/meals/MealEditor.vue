@@ -9,7 +9,7 @@
         icon="mdi-plus"
         :disabled="recipeMealItem !== null"
         @click="() => (recipeMealItem = {})"
-        data-testid="add-portion-button"
+        data-testid="add-recipe-button"
       ></v-btn>
     </div>
   </h2>
@@ -25,7 +25,7 @@
         icon="mdi-plus"
         :disabled="foodMealItem !== null"
         @click="() => (foodMealItem = {})"
-        data-testid="add-portion-button"
+        data-testid="add-food-item-button"
       ></v-btn>
     </div>
   </h2>

@@ -42,4 +42,58 @@ describe('Meal Editor', () => {
     wrapper = mountComponent();
     expect(wrapper.findAllComponents({ name: 'MealItemEditorCard' }).length).toBe(0);
   });
+
+  describe('add recipe button', () => {
+    it('is active', () => {
+      wrapper = mountComponent();
+      const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
+      expect(addRecipeButton.exists()).toBe(true);
+      expect(addRecipeButton.attributes('disabled')).toBeUndefined();
+    });
+
+    describe('on click', () => {
+      it('adds a meal item editor for a recipe', async () => {
+        wrapper = mountComponent();
+        const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
+        await addRecipeButton.trigger('click');
+        const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+        expect(mealItemEditors.length).toBe(1);
+        expect(mealItemEditors[0]!.props('type')).toBe('recipe');
+      });
+
+      it('becomes disabled', async () => {
+        wrapper = mountComponent();
+        const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
+        await addRecipeButton.trigger('click');
+        expect(addRecipeButton.attributes('disabled')).toBeDefined();
+      });
+    });
+  });
+
+  describe('add food item button', () => {
+    it('is active', () => {
+      wrapper = mountComponent();
+      const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
+      expect(addFoodItemButton.exists()).toBe(true);
+      expect(addFoodItemButton.attributes('disabled')).toBeUndefined();
+    });
+
+    describe('on click', () => {
+      it('adds a meal item editor for a food item', async () => {
+        wrapper = mountComponent();
+        const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
+        await addFoodItemButton.trigger('click');
+        const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+        expect(mealItemEditors.length).toBe(1);
+        expect(mealItemEditors[0]!.props('type')).toBe('food');
+      });
+
+      it('becomes disabled', async () => {
+        wrapper = mountComponent();
+        const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
+        await addFoodItemButton.trigger('click');
+        expect(addFoodItemButton.attributes('disabled')).toBeDefined();
+      });
+    });
+  });
 });
