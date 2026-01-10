@@ -88,7 +88,21 @@ describe('Meal Editor', () => {
           await addRecipeButton.trigger('click');
           let mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
           expect(mealItemEditors.length).toBe(1);
-          await mealItemEditors[0]!.vm.$emit('save', { id: 'recipe-1', type: 'recipe', quantity: 2 });
+          await mealItemEditors[0]!.vm.$emit('save', {
+            id: 'item-2-3-1',
+            name: 'Beef Sirloin',
+            recipeId: '3',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
+            nutrition: {
+              calories: 320,
+              sodium: 120,
+              fat: 14,
+              protein: 42,
+              carbs: 0,
+              sugar: 0,
+            },
+          });
           mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
           expect(mealItemEditors.length).toBe(0);
         });
@@ -141,7 +155,21 @@ describe('Meal Editor', () => {
           await addFoodItemButton.trigger('click');
           let mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
           expect(mealItemEditors.length).toBe(1);
-          await mealItemEditors[0]!.vm.$emit('save', { id: 'food-1', type: 'food', quantity: 3 });
+          await mealItemEditors[0]!.vm.$emit('save', {
+            id: 'item-1-1-1',
+            name: 'Rolled Oats',
+            foodItemId: 'food-test-1',
+            units: 1,
+            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            nutrition: {
+              calories: 300,
+              sodium: 100,
+              fat: 6,
+              protein: 10,
+              carbs: 54,
+              sugar: 2,
+            },
+          });
           mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
           expect(mealItemEditors.length).toBe(0);
         });

@@ -19,7 +19,7 @@
     :meal-item="recipeMealItem"
     :items="recipes"
     type="recipe"
-    @save="() => (recipeMealItem = null)"
+    @save="saveMealItem"
     @cancel="() => (recipeMealItem = null)"
   />
 
@@ -42,7 +42,7 @@
     :meal-item="foodMealItem"
     :items="foods"
     type="food"
-    @save="() => (foodMealItem = null)"
+    @save="saveMealItem"
     @cancel="() => (foodMealItem = null)"
   />
 
@@ -71,10 +71,22 @@ const { recipes } = useRecipesData();
 
 const foodMealItem = ref<Partial<MealItem> | null>(null);
 const recipeMealItem = ref<Partial<MealItem> | null>(null);
+const mealItems = ref<MealItem[]>([]);
 
 const valid = ref(false);
 
 const isModified = computed((): boolean => false);
+
+const saveMealItem = (mealItem: MealItem) => {
+  // The effect of this cannot be seen in this component currently, but in a full implementation,
+  // this would update the meal's items list
+  mealItems.value.push(mealItem);
+  if (mealItem.foodItemId) {
+    foodMealItem.value = null;
+  } else if (mealItem.recipeId) {
+    recipeMealItem.value = null;
+  }
+};
 
 const save = () => {
   const mealToSave: Meal = {
