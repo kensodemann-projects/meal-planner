@@ -22,7 +22,7 @@
     @cancel="() => (recipeMealItem = null)"
   />
 
-  <h2>
+  <h2 class="mt-8">
     <div class="d-flex justify-space-between">
       <div>Additional Foods</div>
       <v-btn
@@ -44,7 +44,7 @@
     @cancel="() => (foodMealItem = null)"
   />
 
-  <h2>Total Nutrition</h2>
+  <h2 class="mt-8">Total Nutrition</h2>
   <v-divider class="mb-4"></v-divider>
 
   <v-container fluid>
