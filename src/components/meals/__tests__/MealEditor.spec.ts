@@ -1,11 +1,13 @@
+import { useFoodsData } from '@/data/foods';
+import { useRecipesData } from '@/data/recipes';
+import type { Meal } from '@/models/meal';
 import { mount } from '@vue/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import MealEditor from '../MealEditor.vue';
-import { useFoodsData } from '@/data/foods';
-import { useRecipesData } from '@/data/recipes';
+import { TEST_MEAL } from '@/data/__tests__/test-data';
 
 vi.mock('@/data/foods');
 vi.mock('@/data/recipes');
@@ -14,7 +16,8 @@ const vuetify = createVuetify({
   components,
   directives,
 });
-const mountComponent = (props = {}) => mount(MealEditor, { props, global: { plugins: [vuetify] } });
+
+const mountComponent = (props: { meal?: Meal } = {}) => mount(MealEditor, { props, global: { plugins: [vuetify] } });
 
 describe('Meal Editor', () => {
   let wrapper: ReturnType<typeof mountComponent>;
@@ -41,6 +44,34 @@ describe('Meal Editor', () => {
   it('does not have any active meal item editors', () => {
     wrapper = mountComponent();
     expect(wrapper.findAllComponents({ name: 'MealItemEditorCard' }).length).toBe(0);
+  });
+
+  describe('adding a meal', () => {
+    beforeEach(() => (wrapper = mountComponent()));
+
+    it('does not list any recipes', () => {
+      const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
+      const panels = recipePanels.findAllComponents(components.VExpansionPanel);
+      expect(panels.length).toBe(0);
+    });
+
+    it('does not list any food items', () => {
+      const foodItemPanels = wrapper.findComponent('[data-testid="food-item-panels"]');
+      const panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
+      expect(panels.length).toBe(0);
+    });
+  });
+
+  describe('updating a meal', () => {
+    beforeEach(() => (wrapper = mountComponent({ meal: TEST_MEAL })));
+
+    it('lists the recipes for the meal', () => {
+      expect(true).toBe(true);
+    });
+
+    it('lists the food items for the meal', () => {
+      expect(true).toBe(true);
+    });
   });
 
   describe('add recipe button', () => {

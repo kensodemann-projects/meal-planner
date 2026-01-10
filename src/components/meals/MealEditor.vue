@@ -22,6 +22,7 @@
     @save="saveMealItem"
     @cancel="() => (recipeMealItem = null)"
   />
+  <v-expansion-panels data-testid="recipe-panels"> </v-expansion-panels>
 
   <h2 class="mt-8">
     <div class="d-flex justify-space-between">
@@ -45,6 +46,7 @@
     @save="saveMealItem"
     @cancel="() => (foodMealItem = null)"
   />
+  <v-expansion-panels data-testid="food-item-panels"> </v-expansion-panels>
 
   <h2 class="mt-8">Total Nutrition</h2>
   <v-divider class="mb-4"></v-divider>
