@@ -58,7 +58,7 @@
   <v-expansion-panels data-testid="food-item-panels">
     <v-expansion-panel v-for="item in foodMealItems" :key="item.id">
       <v-expansion-panel-title>
-        {{ item.name || 'Unnamed Food Item' }}
+        {{ item.name }}
       </v-expansion-panel-title>
       <v-expansion-panel-text>
         <NutritionData :value="item.nutrition" />
