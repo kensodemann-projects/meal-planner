@@ -22,7 +22,17 @@
     @save="saveMealItem"
     @cancel="() => (recipeMealItem = null)"
   />
-  <v-expansion-panels data-testid="recipe-panels"> </v-expansion-panels>
+  <v-expansion-panels data-testid="recipe-panels">
+    <v-expansion-panel v-for="item in recipeMealItems" :key="item.id">
+      <v-expansion-panel-title>
+        {{ item.name || 'Unnamed Recipe' }}
+      </v-expansion-panel-title>
+      <v-expansion-panel-text>
+        <!-- Placeholder for meal item details -->
+        <div>Details for {{ item.name || 'Unnamed Recipe' }}</div>
+      </v-expansion-panel-text>
+    </v-expansion-panel>
+  </v-expansion-panels>
 
   <h2 class="mt-8">
     <div class="d-flex justify-space-between">
@@ -46,7 +56,17 @@
     @save="saveMealItem"
     @cancel="() => (foodMealItem = null)"
   />
-  <v-expansion-panels data-testid="food-item-panels"> </v-expansion-panels>
+  <v-expansion-panels data-testid="food-item-panels">
+    <v-expansion-panel v-for="item in foodMealItems" :key="item.id">
+      <v-expansion-panel-title>
+        {{ item.name || 'Unnamed Food Item' }}
+      </v-expansion-panel-title>
+      <v-expansion-panel-text>
+        <!-- Placeholder for meal item details -->
+        <div>Details for {{ item.name || 'Unnamed Food Item' }}</div>
+      </v-expansion-panel-text>
+    </v-expansion-panel>
+  </v-expansion-panels>
 
   <h2 class="mt-8">Total Nutrition</h2>
   <v-divider class="mb-4"></v-divider>
@@ -73,10 +93,12 @@ const { recipes } = useRecipesData();
 
 const foodMealItem = ref<Partial<MealItem> | null>(null);
 const recipeMealItem = ref<Partial<MealItem> | null>(null);
-const mealItems = ref<MealItem[]>([]);
+const mealItems = ref<MealItem[]>(props.meal?.items ?? []);
 
 const valid = ref(false);
 
+const foodMealItems = computed((): MealItem[] => mealItems.value.filter((item) => item.foodItemId !== undefined));
+const recipeMealItems = computed((): MealItem[] => mealItems.value.filter((item) => item.recipeId !== undefined));
 const isModified = computed((): boolean => false);
 
 const saveMealItem = (mealItem: MealItem) => {

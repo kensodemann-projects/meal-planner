@@ -66,11 +66,15 @@ describe('Meal Editor', () => {
     beforeEach(() => (wrapper = mountComponent({ meal: TEST_MEAL })));
 
     it('lists the recipes for the meal', () => {
-      expect(true).toBe(true);
+      const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
+      const panels = recipePanels.findAllComponents(components.VExpansionPanel);
+      expect(panels.length).toBe(TEST_MEAL.items.filter((item) => item.recipeId).length);
     });
 
     it('lists the food items for the meal', () => {
-      expect(true).toBe(true);
+      const foodItemPanels = wrapper.findComponent('[data-testid="food-item-panels"]');
+      const panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
+      expect(panels.length).toBe(TEST_MEAL.items.filter((item) => item.foodItemId).length);
     });
   });
 
