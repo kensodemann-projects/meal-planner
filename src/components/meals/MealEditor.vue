@@ -1,14 +1,52 @@
 <template>
   <!-- Currently a placeholder layout, this is being used as a testing harness for now -->
-  <h2>Recipes</h2>
+  <h2>
+    <div class="d-flex justify-space-between">
+      <div>Recipes</div>
+      <v-btn
+        density="compact"
+        variant="text"
+        icon="mdi-plus"
+        :disabled="recipeMealItem !== null"
+        @click="() => (recipeMealItem = {})"
+        data-testid="add-recipe-button"
+      ></v-btn>
+    </div>
+  </h2>
   <v-divider class="mb-4"></v-divider>
-  <MealItemEditorCard v-model="recipeMealItem" :items="recipes" :meal-item="{}" type="recipe" />
+  <MealItemEditorCard
+    v-if="recipeMealItem !== null"
+    :meal-item="recipeMealItem"
+    :items="recipes"
+    type="recipe"
+    @save="saveMealItem"
+    @cancel="() => (recipeMealItem = null)"
+  />
 
-  <h2>Additional Foods</h2>
+  <h2 class="mt-8">
+    <div class="d-flex justify-space-between">
+      <div>Additional Foods</div>
+      <v-btn
+        density="compact"
+        variant="text"
+        icon="mdi-plus"
+        :disabled="foodMealItem !== null"
+        @click="() => (foodMealItem = {})"
+        data-testid="add-food-item-button"
+      ></v-btn>
+    </div>
+  </h2>
   <v-divider class="mb-4"></v-divider>
-  <MealItemEditorCard v-model="foodMealItem" :items="foods" :meal-item="{}" type="food" />
+  <MealItemEditorCard
+    v-if="foodMealItem !== null"
+    :meal-item="foodMealItem"
+    :items="foods"
+    type="food"
+    @save="saveMealItem"
+    @cancel="() => (foodMealItem = null)"
+  />
 
-  <h2>Total Nutrition</h2>
+  <h2 class="mt-8">Total Nutrition</h2>
   <v-divider class="mb-4"></v-divider>
 
   <v-container fluid>
@@ -31,12 +69,24 @@ const props = defineProps<{ meal?: Meal }>();
 const { foods } = useFoodsData();
 const { recipes } = useRecipesData();
 
-const foodMealItem = ref<MealItem>();
-const recipeMealItem = ref<MealItem>();
+const foodMealItem = ref<Partial<MealItem> | null>(null);
+const recipeMealItem = ref<Partial<MealItem> | null>(null);
+const mealItems = ref<MealItem[]>([]);
 
 const valid = ref(false);
 
 const isModified = computed((): boolean => false);
+
+const saveMealItem = (mealItem: MealItem) => {
+  // The effect of this cannot be seen in this component currently, but in a full implementation,
+  // this would update the meal's items list
+  mealItems.value.push(mealItem);
+  if (mealItem.foodItemId) {
+    foodMealItem.value = null;
+  } else if (mealItem.recipeId) {
+    recipeMealItem.value = null;
+  }
+};
 
 const save = () => {
   const mealToSave: Meal = {

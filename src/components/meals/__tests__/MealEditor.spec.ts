@@ -4,6 +4,8 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import MealEditor from '../MealEditor.vue';
+import { useFoodsData } from '@/data/foods';
+import { useRecipesData } from '@/data/recipes';
 
 vi.mock('@/data/foods');
 vi.mock('@/data/recipes');
@@ -28,5 +30,150 @@ describe('Meal Editor', () => {
   it('renders', () => {
     wrapper = mountComponent();
     expect(wrapper.exists()).toBe(true);
+  });
+
+  it('gets references to the food items and recipes', () => {
+    wrapper = mountComponent();
+    expect(useFoodsData).toHaveBeenCalledExactlyOnceWith();
+    expect(useRecipesData).toHaveBeenCalledExactlyOnceWith();
+  });
+
+  it('does not have any active meal item editors', () => {
+    wrapper = mountComponent();
+    expect(wrapper.findAllComponents({ name: 'MealItemEditorCard' }).length).toBe(0);
+  });
+
+  describe('add recipe button', () => {
+    it('is active', () => {
+      wrapper = mountComponent();
+      const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
+      expect(addRecipeButton.exists()).toBe(true);
+      expect(addRecipeButton.attributes('disabled')).toBeUndefined();
+    });
+
+    describe('on click', () => {
+      it('adds a meal item editor for a recipe', async () => {
+        wrapper = mountComponent();
+        const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
+        await addRecipeButton.trigger('click');
+        const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+        expect(mealItemEditors.length).toBe(1);
+        expect(mealItemEditors[0]!.props('type')).toBe('recipe');
+      });
+
+      it('becomes disabled', async () => {
+        wrapper = mountComponent();
+        const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
+        await addRecipeButton.trigger('click');
+        expect(addRecipeButton.attributes('disabled')).toBeDefined();
+      });
+
+      describe('on cancel', () => {
+        it('removes the meal item editor', async () => {
+          wrapper = mountComponent();
+          const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
+          await addRecipeButton.trigger('click');
+          let mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+          expect(mealItemEditors.length).toBe(1);
+          await mealItemEditors[0]!.vm.$emit('cancel');
+          mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+          expect(mealItemEditors.length).toBe(0);
+        });
+      });
+
+      describe('on save', () => {
+        it('removes the meal item editor', async () => {
+          wrapper = mountComponent();
+          const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
+          await addRecipeButton.trigger('click');
+          let mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+          expect(mealItemEditors.length).toBe(1);
+          await mealItemEditors[0]!.vm.$emit('save', {
+            id: 'item-2-3-1',
+            name: 'Beef Sirloin',
+            recipeId: '3',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
+            nutrition: {
+              calories: 320,
+              sodium: 120,
+              fat: 14,
+              protein: 42,
+              carbs: 0,
+              sugar: 0,
+            },
+          });
+          mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+          expect(mealItemEditors.length).toBe(0);
+        });
+      });
+    });
+  });
+
+  describe('add food item button', () => {
+    it('is active', () => {
+      wrapper = mountComponent();
+      const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
+      expect(addFoodItemButton.exists()).toBe(true);
+      expect(addFoodItemButton.attributes('disabled')).toBeUndefined();
+    });
+
+    describe('on click', () => {
+      it('adds a meal item editor for a food item', async () => {
+        wrapper = mountComponent();
+        const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
+        await addFoodItemButton.trigger('click');
+        const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+        expect(mealItemEditors.length).toBe(1);
+        expect(mealItemEditors[0]!.props('type')).toBe('food');
+      });
+
+      it('becomes disabled', async () => {
+        wrapper = mountComponent();
+        const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
+        await addFoodItemButton.trigger('click');
+        expect(addFoodItemButton.attributes('disabled')).toBeDefined();
+      });
+
+      describe('on cancel', () => {
+        it('removes the meal item editor', async () => {
+          wrapper = mountComponent();
+          const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
+          await addFoodItemButton.trigger('click');
+          let mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+          expect(mealItemEditors.length).toBe(1);
+          await mealItemEditors[0]!.vm.$emit('cancel');
+          mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+          expect(mealItemEditors.length).toBe(0);
+        });
+      });
+
+      describe('on save', () => {
+        it('removes the meal item editor', async () => {
+          wrapper = mountComponent();
+          const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
+          await addFoodItemButton.trigger('click');
+          let mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+          expect(mealItemEditors.length).toBe(1);
+          await mealItemEditors[0]!.vm.$emit('save', {
+            id: 'item-1-1-1',
+            name: 'Rolled Oats',
+            foodItemId: 'food-test-1',
+            units: 1,
+            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            nutrition: {
+              calories: 300,
+              sodium: 100,
+              fat: 6,
+              protein: 10,
+              carbs: 54,
+              sugar: 2,
+            },
+          });
+          mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+          expect(mealItemEditors.length).toBe(0);
+        });
+      });
+    });
   });
 });
