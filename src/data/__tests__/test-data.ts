@@ -1,5 +1,6 @@
 import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import type { FoodItem } from '@/models/food';
+import type { Meal } from '@/models/meal';
 import type { MealPlan } from '@/models/meal-plan';
 import type { Portion } from '@/models/portion';
 import type { Recipe } from '@/models/recipe';
@@ -1935,6 +1936,21 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
               sugar: 10,
             },
           },
+          {
+            id: 'item-9-3-2',
+            name: 'Fresh Mozzarella',
+            foodItemId: 'food-test-57',
+            units: 50,
+            unitOfMeasure: { id: 'g', name: 'gram', type: 'weight', system: 'metric' },
+            nutrition: {
+              calories: 200,
+              sodium: 200,
+              fat: 17,
+              protein: 10,
+              carbs: 4,
+              sugar: 3,
+            },
+          },
         ],
       },
       {
@@ -2333,6 +2349,88 @@ export const TEST_MEAL_PLAN: MealPlan = {
           },
         },
       ],
+    },
+  ],
+};
+
+export const TEST_MEAL: Meal = {
+  id: '51a11b7f-e486-48de-ba55-2b58693e123a',
+  type: 'Lunch',
+  items: [
+    {
+      id: 'eb2a0f30-e359-460a-9e5c-adb6ce45a531',
+      name: 'Grilled Chicken Strips',
+      units: 1,
+      recipeId: '4',
+      unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
+      nutrition: {
+        calories: 200,
+        sodium: 96,
+        fat: 4,
+        protein: 36,
+        carbs: 0,
+        sugar: 0,
+      },
+    },
+    {
+      id: 'da5534ca-5bf7-4c08-abc0-7a5c72e2d162',
+      name: 'Whole Wheat Wrap',
+      foodItemId: 'food-test-71',
+      units: 1,
+      unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+      nutrition: {
+        calories: 140,
+        sodium: 320,
+        fat: 3,
+        protein: 5,
+        carbs: 24,
+        sugar: 1,
+      },
+    },
+    {
+      id: '37e89356-5a0d-4c7a-ba1c-e6fd6f449841',
+      name: 'Peanut Sauce',
+      foodItemId: 'food-test-72',
+      units: 3,
+      unitOfMeasure: { id: 'tbsp', name: 'tablespoon', type: 'volume', system: 'customary' },
+      nutrition: {
+        calories: 150,
+        sodium: 240,
+        fat: 12,
+        protein: 6,
+        carbs: 8,
+        sugar: 4,
+      },
+    },
+    {
+      id: '16cc4e27-23ff-40e7-9315-d665ac80645b',
+      name: 'Shredded Carrots',
+      foodItemId: 'food-test-73',
+      units: 0.5,
+      unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+      nutrition: {
+        calories: 25,
+        sodium: 45,
+        fat: 0,
+        protein: 1,
+        carbs: 6,
+        sugar: 3,
+      },
+    },
+    {
+      id: '4bd502f1-0957-4f4d-a92f-8ed23298b30f',
+      name: 'Beef Sirloin',
+      recipeId: '3',
+      units: 1,
+      unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
+      nutrition: {
+        calories: 320,
+        sodium: 120,
+        fat: 14,
+        protein: 42,
+        carbs: 0,
+        sugar: 0,
+      },
     },
   ],
 };
