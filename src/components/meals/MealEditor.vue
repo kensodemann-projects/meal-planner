@@ -25,11 +25,10 @@
   <v-expansion-panels data-testid="recipe-panels">
     <v-expansion-panel v-for="item in recipeMealItems" :key="item.id">
       <v-expansion-panel-title>
-        {{ item.name || 'Unnamed Recipe' }}
+        {{ item.name }}
       </v-expansion-panel-title>
       <v-expansion-panel-text>
-        <!-- Placeholder for meal item details -->
-        <div>Details for {{ item.name || 'Unnamed Recipe' }}</div>
+        <NutritionData :value="item.nutrition" />
       </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>
@@ -62,8 +61,7 @@
         {{ item.name || 'Unnamed Food Item' }}
       </v-expansion-panel-title>
       <v-expansion-panel-text>
-        <!-- Placeholder for meal item details -->
-        <div>Details for {{ item.name || 'Unnamed Food Item' }}</div>
+        <NutritionData :value="item.nutrition" />
       </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>
