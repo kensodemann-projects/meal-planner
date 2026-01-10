@@ -80,6 +80,19 @@ describe('Meal Editor', () => {
           expect(mealItemEditors.length).toBe(0);
         });
       });
+
+      describe('on save', () => {
+        it('removes the meal item editor', async () => {
+          wrapper = mountComponent();
+          const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
+          await addRecipeButton.trigger('click');
+          let mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+          expect(mealItemEditors.length).toBe(1);
+          await mealItemEditors[0]!.vm.$emit('save', { id: 'recipe-1', type: 'recipe', quantity: 2 });
+          mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+          expect(mealItemEditors.length).toBe(0);
+        });
+      });
     });
   });
 
@@ -116,6 +129,19 @@ describe('Meal Editor', () => {
           let mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
           expect(mealItemEditors.length).toBe(1);
           await mealItemEditors[0]!.vm.$emit('cancel');
+          mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+          expect(mealItemEditors.length).toBe(0);
+        });
+      });
+
+      describe('on save', () => {
+        it('removes the meal item editor', async () => {
+          wrapper = mountComponent();
+          const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
+          await addFoodItemButton.trigger('click');
+          let mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+          expect(mealItemEditors.length).toBe(1);
+          await mealItemEditors[0]!.vm.$emit('save', { id: 'food-1', type: 'food', quantity: 3 });
           mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
           expect(mealItemEditors.length).toBe(0);
         });

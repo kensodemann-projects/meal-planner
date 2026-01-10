@@ -19,6 +19,7 @@
     :meal-item="recipeMealItem"
     :items="recipes"
     type="recipe"
+    @save="() => (recipeMealItem = null)"
     @cancel="() => (recipeMealItem = null)"
   />
 
@@ -41,6 +42,7 @@
     :meal-item="foodMealItem"
     :items="foods"
     type="food"
+    @save="() => (foodMealItem = null)"
     @cancel="() => (foodMealItem = null)"
   />
 
@@ -73,10 +75,6 @@ const recipeMealItem = ref<Partial<MealItem> | null>(null);
 const valid = ref(false);
 
 const isModified = computed((): boolean => false);
-
-// const addMealItem = (item: MealItem) => {
-// Placeholder function for adding meal items
-// };
 
 const save = () => {
   const mealToSave: Meal = {
