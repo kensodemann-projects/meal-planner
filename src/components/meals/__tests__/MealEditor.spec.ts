@@ -67,6 +67,19 @@ describe('Meal Editor', () => {
         await addRecipeButton.trigger('click');
         expect(addRecipeButton.attributes('disabled')).toBeDefined();
       });
+
+      describe('on cancel', () => {
+        it('removes the meal item editor', async () => {
+          wrapper = mountComponent();
+          const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
+          await addRecipeButton.trigger('click');
+          let mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+          expect(mealItemEditors.length).toBe(1);
+          await mealItemEditors[0]!.vm.$emit('cancel');
+          mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+          expect(mealItemEditors.length).toBe(0);
+        });
+      });
     });
   });
 
@@ -93,6 +106,19 @@ describe('Meal Editor', () => {
         const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
         await addFoodItemButton.trigger('click');
         expect(addFoodItemButton.attributes('disabled')).toBeDefined();
+      });
+
+      describe('on cancel', () => {
+        it('removes the meal item editor', async () => {
+          wrapper = mountComponent();
+          const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
+          await addFoodItemButton.trigger('click');
+          let mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+          expect(mealItemEditors.length).toBe(1);
+          await mealItemEditors[0]!.vm.$emit('cancel');
+          mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+          expect(mealItemEditors.length).toBe(0);
+        });
       });
     });
   });
