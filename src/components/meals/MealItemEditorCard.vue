@@ -23,7 +23,7 @@ import type { Recipe } from '@/models/recipe';
 import { computed, ref } from 'vue';
 
 const props = defineProps<{
-  mealItem?: Partial<MealItem>;
+  mealItem: Partial<MealItem>;
   items: (FoodItem | Recipe)[];
   type: 'food' | 'recipe';
 }>();
@@ -33,11 +33,13 @@ defineEmits<{
   (e: 'cancel'): void;
 }>();
 const editMealItem = ref<Partial<MealItem>>(
-  props.mealItem || {
-    id: globalThis.crypto.randomUUID(),
-    units: props.type === 'recipe' ? 1 : undefined,
-    unitOfMeasure: props.type === 'recipe' ? findUnitOfMeasure('serving') : undefined,
-  },
+  props.mealItem.id
+    ? props.mealItem
+    : {
+        id: globalThis.crypto.randomUUID(),
+        units: props.type === 'recipe' ? 1 : undefined,
+        unitOfMeasure: props.type === 'recipe' ? findUnitOfMeasure('serving') : undefined,
+      },
 );
 const valid = ref(false);
 
