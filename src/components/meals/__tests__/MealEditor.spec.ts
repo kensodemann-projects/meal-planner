@@ -141,6 +141,31 @@ describe('Meal Editor', () => {
           mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
           expect(mealItemEditors.length).toBe(0);
         });
+
+        it('displays the recipe in the recipe list', async () => {
+          wrapper = mountComponent();
+          const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
+          await addRecipeButton.trigger('click');
+          const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+          await mealItemEditors[0]!.vm.$emit('save', {
+            id: 'item-2-3-1',
+            name: 'Beef Sirloin',
+            recipeId: '3',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
+            nutrition: {
+              calories: 320,
+              sodium: 120,
+              fat: 14,
+              protein: 42,
+              carbs: 0,
+              sugar: 0,
+            },
+          });
+          const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
+          const panels = recipePanels.findAllComponents(components.VExpansionPanel);
+          expect(panels.length).toBe(1);
+        });
       });
     });
   });
@@ -207,6 +232,31 @@ describe('Meal Editor', () => {
           });
           mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
           expect(mealItemEditors.length).toBe(0);
+        });
+
+        it('displays the food item in the food item list', async () => {
+          wrapper = mountComponent();
+          const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
+          await addFoodItemButton.trigger('click');
+          const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+          await mealItemEditors[0]!.vm.$emit('save', {
+            id: 'item-1-1-1',
+            name: 'Rolled Oats',
+            foodItemId: 'food-test-1',
+            units: 1,
+            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            nutrition: {
+              calories: 300,
+              sodium: 100,
+              fat: 6,
+              protein: 10,
+              carbs: 54,
+              sugar: 2,
+            },
+          });
+          const foodItemPanels = wrapper.findComponent('[data-testid="food-item-panels"]');
+          const panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
+          expect(panels.length).toBe(1);
         });
       });
     });
