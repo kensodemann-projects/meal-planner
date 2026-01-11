@@ -163,6 +163,8 @@ const save = () => {
   };
   emit('save', mealToSave);
 };
+
+defineExpose({ mealItems });
 </script>
 
 <style scoped></style>
