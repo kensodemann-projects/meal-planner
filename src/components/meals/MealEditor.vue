@@ -29,6 +29,8 @@
       </v-expansion-panel-title>
       <v-expansion-panel-text>
         <NutritionData :value="item.nutrition" />
+        <ModifyButton />
+        <DeleteButton />
       </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>
@@ -62,6 +64,8 @@
       </v-expansion-panel-title>
       <v-expansion-panel-text>
         <NutritionData :value="item.nutrition" />
+        <ModifyButton />
+        <DeleteButton />
       </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>
