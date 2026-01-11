@@ -126,12 +126,12 @@ describe('Meal Editor', () => {
       let mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
       expect(mealItemEditor.exists()).toBe(true);
 
+      // Use the original item from TEST_MEAL and update specific fields
+      const originalItem = TEST_MEAL.items.find((item) => item.recipeId)!;
       const updatedItem = {
-        id: 'eb2a0f30-e359-460a-9e5c-adb6ce45a531',
+        ...originalItem,
         name: 'Updated Grilled Chicken',
-        recipeId: '4',
         units: 2,
-        unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
         nutrition: {
           calories: 400,
           sodium: 192,
