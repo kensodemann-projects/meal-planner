@@ -78,7 +78,7 @@ describe('Meal Editor', () => {
     });
   });
 
-  describe('an existing recipe meal items', () => {
+  describe('an existing recipe meal item', () => {
     let panel: VueWrapper<components.VExpansionPanel>;
     beforeEach(async () => {
       wrapper = mountComponent({ meal: TEST_MEAL });
@@ -95,12 +95,52 @@ describe('Meal Editor', () => {
       expect(mealItemEditor.exists()).toBe(false);
     });
 
+    it('has actions for modify and delete', () => {
+      const modifyButton = panel.findComponent('[data-testid="modify-button"]');
+      const deleteButton = panel.findComponent('[data-testid="delete-button"]');
+      expect(modifyButton.exists()).toBe(true);
+      expect(deleteButton.exists()).toBe(true);
+    });
+
     it('opens the meal item editor on modify', async () => {
       const editButton = panel.findComponent('[data-testid="modify-button"]');
       await editButton.trigger('click');
       const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
       expect(mealItemEditor.exists()).toBe(true);
       expect(mealItemEditor.props('type')).toBe('recipe');
+    });
+  });
+
+  describe('an existing food meal item', () => {
+    let panel: VueWrapper<components.VExpansionPanel>;
+    beforeEach(async () => {
+      wrapper = mountComponent({ meal: TEST_MEAL });
+      const recipePanels = wrapper.findComponent('[data-testid="food-item-panels"]');
+      const panels = recipePanels.findAllComponents(components.VExpansionPanel);
+      panel = panels[0]!;
+      const header = panel.findComponent(components.VExpansionPanelTitle);
+      await header.trigger('click');
+      await wrapper.vm.$nextTick();
+    });
+
+    it('is not editable by default', async () => {
+      const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
+      expect(mealItemEditor.exists()).toBe(false);
+    });
+
+    it('has actions for modify and delete', () => {
+      const modifyButton = panel.findComponent('[data-testid="modify-button"]');
+      const deleteButton = panel.findComponent('[data-testid="delete-button"]');
+      expect(modifyButton.exists()).toBe(true);
+      expect(deleteButton.exists()).toBe(true);
+    });
+
+    it('opens the meal item editor on modify', async () => {
+      const editButton = panel.findComponent('[data-testid="modify-button"]');
+      await editButton.trigger('click');
+      const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
+      expect(mealItemEditor.exists()).toBe(true);
+      expect(mealItemEditor.props('type')).toBe('food');
     });
   });
 

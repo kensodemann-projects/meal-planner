@@ -78,9 +78,24 @@
         {{ food.item.name }}
       </v-expansion-panel-title>
       <v-expansion-panel-text>
-        <NutritionData :value="food.item.nutrition" />
-        <ModifyButton />
-        <DeleteButton />
+        <MealItemEditorCard
+          v-if="food.isEditing"
+          :meal-item="food.item"
+          :items="foods"
+          type="food"
+          @save="
+            (updatedItem) => {
+              food.item = updatedItem;
+              food.isEditing = false;
+            }
+          "
+          @cancel="() => (food.isEditing = false)"
+        />
+        <div v-else>
+          <NutritionData :value="food.item.nutrition" />
+          <ModifyButton @click="() => (food.isEditing = true)" />
+          <DeleteButton />
+        </div>
       </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>
