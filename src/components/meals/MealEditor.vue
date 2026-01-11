@@ -133,8 +133,12 @@ const mealItems = ref<WrappedMealItem[]>(props.meal?.items.map((item) => ({ isEd
 
 const valid = ref(false);
 
-const foodMealItems = computed((): WrappedMealItem[] => mealItems.value.filter((x) => x.item.foodItemId !== undefined));
-const recipeMealItems = computed((): WrappedMealItem[] => mealItems.value.filter((x) => x.item.recipeId !== undefined));
+const foodMealItems = computed(
+  (): WrappedMealItem[] => mealItems.value.filter((wrappedItem) => wrappedItem.item.foodItemId !== undefined),
+);
+const recipeMealItems = computed(
+  (): WrappedMealItem[] => mealItems.value.filter((wrappedItem) => wrappedItem.item.recipeId !== undefined),
+);
 
 const isModified = computed((): boolean => false);
 
