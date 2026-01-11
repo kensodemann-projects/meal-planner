@@ -127,7 +127,10 @@ describe('Meal Editor', () => {
       expect(mealItemEditor.exists()).toBe(true);
 
       // Use the original item from TEST_MEAL and update specific fields
-      const originalItem = TEST_MEAL.items.find((item) => item.recipeId)!;
+      const originalItem = TEST_MEAL.items.find((item) => item.recipeId);
+      if (!originalItem) {
+        throw new Error('TEST_MEAL should contain at least one recipe item');
+      }
       const updatedItem = {
         ...originalItem,
         name: 'Updated Grilled Chicken',
