@@ -87,8 +87,10 @@
           type="food"
           @save="
             (updatedItem) => {
-              food.item = updatedItem;
-              food.isEditing = false;
+              const index = foodMealItems.indexOf(food);
+              if (index !== -1) {
+                foodMealItems.splice(index, 1, { ...food, item: updatedItem, isEditing: false });
+              }
             }
           "
           @cancel="() => (food.isEditing = false)"
