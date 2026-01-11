@@ -176,6 +176,43 @@ describe('Meal Editor', () => {
       expect(nutritionDisplay.exists()).toBe(false);
     });
 
+    it('saves the edited food meal item and restores the nutritional display', async () => {
+      const modifyButton = panel.findComponent('[data-testid="modify-button"]');
+      await modifyButton.trigger('click');
+      const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
+      expect(mealItemEditor.exists()).toBe(true);
+
+      const updatedItem = {
+        id: 'item-1-1-1-updated',
+        name: 'Updated Rolled Oats',
+        foodItemId: 'food-test-1',
+        units: 2,
+        unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+        nutrition: {
+          calories: 600,
+          sodium: 200,
+          fat: 12,
+          protein: 20,
+          carbs: 108,
+          sugar: 4,
+        },
+      };
+
+      await mealItemEditor.vm.$emit('save', updatedItem);
+      await wrapper.vm.$nextTick();
+
+      // Verify the editor is hidden after save
+      expect(panel.findComponent({ name: 'MealItemEditorCard' }).exists()).toBe(false);
+
+      // Verify the nutritional information is displayed again
+      const nutritionDisplay = panel.findComponent({ name: 'NutritionData' });
+      expect(nutritionDisplay.exists()).toBe(true);
+
+      // Verify the modify and delete buttons are shown again
+      expect(panel.findComponent('[data-testid="modify-button"]').exists()).toBe(true);
+      expect(panel.findComponent('[data-testid="delete-button"]').exists()).toBe(true);
+    });
+
     it('restores the nutritional information when cancel is clicked', async () => {
       const modifyButton = panel.findComponent('[data-testid="modify-button"]');
       await modifyButton.trigger('click');
