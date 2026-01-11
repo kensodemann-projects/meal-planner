@@ -23,14 +23,29 @@
     @cancel="() => (recipeMealItem = null)"
   />
   <v-expansion-panels data-testid="recipe-panels">
-    <v-expansion-panel v-for="item in recipeMealItems" :key="item.id">
+    <v-expansion-panel v-for="recipe in recipeMealItems" :key="recipe.item.id">
       <v-expansion-panel-title>
-        {{ item.name }}
+        {{ recipe.item.name }}
       </v-expansion-panel-title>
       <v-expansion-panel-text>
-        <NutritionData :value="item.nutrition" />
-        <ModifyButton />
-        <DeleteButton />
+        <MealItemEditorCard
+          v-if="recipe.isEditing"
+          :meal-item="recipe.item"
+          :items="recipes"
+          type="recipe"
+          @save="
+            (updatedItem) => {
+              recipe.item = updatedItem;
+              recipe.isEditing = false;
+            }
+          "
+          @cancel="() => (recipe.isEditing = false)"
+        />
+        <div v-else>
+          <NutritionData :value="recipe.item.nutrition" />
+          <ModifyButton @click="() => (recipe.isEditing = true)" />
+          <DeleteButton />
+        </div>
       </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>
@@ -58,12 +73,12 @@
     @cancel="() => (foodMealItem = null)"
   />
   <v-expansion-panels data-testid="food-item-panels">
-    <v-expansion-panel v-for="item in foodMealItems" :key="item.id">
+    <v-expansion-panel v-for="food in foodMealItems" :key="food.item.id">
       <v-expansion-panel-title>
-        {{ item.name }}
+        {{ food.item.name }}
       </v-expansion-panel-title>
       <v-expansion-panel-text>
-        <NutritionData :value="item.nutrition" />
+        <NutritionData :value="food.item.nutrition" />
         <ModifyButton />
         <DeleteButton />
       </v-expansion-panel-text>
@@ -93,23 +108,26 @@ const props = defineProps<{ meal?: Meal }>();
 const { foods } = useFoodsData();
 const { recipes } = useRecipesData();
 
+type WrappedMealItem = { isEditing: boolean; item: MealItem };
+
 const foodMealItem = ref<Partial<MealItem> | null>(null);
 const recipeMealItem = ref<Partial<MealItem> | null>(null);
-const mealItems = ref<MealItem[]>(props.meal?.items ?? []);
+const mealItems = ref<WrappedMealItem[]>(props.meal?.items.map((item) => ({ isEditing: false, item })) ?? []);
 
 const valid = ref(false);
 
-const foodMealItems = computed((): MealItem[] => mealItems.value.filter((item) => item.foodItemId !== undefined));
-const recipeMealItems = computed((): MealItem[] => mealItems.value.filter((item) => item.recipeId !== undefined));
+const foodMealItems = computed((): WrappedMealItem[] => mealItems.value.filter((x) => x.item.foodItemId !== undefined));
+const recipeMealItems = computed((): WrappedMealItem[] => mealItems.value.filter((x) => x.item.recipeId !== undefined));
+
 const isModified = computed((): boolean => false);
 
-const saveMealItem = (mealItem: MealItem) => {
+const saveMealItem = (item: MealItem) => {
   // The effect of this cannot be seen in this component currently, but in a full implementation,
   // this would update the meal's items list
-  mealItems.value.push(mealItem);
-  if (mealItem.foodItemId) {
+  mealItems.value.push({ item, isEditing: false });
+  if (item.foodItemId) {
     foodMealItem.value = null;
-  } else if (mealItem.recipeId) {
+  } else if (item.recipeId) {
     recipeMealItem.value = null;
   }
 };

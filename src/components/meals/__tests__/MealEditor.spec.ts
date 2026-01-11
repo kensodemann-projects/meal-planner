@@ -1,13 +1,13 @@
+import { TEST_MEAL } from '@/data/__tests__/test-data';
 import { useFoodsData } from '@/data/foods';
 import { useRecipesData } from '@/data/recipes';
 import type { Meal } from '@/models/meal';
-import { mount } from '@vue/test-utils';
+import { mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import MealEditor from '../MealEditor.vue';
-import { TEST_MEAL } from '@/data/__tests__/test-data';
 
 vi.mock('@/data/foods');
 vi.mock('@/data/recipes');
@@ -75,6 +75,32 @@ describe('Meal Editor', () => {
       const foodItemPanels = wrapper.findComponent('[data-testid="food-item-panels"]');
       const panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
       expect(panels.length).toBe(TEST_MEAL.items.filter((item) => item.foodItemId).length);
+    });
+  });
+
+  describe('an existing recipe meal items', () => {
+    let panel: VueWrapper<components.VExpansionPanel>;
+    beforeEach(async () => {
+      wrapper = mountComponent({ meal: TEST_MEAL });
+      const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
+      const panels = recipePanels.findAllComponents(components.VExpansionPanel);
+      panel = panels[0]!;
+      const header = panel.findComponent(components.VExpansionPanelTitle);
+      await header.trigger('click');
+      await wrapper.vm.$nextTick();
+    });
+
+    it('is not editable by default', async () => {
+      const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
+      expect(mealItemEditor.exists()).toBe(false);
+    });
+
+    it('opens the meal item editor on modify', async () => {
+      const editButton = panel.findComponent('[data-testid="modify-button"]');
+      await editButton.trigger('click');
+      const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
+      expect(mealItemEditor.exists()).toBe(true);
+      expect(mealItemEditor.props('type')).toBe('recipe');
     });
   });
 
