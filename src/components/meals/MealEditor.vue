@@ -35,10 +35,8 @@
           type="recipe"
           @save="
             (updatedItem) => {
-              const index = recipeMealItems.indexOf(recipe);
-              if (index !== -1) {
-                recipeMealItems[index] = { item: updatedItem, isEditing: false };
-              }
+              recipe.item = updatedItem;
+              recipe.isEditing = false;
             }
           "
           @cancel="() => (recipe.isEditing = false)"
@@ -135,11 +133,11 @@ const mealItems = ref<WrappedMealItem[]>(props.meal?.items.map((item) => ({ isEd
 
 const valid = ref(false);
 
-const foodMealItems = computed(
-  (): WrappedMealItem[] => mealItems.value.filter((wrappedItem) => wrappedItem.item.foodItemId !== undefined),
+const foodMealItems = computed((): WrappedMealItem[] =>
+  mealItems.value.filter((wrappedItem) => wrappedItem.item.foodItemId !== undefined),
 );
-const recipeMealItems = computed(
-  (): WrappedMealItem[] => mealItems.value.filter((wrappedItem) => wrappedItem.item.recipeId !== undefined),
+const recipeMealItems = computed((): WrappedMealItem[] =>
+  mealItems.value.filter((wrappedItem) => wrappedItem.item.recipeId !== undefined),
 );
 
 const isModified = computed((): boolean => false);

@@ -120,6 +120,42 @@ describe('Meal Editor', () => {
       expect(nutritionDisplay.exists()).toBe(false);
     });
 
+    it('updates the meal item and exits editing mode when save is clicked', async () => {
+      const modifyButton = panel.findComponent('[data-testid="modify-button"]');
+      await modifyButton.trigger('click');
+      let mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
+      expect(mealItemEditor.exists()).toBe(true);
+
+      // Use the original item from TEST_MEAL and update specific fields
+      const originalItem = TEST_MEAL.items.find((item) => item.recipeId);
+      if (!originalItem) {
+        throw new Error('TEST_MEAL should contain at least one recipe item');
+      }
+      const updatedItem = {
+        ...originalItem,
+        name: 'Updated Grilled Chicken',
+        units: 2,
+        nutrition: {
+          calories: 400,
+          sodium: 192,
+          fat: 8,
+          protein: 72,
+          carbs: 0,
+          sugar: 0,
+        },
+      };
+
+      await mealItemEditor.vm.$emit('save', updatedItem);
+      await wrapper.vm.$nextTick();
+
+      mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
+      expect(mealItemEditor.exists()).toBe(false);
+
+      const nutritionDisplay = panel.findComponent({ name: 'NutritionData' });
+      expect(nutritionDisplay.exists()).toBe(true);
+      expect(nutritionDisplay.props('value')).toEqual(updatedItem.nutrition);
+    });
+
     it('restores the nutritional information when cancel is clicked', async () => {
       const modifyButton = panel.findComponent('[data-testid="modify-button"]');
       await modifyButton.trigger('click');
