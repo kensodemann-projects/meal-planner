@@ -1,5 +1,4 @@
 <template>
-  <!-- Currently a placeholder layout, this is being used as a testing harness for now -->
   <h2>
     <div class="d-flex justify-space-between">
       <div>Recipes</div>
@@ -44,7 +43,7 @@
         <div v-else>
           <NutritionData :value="recipe.item.nutrition" />
           <ModifyButton @click="() => (recipe.isEditing = true)" />
-          <DeleteButton />
+          <DeleteButton @click="askToDelete(recipe)" />
         </div>
       </v-expansion-panel-text>
     </v-expansion-panel>
@@ -96,7 +95,7 @@
         <div v-else>
           <NutritionData :value="food.item.nutrition" />
           <ModifyButton @click="() => (food.isEditing = true)" />
-          <DeleteButton />
+          <DeleteButton @click="askToDelete(food)" />
         </div>
       </v-expansion-panel-text>
     </v-expansion-panel>
@@ -138,6 +137,7 @@ type WrappedMealItem = { isEditing: boolean; item: MealItem };
 
 const foodMealItem = ref<Partial<MealItem> | null>(null);
 const recipeMealItem = ref<Partial<MealItem> | null>(null);
+const mealItemToRemove = ref<MealItem | null>(null);
 const mealItems = ref<WrappedMealItem[]>(props.meal?.items.map((item) => ({ isEditing: false, item })) ?? []);
 
 const showConfirmDialog = ref(false);
@@ -152,6 +152,19 @@ const recipeMealItems = computed((): WrappedMealItem[] =>
 
 const isModified = computed((): boolean => false);
 
+const askToDelete = (item: WrappedMealItem) => {
+  mealItemToRemove.value = item.item;
+  showConfirmDialog.value = true;
+};
+
+const removeMealItem = () => {
+  if (mealItemToRemove.value) {
+    mealItems.value = mealItems.value.filter((wrappedItem) => wrappedItem.item !== mealItemToRemove.value);
+  }
+  mealItemToRemove.value = null;
+  showConfirmDialog.value = false;
+};
+
 const saveMealItem = (item: MealItem) => {
   // The effect of this cannot be seen in this component currently, but in a full implementation,
   // this would update the meal's items list
@@ -161,11 +174,6 @@ const saveMealItem = (item: MealItem) => {
   } else if (item.recipeId) {
     recipeMealItem.value = null;
   }
-};
-
-const removeMealItem = () => {
-  // Placeholder for removing a meal item
-  showConfirmDialog.value = true;
 };
 
 const save = () => {
