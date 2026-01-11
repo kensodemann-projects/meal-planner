@@ -90,11 +90,6 @@ describe('Meal Editor', () => {
       await wrapper.vm.$nextTick();
     });
 
-    it('is not editable by default', async () => {
-      const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
-      expect(mealItemEditor.exists()).toBe(false);
-    });
-
     it('has actions for modify and delete', () => {
       const modifyButton = panel.findComponent('[data-testid="modify-button"]');
       const deleteButton = panel.findComponent('[data-testid="delete-button"]');
@@ -102,12 +97,27 @@ describe('Meal Editor', () => {
       expect(deleteButton.exists()).toBe(true);
     });
 
-    it('opens the meal item editor on modify', async () => {
-      const editButton = panel.findComponent('[data-testid="modify-button"]');
-      await editButton.trigger('click');
+    it('displays the nutritional information', () => {
+      const nutritionDisplay = panel.findComponent({ name: 'NutritionData' });
+      expect(nutritionDisplay.exists()).toBe(true);
+    });
+
+    it('is not editable', async () => {
+      const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
+      expect(mealItemEditor.exists()).toBe(false);
+    });
+
+    it('replaces the nutritional information with the meal item editor on modify', async () => {
+      const nutritionDisplay = panel.findComponent({ name: 'NutritionData' });
+      const modifyButton = panel.findComponent('[data-testid="modify-button"]');
+      const deleteButton = panel.findComponent('[data-testid="delete-button"]');
+      await modifyButton.trigger('click');
       const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
       expect(mealItemEditor.exists()).toBe(true);
       expect(mealItemEditor.props('type')).toBe('recipe');
+      expect(modifyButton.exists()).toBe(false);
+      expect(deleteButton.exists()).toBe(false);
+      expect(nutritionDisplay.exists()).toBe(false);
     });
   });
 
@@ -123,11 +133,6 @@ describe('Meal Editor', () => {
       await wrapper.vm.$nextTick();
     });
 
-    it('is not editable by default', async () => {
-      const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
-      expect(mealItemEditor.exists()).toBe(false);
-    });
-
     it('has actions for modify and delete', () => {
       const modifyButton = panel.findComponent('[data-testid="modify-button"]');
       const deleteButton = panel.findComponent('[data-testid="delete-button"]');
@@ -135,12 +140,27 @@ describe('Meal Editor', () => {
       expect(deleteButton.exists()).toBe(true);
     });
 
-    it('opens the meal item editor on modify', async () => {
-      const editButton = panel.findComponent('[data-testid="modify-button"]');
-      await editButton.trigger('click');
+    it('displays the nutritional information', () => {
+      const nutritionDisplay = panel.findComponent({ name: 'NutritionData' });
+      expect(nutritionDisplay.exists()).toBe(true);
+    });
+
+    it('is not editable', async () => {
+      const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
+      expect(mealItemEditor.exists()).toBe(false);
+    });
+
+    it('replaces the nutritional information with the meal item editor on modify', async () => {
+      const nutritionDisplay = panel.findComponent({ name: 'NutritionData' });
+      const modifyButton = panel.findComponent('[data-testid="modify-button"]');
+      const deleteButton = panel.findComponent('[data-testid="delete-button"]');
+      await modifyButton.trigger('click');
       const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
       expect(mealItemEditor.exists()).toBe(true);
       expect(mealItemEditor.props('type')).toBe('food');
+      expect(modifyButton.exists()).toBe(false);
+      expect(deleteButton.exists()).toBe(false);
+      expect(nutritionDisplay.exists()).toBe(false);
     });
   });
 
