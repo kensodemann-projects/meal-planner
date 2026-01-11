@@ -123,18 +123,14 @@ describe('Meal Editor', () => {
     it('restores the nutritional information when cancel is clicked', async () => {
       const modifyButton = panel.findComponent('[data-testid="modify-button"]');
       await modifyButton.trigger('click');
-      let mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
+      const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
       expect(mealItemEditor.exists()).toBe(true);
-      await mealItemEditor.vm.$emit('cancel');
-      await wrapper.vm.$nextTick();
-      mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
-      expect(mealItemEditor.exists()).toBe(false);
-      const nutritionDisplay = panel.findComponent({ name: 'NutritionData' });
-      expect(nutritionDisplay.exists()).toBe(true);
-      const restoredModifyButton = panel.findComponent('[data-testid="modify-button"]');
-      const deleteButton = panel.findComponent('[data-testid="delete-button"]');
-      expect(restoredModifyButton.exists()).toBe(true);
-      expect(deleteButton.exists()).toBe(true);
+      const cancelButton = mealItemEditor.findComponent('[data-testid="cancel-button"]');
+      await cancelButton.trigger('click');
+      expect(panel.findComponent({ name: 'MealItemEditorCard' }).exists()).toBe(false);
+      expect(panel.findComponent({ name: 'NutritionData' }).exists()).toBe(true);
+      expect(panel.findComponent('[data-testid="modify-button"]').exists()).toBe(true);
+      expect(panel.findComponent('[data-testid="delete-button"]').exists()).toBe(true);
     });
   });
 
@@ -183,18 +179,14 @@ describe('Meal Editor', () => {
     it('restores the nutritional information when cancel is clicked', async () => {
       const modifyButton = panel.findComponent('[data-testid="modify-button"]');
       await modifyButton.trigger('click');
-      let mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
+      const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
       expect(mealItemEditor.exists()).toBe(true);
-      await mealItemEditor.vm.$emit('cancel');
-      await wrapper.vm.$nextTick();
-      mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
-      expect(mealItemEditor.exists()).toBe(false);
-      const nutritionDisplay = panel.findComponent({ name: 'NutritionData' });
-      expect(nutritionDisplay.exists()).toBe(true);
-      const restoredModifyButton = panel.findComponent('[data-testid="modify-button"]');
-      const deleteButton = panel.findComponent('[data-testid="delete-button"]');
-      expect(restoredModifyButton.exists()).toBe(true);
-      expect(deleteButton.exists()).toBe(true);
+      const cancelButton = mealItemEditor.findComponent('[data-testid="cancel-button"]');
+      await cancelButton.trigger('click');
+      expect(panel.findComponent({ name: 'MealItemEditorCard' }).exists()).toBe(false);
+      expect(panel.findComponent({ name: 'NutritionData' }).exists()).toBe(true);
+      expect(panel.findComponent('[data-testid="modify-button"]').exists()).toBe(true);
+      expect(panel.findComponent('[data-testid="delete-button"]').exists()).toBe(true);
     });
   });
 
