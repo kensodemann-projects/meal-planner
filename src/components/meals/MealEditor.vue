@@ -111,6 +111,15 @@
       <SaveButton :disabled="!(valid && isModified)" @click="save" />
     </v-row>
   </v-container>
+
+  <v-dialog v-model="showConfirmDialog" max-width="600px" data-testid="confirm-dialog">
+    <ConfirmDialog
+      :question="`Are you sure you want to remove this item from the meal?`"
+      icon-color="error"
+      @confirm="removeMealItem"
+      @cancel="showConfirmDialog = false"
+    />
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
@@ -131,6 +140,7 @@ const foodMealItem = ref<Partial<MealItem> | null>(null);
 const recipeMealItem = ref<Partial<MealItem> | null>(null);
 const mealItems = ref<WrappedMealItem[]>(props.meal?.items.map((item) => ({ isEditing: false, item })) ?? []);
 
+const showConfirmDialog = ref(false);
 const valid = ref(false);
 
 const foodMealItems = computed((): WrappedMealItem[] =>
@@ -151,6 +161,11 @@ const saveMealItem = (item: MealItem) => {
   } else if (item.recipeId) {
     recipeMealItem.value = null;
   }
+};
+
+const removeMealItem = () => {
+  // Placeholder for removing a meal item
+  showConfirmDialog.value = true;
 };
 
 const save = () => {
