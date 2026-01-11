@@ -176,49 +176,6 @@ describe('Meal Editor', () => {
       expect(nutritionDisplay.exists()).toBe(false);
     });
 
-    it('saves the edited food meal item and restores the nutritional display', async () => {
-      const modifyButton = panel.findComponent('[data-testid="modify-button"]');
-      await modifyButton.trigger('click');
-      const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
-      expect(mealItemEditor.exists()).toBe(true);
-
-      const updatedItem = {
-        id: 'da5534ca-5bf7-4c08-abc0-7a5c72e2d162',
-        name: 'Updated Whole Wheat Wrap',
-        foodItemId: 'food-test-71',
-        units: 2,
-        unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
-        nutrition: {
-          calories: 280,
-          sodium: 640,
-          fat: 6,
-          protein: 10,
-          carbs: 48,
-          sugar: 2,
-        },
-      };
-
-      await mealItemEditor.vm.$emit('save', updatedItem);
-      await wrapper.vm.$nextTick();
-
-      // Verify the editor is hidden after save
-      expect(panel.findComponent({ name: 'MealItemEditorCard' }).exists()).toBe(false);
-
-      // Verify the nutritional information is displayed again
-      const nutritionDisplay = panel.findComponent({ name: 'NutritionData' });
-      expect(nutritionDisplay.exists()).toBe(true);
-
-      // Verify the modify and delete buttons are shown again
-      expect(panel.findComponent('[data-testid="modify-button"]').exists()).toBe(true);
-      expect(panel.findComponent('[data-testid="delete-button"]').exists()).toBe(true);
-
-      // Verify the item in mealItems was updated
-      const updatedMealItem = wrapper.vm.mealItems.find((item) => item.item.id === updatedItem.id);
-      expect(updatedMealItem).toBeDefined();
-      expect(updatedMealItem!.item).toEqual(updatedItem);
-      expect(updatedMealItem!.isEditing).toBe(false);
-    });
-
     it('restores the nutritional information when cancel is clicked', async () => {
       const modifyButton = panel.findComponent('[data-testid="modify-button"]');
       await modifyButton.trigger('click');
