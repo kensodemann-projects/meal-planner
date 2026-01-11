@@ -183,18 +183,18 @@ describe('Meal Editor', () => {
       expect(mealItemEditor.exists()).toBe(true);
 
       const updatedItem = {
-        id: 'item-1-1-1-updated',
-        name: 'Updated Rolled Oats',
-        foodItemId: 'food-test-1',
+        id: 'da5534ca-5bf7-4c08-abc0-7a5c72e2d162',
+        name: 'Updated Whole Wheat Wrap',
+        foodItemId: 'food-test-71',
         units: 2,
-        unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+        unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
         nutrition: {
-          calories: 600,
-          sodium: 200,
-          fat: 12,
-          protein: 20,
-          carbs: 108,
-          sugar: 4,
+          calories: 280,
+          sodium: 640,
+          fat: 6,
+          protein: 10,
+          carbs: 48,
+          sugar: 2,
         },
       };
 
@@ -211,6 +211,12 @@ describe('Meal Editor', () => {
       // Verify the modify and delete buttons are shown again
       expect(panel.findComponent('[data-testid="modify-button"]').exists()).toBe(true);
       expect(panel.findComponent('[data-testid="delete-button"]').exists()).toBe(true);
+
+      // Verify the item in mealItems was updated
+      const updatedMealItem = wrapper.vm.mealItems.find((item) => item.item.id === updatedItem.id);
+      expect(updatedMealItem).toBeDefined();
+      expect(updatedMealItem!.item).toEqual(updatedItem);
+      expect(updatedMealItem!.isEditing).toBe(false);
     });
 
     it('restores the nutritional information when cancel is clicked', async () => {
