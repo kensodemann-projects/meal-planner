@@ -35,8 +35,10 @@
           type="recipe"
           @save="
             (updatedItem) => {
-              recipe.item = updatedItem;
-              recipe.isEditing = false;
+              const index = recipeMealItems.indexOf(recipe);
+              if (index !== -1) {
+                recipeMealItems[index] = { item: updatedItem, isEditing: false };
+              }
             }
           "
           @cancel="() => (recipe.isEditing = false)"
