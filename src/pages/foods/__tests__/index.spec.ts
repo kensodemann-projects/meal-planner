@@ -93,14 +93,18 @@ describe('Foods List Page', () => {
       wrapper = mountPage();
       const speedDial = wrapper.findComponent({ name: 'VSpeedDial' });
 
+      // Initial state: speed dial is closed, internal 'open' ref is false
       expect(speedDial.props('modelValue')).toBe(false);
+      expect((wrapper.vm as any).open).toBe(false);
 
-      // Update the speed dial model
-      await speedDial.vm.$emit('update:modelValue', true);
+      // Simulate the user clicking the FAB to open the speed dial
+      // This triggers the v-model update which should change the internal 'open' ref
+      await speedDial.setValue(true);
       await wrapper.vm.$nextTick();
 
-      // The component should have updated
-      expect(speedDial.emitted('update:modelValue')?.[0]).toEqual([true]);
+      // Verify the component's internal state has changed
+      expect((wrapper.vm as any).open).toBe(true);
+      expect(speedDial.props('modelValue')).toBe(true);
     });
   });
 });
