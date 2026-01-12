@@ -2,7 +2,7 @@ import ConfirmDialog from '@/components/core/ConfirmDialog.vue';
 import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import type { RecipeIngredient } from '@/models/recipe';
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -18,24 +18,6 @@ const mountComponent = (props: { ingredient: RecipeIngredient }) =>
 
 describe('Ingredient Editor Row', () => {
   let wrapper: ReturnType<typeof mountComponent>;
-
-  beforeEach(() => {
-    // Polyfill visualViewport for Vuetify overlays/dialogs in jsdom
-    if (!window.visualViewport) {
-      // @ts-expect-error Polyfill for Vuetify overlay in jsdom
-      window.visualViewport = {
-        addEventListener: () => {},
-        removeEventListener: () => {},
-        width: window.innerWidth,
-        height: window.innerHeight,
-        scale: 1,
-        offsetLeft: 0,
-        offsetTop: 0,
-        pageLeft: 0,
-        pageTop: 0,
-      };
-    }
-  });
 
   afterEach(() => {
     wrapper?.unmount();
