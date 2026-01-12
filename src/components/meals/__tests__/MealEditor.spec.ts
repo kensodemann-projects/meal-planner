@@ -220,8 +220,8 @@ describe('Meal Editor', () => {
     let panel: VueWrapper<components.VExpansionPanel>;
     beforeEach(async () => {
       wrapper = mountComponent({ meal: TEST_MEAL });
-      const recipePanels = wrapper.findComponent('[data-testid="food-item-panels"]');
-      const panels = recipePanels.findAllComponents(components.VExpansionPanel);
+      const foodItemPanels = wrapper.findComponent('[data-testid="food-item-panels"]');
+      const panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
       panel = panels[0]!;
       const header = panel.findComponent(components.VExpansionPanelTitle);
       await header.trigger('click');
