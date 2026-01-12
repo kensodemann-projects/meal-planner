@@ -77,7 +77,6 @@ export default defineConfig({
         'src/*.vue',
         'src/*.ts',
         'src/composables/firebase-app.ts',
-        'src/layouts/components/menu-item.ts',
       ],
     },
     clearMocks: true,
