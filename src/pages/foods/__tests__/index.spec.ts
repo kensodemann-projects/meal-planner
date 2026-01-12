@@ -70,4 +70,37 @@ describe('Foods List Page', () => {
     await listItem?.trigger('click');
     expect(router.push).toHaveBeenCalledExactlyOnceWith(`foods/${TEST_FOODS[2]?.id}`);
   });
+
+  describe('floating action button', () => {
+    beforeEach(() => {
+      const { foods } = useFoodsData();
+      (foods.value as FoodItem[]) = TEST_FOODS;
+    });
+
+    it('displays a FAB', () => {
+      wrapper = mountPage();
+      const fab = wrapper.findComponent({ name: 'VFab' });
+      expect(fab.exists()).toBe(true);
+    });
+
+    it('displays the speed dial component', async () => {
+      wrapper = mountPage();
+      const speedDial = wrapper.findComponent({ name: 'VSpeedDial' });
+      expect(speedDial.exists()).toBe(true);
+    });
+
+    it('binds the open state to the speed dial', async () => {
+      wrapper = mountPage();
+      const speedDial = wrapper.findComponent({ name: 'VSpeedDial' });
+
+      expect(speedDial.props('modelValue')).toBe(false);
+
+      // Update the speed dial model
+      await speedDial.vm.$emit('update:modelValue', true);
+      await wrapper.vm.$nextTick();
+
+      // The component should have updated
+      expect(speedDial.emitted('update:modelValue')?.[0]).toEqual([true]);
+    });
+  });
 });
