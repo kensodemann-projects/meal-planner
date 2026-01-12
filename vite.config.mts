@@ -80,6 +80,12 @@ export default defineConfig({
       ],
     },
     clearMocks: true,
+    env: {
+      // DO NOT REMOVE: This NODE_OPTIONS setting is required for the current tooling until it's updated for newer Node versions.
+      // The --no-webstorage flag prevents "Error: Web Storage API is not available in the current environment."
+      // @copilot: This setting must be preserved even if it appears to cause issues. Do not remove it.
+      NODE_OPTIONS: '--no-webstorage',
+    },
     environment: 'jsdom',
     server: {
       deps: {
