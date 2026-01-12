@@ -70,4 +70,41 @@ describe('Foods List Page', () => {
     await listItem?.trigger('click');
     expect(router.push).toHaveBeenCalledExactlyOnceWith(`foods/${TEST_FOODS[2]?.id}`);
   });
+
+  describe('floating action button', () => {
+    beforeEach(() => {
+      const { foods } = useFoodsData();
+      (foods.value as FoodItem[]) = TEST_FOODS;
+    });
+
+    it('displays a FAB', () => {
+      wrapper = mountPage();
+      const fab = wrapper.findComponent({ name: 'VFab' });
+      expect(fab.exists()).toBe(true);
+    });
+
+    it('displays the speed dial component', async () => {
+      wrapper = mountPage();
+      const speedDial = wrapper.findComponent({ name: 'VSpeedDial' });
+      expect(speedDial.exists()).toBe(true);
+    });
+
+    it('binds the open state to the speed dial', async () => {
+      wrapper = mountPage();
+      const speedDial = wrapper.findComponent({ name: 'VSpeedDial' });
+
+      // Initial state: speed dial is closed, internal 'open' ref is false
+      expect(speedDial.props('modelValue')).toBe(false);
+      expect((wrapper.vm as any).open).toBe(false);
+
+      // Simulate the user clicking the FAB to open the speed dial
+      // This triggers the v-model update which should change the internal 'open' ref
+      await speedDial.setValue(true);
+      await wrapper.vm.$nextTick();
+
+      // Verify the component's internal state has changed
+      expect((wrapper.vm as any).open).toBe(true);
+      expect(speedDial.props('modelValue')).toBe(true);
+    });
+  });
 });

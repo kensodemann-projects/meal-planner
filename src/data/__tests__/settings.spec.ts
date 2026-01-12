@@ -129,6 +129,69 @@ describe('Settings Data Service', () => {
       expect(updateDoc).toHaveBeenCalledExactlyOnceWith('42:col:settings:doc:application', newSettings);
     });
   });
+
+  describe('error handling', () => {
+    it('logs error in development mode when promise initialization fails', async () => {
+      const originalDev = import.meta.env.DEV;
+      import.meta.env.DEV = true;
+
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const initError = new Error('Failed to load settings');
+
+      (useDocument as Mock).mockReturnValueOnce({
+        value: null,
+        pending: { value: false },
+        error: { value: null },
+        promise: { value: Promise.reject(initError) },
+      });
+
+      useSettingsData();
+      await flushPromises();
+
+      expect(consoleSpy).toHaveBeenCalledWith('Failed to initialize application settings', initError);
+
+      consoleSpy.mockRestore();
+      import.meta.env.DEV = originalDev;
+    });
+
+    it('does not log error in production mode when promise initialization fails', async () => {
+      const originalDev = import.meta.env.DEV;
+      import.meta.env.DEV = false;
+
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      (useDocument as Mock).mockReturnValueOnce({
+        value: null,
+        pending: { value: false },
+        error: { value: null },
+        promise: { value: Promise.reject(new Error('Failed')) },
+      });
+
+      useSettingsData();
+      await flushPromises();
+
+      expect(consoleSpy).not.toHaveBeenCalled();
+
+      consoleSpy.mockRestore();
+      import.meta.env.DEV = originalDev;
+    });
+
+    it('does not throw when promise initialization fails', async () => {
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      (useDocument as Mock).mockReturnValueOnce({
+        value: null,
+        pending: { value: false },
+        error: { value: null },
+        promise: { value: Promise.reject(new Error('Failed')) },
+      });
+
+      expect(() => useSettingsData()).not.toThrow();
+      await flushPromises();
+
+      consoleSpy.mockRestore();
+    });
+  });
 });
 
 const DEFAULT_SETTINGS: Settings = {
