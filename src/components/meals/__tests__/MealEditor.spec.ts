@@ -168,14 +168,60 @@ describe('Meal Editor', () => {
       expect(panel.findComponent('[data-testid="modify-button"]').exists()).toBe(true);
       expect(panel.findComponent('[data-testid="delete-button"]').exists()).toBe(true);
     });
+
+    it('opens the confirm dialog when delete button is clicked', async () => {
+      const deleteButton = panel.findComponent('[data-testid="delete-button"]');
+      await deleteButton.trigger('click');
+      await wrapper.vm.$nextTick();
+      const confirmDialog = wrapper.findComponent({ name: 'ConfirmDialog' });
+      expect(confirmDialog.exists()).toBe(true);
+    });
+
+    it('removes the recipe from the list when deletion is confirmed', async () => {
+      const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
+      let panels = recipePanels.findAllComponents(components.VExpansionPanel);
+      const initialCount = panels.length;
+      expect(initialCount).toBeGreaterThan(0);
+
+      const deleteButton = panel.findComponent('[data-testid="delete-button"]');
+      await deleteButton.trigger('click');
+      await wrapper.vm.$nextTick();
+
+      const confirmDialog = wrapper.findComponent({ name: 'ConfirmDialog' });
+      expect(confirmDialog.exists()).toBe(true);
+      await confirmDialog.vm.$emit('confirm');
+      await wrapper.vm.$nextTick();
+
+      panels = recipePanels.findAllComponents(components.VExpansionPanel);
+      expect(panels.length).toBe(initialCount - 1);
+    });
+
+    it('keeps the recipe in the list when deletion is canceled', async () => {
+      const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
+      let panels = recipePanels.findAllComponents(components.VExpansionPanel);
+      const initialCount = panels.length;
+      expect(initialCount).toBeGreaterThan(0);
+
+      const deleteButton = panel.findComponent('[data-testid="delete-button"]');
+      await deleteButton.trigger('click');
+      await wrapper.vm.$nextTick();
+
+      const confirmDialog = wrapper.findComponent({ name: 'ConfirmDialog' });
+      expect(confirmDialog.exists()).toBe(true);
+      await confirmDialog.vm.$emit('cancel');
+      await wrapper.vm.$nextTick();
+
+      panels = recipePanels.findAllComponents(components.VExpansionPanel);
+      expect(panels.length).toBe(initialCount);
+    });
   });
 
   describe('an existing food meal item', () => {
     let panel: VueWrapper<components.VExpansionPanel>;
     beforeEach(async () => {
       wrapper = mountComponent({ meal: TEST_MEAL });
-      const recipePanels = wrapper.findComponent('[data-testid="food-item-panels"]');
-      const panels = recipePanels.findAllComponents(components.VExpansionPanel);
+      const foodItemPanels = wrapper.findComponent('[data-testid="food-item-panels"]');
+      const panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
       panel = panels[0]!;
       const header = panel.findComponent(components.VExpansionPanelTitle);
       await header.trigger('click');
@@ -223,6 +269,52 @@ describe('Meal Editor', () => {
       expect(panel.findComponent({ name: 'NutritionData' }).exists()).toBe(true);
       expect(panel.findComponent('[data-testid="modify-button"]').exists()).toBe(true);
       expect(panel.findComponent('[data-testid="delete-button"]').exists()).toBe(true);
+    });
+
+    it('opens the confirm dialog when delete button is clicked', async () => {
+      const deleteButton = panel.findComponent('[data-testid="delete-button"]');
+      await deleteButton.trigger('click');
+      await wrapper.vm.$nextTick();
+      const confirmDialog = wrapper.findComponent({ name: 'ConfirmDialog' });
+      expect(confirmDialog.exists()).toBe(true);
+    });
+
+    it('removes the food item from the list when deletion is confirmed', async () => {
+      const foodItemPanels = wrapper.findComponent('[data-testid="food-item-panels"]');
+      let panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
+      const initialCount = panels.length;
+      expect(initialCount).toBeGreaterThan(0);
+
+      const deleteButton = panel.findComponent('[data-testid="delete-button"]');
+      await deleteButton.trigger('click');
+      await wrapper.vm.$nextTick();
+
+      const confirmDialog = wrapper.findComponent({ name: 'ConfirmDialog' });
+      expect(confirmDialog.exists()).toBe(true);
+      await confirmDialog.vm.$emit('confirm');
+      await wrapper.vm.$nextTick();
+
+      panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
+      expect(panels.length).toBe(initialCount - 1);
+    });
+
+    it('keeps the food item in the list when deletion is canceled', async () => {
+      const foodItemPanels = wrapper.findComponent('[data-testid="food-item-panels"]');
+      let panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
+      const initialCount = panels.length;
+      expect(initialCount).toBeGreaterThan(0);
+
+      const deleteButton = panel.findComponent('[data-testid="delete-button"]');
+      await deleteButton.trigger('click');
+      await wrapper.vm.$nextTick();
+
+      const confirmDialog = wrapper.findComponent({ name: 'ConfirmDialog' });
+      expect(confirmDialog.exists()).toBe(true);
+      await confirmDialog.vm.$emit('cancel');
+      await wrapper.vm.$nextTick();
+
+      panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
+      expect(panels.length).toBe(initialCount);
     });
   });
 
