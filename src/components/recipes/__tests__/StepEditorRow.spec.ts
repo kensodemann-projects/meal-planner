@@ -17,23 +17,7 @@ const mountComponent = (props: { step: RecipeStep } = { step: TEST_STEPS[0]! }) 
 describe('StepEditorRow', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
-  beforeEach(() => {
-    // Polyfill visualViewport for Vuetify overlays/dialogs in jsdom
-    if (!window.visualViewport) {
-      // @ts-expect-error Polyfill for Vuetify overlay in jsdom
-      window.visualViewport = {
-        addEventListener: () => {},
-        removeEventListener: () => {},
-        width: window.innerWidth,
-        height: window.innerHeight,
-        scale: 1,
-        offsetLeft: 0,
-        offsetTop: 0,
-        pageLeft: 0,
-        pageTop: 0,
-      };
-    }
-  });
+  beforeEach(() => {});
 
   afterEach(() => {
     wrapper?.unmount();

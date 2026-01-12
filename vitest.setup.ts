@@ -7,8 +7,8 @@ Object.defineProperty(window, 'visualViewport', {
   value: {
     addEventListener: () => {},
     removeEventListener: () => {},
-    width: 1024,
-    height: 768,
+    width: window.innerWidth,
+    height: window.innerHeight,
     offsetLeft: 0,
     offsetTop: 0,
     pageLeft: 0,

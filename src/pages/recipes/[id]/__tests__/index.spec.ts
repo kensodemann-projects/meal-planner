@@ -24,21 +24,6 @@ describe('Recipe Details Page', () => {
   let wrapper: ReturnType<typeof mountPage>;
 
   beforeEach(() => {
-    // Polyfill visualViewport for Vuetify overlays/dialogs in jsdom
-    if (!window.visualViewport) {
-      // @ts-expect-error Polyfill for Vuetify overlay in jsdom
-      window.visualViewport = {
-        addEventListener: () => {},
-        removeEventListener: () => {},
-        width: window.innerWidth,
-        height: window.innerHeight,
-        scale: 1,
-        offsetLeft: 0,
-        offsetTop: 0,
-        pageLeft: 0,
-        pageTop: 0,
-      };
-    }
     const { getRecipe } = useRecipesData();
     (useRoute as Mock).mockReturnValue({ params: { id: '88f933fiieo' } });
     (useRouter as Mock).mockReturnValue({ push: vi.fn(), replace: vi.fn() });
