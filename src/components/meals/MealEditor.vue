@@ -113,7 +113,7 @@
 
   <v-dialog v-model="showConfirmDialog" max-width="600px" data-testid="confirm-dialog">
     <ConfirmDialog
-      :question="`Are you sure you want to remove this item from the meal?`"
+      question="Are you sure you want to remove this item from the meal?"
       icon-color="error"
       @confirm="removeMealItem"
       @cancel="showConfirmDialog = false"
