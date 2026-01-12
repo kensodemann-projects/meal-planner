@@ -1,7 +1,7 @@
 import ConfirmDialog from '@/components/core/ConfirmDialog.vue';
 import type { RecipeStep } from '@/models/recipe';
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -16,8 +16,6 @@ const mountComponent = (props: { step: RecipeStep } = { step: TEST_STEPS[0]! }) 
 
 describe('StepEditorRow', () => {
   let wrapper: ReturnType<typeof mountComponent>;
-
-  beforeEach(() => {});
 
   afterEach(() => {
     wrapper?.unmount();

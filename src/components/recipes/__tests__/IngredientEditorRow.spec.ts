@@ -2,7 +2,7 @@ import ConfirmDialog from '@/components/core/ConfirmDialog.vue';
 import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import type { RecipeIngredient } from '@/models/recipe';
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -18,8 +18,6 @@ const mountComponent = (props: { ingredient: RecipeIngredient }) =>
 
 describe('Ingredient Editor Row', () => {
   let wrapper: ReturnType<typeof mountComponent>;
-
-  beforeEach(() => {});
 
   afterEach(() => {
     wrapper?.unmount();
