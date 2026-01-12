@@ -80,7 +80,8 @@ export default defineConfig({
     },
     clearMocks: true,
     env: {
-      NODE_OPTIONS: '--no-webstorage', // Prevent "Error: Web Storage API is not available in the current environment."
+      // NOTE: NODE_OPTIONS with --no-webstorage is not allowed in some environments
+      // We've added a visualViewport mock in vitest.setup.ts instead
     },
     environment: 'jsdom',
     server: {
