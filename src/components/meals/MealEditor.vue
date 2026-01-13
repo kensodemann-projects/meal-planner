@@ -103,24 +103,7 @@
 
   <h2 class="mt-8">Total Nutrition</h2>
   <v-divider class="mb-4"></v-divider>
-  <NutritionData
-    :value="
-      mealItems.reduce(
-        (total, wrappedItem) => {
-          const itemNutrition = wrappedItem.item.nutrition;
-          return {
-            calories: total.calories + itemNutrition.calories,
-            protein: total.protein + itemNutrition.protein,
-            carbs: total.carbs + itemNutrition.carbs,
-            fat: total.fat + itemNutrition.fat,
-            sugar: total.sugar + itemNutrition.sugar,
-            sodium: total.sodium + itemNutrition.sodium,
-          };
-        },
-        { calories: 0, protein: 0, carbs: 0, fat: 0, sugar: 0, sodium: 0 },
-      )
-    "
-  />
+  <NutritionData :value="totalNutrition" data-testid="total-nutrition" />
 
   <v-container fluid>
     <v-row class="pa-4" justify="end">
@@ -169,6 +152,23 @@ const recipeMealItems = computed((): WrappedMealItem[] =>
 );
 
 const isModified = computed((): boolean => false);
+
+const totalNutrition = computed(() => {
+  return mealItems.value.reduce(
+    (total, wrappedItem) => {
+      const itemNutrition = wrappedItem.item.nutrition;
+      return {
+        calories: total.calories + itemNutrition.calories,
+        protein: total.protein + itemNutrition.protein,
+        carbs: total.carbs + itemNutrition.carbs,
+        fat: total.fat + itemNutrition.fat,
+        sugar: total.sugar + itemNutrition.sugar,
+        sodium: total.sodium + itemNutrition.sodium,
+      };
+    },
+    { calories: 0, protein: 0, carbs: 0, fat: 0, sugar: 0, sodium: 0 },
+  );
+});
 
 const askToDelete = (item: WrappedMealItem) => {
   mealItemToRemove.value = item.item;
