@@ -521,9 +521,9 @@ describe('Meal Editor', () => {
       beforeEach(() => (wrapper = mountComponent()));
 
       it('displays zeros for all nutrition values', () => {
-        const totalNutrition = wrapper.findComponent('[data-testid="total-nutrition"]');
-        expect(totalNutrition!.exists()).toBe(true);
-        expect(totalNutrition!.props('value')).toEqual({
+        const totalNutrition = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
+        expect(totalNutrition.exists()).toBe(true);
+        expect(totalNutrition.props('value')).toEqual({
           calories: 0,
           protein: 0,
           carbs: 0,
@@ -538,12 +538,12 @@ describe('Meal Editor', () => {
       beforeEach(() => (wrapper = mountComponent({ meal: TEST_MEAL })));
 
       it('displays the sum of all meal item nutrition', () => {
-        const totalNutrition = wrapper.findComponent('[data-testid="total-nutrition"]');
-        expect(totalNutrition!.exists()).toBe(true);
+        const totalNutrition = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
+        expect(totalNutrition.exists()).toBe(true);
 
         const expectedTotal = calculateTotalNutrition(TEST_MEAL.items);
 
-        expect(totalNutrition!.props('value')).toEqual(expectedTotal);
+        expect(totalNutrition.props('value')).toEqual(expectedTotal);
       });
     });
 
@@ -572,8 +572,8 @@ describe('Meal Editor', () => {
         };
         await mealItemEditors[0]!.vm.$emit('save', newRecipeItem);
 
-        const totalNutrition = wrapper.findComponent('[data-testid="total-nutrition"]');
-        expect(totalNutrition!.props('value')).toEqual(newRecipeItem.nutrition);
+        const totalNutrition = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
+        expect(totalNutrition.props('value')).toEqual(newRecipeItem.nutrition);
       });
     });
 
@@ -602,8 +602,8 @@ describe('Meal Editor', () => {
         };
         await mealItemEditors[0]!.vm.$emit('save', newFoodItem);
 
-        const totalNutrition = wrapper.findComponent('[data-testid="total-nutrition"]');
-        expect(totalNutrition!.props('value')).toEqual(newFoodItem.nutrition);
+        const totalNutrition = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
+        expect(totalNutrition.props('value')).toEqual(newFoodItem.nutrition);
       });
     });
 
@@ -653,8 +653,8 @@ describe('Meal Editor', () => {
         };
         await mealItemEditors[0]!.vm.$emit('save', newFoodItem);
 
-        const totalNutrition = wrapper.findComponent('[data-testid="total-nutrition"]');
-        expect(totalNutrition!.props('value')).toEqual({
+        const totalNutrition = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
+        expect(totalNutrition.props('value')).toEqual({
           calories: 620,
           sodium: 220,
           fat: 20,
@@ -679,8 +679,8 @@ describe('Meal Editor', () => {
       });
 
       it('updates the total nutrition to reflect the modified recipe', async () => {
-        const totalNutritionBefore = wrapper.findComponent('[data-testid="total-nutrition"]');
-        const originalTotal = { ...totalNutritionBefore!.props('value') };
+        const totalNutritionBefore = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
+        const originalTotal = { ...totalNutritionBefore.props('value') };
 
         const modifyButton = panel.findComponent('[data-testid="modify-button"]');
         await modifyButton.trigger('click');
@@ -706,7 +706,7 @@ describe('Meal Editor', () => {
         await mealItemEditor.vm.$emit('save', updatedItem);
         await wrapper.vm.$nextTick();
 
-        const totalNutritionAfter = wrapper.findComponent('[data-testid="total-nutrition"]');
+        const totalNutritionAfter = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
 
         const expectedTotal = {
           calories: originalTotal.calories - originalItem.nutrition.calories + updatedItem.nutrition.calories,
@@ -717,7 +717,7 @@ describe('Meal Editor', () => {
           sugar: originalTotal.sugar - originalItem.nutrition.sugar + updatedItem.nutrition.sugar,
         };
 
-        expect(totalNutritionAfter!.props('value')).toEqual(expectedTotal);
+        expect(totalNutritionAfter.props('value')).toEqual(expectedTotal);
       });
     });
 
@@ -735,8 +735,8 @@ describe('Meal Editor', () => {
       });
 
       it('updates the total nutrition to exclude the deleted recipe', async () => {
-        const totalNutritionBefore = wrapper.findComponent('[data-testid="total-nutrition"]');
-        const originalTotal = { ...totalNutritionBefore!.props('value') };
+        const totalNutritionBefore = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
+        const originalTotal = { ...totalNutritionBefore.props('value') };
 
         const originalItem = TEST_MEAL.items.find((item) => item.recipeId);
         if (!originalItem) {
@@ -751,7 +751,7 @@ describe('Meal Editor', () => {
         await confirmDialog.vm.$emit('confirm');
         await wrapper.vm.$nextTick();
 
-        const totalNutritionAfter = wrapper.findComponent('[data-testid="total-nutrition"]');
+        const totalNutritionAfter = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
 
         const expectedTotal = {
           calories: originalTotal.calories - originalItem.nutrition.calories,
@@ -762,7 +762,7 @@ describe('Meal Editor', () => {
           sugar: originalTotal.sugar - originalItem.nutrition.sugar,
         };
 
-        expect(totalNutritionAfter!.props('value')).toEqual(expectedTotal);
+        expect(totalNutritionAfter.props('value')).toEqual(expectedTotal);
       });
     });
 
@@ -780,8 +780,8 @@ describe('Meal Editor', () => {
       });
 
       it('updates the total nutrition to exclude the deleted food item', async () => {
-        const totalNutritionBefore = wrapper.findComponent('[data-testid="total-nutrition"]');
-        const originalTotal = { ...totalNutritionBefore!.props('value') };
+        const totalNutritionBefore = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
+        const originalTotal = { ...totalNutritionBefore.props('value') };
 
         const originalItem = TEST_MEAL.items.find((item) => item.foodItemId);
         if (!originalItem) {
@@ -796,7 +796,7 @@ describe('Meal Editor', () => {
         await confirmDialog.vm.$emit('confirm');
         await wrapper.vm.$nextTick();
 
-        const totalNutritionAfter = wrapper.findComponent('[data-testid="total-nutrition"]');
+        const totalNutritionAfter = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
 
         const expectedTotal = {
           calories: originalTotal.calories - originalItem.nutrition.calories,
@@ -807,7 +807,7 @@ describe('Meal Editor', () => {
           sugar: originalTotal.sugar - originalItem.nutrition.sugar,
         };
 
-        expect(totalNutritionAfter!.props('value')).toEqual(expectedTotal);
+        expect(totalNutritionAfter.props('value')).toEqual(expectedTotal);
       });
     });
   });
