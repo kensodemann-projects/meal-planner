@@ -19,6 +19,20 @@ const vuetify = createVuetify({
 
 const mountComponent = (props: { meal?: Meal } = {}) => mount(MealEditor, { props, global: { plugins: [vuetify] } });
 
+const calculateTotalNutrition = (items: Meal['items']) => {
+  return items.reduce(
+    (total, item) => ({
+      calories: total.calories + item.nutrition.calories,
+      protein: total.protein + item.nutrition.protein,
+      carbs: total.carbs + item.nutrition.carbs,
+      fat: total.fat + item.nutrition.fat,
+      sugar: total.sugar + item.nutrition.sugar,
+      sodium: total.sodium + item.nutrition.sodium,
+    }),
+    { calories: 0, protein: 0, carbs: 0, fat: 0, sugar: 0, sodium: 0 },
+  );
+};
+
 describe('Meal Editor', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
@@ -498,6 +512,302 @@ describe('Meal Editor', () => {
           const panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
           expect(panels.length).toBe(1);
         });
+      });
+    });
+  });
+
+  describe('Total Nutrition Display', () => {
+    describe('when adding a new meal', () => {
+      beforeEach(() => (wrapper = mountComponent()));
+
+      it('displays zeros for all nutrition values', () => {
+        const totalNutrition = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
+        expect(totalNutrition.exists()).toBe(true);
+        expect(totalNutrition.props('value')).toEqual({
+          calories: 0,
+          protein: 0,
+          carbs: 0,
+          fat: 0,
+          sugar: 0,
+          sodium: 0,
+        });
+      });
+    });
+
+    describe('when updating a meal', () => {
+      beforeEach(() => (wrapper = mountComponent({ meal: TEST_MEAL })));
+
+      it('displays the sum of all meal item nutrition', () => {
+        const totalNutrition = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
+        expect(totalNutrition.exists()).toBe(true);
+
+        const expectedTotal = calculateTotalNutrition(TEST_MEAL.items);
+
+        expect(totalNutrition.props('value')).toEqual(expectedTotal);
+      });
+    });
+
+    describe('when adding a recipe meal item', () => {
+      beforeEach(() => (wrapper = mountComponent()));
+
+      it('updates the total nutrition to reflect the added recipe', async () => {
+        const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
+        await addRecipeButton.trigger('click');
+
+        const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+        const newRecipeItem = {
+          id: 'item-2-3-1',
+          name: 'Beef Sirloin',
+          recipeId: '3',
+          units: 1,
+          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
+          nutrition: {
+            calories: 320,
+            sodium: 120,
+            fat: 14,
+            protein: 42,
+            carbs: 0,
+            sugar: 0,
+          },
+        };
+        await mealItemEditors[0]!.vm.$emit('save', newRecipeItem);
+
+        const totalNutrition = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
+        expect(totalNutrition.props('value')).toEqual(newRecipeItem.nutrition);
+      });
+    });
+
+    describe('when adding a food meal item', () => {
+      beforeEach(() => (wrapper = mountComponent()));
+
+      it('updates the total nutrition to reflect the added food item', async () => {
+        const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
+        await addFoodItemButton.trigger('click');
+
+        const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+        const newFoodItem = {
+          id: 'item-1-1-1',
+          name: 'Rolled Oats',
+          foodItemId: 'food-test-1',
+          units: 1,
+          unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+          nutrition: {
+            calories: 300,
+            sodium: 100,
+            fat: 6,
+            protein: 10,
+            carbs: 54,
+            sugar: 2,
+          },
+        };
+        await mealItemEditors[0]!.vm.$emit('save', newFoodItem);
+
+        const totalNutrition = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
+        expect(totalNutrition.props('value')).toEqual(newFoodItem.nutrition);
+      });
+    });
+
+    describe('when adding both recipe and food items', () => {
+      beforeEach(() => (wrapper = mountComponent()));
+
+      it('updates the total nutrition to reflect both items', async () => {
+        const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
+        await addRecipeButton.trigger('click');
+
+        let mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+        const newRecipeItem = {
+          id: 'item-2-3-1',
+          name: 'Beef Sirloin',
+          recipeId: '3',
+          units: 1,
+          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
+          nutrition: {
+            calories: 320,
+            sodium: 120,
+            fat: 14,
+            protein: 42,
+            carbs: 0,
+            sugar: 0,
+          },
+        };
+        await mealItemEditors[0]!.vm.$emit('save', newRecipeItem);
+
+        const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
+        await addFoodItemButton.trigger('click');
+
+        mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+        const newFoodItem = {
+          id: 'item-1-1-1',
+          name: 'Rolled Oats',
+          foodItemId: 'food-test-1',
+          units: 1,
+          unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+          nutrition: {
+            calories: 300,
+            sodium: 100,
+            fat: 6,
+            protein: 10,
+            carbs: 54,
+            sugar: 2,
+          },
+        };
+        await mealItemEditors[0]!.vm.$emit('save', newFoodItem);
+
+        const totalNutrition = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
+        expect(totalNutrition.props('value')).toEqual({
+          calories: 620,
+          sodium: 220,
+          fat: 20,
+          protein: 52,
+          carbs: 54,
+          sugar: 2,
+        });
+      });
+    });
+
+    describe('when updating a recipe meal item', () => {
+      let panel: VueWrapper<components.VExpansionPanel>;
+
+      beforeEach(async () => {
+        wrapper = mountComponent({ meal: TEST_MEAL });
+        const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
+        const panels = recipePanels.findAllComponents(components.VExpansionPanel);
+        panel = panels[0]!;
+        const header = panel.findComponent(components.VExpansionPanelTitle);
+        await header.trigger('click');
+        await wrapper.vm.$nextTick();
+      });
+
+      it('updates the total nutrition to reflect the modified recipe', async () => {
+        const totalNutritionBefore = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
+        const originalTotal = { ...totalNutritionBefore.props('value') };
+
+        const modifyButton = panel.findComponent('[data-testid="modify-button"]');
+        await modifyButton.trigger('click');
+
+        const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
+        const originalItem = TEST_MEAL.items.find((item) => item.recipeId);
+        if (!originalItem) {
+          throw new Error('TEST_MEAL should contain at least one recipe item');
+        }
+
+        const updatedItem = {
+          ...originalItem,
+          nutrition: {
+            calories: 400,
+            sodium: 192,
+            fat: 8,
+            protein: 72,
+            carbs: 0,
+            sugar: 0,
+          },
+        };
+
+        await mealItemEditor.vm.$emit('save', updatedItem);
+        await wrapper.vm.$nextTick();
+
+        const totalNutritionAfter = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
+
+        const expectedTotal = {
+          calories: originalTotal.calories - originalItem.nutrition.calories + updatedItem.nutrition.calories,
+          sodium: originalTotal.sodium - originalItem.nutrition.sodium + updatedItem.nutrition.sodium,
+          fat: originalTotal.fat - originalItem.nutrition.fat + updatedItem.nutrition.fat,
+          protein: originalTotal.protein - originalItem.nutrition.protein + updatedItem.nutrition.protein,
+          carbs: originalTotal.carbs - originalItem.nutrition.carbs + updatedItem.nutrition.carbs,
+          sugar: originalTotal.sugar - originalItem.nutrition.sugar + updatedItem.nutrition.sugar,
+        };
+
+        expect(totalNutritionAfter.props('value')).toEqual(expectedTotal);
+      });
+    });
+
+    describe('when deleting a recipe meal item', () => {
+      let panel: VueWrapper<components.VExpansionPanel>;
+
+      beforeEach(async () => {
+        wrapper = mountComponent({ meal: TEST_MEAL });
+        const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
+        const panels = recipePanels.findAllComponents(components.VExpansionPanel);
+        panel = panels[0]!;
+        const header = panel.findComponent(components.VExpansionPanelTitle);
+        await header.trigger('click');
+        await wrapper.vm.$nextTick();
+      });
+
+      it('updates the total nutrition to exclude the deleted recipe', async () => {
+        const totalNutritionBefore = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
+        const originalTotal = { ...totalNutritionBefore.props('value') };
+
+        const originalItem = TEST_MEAL.items.find((item) => item.recipeId);
+        if (!originalItem) {
+          throw new Error('TEST_MEAL should contain at least one recipe item');
+        }
+
+        const deleteButton = panel.findComponent('[data-testid="delete-button"]');
+        await deleteButton.trigger('click');
+        await wrapper.vm.$nextTick();
+
+        const confirmDialog = wrapper.findComponent({ name: 'ConfirmDialog' });
+        await confirmDialog.vm.$emit('confirm');
+        await wrapper.vm.$nextTick();
+
+        const totalNutritionAfter = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
+
+        const expectedTotal = {
+          calories: originalTotal.calories - originalItem.nutrition.calories,
+          sodium: originalTotal.sodium - originalItem.nutrition.sodium,
+          fat: originalTotal.fat - originalItem.nutrition.fat,
+          protein: originalTotal.protein - originalItem.nutrition.protein,
+          carbs: originalTotal.carbs - originalItem.nutrition.carbs,
+          sugar: originalTotal.sugar - originalItem.nutrition.sugar,
+        };
+
+        expect(totalNutritionAfter.props('value')).toEqual(expectedTotal);
+      });
+    });
+
+    describe('when deleting a food meal item', () => {
+      let panel: VueWrapper<components.VExpansionPanel>;
+
+      beforeEach(async () => {
+        wrapper = mountComponent({ meal: TEST_MEAL });
+        const foodItemPanels = wrapper.findComponent('[data-testid="food-item-panels"]');
+        const panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
+        panel = panels[0]!;
+        const header = panel.findComponent(components.VExpansionPanelTitle);
+        await header.trigger('click');
+        await wrapper.vm.$nextTick();
+      });
+
+      it('updates the total nutrition to exclude the deleted food item', async () => {
+        const totalNutritionBefore = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
+        const originalTotal = { ...totalNutritionBefore.props('value') };
+
+        const originalItem = TEST_MEAL.items.find((item) => item.foodItemId);
+        if (!originalItem) {
+          throw new Error('TEST_MEAL should contain at least one food item');
+        }
+
+        const deleteButton = panel.findComponent('[data-testid="delete-button"]');
+        await deleteButton.trigger('click');
+        await wrapper.vm.$nextTick();
+
+        const confirmDialog = wrapper.findComponent({ name: 'ConfirmDialog' });
+        await confirmDialog.vm.$emit('confirm');
+        await wrapper.vm.$nextTick();
+
+        const totalNutritionAfter = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
+
+        const expectedTotal = {
+          calories: originalTotal.calories - originalItem.nutrition.calories,
+          sodium: originalTotal.sodium - originalItem.nutrition.sodium,
+          fat: originalTotal.fat - originalItem.nutrition.fat,
+          protein: originalTotal.protein - originalItem.nutrition.protein,
+          carbs: originalTotal.carbs - originalItem.nutrition.carbs,
+          sugar: originalTotal.sugar - originalItem.nutrition.sugar,
+        };
+
+        expect(totalNutritionAfter.props('value')).toEqual(expectedTotal);
       });
     });
   });
