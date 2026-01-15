@@ -74,6 +74,14 @@ describe('Meal Editor', () => {
       const panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
       expect(panels.length).toBe(0);
     });
+
+    describe('save button', () => {
+      it('starts disabled', () => {
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        expect(saveButton.exists()).toBe(true);
+        expect(saveButton.attributes('disabled')).toBeDefined();
+      });
+    });
   });
 
   describe('updating a meal', () => {
@@ -89,6 +97,14 @@ describe('Meal Editor', () => {
       const foodItemPanels = wrapper.findComponent('[data-testid="food-item-panels"]');
       const panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
       expect(panels.length).toBe(TEST_MEAL.items.filter((item) => item.foodItemId).length);
+    });
+
+    describe('save button', () => {
+      it('starts disabled', () => {
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        expect(saveButton.exists()).toBe(true);
+        expect(saveButton.attributes('disabled')).toBeDefined();
+      });
     });
 
     describe('an existing recipe meal item', () => {
