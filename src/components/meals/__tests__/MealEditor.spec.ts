@@ -81,6 +81,30 @@ describe('Meal Editor', () => {
         expect(saveButton.exists()).toBe(true);
         expect(saveButton.attributes('disabled')).toBeDefined();
       });
+
+      it('is enabled after a recipe is added', async () => {
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
+        await addRecipeButton.trigger('click');
+        const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+        await mealItemEditors[0]!.vm.$emit('save', {
+          id: 'item-2-3-1',
+          name: 'Beef Sirloin',
+          recipeId: '3',
+          units: 1,
+          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
+          nutrition: {
+            calories: 320,
+            sodium: 120,
+            fat: 14,
+            protein: 42,
+            carbs: 0,
+            sugar: 0,
+          },
+        });
+        await wrapper.vm.$nextTick();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
     });
   });
 

@@ -18,7 +18,7 @@
     :meal-item="recipeMealItem"
     :items="recipes"
     type="recipe"
-    @save="saveMealItem"
+    @save="createMealItem"
     @cancel="() => (recipeMealItem = null)"
   />
   <v-expansion-panels data-testid="recipe-panels">
@@ -32,12 +32,7 @@
           :meal-item="recipe.item"
           :items="recipes"
           type="recipe"
-          @save="
-            (updatedItem) => {
-              recipe.item = updatedItem;
-              recipe.isEditing = false;
-            }
-          "
+          @save="(updatedItem) => updateMealItem(recipe, updatedItem)"
           @cancel="() => (recipe.isEditing = false)"
         />
         <div v-else>
@@ -68,7 +63,7 @@
     :meal-item="foodMealItem"
     :items="foods"
     type="food"
-    @save="saveMealItem"
+    @save="createMealItem"
     @cancel="() => (foodMealItem = null)"
   />
   <v-expansion-panels data-testid="food-item-panels">
@@ -82,14 +77,7 @@
           :meal-item="food.item"
           :items="foods"
           type="food"
-          @save="
-            (updatedItem) => {
-              const index = foodMealItems.indexOf(food);
-              if (index !== -1) {
-                foodMealItems.splice(index, 1, { ...food, item: updatedItem, isEditing: false });
-              }
-            }
-          "
+          @save="(updatedItem) => updateMealItem(food, updatedItem)"
           @cancel="() => (food.isEditing = false)"
         />
         <div v-else>
@@ -108,7 +96,7 @@
   <v-container fluid>
     <v-row class="pa-4" justify="end">
       <CancelButton class="mr-4" @click="$emit('cancel')" />
-      <SaveButton :disabled="!(valid && isModified)" @click="save" />
+      <SaveButton :disabled="!isModified" @click="save" />
     </v-row>
   </v-container>
 
@@ -140,9 +128,9 @@ const foodMealItem = ref<Partial<MealItem> | null>(null);
 const recipeMealItem = ref<Partial<MealItem> | null>(null);
 const mealItemToRemove = ref<MealItem | null>(null);
 const mealItems = ref<WrappedMealItem[]>(props.meal?.items.map((item) => ({ isEditing: false, item })) ?? []);
+const isModified = ref(false);
 
 const showConfirmDialog = ref(false);
-const valid = ref(false);
 
 const foodMealItems = computed((): WrappedMealItem[] =>
   mealItems.value.filter((wrappedItem) => wrappedItem.item.foodItemId !== undefined),
@@ -150,8 +138,6 @@ const foodMealItems = computed((): WrappedMealItem[] =>
 const recipeMealItems = computed((): WrappedMealItem[] =>
   mealItems.value.filter((wrappedItem) => wrappedItem.item.recipeId !== undefined),
 );
-
-const isModified = computed((): boolean => false);
 
 const totalNutrition = computed(() => {
   return mealItems.value.reduce(
@@ -183,15 +169,20 @@ const removeMealItem = () => {
   showConfirmDialog.value = false;
 };
 
-const saveMealItem = (item: MealItem) => {
-  // The effect of this cannot be seen in this component currently, but in a full implementation,
-  // this would update the meal's items list
+const createMealItem = (item: MealItem) => {
   mealItems.value.push({ item, isEditing: false });
   if (item.foodItemId) {
     foodMealItem.value = null;
   } else if (item.recipeId) {
     recipeMealItem.value = null;
   }
+  isModified.value = true;
+};
+
+const updateMealItem = (wrapper: WrappedMealItem, item: MealItem) => {
+  wrapper.item = item;
+  wrapper.isEditing = false;
+  isModified.value = true;
 };
 
 const save = () => {
