@@ -201,6 +201,105 @@ describe('Meal Editor', () => {
         await wrapper.vm.$nextTick();
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
+
+      it('is enabled after an existing recipe is updated', async () => {
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
+        const panels = recipePanels.findAllComponents(components.VExpansionPanel);
+        const panel = panels[0]!;
+        const header = panel.findComponent(components.VExpansionPanelTitle);
+        await header.trigger('click');
+        const modifyButton = panel.findComponent('[data-testid="modify-button"]');
+        await modifyButton.trigger('click');
+        const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
+        await mealItemEditor.vm.$emit('save', {
+          id: 'item-2-2-1',
+          name: 'Updated Recipe Name',
+          recipeId: '2',
+          units: 2,
+          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
+          nutrition: {
+            calories: 500,
+            sodium: 200,
+            fat: 20,
+            protein: 50,
+            carbs: 30,
+            sugar: 10,
+          },
+        });
+        await wrapper.vm.$nextTick();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is eabled after an existing food item is updated', async () => {
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        const foodItemPanels = wrapper.findComponent('[data-testid="food-item-panels"]');
+        const panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
+        const panel = panels[0]!;
+        const header = panel.findComponent(components.VExpansionPanelTitle);
+        await header.trigger('click');
+        const modifyButton = panel.findComponent('[data-testid="modify-button"]');
+        await modifyButton.trigger('click');
+        const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
+        await mealItemEditor.vm.$emit('save', {
+          id: 'item-1-2-1',
+          name: 'Updated Food Name',
+          foodItemId: 'food-test-2',
+          units: 3,
+
+          unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+          nutrition: {
+            calories: 600,
+            sodium: 150,
+            fat: 10,
+            protein: 20,
+            carbs: 80,
+            sugar: 15,
+          },
+        });
+        await wrapper.vm.$nextTick();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it.skip('is disabled if a recipe is open for edit', async () => {
+        // first enable the button by adding a recipe
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
+        await addRecipeButton.trigger('click');
+        const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+        await mealItemEditors[0]!.vm.$emit('save', {
+          id: 'item-2-3-1',
+          name: 'Beef Sirloin',
+          recipeId: '3',
+          units: 1,
+          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
+          nutrition: {
+            calories: 320,
+            sodium: 120,
+            fat: 14,
+            protein: 42,
+            carbs: 0,
+            sugar: 0,
+          },
+        });
+        await wrapper.vm.$nextTick();
+        // Now open an existing recipe for edit
+        const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
+        const panels = recipePanels.findAllComponents(components.VExpansionPanel);
+        const panel = panels[0]!;
+        const header = panel.findComponent(components.VExpansionPanelTitle);
+        await header.trigger('click');
+        const modifyButton = panel.findComponent('[data-testid="modify-button"]');
+        await modifyButton.trigger('click');
+        await wrapper.vm.$nextTick();
+        expect(saveButton.attributes('disabled')).toBeDefined();
+        // Cancel the edit and show the button is enabled again
+        const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
+        const cancelButton = mealItemEditor.findComponent('[data-testid="cancel-button"]');
+        await cancelButton.trigger('click');
+        await wrapper.vm.$nextTick();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
     });
 
     describe('an existing recipe meal item', () => {
