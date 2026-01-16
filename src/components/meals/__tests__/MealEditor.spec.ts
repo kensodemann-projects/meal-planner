@@ -33,6 +33,38 @@ const calculateTotalNutrition = (items: Meal['items']) => {
   );
 };
 
+const recipeMealItem = {
+  id: 'item-2-3-1',
+  name: 'Beef Sirloin',
+  recipeId: '3',
+  units: 1,
+  unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
+  nutrition: {
+    calories: 320,
+    sodium: 120,
+    fat: 14,
+    protein: 42,
+    carbs: 0,
+    sugar: 0,
+  },
+};
+
+const foodMealItem = {
+  id: 'item-1-1-1',
+  name: 'Rolled Oats',
+  foodItemId: 'food-test-1',
+  units: 1,
+  unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+  nutrition: {
+    calories: 300,
+    sodium: 100,
+    fat: 6,
+    protein: 10,
+    carbs: 54,
+    sugar: 2,
+  },
+};
+
 describe('Meal Editor', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
@@ -87,21 +119,7 @@ describe('Meal Editor', () => {
         const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
         await addRecipeButton.trigger('click');
         const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-        await mealItemEditors[0]!.vm.$emit('save', {
-          id: 'item-2-3-1',
-          name: 'Beef Sirloin',
-          recipeId: '3',
-          units: 1,
-          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
-          nutrition: {
-            calories: 320,
-            sodium: 120,
-            fat: 14,
-            protein: 42,
-            carbs: 0,
-            sugar: 0,
-          },
-        });
+        await mealItemEditors[0]!.vm.$emit('save', recipeMealItem);
         await wrapper.vm.$nextTick();
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
@@ -111,21 +129,7 @@ describe('Meal Editor', () => {
         const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
         await addFoodItemButton.trigger('click');
         const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-        await mealItemEditors[0]!.vm.$emit('save', {
-          id: 'item-1-1-1',
-          name: 'Rolled Oats',
-          foodItemId: 'food-test-1',
-          units: 1,
-          unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
-          nutrition: {
-            calories: 300,
-            sodium: 100,
-            fat: 6,
-            protein: 10,
-            carbs: 54,
-            sugar: 2,
-          },
-        });
+        await mealItemEditors[0]!.vm.$emit('save', foodMealItem);
         await wrapper.vm.$nextTick();
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
@@ -159,21 +163,7 @@ describe('Meal Editor', () => {
         const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
         await addRecipeButton.trigger('click');
         const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-        await mealItemEditors[0]!.vm.$emit('save', {
-          id: 'item-2-3-1',
-          name: 'Beef Sirloin',
-          recipeId: '3',
-          units: 1,
-          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
-          nutrition: {
-            calories: 320,
-            sodium: 120,
-            fat: 14,
-            protein: 42,
-            carbs: 0,
-            sugar: 0,
-          },
-        });
+        await mealItemEditors[0]!.vm.$emit('save', recipeMealItem);
         await wrapper.vm.$nextTick();
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
@@ -183,21 +173,7 @@ describe('Meal Editor', () => {
         const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
         await addFoodItemButton.trigger('click');
         const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-        await mealItemEditors[0]!.vm.$emit('save', {
-          id: 'item-1-1-1',
-          name: 'Rolled Oats',
-          foodItemId: 'food-test-1',
-          units: 1,
-          unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
-          nutrition: {
-            calories: 300,
-            sodium: 100,
-            fat: 6,
-            protein: 10,
-            carbs: 54,
-            sugar: 2,
-          },
-        });
+        await mealItemEditors[0]!.vm.$emit('save', foodMealItem);
         await wrapper.vm.$nextTick();
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
@@ -213,19 +189,8 @@ describe('Meal Editor', () => {
         await modifyButton.trigger('click');
         const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
         await mealItemEditor.vm.$emit('save', {
-          id: 'item-2-2-1',
+          ...recipeMealItem,
           name: 'Updated Recipe Name',
-          recipeId: '2',
-          units: 2,
-          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
-          nutrition: {
-            calories: 500,
-            sodium: 200,
-            fat: 20,
-            protein: 50,
-            carbs: 30,
-            sugar: 10,
-          },
         });
         await wrapper.vm.$nextTick();
         expect(saveButton.attributes('disabled')).toBeUndefined();
@@ -242,20 +207,8 @@ describe('Meal Editor', () => {
         await modifyButton.trigger('click');
         const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
         await mealItemEditor.vm.$emit('save', {
-          id: 'item-1-2-1',
+          ...foodMealItem,
           name: 'Updated Food Name',
-          foodItemId: 'food-test-2',
-          units: 3,
-
-          unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
-          nutrition: {
-            calories: 600,
-            sodium: 150,
-            fat: 10,
-            protein: 20,
-            carbs: 80,
-            sugar: 15,
-          },
         });
         await wrapper.vm.$nextTick();
         expect(saveButton.attributes('disabled')).toBeUndefined();
@@ -267,21 +220,7 @@ describe('Meal Editor', () => {
         const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
         await addRecipeButton.trigger('click');
         const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-        await mealItemEditors[0]!.vm.$emit('save', {
-          id: 'item-2-3-1',
-          name: 'Beef Sirloin',
-          recipeId: '3',
-          units: 1,
-          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
-          nutrition: {
-            calories: 320,
-            sodium: 120,
-            fat: 14,
-            protein: 42,
-            carbs: 0,
-            sugar: 0,
-          },
-        });
+        await mealItemEditors[0]!.vm.$emit('save', recipeMealItem);
         await wrapper.vm.$nextTick();
         // Now open an existing recipe for edit
         const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
@@ -611,21 +550,7 @@ describe('Meal Editor', () => {
           const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
           await addRecipeButton.trigger('click');
           const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-          await mealItemEditors[0]!.vm.$emit('save', {
-            id: 'item-2-3-1',
-            name: 'Beef Sirloin',
-            recipeId: '3',
-            units: 1,
-            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
-            nutrition: {
-              calories: 320,
-              sodium: 120,
-              fat: 14,
-              protein: 42,
-              carbs: 0,
-              sugar: 0,
-            },
-          });
+          await mealItemEditors[0]!.vm.$emit('save', recipeMealItem);
           const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
           const panels = recipePanels.findAllComponents(components.VExpansionPanel);
           expect(panels.length).toBe(1);
@@ -679,21 +604,7 @@ describe('Meal Editor', () => {
           await addFoodItemButton.trigger('click');
           let mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
           expect(mealItemEditors.length).toBe(1);
-          await mealItemEditors[0]!.vm.$emit('save', {
-            id: 'item-1-1-1',
-            name: 'Rolled Oats',
-            foodItemId: 'food-test-1',
-            units: 1,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
-            nutrition: {
-              calories: 300,
-              sodium: 100,
-              fat: 6,
-              protein: 10,
-              carbs: 54,
-              sugar: 2,
-            },
-          });
+          await mealItemEditors[0]!.vm.$emit('save', foodMealItem);
           mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
           expect(mealItemEditors.length).toBe(0);
         });
@@ -703,21 +614,7 @@ describe('Meal Editor', () => {
           const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
           await addFoodItemButton.trigger('click');
           const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-          await mealItemEditors[0]!.vm.$emit('save', {
-            id: 'item-1-1-1',
-            name: 'Rolled Oats',
-            foodItemId: 'food-test-1',
-            units: 1,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
-            nutrition: {
-              calories: 300,
-              sodium: 100,
-              fat: 6,
-              protein: 10,
-              carbs: 54,
-              sugar: 2,
-            },
-          });
+          await mealItemEditors[0]!.vm.$emit('save', foodMealItem);
           const foodItemPanels = wrapper.findComponent('[data-testid="food-item-panels"]');
           const panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
           expect(panels.length).toBe(1);
@@ -765,25 +662,10 @@ describe('Meal Editor', () => {
         await addRecipeButton.trigger('click');
 
         const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-        const newRecipeItem = {
-          id: 'item-2-3-1',
-          name: 'Beef Sirloin',
-          recipeId: '3',
-          units: 1,
-          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
-          nutrition: {
-            calories: 320,
-            sodium: 120,
-            fat: 14,
-            protein: 42,
-            carbs: 0,
-            sugar: 0,
-          },
-        };
-        await mealItemEditors[0]!.vm.$emit('save', newRecipeItem);
+        await mealItemEditors[0]!.vm.$emit('save', recipeMealItem);
 
         const totalNutrition = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
-        expect(totalNutrition.props('value')).toEqual(newRecipeItem.nutrition);
+        expect(totalNutrition.props('value')).toEqual(recipeMealItem.nutrition);
       });
     });
 
@@ -795,25 +677,10 @@ describe('Meal Editor', () => {
         await addFoodItemButton.trigger('click');
 
         const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-        const newFoodItem = {
-          id: 'item-1-1-1',
-          name: 'Rolled Oats',
-          foodItemId: 'food-test-1',
-          units: 1,
-          unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
-          nutrition: {
-            calories: 300,
-            sodium: 100,
-            fat: 6,
-            protein: 10,
-            carbs: 54,
-            sugar: 2,
-          },
-        };
-        await mealItemEditors[0]!.vm.$emit('save', newFoodItem);
+        await mealItemEditors[0]!.vm.$emit('save', foodMealItem);
 
         const totalNutrition = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
-        expect(totalNutrition.props('value')).toEqual(newFoodItem.nutrition);
+        expect(totalNutrition.props('value')).toEqual(foodMealItem.nutrition);
       });
     });
 
@@ -825,43 +692,13 @@ describe('Meal Editor', () => {
         await addRecipeButton.trigger('click');
 
         let mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-        const newRecipeItem = {
-          id: 'item-2-3-1',
-          name: 'Beef Sirloin',
-          recipeId: '3',
-          units: 1,
-          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
-          nutrition: {
-            calories: 320,
-            sodium: 120,
-            fat: 14,
-            protein: 42,
-            carbs: 0,
-            sugar: 0,
-          },
-        };
-        await mealItemEditors[0]!.vm.$emit('save', newRecipeItem);
+        await mealItemEditors[0]!.vm.$emit('save', recipeMealItem);
 
         const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
         await addFoodItemButton.trigger('click');
 
         mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-        const newFoodItem = {
-          id: 'item-1-1-1',
-          name: 'Rolled Oats',
-          foodItemId: 'food-test-1',
-          units: 1,
-          unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
-          nutrition: {
-            calories: 300,
-            sodium: 100,
-            fat: 6,
-            protein: 10,
-            carbs: 54,
-            sugar: 2,
-          },
-        };
-        await mealItemEditors[0]!.vm.$emit('save', newFoodItem);
+        await mealItemEditors[0]!.vm.$emit('save', foodMealItem);
 
         const totalNutrition = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
         expect(totalNutrition.props('value')).toEqual({
