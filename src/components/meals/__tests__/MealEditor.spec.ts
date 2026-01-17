@@ -17,7 +17,7 @@ const vuetify = createVuetify({
   directives,
 });
 
-const mountComponent = (props: { meal?: Meal } = {}) => mount(MealEditor, { props, global: { plugins: [vuetify] } });
+const mountComponent = (props: { meal: Meal }) => mount(MealEditor, { props, global: { plugins: [vuetify] } });
 
 const calculateTotalNutrition = (items: Meal['items']) => {
   return items.reduce(
@@ -31,6 +31,12 @@ const calculateTotalNutrition = (items: Meal['items']) => {
     }),
     { calories: 0, protein: 0, carbs: 0, fat: 0, sugar: 0, sodium: 0 },
   );
+};
+
+const emptyMeal: Meal = {
+  id: '4991b0d9-7aea-4755-b9d1-88e8c2fa4ab7',
+  type: 'Dinner',
+  items: [],
 };
 
 const recipeMealItem = {
@@ -77,23 +83,23 @@ describe('Meal Editor', () => {
   });
 
   it('renders', () => {
-    wrapper = mountComponent();
+    wrapper = mountComponent({ meal: emptyMeal });
     expect(wrapper.exists()).toBe(true);
   });
 
   it('gets references to the food items and recipes', () => {
-    wrapper = mountComponent();
+    wrapper = mountComponent({ meal: emptyMeal });
     expect(useFoodsData).toHaveBeenCalledExactlyOnceWith();
     expect(useRecipesData).toHaveBeenCalledExactlyOnceWith();
   });
 
   it('does not have any active meal item editors', () => {
-    wrapper = mountComponent();
+    wrapper = mountComponent({ meal: emptyMeal });
     expect(wrapper.findAllComponents({ name: 'MealItemEditorCard' }).length).toBe(0);
   });
 
-  describe('adding a meal', () => {
-    beforeEach(() => (wrapper = mountComponent()));
+  describe('adding to an empty meal', () => {
+    beforeEach(() => (wrapper = mountComponent({ meal: emptyMeal })));
 
     it('does not list any recipes', () => {
       const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
@@ -136,7 +142,7 @@ describe('Meal Editor', () => {
     });
   });
 
-  describe('updating a meal', () => {
+  describe('updating a meal with existing recipes and foods', () => {
     beforeEach(() => (wrapper = mountComponent({ meal: TEST_MEAL })));
 
     it('lists the recipes for the meal', () => {
@@ -483,7 +489,7 @@ describe('Meal Editor', () => {
 
   describe('add recipe button', () => {
     it('is active', () => {
-      wrapper = mountComponent();
+      wrapper = mountComponent({ meal: emptyMeal });
       const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
       expect(addRecipeButton.exists()).toBe(true);
       expect(addRecipeButton.attributes('disabled')).toBeUndefined();
@@ -491,7 +497,7 @@ describe('Meal Editor', () => {
 
     describe('on click', () => {
       it('adds a meal item editor for a recipe', async () => {
-        wrapper = mountComponent();
+        wrapper = mountComponent({ meal: emptyMeal });
         const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
         await addRecipeButton.trigger('click');
         const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
@@ -500,7 +506,7 @@ describe('Meal Editor', () => {
       });
 
       it('becomes disabled', async () => {
-        wrapper = mountComponent();
+        wrapper = mountComponent({ meal: emptyMeal });
         const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
         await addRecipeButton.trigger('click');
         expect(addRecipeButton.attributes('disabled')).toBeDefined();
@@ -508,7 +514,7 @@ describe('Meal Editor', () => {
 
       describe('on cancel', () => {
         it('removes the meal item editor', async () => {
-          wrapper = mountComponent();
+          wrapper = mountComponent({ meal: emptyMeal });
           const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
           await addRecipeButton.trigger('click');
           let mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
@@ -521,7 +527,7 @@ describe('Meal Editor', () => {
 
       describe('on save', () => {
         it('removes the meal item editor', async () => {
-          wrapper = mountComponent();
+          wrapper = mountComponent({ meal: emptyMeal });
           const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
           await addRecipeButton.trigger('click');
           let mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
@@ -546,7 +552,7 @@ describe('Meal Editor', () => {
         });
 
         it('displays the recipe in the recipe list', async () => {
-          wrapper = mountComponent();
+          wrapper = mountComponent({ meal: emptyMeal });
           const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
           await addRecipeButton.trigger('click');
           const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
@@ -561,7 +567,7 @@ describe('Meal Editor', () => {
 
   describe('add food item button', () => {
     it('is active', () => {
-      wrapper = mountComponent();
+      wrapper = mountComponent({ meal: emptyMeal });
       const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
       expect(addFoodItemButton.exists()).toBe(true);
       expect(addFoodItemButton.attributes('disabled')).toBeUndefined();
@@ -569,7 +575,7 @@ describe('Meal Editor', () => {
 
     describe('on click', () => {
       it('adds a meal item editor for a food item', async () => {
-        wrapper = mountComponent();
+        wrapper = mountComponent({ meal: emptyMeal });
         const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
         await addFoodItemButton.trigger('click');
         const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
@@ -578,7 +584,7 @@ describe('Meal Editor', () => {
       });
 
       it('becomes disabled', async () => {
-        wrapper = mountComponent();
+        wrapper = mountComponent({ meal: emptyMeal });
         const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
         await addFoodItemButton.trigger('click');
         expect(addFoodItemButton.attributes('disabled')).toBeDefined();
@@ -586,7 +592,7 @@ describe('Meal Editor', () => {
 
       describe('on cancel', () => {
         it('removes the meal item editor', async () => {
-          wrapper = mountComponent();
+          wrapper = mountComponent({ meal: emptyMeal });
           const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
           await addFoodItemButton.trigger('click');
           let mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
@@ -599,7 +605,7 @@ describe('Meal Editor', () => {
 
       describe('on save', () => {
         it('removes the meal item editor', async () => {
-          wrapper = mountComponent();
+          wrapper = mountComponent({ meal: emptyMeal });
           const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
           await addFoodItemButton.trigger('click');
           let mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
@@ -610,7 +616,7 @@ describe('Meal Editor', () => {
         });
 
         it('displays the food item in the food item list', async () => {
-          wrapper = mountComponent();
+          wrapper = mountComponent({ meal: emptyMeal });
           const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
           await addFoodItemButton.trigger('click');
           const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
@@ -625,7 +631,7 @@ describe('Meal Editor', () => {
 
   describe('Total Nutrition Display', () => {
     describe('when adding a new meal', () => {
-      beforeEach(() => (wrapper = mountComponent()));
+      beforeEach(() => (wrapper = mountComponent({ meal: emptyMeal })));
 
       it('displays zeros for all nutrition values', () => {
         const totalNutrition = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
@@ -655,7 +661,7 @@ describe('Meal Editor', () => {
     });
 
     describe('when adding a recipe meal item', () => {
-      beforeEach(() => (wrapper = mountComponent()));
+      beforeEach(() => (wrapper = mountComponent({ meal: emptyMeal })));
 
       it('updates the total nutrition to reflect the added recipe', async () => {
         const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
@@ -670,7 +676,7 @@ describe('Meal Editor', () => {
     });
 
     describe('when adding a food meal item', () => {
-      beforeEach(() => (wrapper = mountComponent()));
+      beforeEach(() => (wrapper = mountComponent({ meal: emptyMeal })));
 
       it('updates the total nutrition to reflect the added food item', async () => {
         const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
@@ -685,7 +691,7 @@ describe('Meal Editor', () => {
     });
 
     describe('when adding both recipe and food items', () => {
-      beforeEach(() => (wrapper = mountComponent()));
+      beforeEach(() => (wrapper = mountComponent({ meal: emptyMeal })));
 
       it('updates the total nutrition to reflect both items', async () => {
         const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');

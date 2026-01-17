@@ -117,7 +117,7 @@ import type { Meal, MealItem } from '@/models/meal';
 import { computed, ref } from 'vue';
 
 const emit = defineEmits<{ (event: 'save', payload: Meal): void; (event: 'cancel'): void }>();
-const props = defineProps<{ meal?: Meal }>();
+const props = defineProps<{ meal: Meal }>();
 
 const { foods } = useFoodsData();
 const { recipes } = useRecipesData();
