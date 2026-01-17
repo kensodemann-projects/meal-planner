@@ -139,6 +139,26 @@ describe('Meal Editor', () => {
         await wrapper.vm.$nextTick();
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
+
+      it('emits the save event with the meal data when clicked', async () => {
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        const addrecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
+        const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
+        await addFoodItemButton.trigger('click');
+        const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+        await mealItemEditors[0]!.vm.$emit('save', foodMealItem);
+        await addrecipeButton.trigger('click');
+        const updatedMealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+        await updatedMealItemEditors[0]!.vm.$emit('save', recipeMealItem);
+        await wrapper.vm.$nextTick();
+        await saveButton.trigger('click');
+        expect(wrapper.emitted('save')).toBeDefined();
+        const emittedMeal = (wrapper.emitted('save') as unknown[][])[0]![0] as Meal;
+        expect(emittedMeal).toEqual({
+          ...emptyMeal,
+          items: [foodMealItem, recipeMealItem],
+        });
+      });
     });
   });
 

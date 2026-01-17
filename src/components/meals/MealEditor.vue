@@ -187,9 +187,8 @@ const updateMealItem = (wrapper: WrappedMealItem, item: MealItem) => {
 
 const save = () => {
   const mealToSave: Meal = {
-    id: props.meal?.id ?? 'new-meal-id',
-    type: props.meal?.type ?? 'Lunch',
-    items: props.meal?.items ?? [],
+    ...props.meal,
+    items: mealItems.value.map((wrappedItem) => wrappedItem.item),
   };
   emit('save', mealToSave);
 };
