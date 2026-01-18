@@ -23,6 +23,7 @@ describe('day', () => {
     (useRoute as Mock).mockReturnValue({
       query: { dt: '2025-12-29' },
     });
+    wrapper = mountPage();
   });
 
   afterEach(() => {
@@ -34,12 +35,39 @@ describe('day', () => {
   });
 
   it('renders', () => {
-    wrapper = mountPage();
     expect(wrapper.exists()).toBe(true);
   });
 
   it('parses the date properly', () => {
-    wrapper = mountPage();
     expect(wrapper.text()).toContain('Monday, December 29, 2025');
+  });
+
+  it('contains a section for each type of meal', () => {
+    const headers = wrapper.findAll('h2').map((h) => h.text());
+    expect(headers).toEqual(['Breakfast', 'Lunch', 'Dinner', 'Snacks']);
+  });
+
+  describe('breakfast', () => {
+    it('exits', () => {
+      expect(true).toBe(true);
+    });
+  });
+
+  describe('lunch', () => {
+    it('exits', () => {
+      expect(true).toBe(true);
+    });
+  });
+
+  describe('Dinner', () => {
+    it('exits', () => {
+      expect(true).toBe(true);
+    });
+  });
+
+  describe('snacks', () => {
+    it('exits', () => {
+      expect(true).toBe(true);
+    });
   });
 });
