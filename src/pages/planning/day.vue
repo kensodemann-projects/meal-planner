@@ -1,9 +1,29 @@
 <template>
   <h1>{{ intlFormat(today, { dateStyle: 'full' }) }}</h1>
-  <h2>Breakfast</h2>
-  <h2>Lunch</h2>
-  <h2>Dinner</h2>
-  <h2>Snacks</h2>
+  <h2>
+    <div class="d-flex justify-space-between">
+      <div>Breakfast</div>
+    </div>
+  </h2>
+  <v-divider class="mb-4"></v-divider>
+  <h2>
+    <div class="d-flex justify-space-between">
+      <div>Lunch</div>
+    </div>
+  </h2>
+  <v-divider class="mb-4"></v-divider>
+  <h2>
+    <div class="d-flex justify-space-between">
+      <div>Dinner</div>
+    </div>
+  </h2>
+  <v-divider class="mb-4"></v-divider>
+  <h2>
+    <div class="d-flex justify-space-between">
+      <div>Snacks</div>
+    </div>
+  </h2>
+  <v-divider class="mb-4"></v-divider>
 </template>
 
 <script setup lang="ts">
