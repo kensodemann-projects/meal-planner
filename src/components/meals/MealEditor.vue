@@ -127,7 +127,7 @@ type WrappedMealItem = { isEditing: boolean; item: MealItem };
 const foodMealItem = ref<Partial<MealItem> | null>(null);
 const recipeMealItem = ref<Partial<MealItem> | null>(null);
 const mealItemToRemove = ref<MealItem | null>(null);
-const mealItems = ref<WrappedMealItem[]>(props.meal?.items.map((item) => ({ isEditing: false, item })) ?? []);
+const mealItems = ref<WrappedMealItem[]>(props.meal.items.map((item) => ({ isEditing: false, item })));
 const isModified = ref(false);
 
 const showConfirmDialog = ref(false);
