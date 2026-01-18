@@ -222,7 +222,7 @@ describe('Meal Editor', () => {
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
 
-      it('is eabled after an existing food item is updated', async () => {
+      it('is enabled after an existing food item is updated', async () => {
         const saveButton = wrapper.findComponent('[data-testid="save-button"]');
         const foodItemPanels = wrapper.findComponent('[data-testid="food-item-panels"]');
         const panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
