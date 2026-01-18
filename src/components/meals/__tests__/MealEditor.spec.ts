@@ -142,12 +142,12 @@ describe('Meal Editor', () => {
 
       it('emits the save event with the meal data when clicked', async () => {
         const saveButton = wrapper.findComponent('[data-testid="save-button"]');
-        const addrecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
+        const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
         const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
         await addFoodItemButton.trigger('click');
         const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
         await mealItemEditors[0]!.vm.$emit('save', foodMealItem);
-        await addrecipeButton.trigger('click');
+        await addRecipeButton.trigger('click');
         const updatedMealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
         await updatedMealItemEditors[0]!.vm.$emit('save', recipeMealItem);
         await wrapper.vm.$nextTick();
