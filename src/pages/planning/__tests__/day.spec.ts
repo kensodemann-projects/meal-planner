@@ -23,7 +23,6 @@ describe('day', () => {
     (useRoute as Mock).mockReturnValue({
       query: { dt: '2025-12-29' },
     });
-    wrapper = mountPage();
   });
 
   afterEach(() => {
@@ -35,39 +34,36 @@ describe('day', () => {
   });
 
   it('renders', () => {
+    wrapper = mountPage();
     expect(wrapper.exists()).toBe(true);
   });
 
   it('parses the date properly', () => {
-    expect(wrapper.text()).toContain('Monday, December 29, 2025');
+    wrapper = mountPage();
+    expect(wrapper.text()).toContain('December 29, 2025');
   });
 
   it('contains a section for each type of meal', () => {
+    wrapper = mountPage();
     const headers = wrapper.findAll('h2').map((h) => h.text());
     expect(headers).toEqual(['Breakfast', 'Lunch', 'Dinner', 'Snacks']);
   });
 
-  describe('breakfast', () => {
-    it('exits', () => {
-      expect(true).toBe(true);
+  describe('add breakfast button', () => {
+    describe('on a day without a meal plan', () => {
+      it('exists', () => {
+        wrapper = mountPage();
+        const addBreakfastButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+        expect(addBreakfastButton.exists()).toBe(true);
+      });
     });
-  });
 
-  describe('lunch', () => {
-    it('exits', () => {
-      expect(true).toBe(true);
-    });
-  });
-
-  describe('Dinner', () => {
-    it('exits', () => {
-      expect(true).toBe(true);
-    });
-  });
-
-  describe('snacks', () => {
-    it('exits', () => {
-      expect(true).toBe(true);
+    describe('on a day with a meal plan', () => {
+      it('it exists if the meal plan does not have a breakfast defined', () => {
+        wrapper = mountPage();
+        const addBreakfastButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+        expect(addBreakfastButton.exists()).toBe(true);
+      });
     });
   });
 });

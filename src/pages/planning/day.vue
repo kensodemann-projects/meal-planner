@@ -1,8 +1,9 @@
 <template>
-  <h1>{{ intlFormat(today, { dateStyle: 'full' }) }}</h1>
+  <h1 class="mb-4">{{ intlFormat(today, { dateStyle: 'long' }) }}</h1>
   <h2>
     <div class="d-flex justify-space-between">
       <div>Breakfast</div>
+      <v-btn density="compact" variant="text" icon="mdi-plus" data-testid="add-breakfast-button"></v-btn>
     </div>
   </h2>
   <v-divider class="mb-4"></v-divider>
