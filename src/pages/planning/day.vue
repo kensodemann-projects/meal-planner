@@ -32,7 +32,10 @@
 
 <script setup lang="ts">
 // import type { Meal } from '@/models/meal';
+import { useMealPlansData } from '@/data/meal-plans';
+import type { MealPlan } from '@/models/meal-plan';
 import { intlFormat } from 'date-fns';
+import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 // const emptyMeal: Meal = {
@@ -41,8 +44,19 @@ import { useRoute } from 'vue-router';
 //   items: [],
 // };
 
+const { getMealPlanForDate } = useMealPlansData();
+const mealPlan = ref<MealPlan>();
+
 const route = useRoute();
+// TODO: Add error handling for invalid or missing date
 const dt = route.query.dt as string;
 const [year, month, day] = dt.split('-').map(Number);
 const today = new Date(year!, month! - 1, day);
+
+getMealPlanForDate(dt).then((plan) => {
+  mealPlan.value = plan || {
+    date: dt,
+    meals: [],
+  };
+});
 </script>

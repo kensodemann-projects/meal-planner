@@ -5,9 +5,11 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import day from '../day.vue';
+import { useMealPlansData } from '@/data/meal-plans';
 
 vi.mock('vue-router');
 vi.mock('@/data/foods');
+vi.mock('@/data/meal-plans');
 vi.mock('@/data/recipes');
 
 const vuetify = createVuetify({
@@ -41,6 +43,12 @@ describe('day', () => {
   it('parses the date properly', () => {
     wrapper = mountPage();
     expect(wrapper.text()).toContain('December 29, 2025');
+  });
+
+  it('gets the meal plan for today', () => {
+    const { getMealPlanForDate } = useMealPlansData();
+    wrapper = mountPage();
+    expect(getMealPlanForDate).toHaveBeenCalledExactlyOnceWith('2025-12-29');
   });
 
   it('contains a section for each type of meal', () => {
