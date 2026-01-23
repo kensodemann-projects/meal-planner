@@ -8,12 +8,14 @@ interface MealPlansData {
   error: Ref<Error | null>;
   loading: Ref<boolean>;
   getMealPlan: (id: string) => Promise<MealPlan | null>;
+  getMealPlanForDate: (dt: string) => Promise<MealPlan | null>;
   removeMealPlan: (id: string) => Promise<void>;
   updateMealPlan: (mealPlan: MealPlan) => Promise<void>;
 }
 
 const addMealPlan = vi.fn();
 const getMealPlan = vi.fn().mockResolvedValue(null);
+const getMealPlanForDate = vi.fn().mockResolvedValue(null);
 const removeMealPlan = vi.fn();
 const updateMealPlan = vi.fn();
 const mealPlans = ref<MealPlan[]>([]);
@@ -25,6 +27,7 @@ export const useMealPlansData: () => MealPlansData = vi.fn().mockReturnValue({
   error,
   mealPlans,
   getMealPlan,
+  getMealPlanForDate,
   loading,
   removeMealPlan,
   updateMealPlan,

@@ -81,6 +81,26 @@ describe('Meal Plans Data Service', () => {
     });
   });
 
+  describe('get meal plan by date', () => {
+    beforeEach(() => {
+      const mealPlans = ref(TEST_MEAL_PLANS);
+      (mealPlans as any).promise = { value: Promise.resolve() };
+      (useCollection as Mock).mockReturnValueOnce(mealPlans);
+    });
+
+    it('finds the meal plan in the list by date', async () => {
+      const { getMealPlanForDate } = useMealPlansData();
+      const targetDate = TEST_MEAL_PLANS[1]?.date || '';
+      const foundMealPlan = TEST_MEAL_PLANS.find((mp) => mp.date === targetDate) || null;
+      await expect(getMealPlanForDate(targetDate)).resolves.toEqual(foundMealPlan);
+    });
+
+    it('resolves null if the meal plan is not found by date', async () => {
+      const { getMealPlanForDate } = useMealPlansData();
+      await expect(getMealPlanForDate('2099-01-01')).resolves.toBeNull();
+    });
+  });
+
   describe('remove meal plan', () => {
     it('obtains a reference to the doc', () => {
       const { removeMealPlan } = useMealPlansData();
