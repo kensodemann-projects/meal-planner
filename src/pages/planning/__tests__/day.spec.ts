@@ -7,6 +7,7 @@ import * as directives from 'vuetify/directives';
 import day from '../day.vue';
 import { useMealPlansData } from '@/data/meal-plans';
 import type { MealPlan } from '@/models/meal-plan';
+import { TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
 
 vi.mock('vue-router');
 vi.mock('@/data/foods');
@@ -29,6 +30,7 @@ const EMPTY_MEAL_PLAN: MealPlan = {
   date: '2025-12-29',
   meals: [],
 };
+const FULL_MEAL_PLAN: MealPlan = TEST_MEAL_PLANS[0]!;
 
 describe('day', () => {
   let wrapper: ReturnType<typeof mountPage>;
@@ -86,6 +88,14 @@ describe('day', () => {
         const button = wrapper.findComponent('[data-testid="add-breakfast-button"]');
         expect(button.exists()).toBe(true);
       });
+
+      it('does not exist if the meal plan has a breakfast', async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+        wrapper = await renderPage();
+        const button = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+        expect(button.exists()).toBe(false);
+      });
     });
   });
 
@@ -105,6 +115,14 @@ describe('day', () => {
         wrapper = await renderPage();
         const button = wrapper.findComponent('[data-testid="add-lunch-button"]');
         expect(button.exists()).toBe(true);
+      });
+
+      it('does not exist if the meal plan has a breakfast', async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+        wrapper = await renderPage();
+        const button = wrapper.findComponent('[data-testid="add-lunch-button"]');
+        expect(button.exists()).toBe(false);
       });
     });
   });
@@ -126,6 +144,14 @@ describe('day', () => {
         const button = wrapper.findComponent('[data-testid="add-dinner-button"]');
         expect(button.exists()).toBe(true);
       });
+
+      it('does not exist if the meal plan has a breakfast', async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+        wrapper = await renderPage();
+        const button = wrapper.findComponent('[data-testid="add-dinner-button"]');
+        expect(button.exists()).toBe(false);
+      });
     });
   });
 
@@ -142,6 +168,14 @@ describe('day', () => {
       it('it exists if the meal plan does not have a snack defined', async () => {
         const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
         getMealPlanForDate.mockResolvedValueOnce(EMPTY_MEAL_PLAN);
+        wrapper = await renderPage();
+        const button = wrapper.findComponent('[data-testid="add-snack-button"]');
+        expect(button.exists()).toBe(true);
+      });
+
+      it('exists if the meal plan has a breakfast', async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
         wrapper = await renderPage();
         const button = wrapper.findComponent('[data-testid="add-snack-button"]');
         expect(button.exists()).toBe(true);
