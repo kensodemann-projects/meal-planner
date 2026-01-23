@@ -10,18 +10,21 @@
   <h2>
     <div class="d-flex justify-space-between">
       <div>Lunch</div>
+      <v-btn density="compact" variant="text" icon="mdi-plus" data-testid="add-lunch-button"></v-btn>
     </div>
   </h2>
   <v-divider class="mb-4"></v-divider>
   <h2>
     <div class="d-flex justify-space-between">
       <div>Dinner</div>
+      <v-btn density="compact" variant="text" icon="mdi-plus" data-testid="add-dinner-button"></v-btn>
     </div>
   </h2>
   <v-divider class="mb-4"></v-divider>
   <h2>
     <div class="d-flex justify-space-between">
       <div>Snacks</div>
+      <v-btn density="compact" variant="text" icon="mdi-plus" data-testid="add-snack-button"></v-btn>
     </div>
   </h2>
   <v-divider class="mb-4"></v-divider>

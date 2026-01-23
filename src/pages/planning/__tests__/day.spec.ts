@@ -53,16 +53,70 @@ describe('day', () => {
     describe('on a day without a meal plan', () => {
       it('exists', () => {
         wrapper = mountPage();
-        const addBreakfastButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
-        expect(addBreakfastButton.exists()).toBe(true);
+        const button = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+        expect(button.exists()).toBe(true);
       });
     });
 
     describe('on a day with a meal plan', () => {
       it('it exists if the meal plan does not have a breakfast defined', () => {
         wrapper = mountPage();
-        const addBreakfastButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
-        expect(addBreakfastButton.exists()).toBe(true);
+        const button = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+        expect(button.exists()).toBe(true);
+      });
+    });
+  });
+
+  describe('add lunch button', () => {
+    describe('on a day without a meal plan', () => {
+      it('exists', () => {
+        wrapper = mountPage();
+        const addLunchButton = wrapper.findComponent('[data-testid="add-lunch-button"]');
+        expect(addLunchButton.exists()).toBe(true);
+      });
+    });
+
+    describe('on a day with a meal plan', () => {
+      it('it exists if the meal plan does not have a lunch defined', () => {
+        wrapper = mountPage();
+        const button = wrapper.findComponent('[data-testid="add-lunch-button"]');
+        expect(button.exists()).toBe(true);
+      });
+    });
+  });
+
+  describe('add dinner button', () => {
+    describe('on a day without a meal plan', () => {
+      it('exists', () => {
+        wrapper = mountPage();
+        const button = wrapper.findComponent('[data-testid="add-dinner-button"]');
+        expect(button.exists()).toBe(true);
+      });
+    });
+
+    describe('on a day with a meal plan', () => {
+      it('it exists if the meal plan does not have a dinner defined', () => {
+        wrapper = mountPage();
+        const button = wrapper.findComponent('[data-testid="add-dinner-button"]');
+        expect(button.exists()).toBe(true);
+      });
+    });
+  });
+
+  describe('add snack button', () => {
+    describe('on a day without a meal plan', () => {
+      it('exists', () => {
+        wrapper = mountPage();
+        const button = wrapper.findComponent('[data-testid="add-snack-button"]');
+        expect(button.exists()).toBe(true);
+      });
+    });
+
+    describe('on a day with a meal plan', () => {
+      it('it exists if the meal plan does not have a snack defined', () => {
+        wrapper = mountPage();
+        const button = wrapper.findComponent('[data-testid="add-snack-button"]');
+        expect(button.exists()).toBe(true);
       });
     });
   });
