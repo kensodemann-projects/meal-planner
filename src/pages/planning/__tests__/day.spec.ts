@@ -97,6 +97,17 @@ describe('day', () => {
         expect(button.exists()).toBe(false);
       });
     });
+
+    describe('click', () => {
+      it('hides the button', async () => {
+        wrapper = await renderPage();
+        let button = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+        expect(button.exists()).toBe(true);
+        await button.trigger('click');
+        button = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+        expect(button.exists()).toBe(false);
+      });
+    });
   });
 
   describe('add lunch button', () => {
@@ -125,6 +136,17 @@ describe('day', () => {
         expect(button.exists()).toBe(false);
       });
     });
+
+    describe('click', () => {
+      it('hides the button', async () => {
+        wrapper = await renderPage();
+        let button = wrapper.findComponent('[data-testid="add-lunch-button"]');
+        expect(button.exists()).toBe(true);
+        await button.trigger('click');
+        button = wrapper.findComponent('[data-testid="add-lunch-button"]');
+        expect(button.exists()).toBe(false);
+      });
+    });
   });
 
   describe('add dinner button', () => {
@@ -150,6 +172,17 @@ describe('day', () => {
         getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
         wrapper = await renderPage();
         const button = wrapper.findComponent('[data-testid="add-dinner-button"]');
+        expect(button.exists()).toBe(false);
+      });
+    });
+
+    describe('click', () => {
+      it('hides the button', async () => {
+        wrapper = await renderPage();
+        let button = wrapper.findComponent('[data-testid="add-dinner-button"]');
+        expect(button.exists()).toBe(true);
+        await button.trigger('click');
+        button = wrapper.findComponent('[data-testid="add-dinner-button"]');
         expect(button.exists()).toBe(false);
       });
     });

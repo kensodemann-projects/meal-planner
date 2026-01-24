@@ -8,6 +8,7 @@
         density="compact"
         variant="text"
         icon="mdi-plus"
+        @click="addBreakfastButtonClicked"
         data-testid="add-breakfast-button"
       ></v-btn>
     </div>
@@ -16,14 +17,28 @@
   <h2>
     <div class="d-flex justify-space-between">
       <div>Lunch</div>
-      <v-btn v-if="!lunch" density="compact" variant="text" icon="mdi-plus" data-testid="add-lunch-button"></v-btn>
+      <v-btn
+        v-if="!lunch"
+        density="compact"
+        variant="text"
+        icon="mdi-plus"
+        @click="addLunchButtonClicked"
+        data-testid="add-lunch-button"
+      ></v-btn>
     </div>
   </h2>
   <v-divider class="mb-4"></v-divider>
   <h2>
     <div class="d-flex justify-space-between">
       <div>Dinner</div>
-      <v-btn v-if="!dinner" density="compact" variant="text" icon="mdi-plus" data-testid="add-dinner-button"></v-btn>
+      <v-btn
+        v-if="!dinner"
+        density="compact"
+        variant="text"
+        icon="mdi-plus"
+        @click="addDinnerButtonClicked"
+        data-testid="add-dinner-button"
+      ></v-btn>
     </div>
   </h2>
   <v-divider class="mb-4"></v-divider>
@@ -44,12 +59,6 @@ import { intlFormat } from 'date-fns';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 
-// const emptyMeal: Meal = {
-//   id: crypto.randomUUID(),
-//   type: 'Dinner',
-//   items: [],
-// };
-
 const { getMealPlanForDate } = useMealPlansData();
 const mealPlan = ref<MealPlan>();
 const breakfast = ref<Meal | undefined>();
@@ -61,6 +70,30 @@ const route = useRoute();
 const dt = route.query.dt as string;
 const [year, month, day] = dt.split('-').map(Number);
 const today = new Date(year!, month! - 1, day);
+
+const addBreakfastButtonClicked = () => {
+  breakfast.value = {
+    id: crypto.randomUUID(),
+    type: 'Breakfast',
+    items: [],
+  };
+};
+
+const addLunchButtonClicked = () => {
+  lunch.value = {
+    id: crypto.randomUUID(),
+    type: 'Lunch',
+    items: [],
+  };
+};
+
+const addDinnerButtonClicked = () => {
+  dinner.value = {
+    id: crypto.randomUUID(),
+    type: 'Dinner',
+    items: [],
+  };
+};
 
 getMealPlanForDate(dt).then((plan) => {
   mealPlan.value = plan || {
