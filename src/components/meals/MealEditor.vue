@@ -113,6 +113,7 @@
 <script setup lang="ts">
 import { useFoodsData } from '@/data/foods';
 import { useRecipesData } from '@/data/recipes';
+import type { EditableItem } from '@/models/editable-item';
 import type { Meal, MealItem } from '@/models/meal';
 import { computed, ref } from 'vue';
 
@@ -122,20 +123,18 @@ const props = defineProps<{ meal: Meal }>();
 const { foods } = useFoodsData();
 const { recipes } = useRecipesData();
 
-type WrappedMealItem = { isEditing: boolean; item: MealItem };
-
 const foodMealItem = ref<Partial<MealItem> | null>(null);
 const recipeMealItem = ref<Partial<MealItem> | null>(null);
 const mealItemToRemove = ref<MealItem | null>(null);
-const mealItems = ref<WrappedMealItem[]>(props.meal.items.map((item) => ({ isEditing: false, item })));
+const mealItems = ref<EditableItem<MealItem>[]>(props.meal.items.map((item) => ({ isEditing: false, item })));
 const isModified = ref(false);
 
 const showConfirmDialog = ref(false);
 
-const foodMealItems = computed((): WrappedMealItem[] =>
+const foodMealItems = computed((): EditableItem<MealItem>[] =>
   mealItems.value.filter((wrappedItem) => wrappedItem.item.foodItemId !== undefined),
 );
-const recipeMealItems = computed((): WrappedMealItem[] =>
+const recipeMealItems = computed((): EditableItem<MealItem>[] =>
   mealItems.value.filter((wrappedItem) => wrappedItem.item.recipeId !== undefined),
 );
 
@@ -156,7 +155,7 @@ const totalNutrition = computed(() => {
   );
 });
 
-const askToDelete = (item: WrappedMealItem) => {
+const askToDelete = (item: EditableItem<MealItem>) => {
   mealItemToRemove.value = item.item;
   showConfirmDialog.value = true;
 };
@@ -179,7 +178,7 @@ const createMealItem = (item: MealItem) => {
   isModified.value = true;
 };
 
-const updateMealItem = (wrapper: WrappedMealItem, item: MealItem) => {
+const updateMealItem = (wrapper: EditableItem<MealItem>, item: MealItem) => {
   wrapper.item = item;
   wrapper.isEditing = false;
   isModified.value = true;
