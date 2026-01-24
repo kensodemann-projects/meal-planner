@@ -71,6 +71,17 @@ describe('day', () => {
     expect(headers).toEqual(['Breakfast', 'Lunch', 'Dinner', 'Snacks']);
   });
 
+  it.each([FULL_MEAL_PLAN, EMPTY_MEAL_PLAN, null])(
+    'does not display any meal editors',
+    async (plan: MealPlan | null) => {
+      const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+      getMealPlanForDate.mockResolvedValueOnce(plan);
+      wrapper = await renderPage();
+      const editors = wrapper.findAllComponents({ name: 'MealEditor' });
+      expect(editors.length).toBe(0);
+    },
+  );
+
   describe('add breakfast button', () => {
     describe('on a day without a meal plan', () => {
       it('exists', async () => {
