@@ -118,6 +118,16 @@ describe('day', () => {
         button = wrapper.findComponent('[data-testid="add-breakfast-button"]');
         expect(button.exists()).toBe(false);
       });
+
+      it.skip('displays the editor for breakfast', async () => {
+        wrapper = await renderPage();
+        const button = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+        await button.trigger('click');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        expect(editor.exists()).toBe(true);
+        const meal = editor.props('meal');
+        console.log(meal);
+      });
     });
   });
 
