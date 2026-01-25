@@ -4,7 +4,7 @@
     <div class="d-flex justify-space-between">
       <div>Breakfast</div>
       <v-btn
-        v-if="!breakfast"
+        v-if="!breakfast.item"
         density="compact"
         variant="text"
         icon="mdi-plus"
@@ -14,11 +14,20 @@
     </div>
   </h2>
   <v-divider class="mb-4"></v-divider>
+  <MealEditor
+    v-if="breakfast.isEditing"
+    :meal="breakfast.item!"
+    @save="breakfast.isEditing = false"
+    @cancel="
+      breakfast.isEditing = false;
+      breakfast.item = undefined;
+    "
+  />
   <h2>
     <div class="d-flex justify-space-between">
       <div>Lunch</div>
       <v-btn
-        v-if="!lunch"
+        v-if="!lunch.item"
         density="compact"
         variant="text"
         icon="mdi-plus"
@@ -32,7 +41,7 @@
     <div class="d-flex justify-space-between">
       <div>Dinner</div>
       <v-btn
-        v-if="!dinner"
+        v-if="!dinner.item"
         density="compact"
         variant="text"
         icon="mdi-plus"
@@ -58,12 +67,13 @@ import type { MealPlan } from '@/models/meal-plan';
 import { intlFormat } from 'date-fns';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
+import type { EditableItem } from '@/models/editable-item';
 
 const { getMealPlanForDate } = useMealPlansData();
 const mealPlan = ref<MealPlan>();
-const breakfast = ref<Meal | undefined>();
-const lunch = ref<Meal | undefined>();
-const dinner = ref<Meal | undefined>();
+const breakfast = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
+const lunch = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
+const dinner = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 
 const route = useRoute();
 // TODO: Add error handling for invalid or missing date
@@ -73,25 +83,34 @@ const today = new Date(year!, month! - 1, day);
 
 const addBreakfastButtonClicked = () => {
   breakfast.value = {
-    id: crypto.randomUUID(),
-    type: 'Breakfast',
-    items: [],
+    isEditing: true,
+    item: {
+      id: crypto.randomUUID(),
+      type: 'Breakfast',
+      items: [],
+    },
   };
 };
 
 const addLunchButtonClicked = () => {
   lunch.value = {
-    id: crypto.randomUUID(),
-    type: 'Lunch',
-    items: [],
+    isEditing: true,
+    item: {
+      id: crypto.randomUUID(),
+      type: 'Lunch',
+      items: [],
+    },
   };
 };
 
 const addDinnerButtonClicked = () => {
   dinner.value = {
-    id: crypto.randomUUID(),
-    type: 'Dinner',
-    items: [],
+    isEditing: true,
+    item: {
+      id: crypto.randomUUID(),
+      type: 'Dinner',
+      items: [],
+    },
   };
 };
 
@@ -100,8 +119,8 @@ getMealPlanForDate(dt).then((plan) => {
     date: dt,
     meals: [],
   };
-  breakfast.value = mealPlan.value.meals.find((meal) => meal.type === 'Breakfast');
-  lunch.value = mealPlan.value.meals.find((meal) => meal.type === 'Lunch');
-  dinner.value = mealPlan.value.meals.find((meal) => meal.type === 'Dinner');
+  breakfast.value.item = mealPlan.value.meals.find((meal) => meal.type === 'Breakfast');
+  lunch.value.item = mealPlan.value.meals.find((meal) => meal.type === 'Lunch');
+  dinner.value.item = mealPlan.value.meals.find((meal) => meal.type === 'Dinner');
 });
 </script>

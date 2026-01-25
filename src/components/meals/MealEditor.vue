@@ -1,5 +1,5 @@
 <template>
-  <h2>
+  <h3>
     <div class="d-flex justify-space-between">
       <div>Recipes</div>
       <v-btn
@@ -11,7 +11,7 @@
         data-testid="add-recipe-button"
       ></v-btn>
     </div>
-  </h2>
+  </h3>
   <v-divider class="mb-4"></v-divider>
   <MealItemEditorCard
     v-if="recipeMealItem !== null"
@@ -44,7 +44,7 @@
     </v-expansion-panel>
   </v-expansion-panels>
 
-  <h2 class="mt-8">
+  <h3 class="mt-8">
     <div class="d-flex justify-space-between">
       <div>Additional Foods</div>
       <v-btn
@@ -56,7 +56,7 @@
         data-testid="add-food-item-button"
       ></v-btn>
     </div>
-  </h2>
+  </h3>
   <v-divider class="mb-4"></v-divider>
   <MealItemEditorCard
     v-if="foodMealItem !== null"
@@ -89,7 +89,7 @@
     </v-expansion-panel>
   </v-expansion-panels>
 
-  <h2 class="mt-8">Total Nutrition</h2>
+  <h3 class="mt-8">Total Nutrition</h3>
   <v-divider class="mb-4"></v-divider>
   <NutritionData :value="totalNutrition" data-testid="total-nutrition" />
 

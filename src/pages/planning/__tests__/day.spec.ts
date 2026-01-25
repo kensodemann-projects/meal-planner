@@ -119,7 +119,7 @@ describe('day', () => {
         expect(button.exists()).toBe(false);
       });
 
-      it.skip('displays the editor for breakfast', async () => {
+      it('displays the editor for breakfast', async () => {
         wrapper = await renderPage();
         const button = wrapper.findComponent('[data-testid="add-breakfast-button"]');
         await button.trigger('click');
