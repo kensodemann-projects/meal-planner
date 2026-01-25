@@ -126,7 +126,7 @@ describe('day', () => {
         const editor = wrapper.findComponent({ name: 'MealEditor' });
         expect(editor.exists()).toBe(true);
         const meal = editor.props('meal');
-        console.log(meal);
+        expect(meal.type).toBe('Breakfast');
       });
     });
   });
@@ -167,6 +167,16 @@ describe('day', () => {
         button = wrapper.findComponent('[data-testid="add-lunch-button"]');
         expect(button.exists()).toBe(false);
       });
+
+      it('displays the editor for lunch', async () => {
+        wrapper = await renderPage();
+        const button = wrapper.findComponent('[data-testid="add-lunch-button"]');
+        await button.trigger('click');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        expect(editor.exists()).toBe(true);
+        const meal = editor.props('meal');
+        expect(meal.type).toBe('Lunch');
+      });
     });
   });
 
@@ -205,6 +215,16 @@ describe('day', () => {
         await button.trigger('click');
         button = wrapper.findComponent('[data-testid="add-dinner-button"]');
         expect(button.exists()).toBe(false);
+      });
+
+      it('displays the editor for dinner', async () => {
+        wrapper = await renderPage();
+        const button = wrapper.findComponent('[data-testid="add-dinner-button"]');
+        await button.trigger('click');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        expect(editor.exists()).toBe(true);
+        const meal = editor.props('meal');
+        expect(meal.type).toBe('Dinner');
       });
     });
   });

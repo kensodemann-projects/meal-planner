@@ -37,6 +37,15 @@
     </div>
   </h2>
   <v-divider class="mb-4"></v-divider>
+  <MealEditor
+    v-if="lunch.isEditing"
+    :meal="lunch.item!"
+    @save="lunch.isEditing = false"
+    @cancel="
+      lunch.isEditing = false;
+      lunch.item = undefined;
+    "
+  />
   <h2>
     <div class="d-flex justify-space-between">
       <div>Dinner</div>
@@ -58,6 +67,15 @@
     </div>
   </h2>
   <v-divider class="mb-4"></v-divider>
+  <MealEditor
+    v-if="dinner.isEditing"
+    :meal="dinner.item!"
+    @save="dinner.isEditing = false"
+    @cancel="
+      dinner.isEditing = false;
+      dinner.item = undefined;
+    "
+  />
 </template>
 
 <script setup lang="ts">
