@@ -128,6 +128,53 @@ describe('day', () => {
         const meal = editor.props('meal');
         expect(meal.type).toBe('Breakfast');
       });
+
+      describe('on cancel', () => {
+        it('hides the editor', async () => {
+          wrapper = await renderPage();
+          const button = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+          await button.trigger('click');
+          let editor = wrapper.findComponent({ name: 'MealEditor' });
+          expect(editor.exists()).toBe(true);
+          await editor.vm.$emit('cancel');
+          editor = wrapper.findComponent({ name: 'MealEditor' });
+          expect(editor.exists()).toBe(false);
+        });
+
+        it('shows the add breakfast button again', async () => {
+          wrapper = await renderPage();
+          const button = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+          await button.trigger('click');
+          const editor = wrapper.findComponent({ name: 'MealEditor' });
+          await editor.vm.$emit('cancel');
+          const breakfastButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+          expect(breakfastButton.exists()).toBe(true);
+        });
+      });
+
+      describe('on save', () => {
+        it('hides the editor', async () => {
+          wrapper = await renderPage();
+          const button = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+          await button.trigger('click');
+          let editor = wrapper.findComponent({ name: 'MealEditor' });
+          expect(editor.exists()).toBe(true);
+          await editor.vm.$emit('save');
+          editor = wrapper.findComponent({ name: 'MealEditor' });
+          expect(editor.exists()).toBe(false);
+        });
+
+        it('does not show the add breakfast button again', async () => {
+          wrapper = await renderPage();
+          const button = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+          await button.trigger('click');
+          const editor = wrapper.findComponent({ name: 'MealEditor' });
+          expect(editor.exists()).toBe(true);
+          editor.vm.$emit('save');
+          const breakfastButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+          expect(breakfastButton.exists()).toBe(false);
+        });
+      });
     });
   });
 
