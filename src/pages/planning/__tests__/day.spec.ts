@@ -178,6 +178,40 @@ describe('day', () => {
     });
   });
 
+  describe('breakfast view', () => {
+    it('is displayed when breakfast data exists and is not being edited', async () => {
+      const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+      getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+      wrapper = await renderPage();
+      const view = wrapper.findComponent('[data-testid="breakfast-view"]');
+      expect(view.exists()).toBe(true);
+    });
+
+    it('is not displayed when there is no breakfast data', async () => {
+      const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+      getMealPlanForDate.mockResolvedValueOnce(EMPTY_MEAL_PLAN);
+      wrapper = await renderPage();
+      const view = wrapper.findComponent('[data-testid="breakfast-view"]');
+      expect(view.exists()).toBe(false);
+    });
+
+    it('is not displayed when the breakfast editor is showing', async () => {
+      wrapper = await renderPage();
+      const button = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+      await button.trigger('click');
+      const view = wrapper.findComponent('[data-testid="breakfast-view"]');
+      expect(view.exists()).toBe(false);
+    });
+
+    it('displays the correct meal data', async () => {
+      const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+      getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+      wrapper = await renderPage();
+      const view = wrapper.findComponent('[data-testid="breakfast-view"]');
+      expect(view.props('meal')).toEqual(FULL_MEAL_PLAN.meals[0]);
+    });
+  });
+
   describe('add lunch button', () => {
     describe('on a day without a meal plan', () => {
       it('exists', async () => {

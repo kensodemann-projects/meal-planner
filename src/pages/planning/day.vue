@@ -14,6 +14,7 @@
     </div>
   </h2>
   <v-divider class="mb-4"></v-divider>
+  <MealView v-if="breakfast.item && !breakfast.isEditing" :meal="breakfast.item" data-testid="breakfast-view" />
   <MealEditor
     v-if="breakfast.isEditing"
     :meal="breakfast.item!"
