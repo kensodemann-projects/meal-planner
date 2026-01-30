@@ -224,6 +224,53 @@ describe('day', () => {
         const meal = editor.props('meal');
         expect(meal.type).toBe('Lunch');
       });
+
+      describe('on cancel', () => {
+        it('hides the editor', async () => {
+          wrapper = await renderPage();
+          const button = wrapper.findComponent('[data-testid="add-lunch-button"]');
+          await button.trigger('click');
+          let editor = wrapper.findComponent({ name: 'MealEditor' });
+          expect(editor.exists()).toBe(true);
+          await editor.vm.$emit('cancel');
+          editor = wrapper.findComponent({ name: 'MealEditor' });
+          expect(editor.exists()).toBe(false);
+        });
+
+        it('shows the add lunch button again', async () => {
+          wrapper = await renderPage();
+          const button = wrapper.findComponent('[data-testid="add-lunch-button"]');
+          await button.trigger('click');
+          const editor = wrapper.findComponent({ name: 'MealEditor' });
+          await editor.vm.$emit('cancel');
+          const lunchButton = wrapper.findComponent('[data-testid="add-lunch-button"]');
+          expect(lunchButton.exists()).toBe(true);
+        });
+      });
+
+      describe('on save', () => {
+        it('hides the editor', async () => {
+          wrapper = await renderPage();
+          const button = wrapper.findComponent('[data-testid="add-lunch-button"]');
+          await button.trigger('click');
+          let editor = wrapper.findComponent({ name: 'MealEditor' });
+          expect(editor.exists()).toBe(true);
+          await editor.vm.$emit('save');
+          editor = wrapper.findComponent({ name: 'MealEditor' });
+          expect(editor.exists()).toBe(false);
+        });
+
+        it('does not show the add lunch button again', async () => {
+          wrapper = await renderPage();
+          const button = wrapper.findComponent('[data-testid="add-lunch-button"]');
+          await button.trigger('click');
+          const editor = wrapper.findComponent({ name: 'MealEditor' });
+          expect(editor.exists()).toBe(true);
+          await editor.vm.$emit('save');
+          const lunchButton = wrapper.findComponent('[data-testid="add-lunch-button"]');
+          expect(lunchButton.exists()).toBe(false);
+        });
+      });
     });
   });
 
@@ -272,6 +319,53 @@ describe('day', () => {
         expect(editor.exists()).toBe(true);
         const meal = editor.props('meal');
         expect(meal.type).toBe('Dinner');
+      });
+
+      describe('on cancel', () => {
+        it('hides the editor', async () => {
+          wrapper = await renderPage();
+          const button = wrapper.findComponent('[data-testid="add-dinner-button"]');
+          await button.trigger('click');
+          let editor = wrapper.findComponent({ name: 'MealEditor' });
+          expect(editor.exists()).toBe(true);
+          await editor.vm.$emit('cancel');
+          editor = wrapper.findComponent({ name: 'MealEditor' });
+          expect(editor.exists()).toBe(false);
+        });
+
+        it('shows the add dinner button again', async () => {
+          wrapper = await renderPage();
+          const button = wrapper.findComponent('[data-testid="add-dinner-button"]');
+          await button.trigger('click');
+          const editor = wrapper.findComponent({ name: 'MealEditor' });
+          await editor.vm.$emit('cancel');
+          const dinnerButton = wrapper.findComponent('[data-testid="add-dinner-button"]');
+          expect(dinnerButton.exists()).toBe(true);
+        });
+      });
+
+      describe('on save', () => {
+        it('hides the editor', async () => {
+          wrapper = await renderPage();
+          const button = wrapper.findComponent('[data-testid="add-dinner-button"]');
+          await button.trigger('click');
+          let editor = wrapper.findComponent({ name: 'MealEditor' });
+          expect(editor.exists()).toBe(true);
+          await editor.vm.$emit('save');
+          editor = wrapper.findComponent({ name: 'MealEditor' });
+          expect(editor.exists()).toBe(false);
+        });
+
+        it('does not show the add dinner button again', async () => {
+          wrapper = await renderPage();
+          const button = wrapper.findComponent('[data-testid="add-dinner-button"]');
+          await button.trigger('click');
+          const editor = wrapper.findComponent({ name: 'MealEditor' });
+          expect(editor.exists()).toBe(true);
+          await editor.vm.$emit('save');
+          const dinnerButton = wrapper.findComponent('[data-testid="add-dinner-button"]');
+          expect(dinnerButton.exists()).toBe(false);
+        });
       });
     });
   });
