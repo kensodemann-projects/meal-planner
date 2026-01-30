@@ -397,4 +397,20 @@ describe('day', () => {
       });
     });
   });
+
+  describe('cancel button', () => {
+    it('exists', async () => {
+      wrapper = await renderPage();
+      const button = wrapper.findComponent('[data-testid="cancel-button"]');
+      expect(button.exists()).toBe(true);
+    });
+  });
+
+  describe('save button', () => {
+    it('exists', async () => {
+      wrapper = await renderPage();
+      const button = wrapper.findComponent('[data-testid="save-button"]');
+      expect(button.exists()).toBe(true);
+    });
+  });
 });

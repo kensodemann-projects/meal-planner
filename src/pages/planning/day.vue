@@ -76,6 +76,10 @@
     </div>
   </h2>
   <v-divider class="mb-4"></v-divider>
+  <div class="d-flex justify-end mt-4">
+    <CancelButton />
+    <SaveButton />
+  </div>
 </template>
 
 <script setup lang="ts">
