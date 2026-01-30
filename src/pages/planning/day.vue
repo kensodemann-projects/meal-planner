@@ -60,13 +60,6 @@
     </div>
   </h2>
   <v-divider class="mb-4"></v-divider>
-  <h2>
-    <div class="d-flex justify-space-between">
-      <div>Snacks</div>
-      <v-btn density="compact" variant="text" icon="mdi-plus" data-testid="add-snack-button"></v-btn>
-    </div>
-  </h2>
-  <v-divider class="mb-4"></v-divider>
   <MealEditor
     v-if="dinner.isEditing"
     :meal="dinner.item!"
@@ -76,6 +69,13 @@
       dinner.item = undefined;
     "
   />
+  <h2>
+    <div class="d-flex justify-space-between">
+      <div>Snacks</div>
+      <v-btn density="compact" variant="text" icon="mdi-plus" data-testid="add-snack-button"></v-btn>
+    </div>
+  </h2>
+  <v-divider class="mb-4"></v-divider>
 </template>
 
 <script setup lang="ts">
