@@ -14,16 +14,15 @@
     </div>
   </h2>
   <v-divider class="mb-4"></v-divider>
-  <MealView v-if="breakfast.item && !breakfast.isEditing" :meal="breakfast.item" data-testid="breakfast-view" />
-  <MealEditor
-    v-if="breakfast.isEditing"
-    :meal="breakfast.item!"
-    @save="breakfast.isEditing = false"
-    @cancel="
-      breakfast.isEditing = false;
-      breakfast.item = undefined;
-    "
-  />
+  <div class="ma-8">
+    <MealView v-if="breakfast.item && !breakfast.isEditing" :meal="breakfast.item" data-testid="breakfast-view" />
+    <MealEditor
+      v-if="breakfast.isEditing"
+      :meal="breakfast.item!"
+      @save="setBreakfast"
+      @cancel="setBreakfast(undefined)"
+    />
+  </div>
   <h2>
     <div class="d-flex justify-space-between">
       <div>Lunch</div>
@@ -135,6 +134,11 @@ const addDinnerButtonClicked = () => {
       items: [],
     },
   };
+};
+
+const setBreakfast = (meal: Meal | undefined) => {
+  breakfast.value.item = meal;
+  breakfast.value.isEditing = false;
 };
 
 getMealPlanForDate(dt).then((plan) => {

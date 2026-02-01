@@ -1,4 +1,4 @@
-import { flushPromises, mount } from '@vue/test-utils';
+import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { useRoute } from 'vue-router';
 import { createVuetify } from 'vuetify';
@@ -8,6 +8,7 @@ import day from '../day.vue';
 import { useMealPlansData } from '@/data/meal-plans';
 import type { MealPlan } from '@/models/meal-plan';
 import { TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
+import type { Meal } from '@/models/meal';
 
 vi.mock('vue-router');
 vi.mock('@/data/foods');
@@ -174,6 +175,19 @@ describe('day', () => {
           const breakfastButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
           expect(breakfastButton.exists()).toBe(false);
         });
+
+        it('assigns the meal to the breakfast view', async () => {
+          wrapper = await renderPage();
+          const button = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+          await button.trigger('click');
+          const editor = wrapper.findComponent({ name: 'MealEditor' });
+          expect(editor.exists()).toBe(true);
+          const newMeal: Meal = { id: 'meal-123', type: 'Breakfast', items: [] };
+          await editor.vm.$emit('save', newMeal);
+          const breakfastView = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
+          expect(breakfastView.exists()).toBe(true);
+          expect(breakfastView.props('meal')).toEqual(newMeal);
+        });
       });
     });
   });
@@ -207,7 +221,7 @@ describe('day', () => {
       const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
       getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
       wrapper = await renderPage();
-      const view = wrapper.findComponent('[data-testid="breakfast-view"]');
+      const view = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
       expect(view.props('meal')).toEqual(FULL_MEAL_PLAN.meals[0]);
     });
   });
