@@ -318,7 +318,54 @@ describe('day', () => {
           const lunchButton = wrapper.findComponent('[data-testid="add-lunch-button"]');
           expect(lunchButton.exists()).toBe(false);
         });
+
+        it('assigns the meal to the lunch view', async () => {
+          wrapper = await renderPage();
+          const button = wrapper.findComponent('[data-testid="add-lunch-button"]');
+          await button.trigger('click');
+          const editor = wrapper.findComponent({ name: 'MealEditor' });
+          expect(editor.exists()).toBe(true);
+          const newMeal: Meal = { id: 'meal-456', type: 'Lunch', items: [] };
+          await editor.vm.$emit('save', newMeal);
+          const lunchView = wrapper.findComponent('[data-testid="lunch-view"]') as VueWrapper<any>;
+          expect(lunchView.exists()).toBe(true);
+          expect(lunchView.props('meal')).toEqual(newMeal);
+        });
       });
+    });
+  });
+
+  describe('lunch view', () => {
+    it('is displayed when lunch data exists and is not being edited', async () => {
+      const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+      getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+      wrapper = await renderPage();
+      const view = wrapper.findComponent('[data-testid="lunch-view"]');
+      expect(view.exists()).toBe(true);
+    });
+
+    it('is not displayed when there is no lunch data', async () => {
+      const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+      getMealPlanForDate.mockResolvedValueOnce(EMPTY_MEAL_PLAN);
+      wrapper = await renderPage();
+      const view = wrapper.findComponent('[data-testid="lunch-view"]');
+      expect(view.exists()).toBe(false);
+    });
+
+    it('is not displayed when the lunch editor is showing', async () => {
+      wrapper = await renderPage();
+      const button = wrapper.findComponent('[data-testid="add-lunch-button"]');
+      await button.trigger('click');
+      const view = wrapper.findComponent('[data-testid="lunch-view"]');
+      expect(view.exists()).toBe(false);
+    });
+
+    it('displays the correct meal data', async () => {
+      const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+      getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+      wrapper = await renderPage();
+      const view = wrapper.findComponent('[data-testid="lunch-view"]') as VueWrapper<any>;
+      expect(view.props('meal')).toEqual(FULL_MEAL_PLAN.meals[1]);
     });
   });
 
@@ -414,7 +461,54 @@ describe('day', () => {
           const dinnerButton = wrapper.findComponent('[data-testid="add-dinner-button"]');
           expect(dinnerButton.exists()).toBe(false);
         });
+
+        it('assigns the meal to the dinner view', async () => {
+          wrapper = await renderPage();
+          const button = wrapper.findComponent('[data-testid="add-dinner-button"]');
+          await button.trigger('click');
+          const editor = wrapper.findComponent({ name: 'MealEditor' });
+          expect(editor.exists()).toBe(true);
+          const newMeal: Meal = { id: 'meal-789', type: 'Dinner', items: [] };
+          await editor.vm.$emit('save', newMeal);
+          const dinnerView = wrapper.findComponent('[data-testid="dinner-view"]') as VueWrapper<any>;
+          expect(dinnerView.exists()).toBe(true);
+          expect(dinnerView.props('meal')).toEqual(newMeal);
+        });
       });
+    });
+  });
+
+  describe('dinner view', () => {
+    it('is displayed when dinner data exists and is not being edited', async () => {
+      const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+      getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+      wrapper = await renderPage();
+      const view = wrapper.findComponent('[data-testid="dinner-view"]');
+      expect(view.exists()).toBe(true);
+    });
+
+    it('is not displayed when there is no dinner data', async () => {
+      const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+      getMealPlanForDate.mockResolvedValueOnce(EMPTY_MEAL_PLAN);
+      wrapper = await renderPage();
+      const view = wrapper.findComponent('[data-testid="dinner-view"]');
+      expect(view.exists()).toBe(false);
+    });
+
+    it('is not displayed when the dinner editor is showing', async () => {
+      wrapper = await renderPage();
+      const button = wrapper.findComponent('[data-testid="add-dinner-button"]');
+      await button.trigger('click');
+      const view = wrapper.findComponent('[data-testid="dinner-view"]');
+      expect(view.exists()).toBe(false);
+    });
+
+    it('displays the correct meal data', async () => {
+      const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+      getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+      wrapper = await renderPage();
+      const view = wrapper.findComponent('[data-testid="dinner-view"]') as VueWrapper<any>;
+      expect(view.props('meal')).toEqual(FULL_MEAL_PLAN.meals[2]);
     });
   });
 

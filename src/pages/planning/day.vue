@@ -37,15 +37,23 @@
     </div>
   </h2>
   <v-divider class="mb-8"></v-divider>
-  <MealEditor
-    v-if="lunch.isEditing"
-    :meal="lunch.item!"
-    @save="lunch.isEditing = false"
-    @cancel="
-      lunch.isEditing = false;
-      lunch.item = undefined;
-    "
-  />
+  <div class="mb-8">
+    <MealView v-if="lunch.item && !lunch.isEditing" :meal="lunch.item" data-testid="lunch-view" />
+    <MealEditor
+      v-if="lunch.isEditing"
+      :meal="lunch.item!"
+      @save="
+        (meal) => {
+          if (meal) lunch.item = meal;
+          lunch.isEditing = false;
+        }
+      "
+      @cancel="
+        lunch.isEditing = false;
+        lunch.item = undefined;
+      "
+    />
+  </div>
   <h2>
     <div class="d-flex justify-space-between">
       <div>Dinner</div>
@@ -60,15 +68,23 @@
     </div>
   </h2>
   <v-divider class="mb-8"></v-divider>
-  <MealEditor
-    v-if="dinner.isEditing"
-    :meal="dinner.item!"
-    @save="dinner.isEditing = false"
-    @cancel="
-      dinner.isEditing = false;
-      dinner.item = undefined;
-    "
-  />
+  <div class="mb-8">
+    <MealView v-if="dinner.item && !dinner.isEditing" :meal="dinner.item" data-testid="dinner-view" />
+    <MealEditor
+      v-if="dinner.isEditing"
+      :meal="dinner.item!"
+      @save="
+        (meal) => {
+          if (meal) dinner.item = meal;
+          dinner.isEditing = false;
+        }
+      "
+      @cancel="
+        dinner.isEditing = false;
+        dinner.item = undefined;
+      "
+    />
+  </div>
   <h2>
     <div class="d-flex justify-space-between">
       <div>Snacks</div>
