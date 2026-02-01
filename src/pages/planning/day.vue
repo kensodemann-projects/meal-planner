@@ -13,8 +13,8 @@
       ></v-btn>
     </div>
   </h2>
-  <v-divider class="mb-4"></v-divider>
-  <div class="ma-8">
+  <v-divider class="mb-8"></v-divider>
+  <div class="mb-8">
     <MealView v-if="breakfast.item && !breakfast.isEditing" :meal="breakfast.item" data-testid="breakfast-view" />
     <MealEditor
       v-if="breakfast.isEditing"
@@ -36,7 +36,7 @@
       ></v-btn>
     </div>
   </h2>
-  <v-divider class="mb-4"></v-divider>
+  <v-divider class="mb-8"></v-divider>
   <MealEditor
     v-if="lunch.isEditing"
     :meal="lunch.item!"
@@ -59,7 +59,7 @@
       ></v-btn>
     </div>
   </h2>
-  <v-divider class="mb-4"></v-divider>
+  <v-divider class="mb-8"></v-divider>
   <MealEditor
     v-if="dinner.isEditing"
     :meal="dinner.item!"
@@ -75,7 +75,7 @@
       <v-btn density="compact" variant="text" icon="mdi-plus" data-testid="add-snack-button"></v-btn>
     </div>
   </h2>
-  <v-divider class="mb-4"></v-divider>
+  <v-divider class="mb-8"></v-divider>
   <div class="d-flex justify-end mt-4">
     <CancelButton />
     <SaveButton />
