@@ -62,12 +62,12 @@ describe('MealView', () => {
       });
     });
 
-    it('displays the calories for each item', () => {
+    it('displays total nutritional information', () => {
       wrapper = mountComponent({ meal: TEST_MEAL });
-      const items = wrapper.findAll('[data-testid="meal-item"]');
-      items.forEach((item, index) => {
-        expect(item.text()).toContain(`${TEST_MEAL.items[index]!.nutrition.calories} calories`);
-      });
+      const nutritionData = wrapper.findComponent({ name: 'NutritionData' });
+      expect(nutritionData.exists()).toBe(true);
+      const totalCalories = TEST_MEAL.items.reduce((sum, item) => sum + item.nutrition.calories, 0);
+      expect(nutritionData.props('value').calories).toBe(totalCalories);
     });
 
     it('does not display the empty meal message', () => {
