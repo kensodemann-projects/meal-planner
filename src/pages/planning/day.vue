@@ -88,10 +88,21 @@
   <h2>
     <div class="d-flex justify-space-between">
       <div>Snacks</div>
-      <v-btn density="compact" variant="text" icon="mdi-plus" data-testid="add-snack-button"></v-btn>
+      <v-btn
+        v-if="!snack.item"
+        density="compact"
+        variant="text"
+        icon="mdi-plus"
+        @click="addSnackButtonClicked"
+        data-testid="add-snack-button"
+      ></v-btn>
     </div>
   </h2>
   <v-divider class="mb-8"></v-divider>
+  <div class="mb-8">
+    <MealView v-if="snack.item && !snack.isEditing" :meal="snack.item" data-testid="snack-view" />
+    <MealEditor v-if="snack.isEditing" :meal="snack.item!" @save="setSnack" @cancel="setSnack(undefined)" />
+  </div>
   <div class="d-flex justify-end mt-4">
     <CancelButton />
     <SaveButton />
@@ -112,6 +123,7 @@ const mealPlan = ref<MealPlan>();
 const breakfast = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 const lunch = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 const dinner = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
+const snack = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 
 const route = useRoute();
 // TODO: Add error handling for invalid or missing date
@@ -152,9 +164,25 @@ const addDinnerButtonClicked = () => {
   };
 };
 
+const addSnackButtonClicked = () => {
+  snack.value = {
+    isEditing: true,
+    item: {
+      id: crypto.randomUUID(),
+      type: 'Snack',
+      items: [],
+    },
+  };
+};
+
 const setBreakfast = (meal: Meal | undefined) => {
   breakfast.value.item = meal;
   breakfast.value.isEditing = false;
+};
+
+const setSnack = (meal: Meal | undefined) => {
+  snack.value.item = meal;
+  snack.value.isEditing = false;
 };
 
 getMealPlanForDate(dt).then((plan) => {
@@ -165,5 +193,6 @@ getMealPlanForDate(dt).then((plan) => {
   breakfast.value.item = mealPlan.value.meals.find((meal) => meal.type === 'Breakfast');
   lunch.value.item = mealPlan.value.meals.find((meal) => meal.type === 'Lunch');
   dinner.value.item = mealPlan.value.meals.find((meal) => meal.type === 'Dinner');
+  snack.value.item = mealPlan.value.meals.find((meal) => meal.type === 'Snack');
 });
 </script>
