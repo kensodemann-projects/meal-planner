@@ -19,8 +19,8 @@
     <MealEditor
       v-if="breakfast.isEditing"
       :meal="breakfast.item!"
-      @save="setBreakfast"
-      @cancel="setBreakfast(undefined)"
+      @save="(meal) => setMeal('Breakfast', meal)"
+      @cancel="cancelMeal('Breakfast')"
     />
   </div>
   <h2>
@@ -42,16 +42,8 @@
     <MealEditor
       v-if="lunch.isEditing"
       :meal="lunch.item!"
-      @save="
-        (meal) => {
-          if (meal) lunch.item = meal;
-          lunch.isEditing = false;
-        }
-      "
-      @cancel="
-        lunch.isEditing = false;
-        lunch.item = undefined;
-      "
+      @save="(meal) => setMeal('Lunch', meal)"
+      @cancel="cancelMeal('Lunch')"
     />
   </div>
   <h2>
@@ -73,16 +65,8 @@
     <MealEditor
       v-if="dinner.isEditing"
       :meal="dinner.item!"
-      @save="
-        (meal) => {
-          if (meal) dinner.item = meal;
-          dinner.isEditing = false;
-        }
-      "
-      @cancel="
-        dinner.isEditing = false;
-        dinner.item = undefined;
-      "
+      @save="(meal) => setMeal('Dinner', meal)"
+      @cancel="cancelMeal('Dinner')"
     />
   </div>
   <h2>
@@ -101,7 +85,12 @@
   <v-divider class="mb-8"></v-divider>
   <div class="mb-8">
     <MealView v-if="snack.item && !snack.isEditing" :meal="snack.item" data-testid="snack-view" />
-    <MealEditor v-if="snack.isEditing" :meal="snack.item!" @save="setSnack" @cancel="setSnack(undefined)" />
+    <MealEditor
+      v-if="snack.isEditing"
+      :meal="snack.item!"
+      @save="(meal) => setMeal('Snack', meal)"
+      @cancel="cancelMeal('Snack')"
+    />
   </div>
   <div class="d-flex justify-end mt-4">
     <CancelButton />
@@ -175,14 +164,24 @@ const addSnackButtonClicked = () => {
   };
 };
 
-const setBreakfast = (meal: Meal | undefined) => {
-  breakfast.value.item = meal;
-  breakfast.value.isEditing = false;
+const setMeal = (mealType: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack', meal: Meal | undefined) => {
+  const refs: Record<string, typeof breakfast> = { Breakfast: breakfast, Lunch: lunch, Dinner: dinner, Snack: snack };
+  const mealRef = refs[mealType];
+  if (mealRef && mealRef.value) {
+    if (meal) {
+      mealRef.value.item = meal;
+    }
+    mealRef.value.isEditing = false;
+  }
 };
 
-const setSnack = (meal: Meal | undefined) => {
-  snack.value.item = meal;
-  snack.value.isEditing = false;
+const cancelMeal = (mealType: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack') => {
+  const refs: Record<string, typeof breakfast> = { Breakfast: breakfast, Lunch: lunch, Dinner: dinner, Snack: snack };
+  const mealRef = refs[mealType];
+  if (mealRef && mealRef.value) {
+    mealRef.value.isEditing = false;
+    mealRef.value.item = undefined;
+  }
 };
 
 getMealPlanForDate(dt).then((plan) => {
