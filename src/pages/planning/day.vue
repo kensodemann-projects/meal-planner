@@ -188,8 +188,8 @@ const setSnack = (meal: Meal | undefined) => {
   snack.value.isEditing = false;
 };
 
-if (today && dt) {
-  getMealPlanForDate(dt).then((plan) => {
+if (today) {
+  getMealPlanForDate(dt!).then((plan) => {
     mealPlan.value = plan || {
       date: dt,
       meals: [],
