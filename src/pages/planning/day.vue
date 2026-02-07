@@ -1,18 +1,16 @@
 <template>
   <h1 class="mb-4">{{ intlFormat(today, { dateStyle: 'long' }) }}</h1>
-  <h2>
-    <div class="d-flex justify-space-between">
-      <div>Breakfast</div>
-      <v-btn
-        v-if="!breakfast.item"
-        density="compact"
-        variant="text"
-        icon="mdi-plus"
-        @click="addBreakfastButtonClicked"
-        data-testid="add-breakfast-button"
-      ></v-btn>
-    </div>
-  </h2>
+  <div class="d-flex justify-space-between align-center">
+    <h2>Breakfast</h2>
+    <v-btn
+      v-if="!breakfast.item"
+      density="compact"
+      variant="text"
+      icon="mdi-plus"
+      @click="addBreakfastButtonClicked"
+      data-testid="add-breakfast-button"
+    ></v-btn>
+  </div>
   <v-divider class="mb-8"></v-divider>
   <div class="mb-8">
     <MealView v-if="breakfast.item && !breakfast.isEditing" :meal="breakfast.item" data-testid="breakfast-view" />
@@ -23,19 +21,17 @@
       @cancel="setBreakfast(undefined)"
     />
   </div>
-  <h2>
-    <div class="d-flex justify-space-between">
-      <div>Lunch</div>
-      <v-btn
-        v-if="!lunch.item"
-        density="compact"
-        variant="text"
-        icon="mdi-plus"
-        @click="addLunchButtonClicked"
-        data-testid="add-lunch-button"
-      ></v-btn>
-    </div>
-  </h2>
+  <div class="d-flex justify-space-between align-center">
+    <h2>Lunch</h2>
+    <v-btn
+      v-if="!lunch.item"
+      density="compact"
+      variant="text"
+      icon="mdi-plus"
+      @click="addLunchButtonClicked"
+      data-testid="add-lunch-button"
+    ></v-btn>
+  </div>
   <v-divider class="mb-8"></v-divider>
   <div class="mb-8">
     <MealView v-if="lunch.item && !lunch.isEditing" :meal="lunch.item" data-testid="lunch-view" />
@@ -54,19 +50,17 @@
       "
     />
   </div>
-  <h2>
-    <div class="d-flex justify-space-between">
-      <div>Dinner</div>
-      <v-btn
-        v-if="!dinner.item"
-        density="compact"
-        variant="text"
-        icon="mdi-plus"
-        @click="addDinnerButtonClicked"
-        data-testid="add-dinner-button"
-      ></v-btn>
-    </div>
-  </h2>
+  <div class="d-flex justify-space-between align-center">
+    <h2>Dinner</h2>
+    <v-btn
+      v-if="!dinner.item"
+      density="compact"
+      variant="text"
+      icon="mdi-plus"
+      @click="addDinnerButtonClicked"
+      data-testid="add-dinner-button"
+    ></v-btn>
+  </div>
   <v-divider class="mb-8"></v-divider>
   <div class="mb-8">
     <MealView v-if="dinner.item && !dinner.isEditing" :meal="dinner.item" data-testid="dinner-view" />
@@ -85,19 +79,17 @@
       "
     />
   </div>
-  <h2>
-    <div class="d-flex justify-space-between">
-      <div>Snacks</div>
-      <v-btn
-        v-if="!snack.item"
-        density="compact"
-        variant="text"
-        icon="mdi-plus"
-        @click="addSnackButtonClicked"
-        data-testid="add-snack-button"
-      ></v-btn>
-    </div>
-  </h2>
+  <div class="d-flex justify-space-between align-center">
+    <h2>Snacks</h2>
+    <v-btn
+      v-if="!snack.item"
+      density="compact"
+      variant="text"
+      icon="mdi-plus"
+      @click="addSnackButtonClicked"
+      data-testid="add-snack-button"
+    ></v-btn>
+  </div>
   <v-divider class="mb-8"></v-divider>
   <div class="mb-8">
     <MealView v-if="snack.item && !snack.isEditing" :meal="snack.item" data-testid="snack-view" />
