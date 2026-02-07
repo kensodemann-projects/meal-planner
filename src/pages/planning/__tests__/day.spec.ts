@@ -244,7 +244,7 @@ describe('day', () => {
         expect(button.exists()).toBe(true);
       });
 
-      it('does not exist if the meal plan has a breakfast', async () => {
+      it('does not exist if the meal plan has a lunch', async () => {
         const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
         getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
         wrapper = await renderPage();
@@ -387,7 +387,7 @@ describe('day', () => {
         expect(button.exists()).toBe(true);
       });
 
-      it('does not exist if the meal plan has a breakfast', async () => {
+      it('does not exist if the meal plan has a dinner', async () => {
         const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
         getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
         wrapper = await renderPage();
