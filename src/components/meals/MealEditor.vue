@@ -98,7 +98,7 @@
     <v-card-actions>
       <v-spacer />
       <CancelButton class="mr-4" @click="$emit('cancel')" />
-      <SaveButton :disabled="!isModified" @click="save" />
+      <SaveButton :disabled="!isModified || isEditing" @click="save" />
     </v-card-actions>
   </v-card>
 
@@ -132,6 +132,14 @@ const mealItems = ref<EditableItem<MealItem>[]>(props.meal.items.map((item) => (
 const isModified = ref(false);
 
 const showConfirmDialog = ref(false);
+
+const isEditing = computed(() => {
+  return (
+    mealItems.value.some((wrappedItem) => wrappedItem.isEditing) ||
+    foodMealItem.value !== null ||
+    recipeMealItem.value !== null
+  );
+});
 
 const foodMealItems = computed((): EditableItem<MealItem>[] =>
   mealItems.value.filter((wrappedItem) => wrappedItem.item.foodItemId !== undefined),
