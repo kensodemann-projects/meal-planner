@@ -164,9 +164,15 @@ const addSnackButtonClicked = () => {
   };
 };
 
+const mealRefs: Record<string, typeof breakfast> = {
+  Breakfast: breakfast,
+  Lunch: lunch,
+  Dinner: dinner,
+  Snack: snack,
+};
+
 const setMeal = (mealType: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack', meal: Meal | undefined) => {
-  const refs: Record<string, typeof breakfast> = { Breakfast: breakfast, Lunch: lunch, Dinner: dinner, Snack: snack };
-  const mealRef = refs[mealType];
+  const mealRef = mealRefs[mealType];
   if (mealRef && mealRef.value) {
     if (meal) {
       mealRef.value.item = meal;
@@ -176,8 +182,7 @@ const setMeal = (mealType: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack', meal: Mea
 };
 
 const cancelMeal = (mealType: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack') => {
-  const refs: Record<string, typeof breakfast> = { Breakfast: breakfast, Lunch: lunch, Dinner: dinner, Snack: snack };
-  const mealRef = refs[mealType];
+  const mealRef = mealRefs[mealType];
   if (mealRef && mealRef.value) {
     mealRef.value.isEditing = false;
     mealRef.value.item = undefined;
