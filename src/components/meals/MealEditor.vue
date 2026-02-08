@@ -1,19 +1,17 @@
 <template>
   <v-card>
     <v-card-text>
-      <h3>
-        <div class="d-flex justify-space-between">
-          <div>Recipes</div>
-          <v-btn
-            density="compact"
-            variant="text"
-            icon="mdi-plus"
-            :disabled="recipeMealItem !== null"
-            @click="() => (recipeMealItem = {})"
-            data-testid="add-recipe-button"
-          ></v-btn>
-        </div>
-      </h3>
+      <div class="d-flex justify-space-between align-center">
+        <h3>Recipes</h3>
+        <v-btn
+          density="compact"
+          variant="text"
+          icon="mdi-plus"
+          :disabled="recipeMealItem !== null"
+          @click="() => (recipeMealItem = {})"
+          data-testid="add-recipe-button"
+        ></v-btn>
+      </div>
       <v-divider class="mb-4"></v-divider>
       <MealItemEditorCard
         v-if="recipeMealItem !== null"
@@ -46,19 +44,17 @@
         </v-expansion-panel>
       </v-expansion-panels>
 
-      <h3 class="mt-8">
-        <div class="d-flex justify-space-between">
-          <div>Additional Foods</div>
-          <v-btn
-            density="compact"
-            variant="text"
-            icon="mdi-plus"
-            :disabled="foodMealItem !== null"
-            @click="() => (foodMealItem = {})"
-            data-testid="add-food-item-button"
-          ></v-btn>
-        </div>
-      </h3>
+      <div class="d-flex justify-space-between align-center mt-8">
+        <h3>Additional Foods</h3>
+        <v-btn
+          density="compact"
+          variant="text"
+          icon="mdi-plus"
+          :disabled="foodMealItem !== null"
+          @click="() => (foodMealItem = {})"
+          data-testid="add-food-item-button"
+        ></v-btn>
+      </div>
       <v-divider class="mb-4"></v-divider>
       <MealItemEditorCard
         v-if="foodMealItem !== null"
