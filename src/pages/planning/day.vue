@@ -1,5 +1,5 @@
 <template>
-  <h1 class="mb-4">{{ intlFormat(today, { dateStyle: 'long' }) }}</h1>
+  <h1 class="mb-4">{{ intlFormat(currDate, { dateStyle: 'long' }) }}</h1>
   <div class="d-flex justify-space-between align-center">
     <h2>Breakfast</h2>
     <v-btn
@@ -94,7 +94,7 @@
 import type { Meal } from '@/models/meal';
 import { useMealPlansData } from '@/data/meal-plans';
 import type { MealPlan } from '@/models/meal-plan';
-import { intlFormat } from 'date-fns';
+import { intlFormat, parseISO } from 'date-fns';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import type { EditableItem } from '@/models/editable-item';
@@ -107,10 +107,8 @@ const dinner = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: und
 const snack = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 
 const route = useRoute();
-// TODO: Add error handling for invalid or missing date
-const dt = route.query.dt as string;
-const [year, month, day] = dt.split('-').map(Number);
-const today = new Date(year!, month! - 1, day);
+const dateParam = route.query.dt as string;
+const currDate = parseISO(dateParam);
 
 const addBreakfastButtonClicked = () => {
   breakfast.value = {
@@ -181,9 +179,9 @@ const cancelMeal = (mealType: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack') => {
   }
 };
 
-getMealPlanForDate(dt).then((plan) => {
+getMealPlanForDate(dateParam).then((plan) => {
   mealPlan.value = plan || {
-    date: dt,
+    date: dateParam,
     meals: [],
   };
   breakfast.value.item = mealPlan.value.meals.find((meal) => meal.type === 'Breakfast');
