@@ -1,104 +1,102 @@
 <template>
-  <h2>
-    <div class="d-flex justify-space-between">
-      <div>Recipes</div>
-      <v-btn
-        density="compact"
-        variant="text"
-        icon="mdi-plus"
-        :disabled="recipeMealItem !== null"
-        @click="() => (recipeMealItem = {})"
-        data-testid="add-recipe-button"
-      ></v-btn>
-    </div>
-  </h2>
-  <v-divider class="mb-4"></v-divider>
-  <MealItemEditorCard
-    v-if="recipeMealItem !== null"
-    :meal-item="recipeMealItem"
-    :items="recipes"
-    type="recipe"
-    @save="createMealItem"
-    @cancel="() => (recipeMealItem = null)"
-  />
-  <v-expansion-panels data-testid="recipe-panels">
-    <v-expansion-panel v-for="recipe in recipeMealItems" :key="recipe.item.id">
-      <v-expansion-panel-title>
-        {{ recipe.item.name }}
-      </v-expansion-panel-title>
-      <v-expansion-panel-text>
-        <MealItemEditorCard
-          v-if="recipe.isEditing"
-          :meal-item="recipe.item"
-          :items="recipes"
-          type="recipe"
-          @save="(updatedItem) => updateMealItem(recipe, updatedItem)"
-          @cancel="() => (recipe.isEditing = false)"
-        />
-        <div v-else>
-          <NutritionData :value="recipe.item.nutrition" />
-          <ModifyButton @click="() => (recipe.isEditing = true)" />
-          <DeleteButton @click="askToDelete(recipe)" />
-        </div>
-      </v-expansion-panel-text>
-    </v-expansion-panel>
-  </v-expansion-panels>
+  <v-card>
+    <v-card-text>
+      <div class="d-flex justify-space-between align-center">
+        <h3>Recipes</h3>
+        <v-btn
+          density="compact"
+          variant="text"
+          icon="mdi-plus"
+          :disabled="recipeMealItem !== null"
+          @click="() => (recipeMealItem = {})"
+          data-testid="add-recipe-button"
+        ></v-btn>
+      </div>
+      <v-divider class="mb-4"></v-divider>
+      <MealItemEditorCard
+        v-if="recipeMealItem !== null"
+        :meal-item="recipeMealItem"
+        :items="recipes"
+        type="recipe"
+        @save="createMealItem"
+        @cancel="() => (recipeMealItem = null)"
+      />
+      <v-expansion-panels data-testid="recipe-panels">
+        <v-expansion-panel v-for="recipe in recipeMealItems" :key="recipe.item.id">
+          <v-expansion-panel-title>
+            {{ recipe.item.name }}
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
+            <MealItemEditorCard
+              v-if="recipe.isEditing"
+              :meal-item="recipe.item"
+              :items="recipes"
+              type="recipe"
+              @save="(updatedItem) => updateMealItem(recipe, updatedItem)"
+              @cancel="() => (recipe.isEditing = false)"
+            />
+            <div v-else>
+              <NutritionData :value="recipe.item.nutrition" />
+              <ModifyButton @click="() => (recipe.isEditing = true)" />
+              <DeleteButton @click="askToDelete(recipe)" />
+            </div>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
 
-  <h2 class="mt-8">
-    <div class="d-flex justify-space-between">
-      <div>Additional Foods</div>
-      <v-btn
-        density="compact"
-        variant="text"
-        icon="mdi-plus"
-        :disabled="foodMealItem !== null"
-        @click="() => (foodMealItem = {})"
-        data-testid="add-food-item-button"
-      ></v-btn>
-    </div>
-  </h2>
-  <v-divider class="mb-4"></v-divider>
-  <MealItemEditorCard
-    v-if="foodMealItem !== null"
-    :meal-item="foodMealItem"
-    :items="foods"
-    type="food"
-    @save="createMealItem"
-    @cancel="() => (foodMealItem = null)"
-  />
-  <v-expansion-panels data-testid="food-item-panels">
-    <v-expansion-panel v-for="food in foodMealItems" :key="food.item.id">
-      <v-expansion-panel-title>
-        {{ food.item.name }}
-      </v-expansion-panel-title>
-      <v-expansion-panel-text>
-        <MealItemEditorCard
-          v-if="food.isEditing"
-          :meal-item="food.item"
-          :items="foods"
-          type="food"
-          @save="(updatedItem) => updateMealItem(food, updatedItem)"
-          @cancel="() => (food.isEditing = false)"
-        />
-        <div v-else>
-          <NutritionData :value="food.item.nutrition" />
-          <ModifyButton @click="() => (food.isEditing = true)" />
-          <DeleteButton @click="askToDelete(food)" />
-        </div>
-      </v-expansion-panel-text>
-    </v-expansion-panel>
-  </v-expansion-panels>
+      <div class="d-flex justify-space-between align-center mt-8">
+        <h3>Additional Foods</h3>
+        <v-btn
+          density="compact"
+          variant="text"
+          icon="mdi-plus"
+          :disabled="foodMealItem !== null"
+          @click="() => (foodMealItem = {})"
+          data-testid="add-food-item-button"
+        ></v-btn>
+      </div>
+      <v-divider class="mb-4"></v-divider>
+      <MealItemEditorCard
+        v-if="foodMealItem !== null"
+        :meal-item="foodMealItem"
+        :items="foods"
+        type="food"
+        @save="createMealItem"
+        @cancel="() => (foodMealItem = null)"
+      />
+      <v-expansion-panels data-testid="food-item-panels">
+        <v-expansion-panel v-for="food in foodMealItems" :key="food.item.id">
+          <v-expansion-panel-title>
+            {{ food.item.name }}
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
+            <MealItemEditorCard
+              v-if="food.isEditing"
+              :meal-item="food.item"
+              :items="foods"
+              type="food"
+              @save="(updatedItem) => updateMealItem(food, updatedItem)"
+              @cancel="() => (food.isEditing = false)"
+            />
+            <div v-else>
+              <NutritionData :value="food.item.nutrition" />
+              <ModifyButton @click="() => (food.isEditing = true)" />
+              <DeleteButton @click="askToDelete(food)" />
+            </div>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
 
-  <h2 class="mt-8">Total Nutrition</h2>
-  <v-divider class="mb-4"></v-divider>
-  <NutritionData :value="totalNutrition" data-testid="total-nutrition" />
-
-  <v-container fluid>
-    <v-row class="pa-4" justify="end">
+      <h3 class="mt-8">Total Nutrition</h3>
+      <v-divider class="mb-4"></v-divider>
+      <NutritionData :value="totalNutrition" data-testid="total-nutrition" />
+    </v-card-text>
+    <v-card-actions>
+      <v-spacer />
       <CancelButton class="mr-4" @click="$emit('cancel')" />
-      <SaveButton :disabled="!isModified" @click="save" />
-    </v-row>
-  </v-container>
+      <SaveButton :disabled="!isModified || isEditing" @click="save" />
+    </v-card-actions>
+  </v-card>
 
   <v-dialog v-model="showConfirmDialog" max-width="600px" data-testid="confirm-dialog">
     <ConfirmDialog
@@ -130,6 +128,14 @@ const mealItems = ref<EditableItem<MealItem>[]>(props.meal.items.map((item) => (
 const isModified = ref(false);
 
 const showConfirmDialog = ref(false);
+
+const isEditing = computed(() => {
+  return (
+    mealItems.value.some((wrappedItem) => wrappedItem.isEditing) ||
+    foodMealItem.value !== null ||
+    recipeMealItem.value !== null
+  );
+});
 
 const foodMealItems = computed((): EditableItem<MealItem>[] =>
   mealItems.value.filter((wrappedItem) => wrappedItem.item.foodItemId !== undefined),

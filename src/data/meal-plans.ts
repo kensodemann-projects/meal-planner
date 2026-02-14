@@ -37,5 +37,10 @@ export const useMealPlansData = () => {
     return mealPlans.value.find((f) => f.id === id) || null;
   };
 
-  return { addMealPlan, error, mealPlans, getMealPlan, loading, removeMealPlan, updateMealPlan };
+  const getMealPlanForDate = async (dt: string): Promise<MealPlan | null> => {
+    await mealPlans.promise.value;
+    return mealPlans.value.find((f) => f.date === dt) || null;
+  };
+
+  return { addMealPlan, error, mealPlans, getMealPlan, getMealPlanForDate, loading, removeMealPlan, updateMealPlan };
 };

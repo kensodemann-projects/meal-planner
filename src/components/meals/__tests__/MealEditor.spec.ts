@@ -240,7 +240,7 @@ describe('Meal Editor', () => {
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
 
-      it.skip('is disabled if a recipe is open for edit', async () => {
+      it('is disabled if a recipe is open for edit', async () => {
         // first enable the button by adding a recipe
         const saveButton = wrapper.findComponent('[data-testid="save-button"]');
         const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
@@ -248,6 +248,7 @@ describe('Meal Editor', () => {
         const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
         await mealItemEditors[0]!.vm.$emit('save', recipeMealItem);
         await wrapper.vm.$nextTick();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
         // Now open an existing recipe for edit
         const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
         const panels = recipePanels.findAllComponents(components.VExpansionPanel);
