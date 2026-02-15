@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import type { MealPlan } from '@/models/meal-plan';
-import { addDays, format, intlFormat } from 'date-fns';
+import { addDays, format, intlFormat, parseISO } from 'date-fns';
 import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { MEAL_PLANS } from './mock-data';
@@ -29,8 +29,7 @@ import { MEAL_PLANS } from './mock-data';
 const route = useRoute();
 const router = useRouter();
 const dt = route.query.dt as string;
-const [year, month, day] = dt.split('-').map(Number);
-const weekDays = [0, 1, 2, 3, 4, 5, 6].map((offset) => addDays(new Date(year!, month! - 1, day), offset));
+const weekDays = [0, 1, 2, 3, 4, 5, 6].map((offset) => addDays(parseISO(dt), offset));
 const dateToISO = (date: Date) => format(date, 'yyyy-MM-dd');
 
 type DayRow = { day: Date; iso: string; plan: MealPlan | null };
