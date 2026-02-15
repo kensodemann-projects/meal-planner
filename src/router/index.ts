@@ -9,7 +9,7 @@ import { createRouter, createWebHistory, type NavigationGuardNext, type RouteLoc
 import { setupLayouts } from 'virtual:generated-layouts';
 import { routes } from 'vue-router/auto-routes';
 import { useAuthentication } from '@/core/authentication';
-import { isValid } from 'date-fns';
+import { isValid, parseISO } from 'date-fns';
 
 const checkAuthStatus = async (
   to: RouteLocationNormalized,
@@ -28,7 +28,7 @@ const checkAuthStatus = async (
 const validateWeekParams = (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
   if (to.path === '/planning/week' || to.path === '/planning/day') {
     const dt = to.query.dt as string | undefined;
-    if (!dt || !isValid(new Date(dt))) {
+    if (!dt || !isValid(parseISO(dt))) {
       return next('/error');
     }
   }
