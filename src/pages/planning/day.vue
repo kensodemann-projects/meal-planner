@@ -185,7 +185,7 @@ const cancelMeal = (mealType: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack') => {
 const cancelDayPlan = () => {
   const start = startOfWeek(currDate, { weekStartsOn: settings.value?.weekStartDay });
   const iso = format(start, 'yyyy-MM-dd');
-  router.push({ path: '/planning/week', query: { dt: iso } });
+  router.replace({ path: '/planning/week', query: { dt: iso } });
 };
 
 getMealPlanForDate(dateParam).then((plan) => {
