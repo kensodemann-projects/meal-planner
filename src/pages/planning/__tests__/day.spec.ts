@@ -699,5 +699,11 @@ describe('day', () => {
       const button = wrapper.findComponent('[data-testid="save-button"]');
       expect(button.exists()).toBe(true);
     });
+
+    it('starts disabled', async () => {
+      wrapper = await renderPage();
+      const button = wrapper.findComponent('[data-testid="save-button"]');
+      expect(button.attributes('disabled')).toBeDefined();
+    });
   });
 });

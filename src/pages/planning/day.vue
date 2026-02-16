@@ -86,7 +86,7 @@
   </div>
   <div class="d-flex justify-end mt-4">
     <CancelButton @click="cancelDayPlan" />
-    <SaveButton />
+    <SaveButton @click="saveDayPlan" :disabled="!isDirty" />
   </div>
 </template>
 
@@ -106,6 +106,8 @@ const breakfast = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: 
 const lunch = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 const dinner = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 const snack = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
+
+const isDirty = ref(false);
 
 const route = useRoute();
 const router = useRouter();
@@ -186,6 +188,16 @@ const cancelDayPlan = () => {
   const start = startOfWeek(currDate, { weekStartsOn: settings.value?.weekStartDay });
   const iso = format(start, 'yyyy-MM-dd');
   router.replace({ path: '/planning/week', query: { dt: iso } });
+};
+
+const saveDayPlan = () => {
+  const meals: Meal[] = [];
+  if (breakfast.value.item) meals.push(breakfast.value.item);
+  if (lunch.value.item) meals.push(lunch.value.item);
+  if (dinner.value.item) meals.push(dinner.value.item);
+  if (snack.value.item) meals.push(snack.value.item);
+  // Here you would call a method to save the meal plan, e.g.:
+  // saveMealPlan({ date: dateParam, meals });
 };
 
 getMealPlanForDate(dateParam).then((plan) => {
