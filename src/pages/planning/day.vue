@@ -100,8 +100,15 @@ import { useRoute, useRouter } from 'vue-router';
 import type { EditableItem } from '@/models/editable-item';
 import { useSettingsData } from '@/data/settings';
 
+const route = useRoute();
+const dateParam = route.query.dt as string;
+const currDate = parseISO(dateParam);
+
 const { getMealPlanForDate } = useMealPlansData();
-const mealPlan = ref<MealPlan>();
+const mealPlan = ref<MealPlan>({
+  date: dateParam,
+  meals: [],
+});
 const breakfast = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 const lunch = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 const dinner = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
@@ -109,11 +116,9 @@ const snack = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: unde
 
 const isDirty = ref(false);
 
-const route = useRoute();
 const router = useRouter();
-const dateParam = route.query.dt as string;
-const currDate = parseISO(dateParam);
 const { settings } = useSettingsData();
+const { addMealPlan } = useMealPlansData();
 
 const addBreakfastButtonClicked = () => {
   breakfast.value = {
@@ -191,14 +196,13 @@ const cancelDayPlan = () => {
   router.replace({ path: '/planning/week', query: { dt: iso } });
 };
 
-const saveDayPlan = () => {
+const saveDayPlan = async () => {
   const meals: Meal[] = [];
   if (breakfast.value.item) meals.push(breakfast.value.item);
   if (lunch.value.item) meals.push(lunch.value.item);
   if (dinner.value.item) meals.push(dinner.value.item);
   if (snack.value.item) meals.push(snack.value.item);
-  // Here you would call a method to save the meal plan, e.g.:
-  // saveMealPlan({ date: dateParam, meals });
+  await addMealPlan({ ...mealPlan.value, meals });
 };
 
 getMealPlanForDate(dateParam).then((plan) => {

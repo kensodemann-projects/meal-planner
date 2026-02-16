@@ -767,7 +767,7 @@ describe('day', () => {
         expect(button.attributes('disabled')).toBeUndefined();
       });
 
-      it.skip('saves the meal plan', async () => {
+      it('saves the meal plan', async () => {
         const button = wrapper.findComponent('[data-testid="save-button"]');
         let addButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
         await addButton.trigger('click');
