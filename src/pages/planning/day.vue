@@ -171,6 +171,7 @@ const setMeal = (mealType: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack', meal: Mea
   if (mealRef && mealRef.value) {
     if (meal) {
       mealRef.value.item = meal;
+      isDirty.value = true;
     }
     mealRef.value.isEditing = false;
   }
