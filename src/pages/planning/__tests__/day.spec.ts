@@ -789,7 +789,7 @@ describe('day', () => {
       });
 
       it('navigates to the week page', async () => {
-        const button = wrapper.findComponent('[data-testid="cancel-button"]');
+        const button = wrapper.findComponent('[data-testid="save-button"]');
         const addButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
         await addButton.trigger('click');
         const editor = wrapper.findComponent({ name: 'MealEditor' });
