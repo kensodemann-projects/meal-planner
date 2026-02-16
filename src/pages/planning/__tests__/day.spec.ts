@@ -1,6 +1,6 @@
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -14,6 +14,7 @@ vi.mock('vue-router');
 vi.mock('@/data/foods');
 vi.mock('@/data/meal-plans');
 vi.mock('@/data/recipes');
+vi.mock('@/data/settings');
 
 const vuetify = createVuetify({
   components,
@@ -28,7 +29,7 @@ const renderPage = async (props = {}) => {
 
 const EMPTY_MEAL_PLAN: MealPlan = {
   id: 'mp-001',
-  date: '2025-12-29',
+  date: '2026-02-18',
   meals: [],
 };
 const FULL_MEAL_PLAN: MealPlan = TEST_MEAL_PLANS[0]!;
@@ -38,7 +39,10 @@ describe('day', () => {
 
   beforeEach(() => {
     (useRoute as Mock).mockReturnValue({
-      query: { dt: '2025-12-29' },
+      query: { dt: '2026-02-18' },
+    });
+    (useRouter as Mock).mockReturnValue({
+      push: vi.fn(),
     });
   });
 
@@ -57,13 +61,13 @@ describe('day', () => {
 
   it('parses the date properly', async () => {
     wrapper = await renderPage();
-    expect(wrapper.text()).toContain('December 29, 2025');
+    expect(wrapper.text()).toContain('February 18, 2026');
   });
 
   it('gets the meal plan for today', async () => {
     const { getMealPlanForDate } = useMealPlansData();
     wrapper = await renderPage();
-    expect(getMealPlanForDate).toHaveBeenCalledExactlyOnceWith('2025-12-29');
+    expect(getMealPlanForDate).toHaveBeenCalledExactlyOnceWith('2026-02-18');
   });
 
   it('contains a section for each type of meal', async () => {
@@ -656,10 +660,33 @@ describe('day', () => {
   });
 
   describe('cancel button', () => {
-    it('exists', async () => {
+    beforeEach(async () => {
       wrapper = await renderPage();
+      const button = wrapper.findComponent('[data-testid="add-snack-button"]');
+      await button.trigger('click');
+      const editor = wrapper.findComponent({ name: 'MealEditor' });
+      expect(editor.exists()).toBe(true);
+      const newMeal: Meal = { id: 'meal-snack-123', type: 'Snack', items: [] };
+      await editor.vm.$emit('save', newMeal);
+    });
+
+    it('exists', async () => {
       const button = wrapper.findComponent('[data-testid="cancel-button"]');
       expect(button.exists()).toBe(true);
+    });
+
+    it('does not save the meal plan', async () => {
+      const { addMealPlan, updateMealPlan } = useMealPlansData();
+      const button = wrapper.findComponent('[data-testid="cancel-button"]');
+      await button.trigger('click');
+      expect(addMealPlan).not.toHaveBeenCalled();
+      expect(updateMealPlan).not.toHaveBeenCalled();
+    });
+
+    it('navigates to the week page', async () => {
+      const button = wrapper.findComponent('[data-testid="cancel-button"]');
+      await button.trigger('click');
+      expect(useRouter().push).toHaveBeenCalledExactlyOnceWith({ path: '/planning/week', query: { dt: '2026-02-16' } });
     });
   });
 
