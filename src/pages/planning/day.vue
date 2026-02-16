@@ -104,7 +104,7 @@ const route = useRoute();
 const dateParam = route.query.dt as string;
 const currDate = parseISO(dateParam);
 
-const { getMealPlanForDate } = useMealPlansData();
+const { addMealPlan, getMealPlanForDate } = useMealPlansData();
 const mealPlan = ref<MealPlan>({
   date: dateParam,
   meals: [],
@@ -118,7 +118,6 @@ const isDirty = ref(false);
 
 const router = useRouter();
 const { settings } = useSettingsData();
-const { addMealPlan } = useMealPlansData();
 
 const addBreakfastButtonClicked = () => {
   breakfast.value = {
