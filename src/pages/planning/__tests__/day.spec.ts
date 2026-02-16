@@ -76,16 +76,17 @@ describe('day', () => {
     expect(headers).toEqual(['Breakfast', 'Lunch', 'Dinner', 'Snacks']);
   });
 
-  it.each([FULL_MEAL_PLAN, EMPTY_MEAL_PLAN, null])(
-    'does not display any meal editors',
-    async (plan: MealPlan | null) => {
-      const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
-      getMealPlanForDate.mockResolvedValueOnce(plan);
-      wrapper = await renderPage();
-      const editors = wrapper.findAllComponents({ name: 'MealEditor' });
-      expect(editors.length).toBe(0);
-    },
-  );
+  it.each([
+    { case: 'full meal plan', plan: FULL_MEAL_PLAN },
+    { case: 'empty meal plan', plan: EMPTY_MEAL_PLAN },
+    { case: 'new meal plan', plan: null },
+  ])('does not display any meal editors for $case', async ({ plan }: { plan: MealPlan | null }) => {
+    const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+    getMealPlanForDate.mockResolvedValueOnce(plan);
+    wrapper = await renderPage();
+    const editors = wrapper.findAllComponents({ name: 'MealEditor' });
+    expect(editors.length).toBe(0);
+  });
 
   describe('add breakfast button', () => {
     describe('on a day without a meal plan', () => {
@@ -698,6 +699,107 @@ describe('day', () => {
       wrapper = await renderPage();
       const button = wrapper.findComponent('[data-testid="save-button"]');
       expect(button.exists()).toBe(true);
+    });
+
+    describe('for an existing meal plan', () => {
+      beforeEach(async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+        wrapper = await renderPage();
+      });
+
+      it('starts disabled', async () => {
+        const button = wrapper.findComponent('[data-testid="save-button"]');
+        expect(button.attributes('disabled')).toBeDefined();
+      });
+
+      it('saves the meal plan', async () => {
+        // TODO: this will need to be updated after we add the "modify meal plan" functionality to the meal editor
+        expect(true).toBe(true);
+      });
+    });
+
+    describe('for a new meal plan', () => {
+      beforeEach(async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(null);
+        wrapper = await renderPage();
+      });
+
+      it('starts disabled', async () => {
+        const button = wrapper.findComponent('[data-testid="save-button"]');
+        expect(button.attributes('disabled')).toBeDefined();
+      });
+
+      it('is enabled if a breakfast is added', async () => {
+        const button = wrapper.findComponent('[data-testid="save-button"]');
+        const addButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+        await addButton.trigger('click');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        await editor.vm.$emit('save', { id: 'meal-123', type: 'Breakfast', items: [] });
+        expect(button.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if a lunch is added', async () => {
+        const button = wrapper.findComponent('[data-testid="save-button"]');
+        const addButton = wrapper.findComponent('[data-testid="add-lunch-button"]');
+        await addButton.trigger('click');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        await editor.vm.$emit('save', { id: 'meal-123', type: 'Lunch', items: [] });
+        expect(button.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if a dinner is added', async () => {
+        const button = wrapper.findComponent('[data-testid="save-button"]');
+        const addButton = wrapper.findComponent('[data-testid="add-dinner-button"]');
+        await addButton.trigger('click');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        await editor.vm.$emit('save', { id: 'meal-123', type: 'Dinner', items: [] });
+        expect(button.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if a snack is added', async () => {
+        const button = wrapper.findComponent('[data-testid="save-button"]');
+        const addButton = wrapper.findComponent('[data-testid="add-snack-button"]');
+        await addButton.trigger('click');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        await editor.vm.$emit('save', { id: 'meal-123', type: 'Snack', items: [] });
+        expect(button.attributes('disabled')).toBeUndefined();
+      });
+
+      it('saves the meal plan', async () => {
+        const button = wrapper.findComponent('[data-testid="save-button"]');
+        let addButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+        await addButton.trigger('click');
+        let editor = wrapper.findComponent({ name: 'MealEditor' });
+        await editor.vm.$emit('save', { id: 'meal-123', type: 'Breakfast', items: [] });
+        addButton = wrapper.findComponent('[data-testid="add-dinner-button"]');
+        await addButton.trigger('click');
+        editor = wrapper.findComponent({ name: 'MealEditor' });
+        await editor.vm.$emit('save', { id: 'meal-456', type: 'Dinner', items: [] });
+        await button.trigger('click');
+        const { addMealPlan } = useMealPlansData();
+        expect(addMealPlan).toHaveBeenCalledExactlyOnceWith({
+          date: '2026-02-18',
+          meals: [
+            { id: 'meal-123', type: 'Breakfast', items: [] },
+            { id: 'meal-456', type: 'Dinner', items: [] },
+          ],
+        });
+      });
+
+      it('navigates to the week page', async () => {
+        const button = wrapper.findComponent('[data-testid="save-button"]');
+        const addButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+        await addButton.trigger('click');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        await editor.vm.$emit('save', { id: 'meal-123', type: 'Breakfast', items: [] });
+        await button.trigger('click');
+        expect(useRouter().replace).toHaveBeenCalledExactlyOnceWith({
+          path: '/planning/week',
+          query: { dt: '2026-02-16' },
+        });
+      });
     });
   });
 });

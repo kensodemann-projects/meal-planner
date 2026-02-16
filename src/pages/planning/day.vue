@@ -86,7 +86,7 @@
   </div>
   <div class="d-flex justify-end mt-4">
     <CancelButton @click="cancelDayPlan" />
-    <SaveButton />
+    <SaveButton @click="saveDayPlan" :disabled="!isDirty" />
   </div>
 </template>
 
@@ -100,17 +100,23 @@ import { useRoute, useRouter } from 'vue-router';
 import type { EditableItem } from '@/models/editable-item';
 import { useSettingsData } from '@/data/settings';
 
-const { getMealPlanForDate } = useMealPlansData();
-const mealPlan = ref<MealPlan>();
+const route = useRoute();
+const dateParam = route.query.dt as string;
+const currDate = parseISO(dateParam);
+
+const { addMealPlan, getMealPlanForDate } = useMealPlansData();
+const mealPlan = ref<MealPlan>({
+  date: dateParam,
+  meals: [],
+});
 const breakfast = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 const lunch = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 const dinner = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 const snack = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 
-const route = useRoute();
+const isDirty = ref(false);
+
 const router = useRouter();
-const dateParam = route.query.dt as string;
-const currDate = parseISO(dateParam);
 const { settings } = useSettingsData();
 
 const addBreakfastButtonClicked = () => {
@@ -169,6 +175,7 @@ const setMeal = (mealType: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack', meal: Mea
   if (mealRef && mealRef.value) {
     if (meal) {
       mealRef.value.item = meal;
+      isDirty.value = true;
     }
     mealRef.value.isEditing = false;
   }
@@ -182,10 +189,22 @@ const cancelMeal = (mealType: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack') => {
   }
 };
 
-const cancelDayPlan = () => {
+const navigateToWeek = () => {
   const start = startOfWeek(currDate, { weekStartsOn: settings.value?.weekStartDay });
   const iso = format(start, 'yyyy-MM-dd');
   router.replace({ path: '/planning/week', query: { dt: iso } });
+};
+
+const cancelDayPlan = () => navigateToWeek();
+
+const saveDayPlan = async () => {
+  const meals: Meal[] = [];
+  if (breakfast.value.item) meals.push(breakfast.value.item);
+  if (lunch.value.item) meals.push(lunch.value.item);
+  if (dinner.value.item) meals.push(dinner.value.item);
+  if (snack.value.item) meals.push(snack.value.item);
+  await addMealPlan({ ...mealPlan.value, meals });
+  navigateToWeek();
 };
 
 getMealPlanForDate(dateParam).then((plan) => {
