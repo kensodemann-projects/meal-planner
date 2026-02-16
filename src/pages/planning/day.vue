@@ -85,7 +85,7 @@
     />
   </div>
   <div class="d-flex justify-end mt-4">
-    <CancelButton />
+    <CancelButton @click="cancelDayPlan" />
     <SaveButton />
   </div>
 </template>
@@ -94,10 +94,11 @@
 import type { Meal } from '@/models/meal';
 import { useMealPlansData } from '@/data/meal-plans';
 import type { MealPlan } from '@/models/meal-plan';
-import { intlFormat, parseISO } from 'date-fns';
+import { format, intlFormat, parseISO, startOfWeek } from 'date-fns';
 import { ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import type { EditableItem } from '@/models/editable-item';
+import { useSettingsData } from '@/data/settings';
 
 const { getMealPlanForDate } = useMealPlansData();
 const mealPlan = ref<MealPlan>();
@@ -107,8 +108,10 @@ const dinner = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: und
 const snack = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 
 const route = useRoute();
+const router = useRouter();
 const dateParam = route.query.dt as string;
 const currDate = parseISO(dateParam);
+const { settings } = useSettingsData();
 
 const addBreakfastButtonClicked = () => {
   breakfast.value = {
@@ -177,6 +180,12 @@ const cancelMeal = (mealType: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack') => {
     mealRef.value.isEditing = false;
     mealRef.value.item = undefined;
   }
+};
+
+const cancelDayPlan = () => {
+  const start = startOfWeek(currDate, { weekStartsOn: settings.value?.weekStartDay });
+  const iso = format(start, 'yyyy-MM-dd');
+  router.replace({ path: '/planning/week', query: { dt: iso } });
 };
 
 getMealPlanForDate(dateParam).then((plan) => {
