@@ -786,18 +786,18 @@ describe('day', () => {
             { id: 'meal-456', type: 'Dinner', items: [] },
           ],
         });
+      });
 
-        it('navigates to the week page', async () => {
-          const button = wrapper.findComponent('[data-testid="cancel-button"]');
-          const addButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
-          await addButton.trigger('click');
-          const editor = wrapper.findComponent({ name: 'MealEditor' });
-          await editor.vm.$emit('save', { id: 'meal-123', type: 'Breakfast', items: [] });
-          await button.trigger('click');
-          expect(useRouter().replace).toHaveBeenCalledExactlyOnceWith({
-            path: '/planning/week',
-            query: { dt: '2026-02-16' },
-          });
+      it('navigates to the week page', async () => {
+        const button = wrapper.findComponent('[data-testid="cancel-button"]');
+        const addButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+        await addButton.trigger('click');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        await editor.vm.$emit('save', { id: 'meal-123', type: 'Breakfast', items: [] });
+        await button.trigger('click');
+        expect(useRouter().replace).toHaveBeenCalledExactlyOnceWith({
+          path: '/planning/week',
+          query: { dt: '2026-02-16' },
         });
       });
     });
