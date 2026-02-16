@@ -190,11 +190,13 @@ const cancelMeal = (mealType: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack') => {
   }
 };
 
-const cancelDayPlan = () => {
+const navigateToWeek = () => {
   const start = startOfWeek(currDate, { weekStartsOn: settings.value?.weekStartDay });
   const iso = format(start, 'yyyy-MM-dd');
-  router.replace({ path: '/planning/week', query: { dt: iso } });
+  router.push({ path: '/planning/week', query: { dt: iso } });
 };
+
+const cancelDayPlan = () => navigateToWeek();
 
 const saveDayPlan = async () => {
   const meals: Meal[] = [];
@@ -203,6 +205,7 @@ const saveDayPlan = async () => {
   if (dinner.value.item) meals.push(dinner.value.item);
   if (snack.value.item) meals.push(snack.value.item);
   await addMealPlan({ ...mealPlan.value, meals });
+  navigateToWeek();
 };
 
 getMealPlanForDate(dateParam).then((plan) => {
