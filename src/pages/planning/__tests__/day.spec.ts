@@ -42,7 +42,7 @@ describe('day', () => {
       query: { dt: '2026-02-18' },
     });
     (useRouter as Mock).mockReturnValue({
-      push: vi.fn(),
+      replace: vi.fn(),
     });
   });
 
@@ -686,7 +686,10 @@ describe('day', () => {
     it('navigates to the week page', async () => {
       const button = wrapper.findComponent('[data-testid="cancel-button"]');
       await button.trigger('click');
-      expect(useRouter().push).toHaveBeenCalledExactlyOnceWith({ path: '/planning/week', query: { dt: '2026-02-16' } });
+      expect(useRouter().replace).toHaveBeenCalledExactlyOnceWith({
+        path: '/planning/week',
+        query: { dt: '2026-02-16' },
+      });
     });
   });
 
