@@ -700,7 +700,9 @@ describe('day', () => {
       expect(button.exists()).toBe(true);
     });
 
-    it('starts disabled', async () => {
+    it.each([FULL_MEAL_PLAN, EMPTY_MEAL_PLAN, null])('starts disabled', async (plan: MealPlan | null) => {
+      const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+      getMealPlanForDate.mockResolvedValueOnce(plan);
       wrapper = await renderPage();
       const button = wrapper.findComponent('[data-testid="save-button"]');
       expect(button.attributes('disabled')).toBeDefined();
