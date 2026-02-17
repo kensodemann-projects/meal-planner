@@ -81,12 +81,7 @@ export default defineConfig({
     },
     clearMocks: true,
     env: {
-      // NOTE: The NODE_OPTIONS setting with --no-webstorage flag has been commented out
-      // due to Node 24 incompatibility. Node 24+ does not allow --no-webstorage in NODE_OPTIONS.
-      // The original setting was intended to prevent "Error: Web Storage API is not available"
-      // but is no longer needed or compatible with current Node versions.
-      // If you encounter web storage errors, consider alternative solutions compatible with Node 24+.
-      // NODE_OPTIONS: '--no-webstorage',
+      NODE_OPTIONS: '--localstorage-file=./vite-storage',
     },
     environment: 'jsdom',
     server: {
