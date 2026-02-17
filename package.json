@@ -8,7 +8,7 @@
     "build": "run-p type-check \"build-only {@}\" --",
     "build-only": "vite build",
     "bump": "changeset version",
-    "clean:localstorage": "rm vite-storage*",
+    "clean:localstorage": "rm -f vite-storage*",
     "dev": "vite",
     "emulate": "firebase emulators:start --import seed-data",
     "lint": "eslint .",
