@@ -16,9 +16,9 @@
     "preview": "vite preview",
     "release": "run-p build && firebase deploy",
     "save-seed": "firebase emulators:export ./seed-data --force",
-    "test": "vitest run && run-p clean:localstorage",
-    "test:cov": "vitest run --coverage && run-p clean:localstorage",
-    "test:dev": "vitest && run-p clean:localstorage",
+    "test": "sh -c 'vitest run; code=$?; run-p clean:localstorage; exit \"$code\"'",
+    "test:cov": "sh -c 'vitest run --coverage; code=$?; run-p clean:localstorage; exit \"$code\"'",
+    "test:dev": "sh -c 'vitest; code=$?; run-p clean:localstorage; exit \"$code\"'",
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
