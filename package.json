@@ -8,6 +8,7 @@
     "build": "run-p type-check \"build-only {@}\" --",
     "build-only": "vite build",
     "bump": "changeset version",
+    "clean:localstorage": "rm vite-storage*",
     "dev": "vite",
     "emulate": "firebase emulators:start --import seed-data",
     "lint": "eslint .",
@@ -15,9 +16,9 @@
     "preview": "vite preview",
     "release": "run-p build && firebase deploy",
     "save-seed": "firebase emulators:export ./seed-data --force",
-    "test": "vitest run",
-    "test:cov": "vitest run --coverage",
-    "test:dev": "vitest",
+    "test": "vitest run && run-p clean:localstorage",
+    "test:cov": "vitest run --coverage && run-p clean:localstorage",
+    "test:dev": "vitest && run-p clean:localstorage",
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
