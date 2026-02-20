@@ -13,7 +13,12 @@
   </div>
   <v-divider class="mb-8"></v-divider>
   <div class="mb-8">
-    <MealView v-if="breakfast.item && !breakfast.isEditing" :meal="breakfast.item" data-testid="breakfast-view" />
+    <MealView
+      v-if="breakfast.item && !breakfast.isEditing"
+      :meal="breakfast.item"
+      @modify="breakfast.isEditing = true"
+      data-testid="breakfast-view"
+    />
     <MealEditor
       v-if="breakfast.isEditing"
       :meal="breakfast.item!"
@@ -34,7 +39,12 @@
   </div>
   <v-divider class="mb-8"></v-divider>
   <div class="mb-8">
-    <MealView v-if="lunch.item && !lunch.isEditing" :meal="lunch.item" data-testid="lunch-view" />
+    <MealView
+      v-if="lunch.item && !lunch.isEditing"
+      :meal="lunch.item"
+      @modify="lunch.isEditing = true"
+      data-testid="lunch-view"
+    />
     <MealEditor
       v-if="lunch.isEditing"
       :meal="lunch.item!"
@@ -55,7 +65,12 @@
   </div>
   <v-divider class="mb-8"></v-divider>
   <div class="mb-8">
-    <MealView v-if="dinner.item && !dinner.isEditing" :meal="dinner.item" data-testid="dinner-view" />
+    <MealView
+      v-if="dinner.item && !dinner.isEditing"
+      :meal="dinner.item"
+      @modify="dinner.isEditing = true"
+      data-testid="dinner-view"
+    />
     <MealEditor
       v-if="dinner.isEditing"
       :meal="dinner.item!"
@@ -76,7 +91,12 @@
   </div>
   <v-divider class="mb-8"></v-divider>
   <div class="mb-8">
-    <MealView v-if="snack.item && !snack.isEditing" :meal="snack.item" data-testid="snack-view" />
+    <MealView
+      v-if="snack.item && !snack.isEditing"
+      :meal="snack.item"
+      @modify="snack.isEditing = true"
+      data-testid="snack-view"
+    />
     <MealEditor
       v-if="snack.isEditing"
       :meal="snack.item!"

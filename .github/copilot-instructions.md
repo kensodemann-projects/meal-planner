@@ -196,3 +196,98 @@ As a user, I would like to...
 - ✅ Positive feedback
 - 🚨 Critical blockers
 - 💭 Questions for discussion
+
+## Test Planning Workflow
+
+When asked to create a test plan for TODO comments (e.g., "create a test plan for TODOs in @file"):
+
+### Process
+
+1. **Search for TODO comments**: Look for comments matching the pattern `TODO: Copilot <description>` in the specified file(s)
+2. **Analyze context**: Examine the surrounding test structure:
+   - Parent describe blocks and their purpose
+   - Related test cases (before/after the TODO)
+   - Setup and teardown code (beforeEach/afterEach)
+   - Mock configurations and test data used
+3. **Find reference patterns**: Search the same test file for similar test cases that:
+   - Test comparable functionality
+   - Use similar component interactions
+   - Follow the same assertion patterns
+4. **Understand component behavior**: If testing Vue components, examine the source component file to understand:
+   - Event handlers and emitted events
+   - Props and their usage
+   - Conditional rendering logic (v-if, v-show)
+   - Data flow between components
+5. **Create PLAN.md**: Generate a detailed plan file in the same directory as the test file
+
+### PLAN.md Structure
+
+For each TODO test case, include:
+
+#### Test Location
+
+- Line number and nesting context (describe block hierarchy)
+- Test case name
+
+#### Context
+
+- What scenario is being tested
+- What user workflow or interaction is covered
+- Where in the test suite it fits (e.g., "within add button > click > on save")
+
+#### Implementation Plan
+
+**Setup:**
+
+- List all setup steps needed (mock data, component mounting, state preparation)
+- Include specific method calls with parameters
+- Note any async operations requiring `await` or `flushPromises()`
+
+**Test Actions:**
+
+- Specific user interactions to simulate (button clicks, event emissions)
+- Component queries needed (findComponent, findAllComponents)
+- Event emissions with their payloads
+
+**Assertions:**
+
+- Expected component visibility states
+- Expected prop values
+- Expected DOM states
+- Use specific matcher syntax from the test framework
+
+**Pattern Reference:**
+
+- Link to similar tests in the same file (by line number)
+- Note any test patterns being followed
+- Reference test data structures used
+
+#### Key Implementation Notes
+
+- Component behavior excerpts from source code
+- Test data structures and their contents
+- Testing utilities and their usage patterns
+- Similar patterns in other parts of the test suite
+
+#### Why This Test Matters
+
+- Explain the user workflow being validated
+- Note what could break without this test
+- Clarify the relationship to other tests
+
+### Output Format
+
+- Create a single PLAN.md file (do not modify any code)
+- Use clear markdown formatting with headers and code blocks
+- Include code examples from existing tests where helpful
+- Provide specific line number references
+- Make the plan detailed enough that implementation is straightforward
+
+### Example Request Patterns
+
+These phrases should trigger this workflow:
+
+- "create a test plan for TODOs in @file"
+- "plan the TODO tests in @file"
+- "generate a plan for the TODO comments in @file"
+- "help me plan the missing tests in @file"

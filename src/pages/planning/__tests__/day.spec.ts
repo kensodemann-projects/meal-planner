@@ -193,6 +193,21 @@ describe('day', () => {
           expect(breakfastView.exists()).toBe(true);
           expect(breakfastView.props('meal')).toEqual(newMeal);
         });
+
+        it('displays the breakfast in the editor when the breakfast meal view emits the modify event', async () => {
+          wrapper = await renderPage();
+          const button = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+          await button.trigger('click');
+          const editor = wrapper.findComponent({ name: 'MealEditor' });
+          const newMeal: Meal = { id: 'meal-123', type: 'Breakfast', items: [] };
+          await editor.vm.$emit('save', newMeal);
+          const breakfastView = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
+          await breakfastView.vm.$emit('modify');
+          const modifyEditor = wrapper.findComponent({ name: 'MealEditor' });
+          expect(modifyEditor.exists()).toBe(true);
+          expect(modifyEditor.props('meal')).toEqual(newMeal);
+          expect(wrapper.findComponent('[data-testid="breakfast-view"]').exists()).toBe(false);
+        });
       });
     });
   });
@@ -228,6 +243,18 @@ describe('day', () => {
       wrapper = await renderPage();
       const view = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
       expect(view.props('meal')).toEqual(FULL_MEAL_PLAN.meals[0]);
+    });
+
+    it('displays the breakfast in the editor when the breakfast meal view emits the modify event', async () => {
+      const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+      getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+      wrapper = await renderPage();
+      const breakfastView = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
+      await breakfastView.vm.$emit('modify');
+      const editor = wrapper.findComponent({ name: 'MealEditor' });
+      expect(editor.exists()).toBe(true);
+      expect(editor.props('meal')).toEqual(FULL_MEAL_PLAN.meals[0]);
+      expect(wrapper.findComponent('[data-testid="breakfast-view"]').exists()).toBe(false);
     });
   });
 
