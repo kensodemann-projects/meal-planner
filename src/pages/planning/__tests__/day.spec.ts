@@ -8,7 +8,7 @@ import day from '../day.vue';
 import { useMealPlansData } from '@/data/meal-plans';
 import type { MealPlan } from '@/models/meal-plan';
 import { TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
-import type { Meal } from '@/models/meal';
+import type { Meal, MealItem } from '@/models/meal';
 
 vi.mock('vue-router');
 vi.mock('@/data/foods');
@@ -33,6 +33,16 @@ const EMPTY_MEAL_PLAN: MealPlan = {
   meals: [],
 };
 const FULL_MEAL_PLAN: MealPlan = { ...TEST_MEAL_PLANS[0]!, date: '2026-02-18' };
+
+const MODIFIED_MEAL_ITEM: MealItem = {
+  id: 'modified-item',
+  name: 'Modified Item',
+  foodItemId: 'food-1',
+  units: 2,
+  unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+  nutrition: { calories: 100, sodium: 50, fat: 1, protein: 5, carbs: 20, sugar: 1 },
+};
+const buildModifiedMeal = (baseMeal: Meal): Meal => ({ ...baseMeal, items: [MODIFIED_MEAL_ITEM] });
 
 describe('day', () => {
   let wrapper: ReturnType<typeof mountPage>;
@@ -825,19 +835,7 @@ describe('day', () => {
         const breakfastView = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
         await breakfastView.vm.$emit('modify');
         const editor = wrapper.findComponent({ name: 'MealEditor' });
-        const modifiedBreakfast: Meal = {
-          ...FULL_MEAL_PLAN.meals[0]!,
-          items: [
-            {
-              id: 'modified-item',
-              name: 'Modified Item',
-              foodItemId: 'food-1',
-              units: 2,
-              unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
-              nutrition: { calories: 100, sodium: 50, fat: 1, protein: 5, carbs: 20, sugar: 1 },
-            },
-          ],
-        };
+        const modifiedBreakfast = buildModifiedMeal(FULL_MEAL_PLAN.meals[0]!);
         await editor.vm.$emit('save', modifiedBreakfast);
         const button = wrapper.findComponent('[data-testid="save-button"]');
         expect(button.attributes('disabled')).toBeUndefined();
@@ -847,19 +845,7 @@ describe('day', () => {
         const lunchView = wrapper.findComponent('[data-testid="lunch-view"]') as VueWrapper<any>;
         await lunchView.vm.$emit('modify');
         const editor = wrapper.findComponent({ name: 'MealEditor' });
-        const modifiedLunch: Meal = {
-          ...FULL_MEAL_PLAN.meals[1]!,
-          items: [
-            {
-              id: 'modified-item',
-              name: 'Modified Item',
-              foodItemId: 'food-1',
-              units: 2,
-              unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
-              nutrition: { calories: 100, sodium: 50, fat: 1, protein: 5, carbs: 20, sugar: 1 },
-            },
-          ],
-        };
+        const modifiedLunch = buildModifiedMeal(FULL_MEAL_PLAN.meals[1]!);
         await editor.vm.$emit('save', modifiedLunch);
         const button = wrapper.findComponent('[data-testid="save-button"]');
         expect(button.attributes('disabled')).toBeUndefined();
@@ -869,19 +855,7 @@ describe('day', () => {
         const dinnerView = wrapper.findComponent('[data-testid="dinner-view"]') as VueWrapper<any>;
         await dinnerView.vm.$emit('modify');
         const editor = wrapper.findComponent({ name: 'MealEditor' });
-        const modifiedDinner: Meal = {
-          ...FULL_MEAL_PLAN.meals[2]!,
-          items: [
-            {
-              id: 'modified-item',
-              name: 'Modified Item',
-              foodItemId: 'food-1',
-              units: 2,
-              unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
-              nutrition: { calories: 100, sodium: 50, fat: 1, protein: 5, carbs: 20, sugar: 1 },
-            },
-          ],
-        };
+        const modifiedDinner = buildModifiedMeal(FULL_MEAL_PLAN.meals[2]!);
         await editor.vm.$emit('save', modifiedDinner);
         const button = wrapper.findComponent('[data-testid="save-button"]');
         expect(button.attributes('disabled')).toBeUndefined();
@@ -891,19 +865,7 @@ describe('day', () => {
         const snackView = wrapper.findComponent('[data-testid="snack-view"]') as VueWrapper<any>;
         await snackView.vm.$emit('modify');
         const editor = wrapper.findComponent({ name: 'MealEditor' });
-        const modifiedSnack: Meal = {
-          ...FULL_MEAL_PLAN.meals[3]!,
-          items: [
-            {
-              id: 'modified-item',
-              name: 'Modified Item',
-              foodItemId: 'food-1',
-              units: 2,
-              unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
-              nutrition: { calories: 100, sodium: 50, fat: 1, protein: 5, carbs: 20, sugar: 1 },
-            },
-          ],
-        };
+        const modifiedSnack = buildModifiedMeal(FULL_MEAL_PLAN.meals[3]!);
         await editor.vm.$emit('save', modifiedSnack);
         const button = wrapper.findComponent('[data-testid="save-button"]');
         expect(button.attributes('disabled')).toBeUndefined();
@@ -913,19 +875,7 @@ describe('day', () => {
         const breakfastView = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
         await breakfastView.vm.$emit('modify');
         const editor = wrapper.findComponent({ name: 'MealEditor' });
-        const modifiedBreakfast: Meal = {
-          ...FULL_MEAL_PLAN.meals[0]!,
-          items: [
-            {
-              id: 'modified-item',
-              name: 'Modified Item',
-              foodItemId: 'food-1',
-              units: 2,
-              unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
-              nutrition: { calories: 100, sodium: 50, fat: 1, protein: 5, carbs: 20, sugar: 1 },
-            },
-          ],
-        };
+        const modifiedBreakfast = buildModifiedMeal(FULL_MEAL_PLAN.meals[0]!);
         await editor.vm.$emit('save', modifiedBreakfast);
         const button = wrapper.findComponent('[data-testid="save-button"]');
         await button.trigger('click');
