@@ -266,6 +266,32 @@ describe('day', () => {
       expect(editor.props('meal')).toEqual(FULL_MEAL_PLAN.meals[0]);
       expect(wrapper.findComponent('[data-testid="breakfast-view"]').exists()).toBe(false);
     });
+
+    describe('the delete event', () => {
+      it('displays the confirmation dialog', () => {
+        // TODO: create the test TDD style. See @src/pages/recipes/[id]/__tests__/index.spec.ts for an example of how to test a confirmation dialog.
+      });
+
+      describe('on confirm', () => {
+        it('removes the view', async () => {
+          // TODO: create the test TDD style.
+        });
+
+        it('displays the add button', async () => {
+          // TODO: create the test TDD style.
+        });
+      });
+
+      describe('on deny', () => {
+        it('does not remove the view', async () => {
+          // TODO: create the test TDD style.
+        });
+
+        it('does not display the add button', async () => {
+          // TODO: create the test TDD style.
+        });
+      });
+    });
   });
 
   describe('add lunch button', () => {
@@ -435,6 +461,32 @@ describe('day', () => {
       expect(editor.exists()).toBe(true);
       expect(editor.props('meal')).toEqual(FULL_MEAL_PLAN.meals[1]);
       expect(wrapper.findComponent('[data-testid="lunch-view"]').exists()).toBe(false);
+    });
+
+    describe('the delete event', () => {
+      it('displays the confirmation dialog', () => {
+        // TODO: create the test TDD style. See @src/pages/recipes/[id]/__tests__/index.spec.ts for an example of how to test a confirmation dialog.
+      });
+
+      describe('on confirm', () => {
+        it('removes the view', async () => {
+          // TODO: create the test TDD style.
+        });
+
+        it('displays the add button', async () => {
+          // TODO: create the test TDD style.
+        });
+      });
+
+      describe('on deny', () => {
+        it('does not remove the view', async () => {
+          // TODO: create the test TDD style.
+        });
+
+        it('does not display the add button', async () => {
+          // TODO: create the test TDD style.
+        });
+      });
     });
   });
 
@@ -606,6 +658,32 @@ describe('day', () => {
       expect(editor.props('meal')).toEqual(FULL_MEAL_PLAN.meals[2]);
       expect(wrapper.findComponent('[data-testid="dinner-view"]').exists()).toBe(false);
     });
+
+    describe('the delete event', () => {
+      it('displays the confirmation dialog', () => {
+        // TODO: create the test TDD style. See @src/pages/recipes/[id]/__tests__/index.spec.ts for an example of how to test a confirmation dialog.
+      });
+
+      describe('on confirm', () => {
+        it('removes the view', async () => {
+          // TODO: create the test TDD style.
+        });
+
+        it('displays the add button', async () => {
+          // TODO: create the test TDD style.
+        });
+      });
+
+      describe('on deny', () => {
+        it('does not remove the view', async () => {
+          // TODO: create the test TDD style.
+        });
+
+        it('does not display the add button', async () => {
+          // TODO: create the test TDD style.
+        });
+      });
+    });
   });
 
   describe('add snack button', () => {
@@ -776,6 +854,32 @@ describe('day', () => {
       expect(editor.props('meal')).toEqual(FULL_MEAL_PLAN.meals[3]);
       expect(wrapper.findComponent('[data-testid="snack-view"]').exists()).toBe(false);
     });
+
+    describe('the delete event', () => {
+      it('displays the confirmation dialog', () => {
+        // TODO: create the test TDD style. See @src/pages/recipes/[id]/__tests__/index.spec.ts for an example of how to test a confirmation dialog.
+      });
+
+      describe('on confirm', () => {
+        it('removes the view', async () => {
+          // TODO: create the test TDD style.
+        });
+
+        it('displays the add button', async () => {
+          // TODO: create the test TDD style.
+        });
+      });
+
+      describe('on deny', () => {
+        it('does not remove the view', async () => {
+          // TODO: create the test TDD style.
+        });
+
+        it('does not display the add button', async () => {
+          // TODO: create the test TDD style.
+        });
+      });
+    });
   });
 
   describe('cancel button', () => {
@@ -871,6 +975,8 @@ describe('day', () => {
         expect(button.attributes('disabled')).toBeUndefined();
       });
 
+      // TODO: add TDD tests verifying that deleting a meal enables the save button.
+
       it('saves the meal plan', async () => {
         const breakfastView = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
         await breakfastView.vm.$emit('modify');
@@ -936,6 +1042,8 @@ describe('day', () => {
         await editor.vm.$emit('save', { id: 'meal-123', type: 'Snack', items: [] });
         expect(button.attributes('disabled')).toBeUndefined();
       });
+      //
+      // TODO: add TDD tests verifying that deleting a meal enables the save button.
 
       it('saves the meal plan', async () => {
         const button = wrapper.findComponent('[data-testid="save-button"]');
