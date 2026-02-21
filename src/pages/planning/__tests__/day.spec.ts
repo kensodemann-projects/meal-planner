@@ -826,7 +826,7 @@ describe('day', () => {
         await breakfastView.vm.$emit('modify');
         const editor = wrapper.findComponent({ name: 'MealEditor' });
         const modifiedBreakfast: Meal = {
-          ...FULL_MEAL_PLAN.meals[0],
+          ...FULL_MEAL_PLAN.meals[0]!,
           items: [
             {
               id: 'modified-item',
@@ -848,7 +848,7 @@ describe('day', () => {
         await lunchView.vm.$emit('modify');
         const editor = wrapper.findComponent({ name: 'MealEditor' });
         const modifiedLunch: Meal = {
-          ...FULL_MEAL_PLAN.meals[1],
+          ...FULL_MEAL_PLAN.meals[1]!,
           items: [
             {
               id: 'modified-item',
@@ -870,7 +870,7 @@ describe('day', () => {
         await dinnerView.vm.$emit('modify');
         const editor = wrapper.findComponent({ name: 'MealEditor' });
         const modifiedDinner: Meal = {
-          ...FULL_MEAL_PLAN.meals[2],
+          ...FULL_MEAL_PLAN.meals[2]!,
           items: [
             {
               id: 'modified-item',
@@ -892,7 +892,7 @@ describe('day', () => {
         await snackView.vm.$emit('modify');
         const editor = wrapper.findComponent({ name: 'MealEditor' });
         const modifiedSnack: Meal = {
-          ...FULL_MEAL_PLAN.meals[3],
+          ...FULL_MEAL_PLAN.meals[3]!,
           items: [
             {
               id: 'modified-item',
@@ -914,7 +914,7 @@ describe('day', () => {
         await breakfastView.vm.$emit('modify');
         const editor = wrapper.findComponent({ name: 'MealEditor' });
         const modifiedBreakfast: Meal = {
-          ...FULL_MEAL_PLAN.meals[0],
+          ...FULL_MEAL_PLAN.meals[0]!,
           items: [
             {
               id: 'modified-item',
