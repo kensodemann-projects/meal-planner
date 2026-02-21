@@ -124,7 +124,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Meal } from '@/models/meal';
+import type { Meal, MealType } from '@/models/meal';
 import { useMealPlansData } from '@/data/meal-plans';
 import type { MealPlan } from '@/models/meal-plan';
 import { format, intlFormat, parseISO, startOfWeek } from 'date-fns';
@@ -204,7 +204,7 @@ const mealRefs: Record<string, typeof breakfast> = {
   Snack: snack,
 };
 
-const setMeal = (mealType: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack', meal: Meal | undefined) => {
+const setMeal = (mealType: MealType, meal: Meal | undefined) => {
   const mealRef = mealRefs[mealType];
   if (mealRef && mealRef.value) {
     if (meal) {
@@ -215,7 +215,7 @@ const setMeal = (mealType: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack', meal: Mea
   }
 };
 
-const cancelMeal = (mealType: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack') => {
+const cancelMeal = (mealType: MealType) => {
   const mealRef = mealRefs[mealType];
   if (mealRef && mealRef.value) {
     mealRef.value.isEditing = false;
