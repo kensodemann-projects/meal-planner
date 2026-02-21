@@ -124,7 +124,7 @@ const route = useRoute();
 const dateParam = route.query.dt as string;
 const currDate = parseISO(dateParam);
 
-const { addMealPlan, getMealPlanForDate } = useMealPlansData();
+const { addMealPlan, getMealPlanForDate, updateMealPlan } = useMealPlansData();
 const mealPlan = ref<MealPlan>({
   date: dateParam,
   meals: [],
@@ -223,7 +223,11 @@ const saveDayPlan = async () => {
   if (lunch.value.item) meals.push(lunch.value.item);
   if (dinner.value.item) meals.push(dinner.value.item);
   if (snack.value.item) meals.push(snack.value.item);
-  await addMealPlan({ ...mealPlan.value, meals });
+  if (mealPlan.value.id) {
+    await updateMealPlan({ ...mealPlan.value, meals });
+  } else {
+    await addMealPlan({ ...mealPlan.value, meals });
+  }
   navigateToWeek();
 };
 

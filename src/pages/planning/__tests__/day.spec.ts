@@ -910,8 +910,32 @@ describe('day', () => {
       });
 
       it('saves the meal plan', async () => {
-        // TODO: Copilot generated test for saving the meal plan. Since the "modify meal plan" functionality is not yet implemented, this test will fail.
-        expect(true).toBe(true);
+        const breakfastView = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
+        await breakfastView.vm.$emit('modify');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        const modifiedBreakfast: Meal = {
+          ...FULL_MEAL_PLAN.meals[0],
+          items: [
+            {
+              id: 'modified-item',
+              name: 'Modified Item',
+              foodItemId: 'food-1',
+              units: 2,
+              unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+              nutrition: { calories: 100, sodium: 50, fat: 1, protein: 5, carbs: 20, sugar: 1 },
+            },
+          ],
+        };
+        await editor.vm.$emit('save', modifiedBreakfast);
+        const button = wrapper.findComponent('[data-testid="save-button"]');
+        await button.trigger('click');
+        const { updateMealPlan, addMealPlan } = useMealPlansData();
+        expect(addMealPlan).not.toHaveBeenCalled();
+        expect(updateMealPlan).toHaveBeenCalledExactlyOnceWith({
+          id: FULL_MEAL_PLAN.id,
+          date: '2026-02-18',
+          meals: [modifiedBreakfast, FULL_MEAL_PLAN.meals[1], FULL_MEAL_PLAN.meals[2], FULL_MEAL_PLAN.meals[3]],
+        });
       });
     });
 
