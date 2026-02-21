@@ -32,7 +32,7 @@ const EMPTY_MEAL_PLAN: MealPlan = {
   date: '2026-02-18',
   meals: [],
 };
-const FULL_MEAL_PLAN: MealPlan = TEST_MEAL_PLANS[0]!;
+const FULL_MEAL_PLAN: MealPlan = { ...TEST_MEAL_PLANS[0]!, date: '2026-02-18' };
 
 describe('day', () => {
   let wrapper: ReturnType<typeof mountPage>;
