@@ -9,6 +9,7 @@ import { useMealPlansData } from '@/data/meal-plans';
 import type { MealPlan } from '@/models/meal-plan';
 import { TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
 import type { Meal, MealItem } from '@/models/meal';
+import ConfirmDialog from '@/components/core/ConfirmDialog.vue';
 
 vi.mock('vue-router');
 vi.mock('@/data/foods');
@@ -268,8 +269,15 @@ describe('day', () => {
     });
 
     describe('the delete event', () => {
-      it('displays the confirmation dialog', () => {
-        // TODO: create the test TDD style. See @src/pages/recipes/[id]/__tests__/index.spec.ts for an example of how to test a confirmation dialog.
+      it('displays the confirmation dialog', async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+        wrapper = await renderPage();
+        const breakfastView = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
+        await breakfastView.vm.$emit('delete');
+        await flushPromises();
+        const confirmDialog = wrapper.findComponent(ConfirmDialog);
+        expect(confirmDialog.exists()).toBe(true);
       });
 
       describe('on confirm', () => {
@@ -464,8 +472,15 @@ describe('day', () => {
     });
 
     describe('the delete event', () => {
-      it('displays the confirmation dialog', () => {
-        // TODO: create the test TDD style. See @src/pages/recipes/[id]/__tests__/index.spec.ts for an example of how to test a confirmation dialog.
+      it('displays the confirmation dialog', async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+        wrapper = await renderPage();
+        const lunchView = wrapper.findComponent('[data-testid="lunch-view"]') as VueWrapper<any>;
+        await lunchView.vm.$emit('delete');
+        await flushPromises();
+        const confirmDialog = wrapper.findComponent(ConfirmDialog);
+        expect(confirmDialog.exists()).toBe(true);
       });
 
       describe('on confirm', () => {
@@ -660,8 +675,15 @@ describe('day', () => {
     });
 
     describe('the delete event', () => {
-      it('displays the confirmation dialog', () => {
-        // TODO: create the test TDD style. See @src/pages/recipes/[id]/__tests__/index.spec.ts for an example of how to test a confirmation dialog.
+      it('displays the confirmation dialog', async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+        wrapper = await renderPage();
+        const dinnerView = wrapper.findComponent('[data-testid="dinner-view"]') as VueWrapper<any>;
+        await dinnerView.vm.$emit('delete');
+        await flushPromises();
+        const confirmDialog = wrapper.findComponent(ConfirmDialog);
+        expect(confirmDialog.exists()).toBe(true);
       });
 
       describe('on confirm', () => {
@@ -856,8 +878,15 @@ describe('day', () => {
     });
 
     describe('the delete event', () => {
-      it('displays the confirmation dialog', () => {
-        // TODO: create the test TDD style. See @src/pages/recipes/[id]/__tests__/index.spec.ts for an example of how to test a confirmation dialog.
+      it('displays the confirmation dialog', async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+        wrapper = await renderPage();
+        const snackView = wrapper.findComponent('[data-testid="snack-view"]') as VueWrapper<any>;
+        await snackView.vm.$emit('delete');
+        await flushPromises();
+        const confirmDialog = wrapper.findComponent(ConfirmDialog);
+        expect(confirmDialog.exists()).toBe(true);
       });
 
       describe('on confirm', () => {

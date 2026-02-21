@@ -17,6 +17,7 @@
       v-if="breakfast.item && !breakfast.isEditing"
       :meal="breakfast.item"
       @modify="breakfast.isEditing = true"
+      @delete="showConfirmDialog = true"
       data-testid="breakfast-view"
     />
     <MealEditor
@@ -43,6 +44,7 @@
       v-if="lunch.item && !lunch.isEditing"
       :meal="lunch.item"
       @modify="lunch.isEditing = true"
+      @delete="showConfirmDialog = true"
       data-testid="lunch-view"
     />
     <MealEditor
@@ -69,6 +71,7 @@
       v-if="dinner.item && !dinner.isEditing"
       :meal="dinner.item"
       @modify="dinner.isEditing = true"
+      @delete="showConfirmDialog = true"
       data-testid="dinner-view"
     />
     <MealEditor
@@ -95,6 +98,7 @@
       v-if="snack.item && !snack.isEditing"
       :meal="snack.item"
       @modify="snack.isEditing = true"
+      @delete="showConfirmDialog = true"
       data-testid="snack-view"
     />
     <MealEditor
@@ -108,6 +112,15 @@
     <CancelButton @click="cancelDayPlan" />
     <SaveButton @click="saveDayPlan" :disabled="!isDirty" />
   </div>
+
+  <v-dialog v-model="showConfirmDialog" max-width="600px" data-testid="confirm-dialog">
+    <ConfirmDialog
+      question="Are you sure you want to delete this meal?"
+      icon-color="error"
+      @confirm="doRemove"
+      @cancel="showConfirmDialog = false"
+    />
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
@@ -135,6 +148,7 @@ const dinner = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: und
 const snack = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 
 const isDirty = ref(false);
+const showConfirmDialog = ref(false);
 
 const router = useRouter();
 const { settings } = useSettingsData();
@@ -208,6 +222,8 @@ const cancelMeal = (mealType: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack') => {
     mealRef.value.item = undefined;
   }
 };
+
+const doRemove = async () => {};
 
 const navigateToWeek = () => {
   const start = startOfWeek(currDate, { weekStartsOn: settings.value?.weekStartDay });
