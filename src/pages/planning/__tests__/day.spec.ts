@@ -821,8 +821,96 @@ describe('day', () => {
         expect(button.attributes('disabled')).toBeDefined();
       });
 
+      it('is enabled if breakfast is modified', async () => {
+        const breakfastView = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
+        await breakfastView.vm.$emit('modify');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        const modifiedBreakfast: Meal = {
+          ...FULL_MEAL_PLAN.meals[0],
+          items: [
+            {
+              id: 'modified-item',
+              name: 'Modified Item',
+              foodItemId: 'food-1',
+              units: 2,
+              unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+              nutrition: { calories: 100, sodium: 50, fat: 1, protein: 5, carbs: 20, sugar: 1 },
+            },
+          ],
+        };
+        await editor.vm.$emit('save', modifiedBreakfast);
+        const button = wrapper.findComponent('[data-testid="save-button"]');
+        expect(button.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if lunch is modified', async () => {
+        const lunchView = wrapper.findComponent('[data-testid="lunch-view"]') as VueWrapper<any>;
+        await lunchView.vm.$emit('modify');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        const modifiedLunch: Meal = {
+          ...FULL_MEAL_PLAN.meals[1],
+          items: [
+            {
+              id: 'modified-item',
+              name: 'Modified Item',
+              foodItemId: 'food-1',
+              units: 2,
+              unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+              nutrition: { calories: 100, sodium: 50, fat: 1, protein: 5, carbs: 20, sugar: 1 },
+            },
+          ],
+        };
+        await editor.vm.$emit('save', modifiedLunch);
+        const button = wrapper.findComponent('[data-testid="save-button"]');
+        expect(button.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if dinner is modified', async () => {
+        const dinnerView = wrapper.findComponent('[data-testid="dinner-view"]') as VueWrapper<any>;
+        await dinnerView.vm.$emit('modify');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        const modifiedDinner: Meal = {
+          ...FULL_MEAL_PLAN.meals[2],
+          items: [
+            {
+              id: 'modified-item',
+              name: 'Modified Item',
+              foodItemId: 'food-1',
+              units: 2,
+              unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+              nutrition: { calories: 100, sodium: 50, fat: 1, protein: 5, carbs: 20, sugar: 1 },
+            },
+          ],
+        };
+        await editor.vm.$emit('save', modifiedDinner);
+        const button = wrapper.findComponent('[data-testid="save-button"]');
+        expect(button.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if snack is modified', async () => {
+        const snackView = wrapper.findComponent('[data-testid="snack-view"]') as VueWrapper<any>;
+        await snackView.vm.$emit('modify');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        const modifiedSnack: Meal = {
+          ...FULL_MEAL_PLAN.meals[3],
+          items: [
+            {
+              id: 'modified-item',
+              name: 'Modified Item',
+              foodItemId: 'food-1',
+              units: 2,
+              unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+              nutrition: { calories: 100, sodium: 50, fat: 1, protein: 5, carbs: 20, sugar: 1 },
+            },
+          ],
+        };
+        await editor.vm.$emit('save', modifiedSnack);
+        const button = wrapper.findComponent('[data-testid="save-button"]');
+        expect(button.attributes('disabled')).toBeUndefined();
+      });
+
       it('saves the meal plan', async () => {
-        // TODO: this will need to be updated after we add the "modify meal plan" functionality to the meal editor
+        // TODO: Copilot generated test for saving the meal plan. Since the "modify meal plan" functionality is not yet implemented, this test will fail.
         expect(true).toBe(true);
       });
     });
