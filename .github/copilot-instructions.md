@@ -218,7 +218,10 @@ When asked to create a test plan for TODO comments (e.g., "create a test plan fo
    - Props and their usage
    - Conditional rendering logic (v-if, v-show)
    - Data flow between components
-5. **Create PLAN.md**: Generate a detailed plan file in the same directory as the test file
+5. **Determine implementation status**: Check if the feature being tested exists in the source code
+   - If feature exists: Tests can be implemented immediately
+   - If feature missing: Note that tests will fail until feature is implemented (TDD approach)
+6. **Create PLAN.md**: Generate a detailed plan file in the same directory as the test file
 
 ### PLAN.md Structure
 
@@ -234,6 +237,7 @@ For each TODO test case, include:
 - What scenario is being tested
 - What user workflow or interaction is covered
 - Where in the test suite it fits (e.g., "within add button > click > on save")
+- **Implementation status**: Whether feature exists or needs to be built (TDD)
 
 #### Implementation Plan
 
@@ -254,6 +258,7 @@ For each TODO test case, include:
 - Expected component visibility states
 - Expected prop values
 - Expected DOM states
+- Expected method calls (for TDD)
 - Use specific matcher syntax from the test framework
 
 **Pattern Reference:**
@@ -268,12 +273,28 @@ For each TODO test case, include:
 - Test data structures and their contents
 - Testing utilities and their usage patterns
 - Similar patterns in other parts of the test suite
+- **If TDD**: Code changes required for tests to pass
 
 #### Why This Test Matters
 
 - Explain the user workflow being validated
 - Note what could break without this test
 - Clarify the relationship to other tests
+
+### TDD vs. Testing Existing Functionality
+
+When planning tests, clearly indicate whether:
+
+- **TDD Mode**: Feature doesn't exist yet
+  - Tests will fail initially (this is expected)
+  - Include code snippets showing what needs to be implemented
+  - Mark tests as "failing" in the plan
+  - Example: "This test will fail until `updateMealPlan` is called instead of `addMealPlan`"
+
+- **Testing Existing Functionality**: Feature already exists
+  - Tests should pass immediately (or reveal bugs)
+  - Reference existing code that implements the behavior
+  - Example: "The component already has `setMeal` which sets `isDirty = true`"
 
 ### Output Format
 
@@ -282,6 +303,7 @@ For each TODO test case, include:
 - Include code examples from existing tests where helpful
 - Provide specific line number references
 - Make the plan detailed enough that implementation is straightforward
+- **Clearly label** whether tests are for TDD (will fail initially) or existing functionality (should pass)
 
 ### Example Request Patterns
 
@@ -291,3 +313,12 @@ These phrases should trigger this workflow:
 - "plan the TODO tests in @file"
 - "generate a plan for the TODO comments in @file"
 - "help me plan the missing tests in @file"
+
+### Implementation After Planning
+
+When asked to implement tests from a plan:
+
+- **If user requests TDD style**: Create failing tests first, note what needs to be implemented
+- **If user requests implementation**: Create tests that should pass for existing functionality
+- Always verify if tests pass or fail and explain why
+- For TDD tests that fail, provide clear guidance on what code changes are needed
