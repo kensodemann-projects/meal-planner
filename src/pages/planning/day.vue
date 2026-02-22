@@ -220,10 +220,8 @@ const mealRefs: Record<string, typeof breakfast> = {
 const setMeal = (mealType: MealType, meal: Meal | undefined) => {
   const mealRef = mealRefs[mealType];
   if (mealRef && mealRef.value) {
-    if (meal) {
-      mealRef.value.item = meal;
-      isDirty.value = true;
-    }
+    mealRef.value.item = meal;
+    isDirty.value = true;
     mealRef.value.isEditing = false;
   }
 };

@@ -176,7 +176,8 @@ describe('day', () => {
           await button.trigger('click');
           let editor = wrapper.findComponent({ name: 'MealEditor' });
           expect(editor.exists()).toBe(true);
-          await editor.vm.$emit('save');
+          const newMeal: Meal = { id: 'meal-123', type: 'Breakfast', items: [] };
+          await editor.vm.$emit('save', newMeal);
           editor = wrapper.findComponent({ name: 'MealEditor' });
           expect(editor.exists()).toBe(false);
         });
@@ -187,7 +188,8 @@ describe('day', () => {
           await button.trigger('click');
           const editor = wrapper.findComponent({ name: 'MealEditor' });
           expect(editor.exists()).toBe(true);
-          editor.vm.$emit('save');
+          const newMeal: Meal = { id: 'meal-123', type: 'Breakfast', items: [] };
+          editor.vm.$emit('save', newMeal);
           const breakfastButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
           expect(breakfastButton.exists()).toBe(false);
         });
@@ -415,7 +417,8 @@ describe('day', () => {
           await button.trigger('click');
           let editor = wrapper.findComponent({ name: 'MealEditor' });
           expect(editor.exists()).toBe(true);
-          await editor.vm.$emit('save');
+          const newMeal: Meal = { id: 'meal-456', type: 'Lunch', items: [] };
+          await editor.vm.$emit('save', newMeal);
           editor = wrapper.findComponent({ name: 'MealEditor' });
           expect(editor.exists()).toBe(false);
         });
@@ -426,7 +429,8 @@ describe('day', () => {
           await button.trigger('click');
           const editor = wrapper.findComponent({ name: 'MealEditor' });
           expect(editor.exists()).toBe(true);
-          await editor.vm.$emit('save');
+          const newMeal: Meal = { id: 'meal-456', type: 'Lunch', items: [] };
+          await editor.vm.$emit('save', newMeal);
           const lunchButton = wrapper.findComponent('[data-testid="add-lunch-button"]');
           expect(lunchButton.exists()).toBe(false);
         });
@@ -654,7 +658,8 @@ describe('day', () => {
           await button.trigger('click');
           let editor = wrapper.findComponent({ name: 'MealEditor' });
           expect(editor.exists()).toBe(true);
-          await editor.vm.$emit('save');
+          const newMeal: Meal = { id: 'meal-789', type: 'Dinner', items: [] };
+          await editor.vm.$emit('save', newMeal);
           editor = wrapper.findComponent({ name: 'MealEditor' });
           expect(editor.exists()).toBe(false);
         });
@@ -665,7 +670,8 @@ describe('day', () => {
           await button.trigger('click');
           const editor = wrapper.findComponent({ name: 'MealEditor' });
           expect(editor.exists()).toBe(true);
-          await editor.vm.$emit('save');
+          const newMeal: Meal = { id: 'meal-789', type: 'Dinner', items: [] };
+          await editor.vm.$emit('save', newMeal);
           const dinnerButton = wrapper.findComponent('[data-testid="add-dinner-button"]');
           expect(dinnerButton.exists()).toBe(false);
         });
@@ -893,7 +899,8 @@ describe('day', () => {
           await button.trigger('click');
           let editor = wrapper.findComponent({ name: 'MealEditor' });
           expect(editor.exists()).toBe(true);
-          await editor.vm.$emit('save');
+          const newMeal: Meal = { id: 'meal-snack-123', type: 'Snack', items: [] };
+          await editor.vm.$emit('save', newMeal);
           editor = wrapper.findComponent({ name: 'MealEditor' });
           expect(editor.exists()).toBe(false);
         });
@@ -904,7 +911,8 @@ describe('day', () => {
           await button.trigger('click');
           const editor = wrapper.findComponent({ name: 'MealEditor' });
           expect(editor.exists()).toBe(true);
-          editor.vm.$emit('save');
+          const newMeal: Meal = { id: 'meal-snack-123', type: 'Snack', items: [] };
+          editor.vm.$emit('save', newMeal);
           const snackButton = wrapper.findComponent('[data-testid="add-snack-button"]');
           expect(snackButton.exists()).toBe(false);
         });
