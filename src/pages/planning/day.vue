@@ -17,7 +17,10 @@
       v-if="breakfast.item && !breakfast.isEditing"
       :meal="breakfast.item"
       @modify="breakfast.isEditing = true"
-      @delete="showConfirmDialog = true"
+      @delete="
+        showConfirmDialog = true;
+        mealToDelete = 'Breakfast';
+      "
       data-testid="breakfast-view"
     />
     <MealEditor
@@ -44,7 +47,10 @@
       v-if="lunch.item && !lunch.isEditing"
       :meal="lunch.item"
       @modify="lunch.isEditing = true"
-      @delete="showConfirmDialog = true"
+      @delete="
+        showConfirmDialog = true;
+        mealToDelete = 'Lunch';
+      "
       data-testid="lunch-view"
     />
     <MealEditor
@@ -71,7 +77,10 @@
       v-if="dinner.item && !dinner.isEditing"
       :meal="dinner.item"
       @modify="dinner.isEditing = true"
-      @delete="showConfirmDialog = true"
+      @delete="
+        showConfirmDialog = true;
+        mealToDelete = 'Dinner';
+      "
       data-testid="dinner-view"
     />
     <MealEditor
@@ -98,7 +107,10 @@
       v-if="snack.item && !snack.isEditing"
       :meal="snack.item"
       @modify="snack.isEditing = true"
-      @delete="showConfirmDialog = true"
+      @delete="
+        showConfirmDialog = true;
+        mealToDelete = 'Snack';
+      "
       data-testid="snack-view"
     />
     <MealEditor
@@ -117,7 +129,7 @@
     <ConfirmDialog
       question="Are you sure you want to delete this meal?"
       icon-color="error"
-      @confirm="doRemove"
+      @confirm="doDelete"
       @cancel="showConfirmDialog = false"
     />
   </v-dialog>
@@ -149,6 +161,7 @@ const snack = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: unde
 
 const isDirty = ref(false);
 const showConfirmDialog = ref(false);
+const mealToDelete = ref<MealType | null>(null);
 
 const router = useRouter();
 const { settings } = useSettingsData();
@@ -223,7 +236,14 @@ const cancelMeal = (mealType: MealType) => {
   }
 };
 
-const doRemove = async () => {};
+const doDelete = async () => {
+  const mealRef = mealRefs[mealToDelete.value!];
+  if (mealRef && mealRef.value) {
+    mealRef.value.item = undefined;
+    isDirty.value = true;
+  }
+  showConfirmDialog.value = false;
+};
 
 const navigateToWeek = () => {
   const start = startOfWeek(currDate, { weekStartsOn: settings.value?.weekStartDay });
