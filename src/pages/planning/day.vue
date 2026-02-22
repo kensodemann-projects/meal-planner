@@ -234,7 +234,7 @@ const cancelMeal = (mealType: MealType) => {
   }
 };
 
-const doDelete = async () => {
+const doDelete = () => {
   const mealRef = mealRefs[mealToDelete.value!];
   if (mealRef && mealRef.value) {
     mealRef.value.item = undefined;

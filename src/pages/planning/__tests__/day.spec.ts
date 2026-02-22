@@ -291,7 +291,7 @@ describe('day', () => {
           await breakfastView.vm.$emit('delete');
           await flushPromises();
           const confirmDialog = wrapper.findComponent(ConfirmDialog);
-          await confirmDialog.vm.$emit('confirm');
+          confirmDialog.vm.$emit('confirm');
           await flushPromises();
           expect(wrapper.findComponent('[data-testid="breakfast-view"]').exists()).toBe(false);
         });
@@ -304,7 +304,7 @@ describe('day', () => {
           await breakfastView.vm.$emit('delete');
           await flushPromises();
           const confirmDialog = wrapper.findComponent(ConfirmDialog);
-          await confirmDialog.vm.$emit('confirm');
+          confirmDialog.vm.$emit('confirm');
           await flushPromises();
           expect(wrapper.findComponent('[data-testid="add-breakfast-button"]').exists()).toBe(true);
         });
@@ -319,7 +319,7 @@ describe('day', () => {
           await breakfastView.vm.$emit('delete');
           await flushPromises();
           const confirmDialog = wrapper.findComponent(ConfirmDialog);
-          await confirmDialog.vm.$emit('cancel');
+          confirmDialog.vm.$emit('cancel');
           await flushPromises();
           expect(wrapper.findComponent('[data-testid="breakfast-view"]').exists()).toBe(true);
         });
@@ -332,7 +332,7 @@ describe('day', () => {
           await breakfastView.vm.$emit('delete');
           await flushPromises();
           const confirmDialog = wrapper.findComponent(ConfirmDialog);
-          await confirmDialog.vm.$emit('cancel');
+          confirmDialog.vm.$emit('cancel');
           await flushPromises();
           expect(wrapper.findComponent('[data-testid="add-breakfast-button"]').exists()).toBe(false);
         });
@@ -532,7 +532,7 @@ describe('day', () => {
           await lunchView.vm.$emit('delete');
           await flushPromises();
           const confirmDialog = wrapper.findComponent(ConfirmDialog);
-          await confirmDialog.vm.$emit('confirm');
+          confirmDialog.vm.$emit('confirm');
           await flushPromises();
           expect(wrapper.findComponent('[data-testid="lunch-view"]').exists()).toBe(false);
         });
@@ -545,7 +545,7 @@ describe('day', () => {
           await lunchView.vm.$emit('delete');
           await flushPromises();
           const confirmDialog = wrapper.findComponent(ConfirmDialog);
-          await confirmDialog.vm.$emit('confirm');
+          confirmDialog.vm.$emit('confirm');
           await flushPromises();
           expect(wrapper.findComponent('[data-testid="add-lunch-button"]').exists()).toBe(true);
         });
@@ -560,7 +560,7 @@ describe('day', () => {
           await lunchView.vm.$emit('delete');
           await flushPromises();
           const confirmDialog = wrapper.findComponent(ConfirmDialog);
-          await confirmDialog.vm.$emit('cancel');
+          confirmDialog.vm.$emit('cancel');
           await flushPromises();
           expect(wrapper.findComponent('[data-testid="lunch-view"]').exists()).toBe(true);
         });
@@ -573,7 +573,7 @@ describe('day', () => {
           await lunchView.vm.$emit('delete');
           await flushPromises();
           const confirmDialog = wrapper.findComponent(ConfirmDialog);
-          await confirmDialog.vm.$emit('cancel');
+          confirmDialog.vm.$emit('cancel');
           await flushPromises();
           expect(wrapper.findComponent('[data-testid="add-lunch-button"]').exists()).toBe(false);
         });
@@ -773,7 +773,7 @@ describe('day', () => {
           await dinnerView.vm.$emit('delete');
           await flushPromises();
           const confirmDialog = wrapper.findComponent(ConfirmDialog);
-          await confirmDialog.vm.$emit('confirm');
+          confirmDialog.vm.$emit('confirm');
           await flushPromises();
           expect(wrapper.findComponent('[data-testid="dinner-view"]').exists()).toBe(false);
         });
@@ -786,7 +786,7 @@ describe('day', () => {
           await dinnerView.vm.$emit('delete');
           await flushPromises();
           const confirmDialog = wrapper.findComponent(ConfirmDialog);
-          await confirmDialog.vm.$emit('confirm');
+          confirmDialog.vm.$emit('confirm');
           await flushPromises();
           expect(wrapper.findComponent('[data-testid="add-dinner-button"]').exists()).toBe(true);
         });
@@ -801,7 +801,7 @@ describe('day', () => {
           await dinnerView.vm.$emit('delete');
           await flushPromises();
           const confirmDialog = wrapper.findComponent(ConfirmDialog);
-          await confirmDialog.vm.$emit('cancel');
+          confirmDialog.vm.$emit('cancel');
           await flushPromises();
           expect(wrapper.findComponent('[data-testid="dinner-view"]').exists()).toBe(true);
         });
@@ -814,7 +814,7 @@ describe('day', () => {
           await dinnerView.vm.$emit('delete');
           await flushPromises();
           const confirmDialog = wrapper.findComponent(ConfirmDialog);
-          await confirmDialog.vm.$emit('cancel');
+          confirmDialog.vm.$emit('cancel');
           await flushPromises();
           expect(wrapper.findComponent('[data-testid="add-dinner-button"]').exists()).toBe(false);
         });
@@ -1014,7 +1014,7 @@ describe('day', () => {
           await snackView.vm.$emit('delete');
           await flushPromises();
           const confirmDialog = wrapper.findComponent(ConfirmDialog);
-          await confirmDialog.vm.$emit('confirm');
+          confirmDialog.vm.$emit('confirm');
           await flushPromises();
           expect(wrapper.findComponent('[data-testid="snack-view"]').exists()).toBe(false);
         });
@@ -1027,7 +1027,7 @@ describe('day', () => {
           await snackView.vm.$emit('delete');
           await flushPromises();
           const confirmDialog = wrapper.findComponent(ConfirmDialog);
-          await confirmDialog.vm.$emit('confirm');
+          confirmDialog.vm.$emit('confirm');
           await flushPromises();
           expect(wrapper.findComponent('[data-testid="add-snack-button"]').exists()).toBe(true);
         });
@@ -1042,7 +1042,7 @@ describe('day', () => {
           await snackView.vm.$emit('delete');
           await flushPromises();
           const confirmDialog = wrapper.findComponent(ConfirmDialog);
-          await confirmDialog.vm.$emit('cancel');
+          confirmDialog.vm.$emit('cancel');
           await flushPromises();
           expect(wrapper.findComponent('[data-testid="snack-view"]').exists()).toBe(true);
         });
@@ -1055,7 +1055,7 @@ describe('day', () => {
           await snackView.vm.$emit('delete');
           await flushPromises();
           const confirmDialog = wrapper.findComponent(ConfirmDialog);
-          await confirmDialog.vm.$emit('cancel');
+          confirmDialog.vm.$emit('cancel');
           await flushPromises();
           expect(wrapper.findComponent('[data-testid="add-snack-button"]').exists()).toBe(false);
         });
