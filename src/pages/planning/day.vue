@@ -255,7 +255,7 @@ const saveDayPlan = async () => {
   if (dinner.value.item) meals.push(dinner.value.item);
   if (snack.value.item) meals.push(snack.value.item);
   if (mealPlan.value.id) {
-    await updateMealPlan({ ...mealPlan.value, meals });
+    await updateMealPlan({ ...mealPlan.value, id: mealPlan.value.id, meals });
   } else {
     await addMealPlan({ ...mealPlan.value, meals });
   }
