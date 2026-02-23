@@ -243,7 +243,7 @@ const doDelete = () => {
       isDirty.value = true;
     }
   }
-  mealToDelete.value = undefined;
+  mealToDelete.value = null;
   showConfirmDialog.value = false;
 };
 
