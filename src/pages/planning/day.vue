@@ -235,11 +235,15 @@ const cancelMeal = (mealType: MealType) => {
 };
 
 const doDelete = () => {
-  const mealRef = mealRefs[mealToDelete.value!];
-  if (mealRef && mealRef.value) {
-    mealRef.value.item = undefined;
-    isDirty.value = true;
+  const mealType = mealToDelete.value;
+  if (mealType) {
+    const mealRef = mealRefs[mealType];
+    if (mealRef && mealRef.value) {
+      mealRef.value.item = undefined;
+      isDirty.value = true;
+    }
   }
+  mealToDelete.value = undefined;
   showConfirmDialog.value = false;
 };
 
