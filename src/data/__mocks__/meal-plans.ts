@@ -10,7 +10,7 @@ interface MealPlansData {
   getMealPlan: (id: string) => Promise<MealPlan | null>;
   getMealPlanForDate: (dt: string) => Promise<MealPlan | null>;
   removeMealPlan: (id: string) => Promise<void>;
-  updateMealPlan: (mealPlan: MealPlan) => Promise<void>;
+  updateMealPlan: (id: string, fields: Omit<MealPlan, 'id'>) => Promise<void>;
 }
 
 const addMealPlan = vi.fn();

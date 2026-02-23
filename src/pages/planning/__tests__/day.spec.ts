@@ -1210,8 +1210,7 @@ describe('day', () => {
         await button.trigger('click');
         const { updateMealPlan, addMealPlan } = useMealPlansData();
         expect(addMealPlan).not.toHaveBeenCalled();
-        expect(updateMealPlan).toHaveBeenCalledExactlyOnceWith({
-          id: FULL_MEAL_PLAN.id,
+        expect(updateMealPlan).toHaveBeenCalledExactlyOnceWith(FULL_MEAL_PLAN.id, {
           date: '2026-02-18',
           meals: [modifiedBreakfast, FULL_MEAL_PLAN.meals[1], FULL_MEAL_PLAN.meals[2], FULL_MEAL_PLAN.meals[3]],
         });

@@ -24,11 +24,7 @@ export const useMealPlansData = () => {
     await deleteDoc(doc(db, `${path}/${id}`));
   };
 
-  const updateMealPlan = async (mealPlan: MealPlan): Promise<void> => {
-    const { id, ...fields } = mealPlan;
-    if (!id) {
-      throw new Error('Meal plan id is required to update');
-    }
+  const updateMealPlan = async (id: string, fields: Omit<MealPlan, 'id'>): Promise<void> => {
     await updateDoc(doc(db, `${path}/${id}`), fields);
   };
 
