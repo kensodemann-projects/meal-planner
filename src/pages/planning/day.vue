@@ -17,7 +17,7 @@
       v-if="breakfast.item && !breakfast.isEditing"
       :meal="breakfast.item"
       @modify="breakfast.isEditing = true"
-      @delete="openDeleteDialog('Breakfast')"
+      @delete="confirmDelete('Breakfast')"
       data-testid="breakfast-view"
     />
     <MealEditor
@@ -44,7 +44,7 @@
       v-if="lunch.item && !lunch.isEditing"
       :meal="lunch.item"
       @modify="lunch.isEditing = true"
-      @delete="openDeleteDialog('Lunch')"
+      @delete="confirmDelete('Lunch')"
       data-testid="lunch-view"
     />
     <MealEditor
@@ -71,7 +71,7 @@
       v-if="dinner.item && !dinner.isEditing"
       :meal="dinner.item"
       @modify="dinner.isEditing = true"
-      @delete="openDeleteDialog('Dinner')"
+      @delete="confirmDelete('Dinner')"
       data-testid="dinner-view"
     />
     <MealEditor
@@ -98,7 +98,7 @@
       v-if="snack.item && !snack.isEditing"
       :meal="snack.item"
       @modify="snack.isEditing = true"
-      @delete="openDeleteDialog('Snack')"
+      @delete="confirmDelete('Snack')"
       data-testid="snack-view"
     />
     <MealEditor
@@ -222,7 +222,7 @@ const cancelMeal = (mealType: MealType) => {
   }
 };
 
-const openDeleteDialog = (mealType: MealType) => {
+const confirmDelete = (mealType: MealType) => {
   showConfirmDialog.value = true;
   mealToDelete.value = mealType;
 };
