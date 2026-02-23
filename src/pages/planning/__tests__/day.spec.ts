@@ -1156,7 +1156,49 @@ describe('day', () => {
         expect(button.attributes('disabled')).toBeUndefined();
       });
 
-      // TODO: add TDD tests verifying that deleting a meal enables the save button.
+      it('is enabled if breakfast is deleted', async () => {
+        const breakfastView = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
+        await breakfastView.vm.$emit('delete');
+        await flushPromises();
+        const confirmDialog = wrapper.findComponent(ConfirmDialog);
+        confirmDialog.vm.$emit('confirm');
+        await flushPromises();
+        const button = wrapper.findComponent('[data-testid="save-button"]');
+        expect(button.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if lunch is deleted', async () => {
+        const lunchView = wrapper.findComponent('[data-testid="lunch-view"]') as VueWrapper<any>;
+        await lunchView.vm.$emit('delete');
+        await flushPromises();
+        const confirmDialog = wrapper.findComponent(ConfirmDialog);
+        confirmDialog.vm.$emit('confirm');
+        await flushPromises();
+        const button = wrapper.findComponent('[data-testid="save-button"]');
+        expect(button.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if dinner is deleted', async () => {
+        const dinnerView = wrapper.findComponent('[data-testid="dinner-view"]') as VueWrapper<any>;
+        await dinnerView.vm.$emit('delete');
+        await flushPromises();
+        const confirmDialog = wrapper.findComponent(ConfirmDialog);
+        confirmDialog.vm.$emit('confirm');
+        await flushPromises();
+        const button = wrapper.findComponent('[data-testid="save-button"]');
+        expect(button.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if snack is deleted', async () => {
+        const snackView = wrapper.findComponent('[data-testid="snack-view"]') as VueWrapper<any>;
+        await snackView.vm.$emit('delete');
+        await flushPromises();
+        const confirmDialog = wrapper.findComponent(ConfirmDialog);
+        confirmDialog.vm.$emit('confirm');
+        await flushPromises();
+        const button = wrapper.findComponent('[data-testid="save-button"]');
+        expect(button.attributes('disabled')).toBeUndefined();
+      });
 
       it('saves the meal plan', async () => {
         const breakfastView = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
@@ -1223,8 +1265,20 @@ describe('day', () => {
         await editor.vm.$emit('save', { id: 'meal-123', type: 'Snack', items: [] });
         expect(button.attributes('disabled')).toBeUndefined();
       });
-      //
-      // TODO: add TDD tests verifying that deleting a meal enables the save button.
+      it('is enabled if an added breakfast is deleted', async () => {
+        const addButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
+        await addButton.trigger('click');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        await editor.vm.$emit('save', { id: 'meal-123', type: 'Breakfast', items: [] });
+        const breakfastView = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
+        await breakfastView.vm.$emit('delete');
+        await flushPromises();
+        const confirmDialog = wrapper.findComponent(ConfirmDialog);
+        confirmDialog.vm.$emit('confirm');
+        await flushPromises();
+        const button = wrapper.findComponent('[data-testid="save-button"]');
+        expect(button.attributes('disabled')).toBeUndefined();
+      });
 
       it('saves the meal plan', async () => {
         const button = wrapper.findComponent('[data-testid="save-button"]');
