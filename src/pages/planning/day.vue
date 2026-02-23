@@ -17,6 +17,7 @@
       v-if="breakfast.item && !breakfast.isEditing"
       :meal="breakfast.item"
       @modify="breakfast.isEditing = true"
+      @delete="confirmDelete('Breakfast')"
       data-testid="breakfast-view"
     />
     <MealEditor
@@ -43,6 +44,7 @@
       v-if="lunch.item && !lunch.isEditing"
       :meal="lunch.item"
       @modify="lunch.isEditing = true"
+      @delete="confirmDelete('Lunch')"
       data-testid="lunch-view"
     />
     <MealEditor
@@ -69,6 +71,7 @@
       v-if="dinner.item && !dinner.isEditing"
       :meal="dinner.item"
       @modify="dinner.isEditing = true"
+      @delete="confirmDelete('Dinner')"
       data-testid="dinner-view"
     />
     <MealEditor
@@ -95,6 +98,7 @@
       v-if="snack.item && !snack.isEditing"
       :meal="snack.item"
       @modify="snack.isEditing = true"
+      @delete="confirmDelete('Snack')"
       data-testid="snack-view"
     />
     <MealEditor
@@ -108,10 +112,19 @@
     <CancelButton @click="cancelDayPlan" />
     <SaveButton @click="saveDayPlan" :disabled="!isDirty" />
   </div>
+
+  <v-dialog v-model="showConfirmDialog" max-width="600px" data-testid="confirm-dialog">
+    <ConfirmDialog
+      question="Are you sure you want to delete this meal?"
+      icon-color="error"
+      @confirm="doDelete"
+      @cancel="showConfirmDialog = false"
+    />
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
-import type { Meal } from '@/models/meal';
+import type { Meal, MealType } from '@/models/meal';
 import { useMealPlansData } from '@/data/meal-plans';
 import type { MealPlan } from '@/models/meal-plan';
 import { format, intlFormat, parseISO, startOfWeek } from 'date-fns';
@@ -135,6 +148,8 @@ const dinner = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: und
 const snack = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 
 const isDirty = ref(false);
+const showConfirmDialog = ref(false);
+const mealToDelete = ref<MealType | null>(null);
 
 const router = useRouter();
 const { settings } = useSettingsData();
@@ -190,23 +205,39 @@ const mealRefs: Record<string, typeof breakfast> = {
   Snack: snack,
 };
 
-const setMeal = (mealType: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack', meal: Meal | undefined) => {
+const setMeal = (mealType: MealType, meal: Meal | undefined) => {
   const mealRef = mealRefs[mealType];
   if (mealRef && mealRef.value) {
-    if (meal) {
-      mealRef.value.item = meal;
-      isDirty.value = true;
-    }
+    mealRef.value.item = meal;
+    isDirty.value = true;
     mealRef.value.isEditing = false;
   }
 };
 
-const cancelMeal = (mealType: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack') => {
+const cancelMeal = (mealType: MealType) => {
   const mealRef = mealRefs[mealType];
   if (mealRef && mealRef.value) {
     mealRef.value.isEditing = false;
     mealRef.value.item = undefined;
   }
+};
+
+const confirmDelete = (mealType: MealType) => {
+  showConfirmDialog.value = true;
+  mealToDelete.value = mealType;
+};
+
+const doDelete = () => {
+  const mealType = mealToDelete.value;
+  if (mealType) {
+    const mealRef = mealRefs[mealType];
+    if (mealRef && mealRef.value) {
+      mealRef.value.item = undefined;
+      isDirty.value = true;
+    }
+  }
+  mealToDelete.value = null;
+  showConfirmDialog.value = false;
 };
 
 const navigateToWeek = () => {
