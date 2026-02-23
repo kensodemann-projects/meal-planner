@@ -1156,7 +1156,7 @@ describe('day', () => {
         expect(button.attributes('disabled')).toBeUndefined();
       });
 
-      it('is enabled if breakfast is deleted', async () => {
+      it('is enabled if a meal is deleted', async () => {
         const breakfastView = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
         await breakfastView.vm.$emit('delete');
         await flushPromises();
@@ -1265,7 +1265,8 @@ describe('day', () => {
         await editor.vm.$emit('save', { id: 'meal-123', type: 'Snack', items: [] });
         expect(button.attributes('disabled')).toBeUndefined();
       });
-      it('is enabled if an added breakfast is deleted', async () => {
+
+      it('is enabled if a meal is deleted', async () => {
         const addButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
         await addButton.trigger('click');
         const editor = wrapper.findComponent({ name: 'MealEditor' });
