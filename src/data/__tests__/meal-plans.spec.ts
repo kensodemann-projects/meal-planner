@@ -120,20 +120,14 @@ describe('Meal Plans Data Service', () => {
   describe('update meal plan', () => {
     it('obtains a reference to the doc', () => {
       const { updateMealPlan } = useMealPlansData();
-      updateMealPlan({
-        ...TEST_MEAL_PLAN,
-        id: '43334-22343-893',
-      });
+      updateMealPlan('43334-22343-893', TEST_MEAL_PLAN);
       expect(doc).toHaveBeenCalledOnce();
       expect(doc).toHaveBeenCalledWith({ id: 42, name: 'my fake fire store' }, 'meal-plans/43334-22343-893');
     });
 
     it('updates the meal plan document', () => {
       const { updateMealPlan } = useMealPlansData();
-      updateMealPlan({
-        ...TEST_MEAL_PLAN,
-        id: '43334-22343-893',
-      });
+      updateMealPlan('43334-22343-893', TEST_MEAL_PLAN);
       expect(updateDoc).toHaveBeenCalledOnce();
       expect(updateDoc).toHaveBeenCalledWith('42:doc:meal-plans/43334-22343-893', {
         ...TEST_MEAL_PLAN,
