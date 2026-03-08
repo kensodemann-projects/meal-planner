@@ -35,6 +35,7 @@ const onSave = async (item: Recipe) => {
     return;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id: _ignored, ...fields } = item;
   await updateRecipe(id, fields);
   router.replace(`/recipes/${id}`);
