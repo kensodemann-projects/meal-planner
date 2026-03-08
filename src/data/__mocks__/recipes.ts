@@ -12,7 +12,7 @@ interface RecipesData {
   getRecipe: (id: string) => Promise<Recipe | null>;
   recipeMatches: (recipe: Recipe, criteria: RecipeSearchCriteria) => boolean;
   removeRecipe: (id: string) => Promise<void>;
-  updateRecipe: (recipe: Recipe) => Promise<void>;
+  updateRecipe: (id: string, fields: Omit<Recipe, 'id'>) => Promise<void>;
 }
 
 const addRecipe = vi.fn();

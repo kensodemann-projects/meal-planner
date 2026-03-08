@@ -85,10 +85,9 @@ describe('Food Update Page', () => {
       const editor = wrapper.findComponent(FoodEditor);
       editor.vm.$emit('save', { ...TEST_FOOD, name: 'this is a modified name', id: '88f933fiieo' });
       await flushPromises();
-      expect(updateFood).toHaveBeenCalledExactlyOnceWith({
+      expect(updateFood).toHaveBeenCalledExactlyOnceWith('88f933fiieo', {
         ...TEST_FOOD,
         name: 'this is a modified name',
-        id: '88f933fiieo',
       });
     });
 

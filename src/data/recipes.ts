@@ -29,8 +29,7 @@ export const useRecipesData = () => {
     await deleteDoc(doc(db, `${path}/${id}`));
   };
 
-  const updateRecipe = async (recipe: Recipe): Promise<void> => {
-    const { id, ...fields } = recipe;
+  const updateRecipe = async (id: string, fields: Omit<Recipe, 'id'>): Promise<void> => {
     await updateDoc(doc(db, `${path}/${id}`), fields);
   };
 

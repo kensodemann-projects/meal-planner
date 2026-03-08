@@ -100,18 +100,14 @@ describe('Recipe Data Service', () => {
   describe('update recipe', () => {
     it('obtains a reference to the doc', () => {
       const { updateRecipe } = useRecipesData();
-      updateRecipe({
-        id: '43334-22343-893',
-        ...TEST_RECIPE,
-      });
+      updateRecipe('43334-22343-893', TEST_RECIPE);
       expect(doc).toHaveBeenCalledOnce();
       expect(doc).toHaveBeenCalledWith({ id: 42, name: 'my fake fire store' }, 'recipes/43334-22343-893');
     });
 
     it('updates the recipe document', () => {
       const { updateRecipe } = useRecipesData();
-      updateRecipe({
-        id: '43334-22343-893',
+      updateRecipe('43334-22343-893', {
         ...TEST_RECIPE,
         calories: 600,
         sodium: 800,

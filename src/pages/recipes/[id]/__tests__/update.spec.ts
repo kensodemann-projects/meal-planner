@@ -86,10 +86,9 @@ describe('update', () => {
       const editor = wrapper.findComponent(RecipeEditor);
       editor.vm.$emit('save', { ...TEST_RECIPE, name: 'this is a modified name', id: '88f933fiieo' });
       await flushPromises();
-      expect(updateRecipe).toHaveBeenCalledExactlyOnceWith({
+      expect(updateRecipe).toHaveBeenCalledExactlyOnceWith('88f933fiieo', {
         ...TEST_RECIPE,
         name: 'this is a modified name',
-        id: '88f933fiieo',
       });
     });
 

@@ -30,7 +30,14 @@ const onCancel = () => {
 };
 
 const onSave = async (item: Recipe) => {
-  await updateRecipe(item);
-  router.replace(`/recipes/${item.id}`);
+  if (!id) {
+    router.replace('/recipes');
+    return;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { id: _ignored, ...fields } = item;
+  await updateRecipe(id, fields);
+  router.replace(`/recipes/${id}`);
 };
 </script>
