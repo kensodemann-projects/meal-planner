@@ -30,7 +30,8 @@ const onCancel = () => {
 };
 
 const onSave = async (item: Recipe) => {
-  await updateRecipe(item);
-  router.replace(`/recipes/${item.id}`);
+  const { id, ...fields } = item;
+  await updateRecipe(id!, fields);
+  router.replace(`/recipes/${id}`);
 };
 </script>

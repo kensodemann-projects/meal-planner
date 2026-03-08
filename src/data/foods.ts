@@ -21,8 +21,7 @@ export const useFoodsData = () => {
     await deleteDoc(doc(db, `${path}/${id}`));
   };
 
-  const updateFood = async (food: FoodItem): Promise<void> => {
-    const { id, ...fields } = food;
+  const updateFood = async (id: string, fields: Omit<FoodItem, 'id'>): Promise<void> => {
     await updateDoc(doc(db, `${path}/${id}`), fields);
   };
 

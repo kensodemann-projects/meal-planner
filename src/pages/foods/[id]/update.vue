@@ -19,7 +19,8 @@ getFood(id).then((f) => (food.value = f));
 const onCancel = () => router.replace(`/foods/${food.value?.id}`);
 
 const onSave = async (item: FoodItem) => {
-  await updateFood(item);
-  router.replace(`/foods/${item.id}`);
+  const { id, ...fields } = item;
+  await updateFood(id!, fields);
+  router.replace(`/foods/${id}`);
 };
 </script>

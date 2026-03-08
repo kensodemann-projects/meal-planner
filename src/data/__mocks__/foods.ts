@@ -9,7 +9,7 @@ interface FoodsData {
   loading: Ref<boolean>;
   getFood: (id: string) => Promise<FoodItem | null>;
   removeFood: (id: string) => Promise<void>;
-  updateFood: (food: FoodItem) => Promise<void>;
+  updateFood: (id: string, fields: Omit<FoodItem, 'id'>) => Promise<void>;
   fdcFoodItemExists: (fdcId: number) => boolean;
 }
 

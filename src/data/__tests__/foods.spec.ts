@@ -116,18 +116,14 @@ describe('Food Data Service', () => {
   describe('update food', () => {
     it('obtains a reference to the doc', () => {
       const { updateFood } = useFoodsData();
-      updateFood({
-        id: '43334-22343-893',
-        ...TEST_FOOD,
-      });
+      updateFood('43334-22343-893', TEST_FOOD);
       expect(doc).toHaveBeenCalledOnce();
       expect(doc).toHaveBeenCalledWith({ id: 42, name: 'my fake fire store' }, 'foods/43334-22343-893');
     });
 
     it('updates the food document', () => {
       const { updateFood } = useFoodsData();
-      updateFood({
-        id: '43334-22343-893',
+      updateFood('43334-22343-893', {
         ...TEST_FOOD,
         calories: 600,
         sodium: 800,
