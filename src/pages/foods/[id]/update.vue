@@ -19,6 +19,7 @@ getFood(id).then((f) => (food.value = f));
 const onCancel = () => router.replace(`/foods/${food.value?.id}`);
 
 const onSave = async (item: FoodItem) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id: _, ...fields } = item;
   await updateFood(id, fields);
   router.replace(`/foods/${id}`);
