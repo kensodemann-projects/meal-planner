@@ -96,3 +96,10 @@ A meal consists of one or more recipes. For each date, the following meal slots 
 - Lunch
 - Dinner
 - Snacks
+
+Meals can be recorded in two ways: entered as-consumed on the day they are eaten, or planned ahead of time for a future date. Because plans don't always survive contact with reality, meals are editable at any time — what was planned can be revised to reflect what was actually eaten.
+
+When adding a recipe to a meal, the nutritional values can be adjusted in one of two ways:
+
+- **By servings** — changing the number of servings scales all nutritional values proportionally from the recipe's defaults.
+- **By individual values** — each nutritional item (calories, sodium, sugar, etc.) can be overridden directly for cases where the actual amount differs from what the recipe would calculate.
