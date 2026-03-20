@@ -18,52 +18,84 @@ The purpose of this README is to serve as a guidepost as development tasks are c
 none of the workflows, settings, plans, or other artifacts created within the application shall apply on a per-user
 basis. They are all application wide for all users.
 
-# TODO: need a name for this section
+# Core Concepts
 
 ## Categories
 
-TODO: explain that categories define the type of recipe, list them from @./src/data/recipe-categories.ts combined with @./src/data/food-categories.ts
+Categories classify the items stored in the application. There are two types of categories:
+
+**Recipe categories** define the type of a recipe:
+
+- Appetizer, Beverage, Breakfast, Bread, Pasta
+- Beef, Pork, Lamb, Poultry, Seafood
+- Vegetarian, Side Dish, Soup, Salad, Sauce, Dessert
+
+**Food categories** classify individual food items:
+
+- Bakery, Beans, Beverages, Dairy, Fats & Oils, Grains, Juices
+- Meats, Mixed Foods, Nuts & Seeds, Produce, Snacks, Spices, Sweets, Unknown
 
 ## Cuisine
 
-TODO: Define cuisines, list them from @./src/data/cuisines.ts
+Cuisine identifies the cultural or regional style of a recipe. The following cuisines are supported:
 
-## Unit of measure
+- American, Chinese, French, Greek, Indian, Italian, Japanese
+- Mediterranean, Mexican, Middle Eastern, Thai
 
-TODO: Define units of measure, list them from @./src/data/units-of-measure.ts
+## Unit of Measure
+
+Units of measure are used to specify ingredient quantities in recipes. The following units are supported:
+
+| Unit    | Name        | Type     | System    |
+| ------- | ----------- | -------- | --------- |
+| ml      | Milliliter  | Volume   | Metric    |
+| l       | Liter       | Volume   | Metric    |
+| tsp     | Teaspoon    | Volume   | Customary |
+| tbsp    | Tablespoon  | Volume   | Customary |
+| floz    | Fluid Ounce | Volume   | Customary |
+| cup     | Cup         | Volume   | Customary |
+| pint    | Pint        | Volume   | Customary |
+| quart   | Quart       | Volume   | Customary |
+| gallon  | Gallon      | Volume   | Customary |
+| mg      | Milligram   | Weight   | Metric    |
+| g       | Gram        | Weight   | Metric    |
+| kg      | Kilogram    | Weight   | Metric    |
+| oz      | Ounce       | Weight   | Customary |
+| lb      | Pound       | Weight   | Customary |
+| piece   | Piece       | Quantity | —         |
+| item    | Item        | Quantity | —         |
+| each    | Each        | Quantity | —         |
+| pinch   | Pinch       | Quantity | —         |
+| serving | Serving     | Quantity | —         |
 
 ## Recipes
 
-TODO: explain the following about recipes:
+Everything commonly eaten at a meal is modeled as a "recipe." This includes both traditional recipes (with ingredients, steps, etc.) and simple food items (e.g., "Milk" or "Orange").
 
-- all individual items commonly eaten at a meal is a "recipe"
-  - traditional recipes (ingredients, steps, etc)
-  - food items (for example "milk", or "orange")
-- the following information is stored for each recipe:
+Each recipe stores the following information:
+
+- Name
+- Description
+- Category
+- Cuisine
+- Number of Servings
+- Cooking Time
+- Difficulty
+- Ingredients list
+  - Quantity
+  - Unit of Measure
   - Name
-  - Description
-  - Category
-  - Cuisine
-  - Number of Servings
-  - Cooking Time
-  - Difficulty
-  - Ingredients list
-    - Quantity
-    - Unit of Measure
-    - Name
-  - Steps
-  - Calories
-  - Sodium (mg)
-  - Sugar (g)
-  - Total Carbs (g)
-  - Fat (g)
-  - Protein (g)
+- Steps
+- Calories
+- Sodium (mg)
+- Sugar (g)
+- Total Carbs (g)
+- Fat (g)
+- Protein (g)
 
 ## Meals
 
-TODO: Explain that meals consist of one or more recipes
-
-TODO: Explain that the following meals can be created for each date:
+A meal consists of one or more recipes. For each date, the following meal slots can be populated:
 
 - Breakfast
 - Lunch
