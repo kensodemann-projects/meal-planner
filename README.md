@@ -22,18 +22,13 @@ basis. They are all application wide for all users.
 
 ## Categories
 
-Categories classify the items stored in the application. There are two types of categories:
+A category classifies the type of recipe. The following categories are supported:
 
-**Recipe categories** define the type of a recipe:
-
-- Appetizer, Beverage, Breakfast, Bread, Pasta
 - Beef, Pork, Lamb, Poultry, Seafood
-- Vegetarian, Side Dish, Soup, Salad, Sauce, Dessert
-
-**Food categories** classify individual food items:
-
-- Bakery, Beans, Beverages, Dairy, Fats & Oils, Grains, Juices
-- Meats, Mixed Foods, Nuts & Seeds, Produce, Snacks, Spices, Sweets, Unknown
+- Vegetarian, Beans, Produce, Nuts & Seeds
+- Bread & Bakery, Grains, Pasta
+- Appetizer, Breakfast, Soup, Salad, Side Dish, Sauce
+- Dairy, Snack, Dessert, Beverage
 
 ## Cuisine
 
