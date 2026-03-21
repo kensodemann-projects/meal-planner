@@ -1,10 +1,8 @@
 # Meal Planner
 
-The meal planner application aims to promote healthier eating habits by making meal planning more convenient and simplifying
-the grocery shopping experience. It will achieve this by providing users with an intelligent, easy to use, assisted planner
-that helps them to select meals for each day, adhering to user-defined daily maximums for calories and sugars as well as a
-minimum protein requirement. Using the coming week's plan, it will generate a categorized shopping list to help users
-ensure they have the ingredients needed for the week's meals.
+The meal planner application aims to promote healthier eating habits by making meal planning more convenient. It provides
+users with an intelligent, easy to use, assisted planner that helps them to select meals for each day, adhering to
+user-defined daily targets for calories, sugars, and protein.
 
 The purpose of this README is to serve as a guidepost as development tasks are created and scheduled.
 
@@ -12,163 +10,134 @@ The purpose of this README is to serve as a guidepost as development tasks are c
 
 - Simplify daily and weekly meal planning.
 - Track the daily meal plan against targets.
-- Allow for cheat days. A "cheat day" shall be defined as one where maximums in sugar and/or calories are exceeded, the minimum protein requirement is not met, or where a meal is not tracked / specified (typically because eating out is planned)
-- Simplify the process of determining a grocery list.
 
 **Note:** This application is shared by my wife and I without anyone else having intentional access to it. As such,
 none of the workflows, settings, plans, or other artifacts created within the application shall apply on a per-user
 basis. They are all application wide for all users.
 
-# User Workflows
+# Core Concepts
 
-## Primary Workflows
+## Categories
 
-These are workflows that are required in order to directly support the specified purpose of the application.
+A category classifies the type of recipe. The following categories are supported:
 
-### Specifying Daily Goals
+- Beef, Pork, Lamb, Poultry, Seafood
+- Vegetarian, Beans, Produce, Nuts & Seeds
+- Bread & Bakery, Grains, Pasta
+- Appetizer, Breakfast, Soup, Salad, Side Dish, Sauce
+- Dairy, Snack, Dessert, Beverage
 
-From within the "Settings" area the following values are allowed to be set:
+## Cuisine
 
-- **Calories**: target maximum for calories per day
-- **Sugars**: target maximum in grams for sugars per day
-- **Proteins**: target minimum in grams for proteins per day
-- **Tolerance**: percentage by which values can exceed their max before this is considered a "cheat"
-- **Cheat Days**: the number of allowable cheat days per week
-- **Week Start Day**: default to Sunday
+Cuisine identifies the cultural or regional style of a recipe. The following cuisines are supported:
 
-Other settings will be added as they are surfaced through the implementation of various goals.
+- American, Chinese, French, Greek, Indian, Italian, Japanese
+- Mediterranean, Mexican, Middle Eastern, Thai
 
-### Planning Meals
+## Unit of Measure
 
-#### Definitions
+Units of measure are used to specify ingredient quantities in recipes. The following units are supported:
 
-The user can add the following meals:
+| Unit    | Name        | Type     | System    |
+| ------- | ----------- | -------- | --------- |
+| ml      | Milliliter  | Volume   | Metric    |
+| l       | Liter       | Volume   | Metric    |
+| tsp     | Teaspoon    | Volume   | Customary |
+| tbsp    | Tablespoon  | Volume   | Customary |
+| floz    | Fluid Ounce | Volume   | Customary |
+| cup     | Cup         | Volume   | Customary |
+| pint    | Pint        | Volume   | Customary |
+| quart   | Quart       | Volume   | Customary |
+| gallon  | Gallon      | Volume   | Customary |
+| mg      | Milligram   | Weight   | Metric    |
+| g       | Gram        | Weight   | Metric    |
+| kg      | Kilogram    | Weight   | Metric    |
+| oz      | Ounce       | Weight   | Customary |
+| lb      | Pound       | Weight   | Customary |
+| piece   | Piece       | Quantity | —         |
+| item    | Item        | Quantity | —         |
+| each    | Each        | Quantity | —         |
+| pinch   | Pinch       | Quantity | —         |
+| serving | Serving     | Quantity | —         |
+
+## Recipes
+
+Everything commonly eaten at a meal is modeled as a "recipe." This includes both traditional recipes (with ingredients, steps, etc.) and simple food items (e.g., "Milk" or "Orange").
+
+Each recipe stores the following information:
+
+- Name
+- Description
+- Category
+- Cuisine
+- Number of Servings
+- Cooking Time
+- Difficulty
+- Ingredients list
+  - Quantity
+  - Unit of Measure
+  - Name
+- Steps
+- Calories
+- Sodium (mg)
+- Sugar (g)
+- Total Carbs (g)
+- Fat (g)
+- Protein (g)
+
+## Meals
+
+A meal consists of one or more recipes. For each date, the following meal slots can be populated:
 
 - Breakfast
 - Lunch
 - Dinner
-- Snacks (multiple snacks can be added)
+- Snacks
 
-Each meal consists of at least one recipe or food item.
+Meals can be recorded in two ways: entered as-consumed on the day they are eaten, or planned ahead of time for a future date. Because plans don't always survive contact with reality, meals are editable at any time — what was planned can be revised to reflect what was actually eaten.
 
-#### Goals
+When adding a recipe to a meal, the nutritional values can be adjusted in one of two ways:
 
-- Plan meals for the next week
-- View existing meal plans
-  - Past weeks
-  - Current week
-  - Next week (the week in planning)
-- View what I plan on eating today
+- **By servings** — changing the number of servings scales all nutritional values proportionally from the recipe's defaults.
+- **By individual values** — each nutritional item (calories, sodium, sugar, etc.) can be overridden directly for cases where the actual amount differs from what the recipe would calculate.
 
-#### Decisions
+## Nutritional Targets
 
-- These are plans not actual results
-- Current and future plans can change but past plans are what they are
-- Actual meals should be tracked via a dedicated food tracking app at this time
+Daily nutritional targets are configured in Settings. Any view that displays a nutritional summary for a day uses
+color coding to indicate how actual intake compares to those targets:
 
-### Creating Shopping Lists
+- 🟡 **Yellow** — under the target range
+- 🟢 **Green** — within the target range
+- 🔴 **Red** — above the target range
 
-#### Definitions
+The target range is defined by a configurable tolerance percentage applied symmetrically around each target value.
+For example, a 10% tolerance on a 2,000 kcal calorie target means the green range is 1,800–2,200 kcal.
 
-- A shopping check-list is list of ingredients and food items that will be required for the next week.
+# Navigation
 
-#### Goals
+The application is organized into the following main sections, accessible from the sidebar:
 
-- Generate a list of ingredients and food items required for a specified week
-  - Default to "this week" if today is in the first two days of the week
-  - Default to "next week" otherwise
-- Allow the user to check off items that they already have
-- Allow the user to check off items as they acquire them
-- Allow the user to regenerate the list as needed and at their own discretion
+## Dashboard
 
-#### Decisions
+The landing page after login. Displays a summary of the current and upcoming week's meal plans, including stats like total days planned, highest calories, protein, and carbs. Each stat is color coded against the configured daily targets. Previous weeks are also shown for historical reference. Clicking a week card navigates directly to the weekly planning view.
 
-- An item being on the shopping list means it is needed for the next week's meals and make no assumptions about whether or not it is in the house's inventory (there is no inventory data in this app).
-- This is a supplemental list and not a primary list. As such, there is no need to provide edit capabilities.
-- If the user regenerates a list, checked items will not be kept.
-- Only one list is active at a time, there is no need to store or retrieve previous lists
+## Planning
 
-### Cooking a Meal
+Where meal plans are created and managed. The landing page offers quick links to this week and next week, plus recent weeks.
 
-#### Definitions
+- **Weekly view** — Shows all 7 days at a glance. Each day lists the meal slots that have been filled (Breakfast, Lunch, Dinner, Snacks) along with a color-coded nutritional summary. Click a day to open the daily view.
+- **Daily view** — Detailed editing for a single day. Add, edit, or remove meals from any of the four meal slots. A color-coded nutritional summary for the day is displayed. Changes are saved back to the week's plan.
 
-- A meal can consist of multiple recipes and stand-alone food items. For example:
-  - Meatloaf (recipe)
-  - Mashed Potatoes (recipe)
-  - Glass of Milk (stand-alone food item)
+## Recipes
 
-#### Goals
+Browse, search, and manage the recipe library. Recipes can be filtered by category, cuisine, and calorie range. Clicking a recipe shows its full details, including ingredients, steps, and nutritional info. New recipes can be added via the action button.
 
-- The user has the information that they need in order to prepare the meal
+## Settings
 
-#### Decisions
+Configure app-wide preferences, including:
 
-- For recipes, only display the information required to prepare the meal. That limits the information to:
-  - Name
-  - Ingredients
-  - Steps
-- There is no reason at this point to display nutritional information or other ancillary data for recipes or food items.
+- Which day the week starts on
+- Daily nutritional targets: calorie limit, sugar limit, and protein target
+- Tolerance percentage used to define the acceptable range around each target for color coding
 
-### Dashboard
-
-#### Definitions
-
-- None at this time
-
-#### Goals
-
-- Display the information that will be most useful to the user right away
-
-#### Decisions
-
-- These are not decisions per se, but should be taken as ideas for potential items:
-  - Today's meals (list, link to "today" full page view)
-  - This Week at a Glance (day by day calories w/ cheat days noted)
-  - Next Week at a Glance (day by day calories w/ cheat days and unplanned days noted)
-  - Daily calories trend over X past days plus the future
-
-## Supporting Workflows
-
-These are workflows that are required in order to support the execution of the primary actions.
-
-### Managing Recipes
-
-#### Definitions
-
-- None at this time
-
-#### Goals
-
-- Browse recipes by category in an organized fashion
-  - full browse
-  - by category
-  - by cuisine
-  - by calorie ranges (TBD on range definitions)
-- Users can perform a keyword search to find a recipe
-  - The keyword search should apply to all textual fields
-  - The keyword search should apply keywords individually, for example:
-    - **Rice** should return foods with "rice" or "Rice" "Rice-a-Roni"
-    - **Italian Rice** should return foods with "Italian" somewhere in them and "rice" somewhere in them
-- Easily add new recipes
-  - manually
-  - automatically via a search (likely an AI search)
-
-#### Decisions
-
-- Ingredients in the recipe shall not reference food items.
-- While perhaps a cool feature for later, the search will not find related words. That is, "rice" will not find recipes that use "risotto" without referencing "rice."
-
-### Managing Food Items
-
-#### Definitions
-
-- None at this time
-
-#### Goals
-
-- Enter commonly consumed food items so they can be added to a meal
-- Automatically fill in the data when possible
-
-#### Decisions
-
-- The intention is that these are foods eaten as an item (Milk, Apple), etc. There is nothing to stop a user from entering what would commonly be considered "ingredients" as "food items."
+Also displays the current app version.

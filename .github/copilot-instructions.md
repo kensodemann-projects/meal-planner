@@ -68,7 +68,10 @@ pnpm test:cov         # Generate coverage reports
 pnpm lint             # ESLint check
 pnpm build            # Production build
 pnpm emulate          # Firebase emulators with seed data
+pnpm save-seed        # Export emulator data back to seed-data/
 ```
+
+Run a single test file: `pnpm vitest run src/path/to/file.spec.ts`
 
 ### Testing
 
@@ -82,6 +85,10 @@ mount(Component, { global: { plugins: [vuetify] } });
 
 - Mock Firebase/VueFire composables: `vi.mock('@/core/authentication')`
 - Coverage excludes: `.d.ts`, config files, models, plugins, router, root-level `.vue`/`.ts`
+- Use `vi.hoisted()` for mocks that must be hoisted before imports (e.g., mocking `firebase/ai` module-level calls)
+- Shared test data lives in `src/data/__tests__/test-data.ts` (exports `TEST_FOODS`, `TEST_MEAL_PLAN`, `TEST_MEAL_PLANS`, etc.)
+- Shared form-validation test helpers live in `src/components/__tests__/test-utils.ts` (e.g., `textFieldIsRequired`, `numberInputIsRequired`)
+- Query testable elements via `data-testid` attributes: `wrapper.findComponent('[data-testid="my-input"]')`
 
 ### Release Process
 
