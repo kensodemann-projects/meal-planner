@@ -2,9 +2,9 @@
 
 The meal planner application aims to promote healthier eating habits by making meal planning more convenient and simplifying
 the grocery shopping experience. It will achieve this by providing users with an intelligent, easy to use, assisted planner
-that helps them to select meals for each day, adhering to user-defined daily maximums for calories and sugars as well as a
-minimum protein requirement. Using the coming week's plan, it will generate a categorized shopping list to help users
-ensure they have the ingredients needed for the week's meals.
+that helps them to select meals for each day, adhering to user-defined daily targets for calories, sugars, and protein.
+Using the coming week's plan, it will generate a categorized shopping list to help users ensure they have the ingredients
+needed for the week's meals.
 
 The purpose of this README is to serve as a guidepost as development tasks are created and scheduled.
 
@@ -104,20 +104,32 @@ When adding a recipe to a meal, the nutritional values can be adjusted in one of
 - **By servings** — changing the number of servings scales all nutritional values proportionally from the recipe's defaults.
 - **By individual values** — each nutritional item (calories, sodium, sugar, etc.) can be overridden directly for cases where the actual amount differs from what the recipe would calculate.
 
+## Nutritional Targets
+
+Daily nutritional targets are configured in Settings. Any view that displays a nutritional summary for a day uses
+color coding to indicate how actual intake compares to those targets:
+
+- 🟡 **Yellow** — under the target range
+- 🟢 **Green** — within the target range
+- 🔴 **Red** — above the target range
+
+The target range is defined by a configurable tolerance percentage applied symmetrically around each target value.
+For example, a 10% tolerance on a 2,000 kcal calorie target means the green range is 1,800–2,200 kcal.
+
 # Navigation
 
 The application is organized into the following main sections, accessible from the sidebar:
 
 ## Dashboard
 
-The landing page after login. Displays a summary of the current and upcoming week's meal plans, including stats like total days planned, highest calories, protein, carbs, and cheat days. Previous weeks are also shown for historical reference. Clicking a week card navigates directly to the weekly planning view.
+The landing page after login. Displays a summary of the current and upcoming week's meal plans, including stats like total days planned, highest calories, protein, and carbs. Each stat is color coded against the configured daily targets. Previous weeks are also shown for historical reference. Clicking a week card navigates directly to the weekly planning view.
 
 ## Planning
 
 Where meal plans are created and managed. The landing page offers quick links to this week and next week, plus recent weeks.
 
-- **Weekly view** — Shows all 7 days at a glance. Each day lists the meal slots that have been filled (Breakfast, Lunch, Dinner, Snacks). Click a day to open the daily view.
-- **Daily view** — Detailed editing for a single day. Add, edit, or remove meals from any of the four meal slots. Changes are saved back to the week's plan.
+- **Weekly view** — Shows all 7 days at a glance. Each day lists the meal slots that have been filled (Breakfast, Lunch, Dinner, Snacks) along with a color-coded nutritional summary. Click a day to open the daily view.
+- **Daily view** — Detailed editing for a single day. Add, edit, or remove meals from any of the four meal slots. A color-coded nutritional summary for the day is displayed. Changes are saved back to the week's plan.
 
 ## Recipes
 
@@ -125,4 +137,10 @@ Browse, search, and manage the recipe library. Recipes can be filtered by catego
 
 ## Settings
 
-Configure app-wide preferences, including which day the week starts on. Also displays the current app version.
+Configure app-wide preferences, including:
+
+- Which day the week starts on
+- Daily nutritional targets: calorie limit, sugar limit, and protein target
+- Tolerance percentage used to define the acceptable range around each target for color coding
+
+Also displays the current app version.
