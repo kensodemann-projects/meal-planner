@@ -44,41 +44,6 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
-    '/foods/': RouteRecordInfo<
-      '/foods/',
-      '/foods',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
-    '/foods/[id]/': RouteRecordInfo<
-      '/foods/[id]/',
-      '/foods/:id',
-      { id: ParamValue<true> },
-      { id: ParamValue<false> },
-      | never
-    >,
-    '/foods/[id]/update': RouteRecordInfo<
-      '/foods/[id]/update',
-      '/foods/:id/update',
-      { id: ParamValue<true> },
-      { id: ParamValue<false> },
-      | never
-    >,
-    '/foods/add': RouteRecordInfo<
-      '/foods/add',
-      '/foods/add',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
-    '/foods/search-and-add': RouteRecordInfo<
-      '/foods/search-and-add',
-      '/foods/search-and-add',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
     '/login': RouteRecordInfo<
       '/login',
       '/login',
@@ -177,36 +142,6 @@ declare module 'vue-router/auto-routes' {
     'src/pages/error.vue': {
       routes:
         | '/error'
-      views:
-        | never
-    }
-    'src/pages/foods/index.vue': {
-      routes:
-        | '/foods/'
-      views:
-        | never
-    }
-    'src/pages/foods/[id]/index.vue': {
-      routes:
-        | '/foods/[id]/'
-      views:
-        | never
-    }
-    'src/pages/foods/[id]/update.vue': {
-      routes:
-        | '/foods/[id]/update'
-      views:
-        | never
-    }
-    'src/pages/foods/add.vue': {
-      routes:
-        | '/foods/add'
-      views:
-        | never
-    }
-    'src/pages/foods/search-and-add.vue': {
-      routes:
-        | '/foods/search-and-add'
       views:
         | never
     }
