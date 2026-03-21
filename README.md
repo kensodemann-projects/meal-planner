@@ -8,6 +8,37 @@ ensure they have the ingredients needed for the week's meals.
 
 The purpose of this README is to serve as a guidepost as development tasks are created and scheduled.
 
+# Navigation
+
+The application is organized into the following main sections, accessible from the sidebar:
+
+## Dashboard
+
+The landing page after login. Displays a summary of the current and upcoming week's meal plans, including stats like total days planned, highest calories, protein, carbs, and cheat days. Previous weeks are also shown for historical reference. Clicking a week card navigates directly to the weekly planning view.
+
+## Planning
+
+Where meal plans are created and managed. The landing page offers quick links to this week and next week, plus recent weeks.
+
+- **Weekly view** — Shows all 7 days at a glance. Each day lists the meal slots that have been filled (Breakfast, Lunch, Dinner, Snacks). Click a day to open the daily view.
+- **Daily view** — Detailed editing for a single day. Add, edit, or remove meals from any of the four meal slots. Changes are saved back to the week's plan.
+
+## Recipes
+
+Browse, search, and manage the recipe library. Recipes can be filtered by category, cuisine, and calorie range. Clicking a recipe shows its full details, including ingredients, steps, and nutritional info. New recipes can be added via the action button.
+
+## Foods
+
+Manage individual food items used as simple recipes (e.g., "Milk", "Orange"). Foods can be created manually or discovered via search-and-add. Each food stores its nutritional values for use in meal planning.
+
+## Shopping
+
+Generates a shopping list based on the coming week's meal plan. _(Feature in development.)_
+
+## Settings
+
+Configure app-wide preferences, including which day the week starts on. Also displays the current app version.
+
 # Key Goals
 
 - Simplify daily and weekly meal planning.
