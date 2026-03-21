@@ -1,10 +1,8 @@
 # Meal Planner
 
-The meal planner application aims to promote healthier eating habits by making meal planning more convenient and simplifying
-the grocery shopping experience. It will achieve this by providing users with an intelligent, easy to use, assisted planner
-that helps them to select meals for each day, adhering to user-defined daily targets for calories, sugars, and protein.
-Using the coming week's plan, it will generate a categorized shopping list to help users ensure they have the ingredients
-needed for the week's meals.
+The meal planner application aims to promote healthier eating habits by making meal planning more convenient. It provides
+users with an intelligent, easy to use, assisted planner that helps them to select meals for each day, adhering to
+user-defined daily targets for calories, sugars, and protein.
 
 The purpose of this README is to serve as a guidepost as development tasks are created and scheduled.
 
@@ -12,7 +10,6 @@ The purpose of this README is to serve as a guidepost as development tasks are c
 
 - Simplify daily and weekly meal planning.
 - Track the daily meal plan against targets.
-- Simplify the process of determining a grocery list.
 
 **Note:** This application is shared by my wife and I without anyone else having intentional access to it. As such,
 none of the workflows, settings, plans, or other artifacts created within the application shall apply on a per-user
