@@ -17,7 +17,6 @@
         v-if="recipeMealItem !== null"
         :meal-item="recipeMealItem"
         :items="recipes"
-        type="recipe"
         @save="createMealItem"
         @cancel="() => (recipeMealItem = null)"
       />
