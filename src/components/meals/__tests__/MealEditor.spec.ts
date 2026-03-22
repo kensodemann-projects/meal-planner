@@ -1,5 +1,4 @@
 import { TEST_MEAL } from '@/data/__tests__/test-data';
-import { useFoodsData } from '@/data/foods';
 import { useRecipesData } from '@/data/recipes';
 import type { Meal } from '@/models/meal';
 import { mount, VueWrapper } from '@vue/test-utils';
@@ -55,22 +54,6 @@ const recipeMealItem = {
   },
 };
 
-const foodMealItem = {
-  id: 'item-1-1-1',
-  name: 'Rolled Oats',
-  foodItemId: 'food-test-1',
-  units: 1,
-  unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
-  nutrition: {
-    calories: 300,
-    sodium: 100,
-    fat: 6,
-    protein: 10,
-    carbs: 54,
-    sugar: 2,
-  },
-};
-
 describe('Meal Editor', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
@@ -87,9 +70,8 @@ describe('Meal Editor', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it('gets references to the food items and recipes', () => {
+  it('gets references to the recipes', () => {
     wrapper = mountComponent({ meal: emptyMeal });
-    expect(useFoodsData).toHaveBeenCalledExactlyOnceWith();
     expect(useRecipesData).toHaveBeenCalledExactlyOnceWith();
   });
 
@@ -104,12 +86,6 @@ describe('Meal Editor', () => {
     it('does not list any recipes', () => {
       const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
       const panels = recipePanels.findAllComponents(components.VExpansionPanel);
-      expect(panels.length).toBe(0);
-    });
-
-    it('does not list any food items', () => {
-      const foodItemPanels = wrapper.findComponent('[data-testid="food-item-panels"]');
-      const panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
       expect(panels.length).toBe(0);
     });
 
@@ -148,19 +124,13 @@ describe('Meal Editor', () => {
     });
   });
 
-  describe('updating a meal with existing recipes and foods', () => {
+  describe('updating a meal with existing recipes', () => {
     beforeEach(() => (wrapper = mountComponent({ meal: TEST_MEAL })));
 
     it('lists the recipes for the meal', () => {
       const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
       const panels = recipePanels.findAllComponents(components.VExpansionPanel);
       expect(panels.length).toBe(TEST_MEAL.items.filter((item) => item.recipeId).length);
-    });
-
-    it('lists the food items for the meal', () => {
-      const foodItemPanels = wrapper.findComponent('[data-testid="food-item-panels"]');
-      const panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
-      expect(panels.length).toBe(TEST_MEAL.items.filter((item) => item.foodItemId).length);
     });
 
     describe('save button', () => {
@@ -193,24 +163,6 @@ describe('Meal Editor', () => {
         await mealItemEditor.vm.$emit('save', {
           ...recipeMealItem,
           name: 'Updated Recipe Name',
-        });
-        await wrapper.vm.$nextTick();
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled after an existing food item is updated', async () => {
-        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
-        const foodItemPanels = wrapper.findComponent('[data-testid="food-item-panels"]');
-        const panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
-        const panel = panels[0]!;
-        const header = panel.findComponent(components.VExpansionPanelTitle);
-        await header.trigger('click');
-        const modifyButton = panel.findComponent('[data-testid="modify-button"]');
-        await modifyButton.trigger('click');
-        const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
-        await mealItemEditor.vm.$emit('save', {
-          ...foodMealItem,
-          name: 'Updated Food Name',
         });
         await wrapper.vm.$nextTick();
         expect(saveButton.attributes('disabled')).toBeUndefined();
@@ -377,108 +329,6 @@ describe('Meal Editor', () => {
         await wrapper.vm.$nextTick();
 
         panels = recipePanels.findAllComponents(components.VExpansionPanel);
-        expect(panels.length).toBe(initialCount);
-      });
-    });
-
-    describe('an existing food meal item', () => {
-      let panel: VueWrapper<components.VExpansionPanel>;
-      beforeEach(async () => {
-        wrapper = mountComponent({ meal: TEST_MEAL });
-        const foodItemPanels = wrapper.findComponent('[data-testid="food-item-panels"]');
-        const panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
-        panel = panels[0]!;
-        const header = panel.findComponent(components.VExpansionPanelTitle);
-        await header.trigger('click');
-        await wrapper.vm.$nextTick();
-      });
-
-      it('has actions for modify and delete', () => {
-        const modifyButton = panel.findComponent('[data-testid="modify-button"]');
-        const deleteButton = panel.findComponent('[data-testid="delete-button"]');
-        expect(modifyButton.exists()).toBe(true);
-        expect(deleteButton.exists()).toBe(true);
-      });
-
-      it('displays the nutritional information', () => {
-        const nutritionDisplay = panel.findComponent({ name: 'NutritionData' });
-        expect(nutritionDisplay.exists()).toBe(true);
-      });
-
-      it('is not editable', async () => {
-        const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
-        expect(mealItemEditor.exists()).toBe(false);
-      });
-
-      it('replaces the nutritional information with the meal item editor on modify', async () => {
-        const nutritionDisplay = panel.findComponent({ name: 'NutritionData' });
-        const modifyButton = panel.findComponent('[data-testid="modify-button"]');
-        const deleteButton = panel.findComponent('[data-testid="delete-button"]');
-        await modifyButton.trigger('click');
-        const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
-        expect(mealItemEditor.exists()).toBe(true);
-        expect(mealItemEditor.props('type')).toBe('food');
-        expect(modifyButton.exists()).toBe(false);
-        expect(deleteButton.exists()).toBe(false);
-        expect(nutritionDisplay.exists()).toBe(false);
-      });
-
-      it('restores the nutritional information when cancel is clicked', async () => {
-        const modifyButton = panel.findComponent('[data-testid="modify-button"]');
-        await modifyButton.trigger('click');
-        const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
-        expect(mealItemEditor.exists()).toBe(true);
-        const cancelButton = mealItemEditor.findComponent('[data-testid="cancel-button"]');
-        await cancelButton.trigger('click');
-        expect(panel.findComponent({ name: 'MealItemEditorCard' }).exists()).toBe(false);
-        expect(panel.findComponent({ name: 'NutritionData' }).exists()).toBe(true);
-        expect(panel.findComponent('[data-testid="modify-button"]').exists()).toBe(true);
-        expect(panel.findComponent('[data-testid="delete-button"]').exists()).toBe(true);
-      });
-
-      it('opens the confirm dialog when delete button is clicked', async () => {
-        const deleteButton = panel.findComponent('[data-testid="delete-button"]');
-        await deleteButton.trigger('click');
-        await wrapper.vm.$nextTick();
-        const confirmDialog = wrapper.findComponent({ name: 'ConfirmDialog' });
-        expect(confirmDialog.exists()).toBe(true);
-      });
-
-      it('removes the food item from the list when deletion is confirmed', async () => {
-        const foodItemPanels = wrapper.findComponent('[data-testid="food-item-panels"]');
-        let panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
-        const initialCount = panels.length;
-        expect(initialCount).toBeGreaterThan(0);
-
-        const deleteButton = panel.findComponent('[data-testid="delete-button"]');
-        await deleteButton.trigger('click');
-        await wrapper.vm.$nextTick();
-
-        const confirmDialog = wrapper.findComponent({ name: 'ConfirmDialog' });
-        expect(confirmDialog.exists()).toBe(true);
-        await confirmDialog.vm.$emit('confirm');
-        await wrapper.vm.$nextTick();
-
-        panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
-        expect(panels.length).toBe(initialCount - 1);
-      });
-
-      it('keeps the food item in the list when deletion is canceled', async () => {
-        const foodItemPanels = wrapper.findComponent('[data-testid="food-item-panels"]');
-        let panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
-        const initialCount = panels.length;
-        expect(initialCount).toBeGreaterThan(0);
-
-        const deleteButton = panel.findComponent('[data-testid="delete-button"]');
-        await deleteButton.trigger('click');
-        await wrapper.vm.$nextTick();
-
-        const confirmDialog = wrapper.findComponent({ name: 'ConfirmDialog' });
-        expect(confirmDialog.exists()).toBe(true);
-        await confirmDialog.vm.$emit('cancel');
-        await wrapper.vm.$nextTick();
-
-        panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
         expect(panels.length).toBe(initialCount);
       });
     });
@@ -684,51 +534,6 @@ describe('Meal Editor', () => {
         const originalItem = TEST_MEAL.items.find((item) => item.recipeId);
         if (!originalItem) {
           throw new Error('TEST_MEAL should contain at least one recipe item');
-        }
-
-        const deleteButton = panel.findComponent('[data-testid="delete-button"]');
-        await deleteButton.trigger('click');
-        await wrapper.vm.$nextTick();
-
-        const confirmDialog = wrapper.findComponent({ name: 'ConfirmDialog' });
-        await confirmDialog.vm.$emit('confirm');
-        await wrapper.vm.$nextTick();
-
-        const totalNutritionAfter = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
-
-        const expectedTotal = {
-          calories: originalTotal.calories - originalItem.nutrition.calories,
-          sodium: originalTotal.sodium - originalItem.nutrition.sodium,
-          fat: originalTotal.fat - originalItem.nutrition.fat,
-          protein: originalTotal.protein - originalItem.nutrition.protein,
-          carbs: originalTotal.carbs - originalItem.nutrition.carbs,
-          sugar: originalTotal.sugar - originalItem.nutrition.sugar,
-        };
-
-        expect(totalNutritionAfter.props('value')).toEqual(expectedTotal);
-      });
-    });
-
-    describe('when deleting a food meal item', () => {
-      let panel: VueWrapper<components.VExpansionPanel>;
-
-      beforeEach(async () => {
-        wrapper = mountComponent({ meal: TEST_MEAL });
-        const foodItemPanels = wrapper.findComponent('[data-testid="food-item-panels"]');
-        const panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
-        panel = panels[0]!;
-        const header = panel.findComponent(components.VExpansionPanelTitle);
-        await header.trigger('click');
-        await wrapper.vm.$nextTick();
-      });
-
-      it('updates the total nutrition to exclude the deleted food item', async () => {
-        const totalNutritionBefore = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
-        const originalTotal = { ...totalNutritionBefore.props('value') };
-
-        const originalItem = TEST_MEAL.items.find((item) => item.foodItemId);
-        if (!originalItem) {
-          throw new Error('TEST_MEAL should contain at least one food item');
         }
 
         const deleteButton = panel.findComponent('[data-testid="delete-button"]');

@@ -44,29 +44,6 @@
         </v-expansion-panel>
       </v-expansion-panels>
 
-      <v-expansion-panels data-testid="food-item-panels">
-        <v-expansion-panel v-for="food in foodMealItems" :key="food.item.id">
-          <v-expansion-panel-title>
-            {{ food.item.name }}
-          </v-expansion-panel-title>
-          <v-expansion-panel-text>
-            <MealItemEditorCard
-              v-if="food.isEditing"
-              :meal-item="food.item"
-              :items="foods"
-              type="food"
-              @save="(updatedItem) => updateMealItem(food, updatedItem)"
-              @cancel="() => (food.isEditing = false)"
-            />
-            <div v-else>
-              <NutritionData :value="food.item.nutrition" />
-              <ModifyButton @click="() => (food.isEditing = true)" />
-              <DeleteButton @click="askToDelete(food)" />
-            </div>
-          </v-expansion-panel-text>
-        </v-expansion-panel>
-      </v-expansion-panels>
-
       <h3 class="mt-8">Total Nutrition</h3>
       <v-divider class="mb-4"></v-divider>
       <NutritionData :value="totalNutrition" data-testid="total-nutrition" />
@@ -89,7 +66,6 @@
 </template>
 
 <script setup lang="ts">
-import { useFoodsData } from '@/data/foods';
 import { useRecipesData } from '@/data/recipes';
 import type { EditableItem } from '@/models/editable-item';
 import type { Meal, MealItem } from '@/models/meal';
@@ -98,10 +74,8 @@ import { computed, ref } from 'vue';
 const emit = defineEmits<{ (event: 'save', payload: Meal): void; (event: 'cancel'): void }>();
 const props = defineProps<{ meal: Meal }>();
 
-const { foods } = useFoodsData();
 const { recipes } = useRecipesData();
 
-const foodMealItem = ref<Partial<MealItem> | null>(null);
 const recipeMealItem = ref<Partial<MealItem> | null>(null);
 const mealItemToRemove = ref<MealItem | null>(null);
 const mealItems = ref<EditableItem<MealItem>[]>(props.meal.items.map((item) => ({ isEditing: false, item })));
@@ -110,16 +84,9 @@ const isModified = ref(false);
 const showConfirmDialog = ref(false);
 
 const isEditing = computed(() => {
-  return (
-    mealItems.value.some((wrappedItem) => wrappedItem.isEditing) ||
-    foodMealItem.value !== null ||
-    recipeMealItem.value !== null
-  );
+  return mealItems.value.some((wrappedItem) => wrappedItem.isEditing) || recipeMealItem.value !== null;
 });
 
-const foodMealItems = computed((): EditableItem<MealItem>[] =>
-  mealItems.value.filter((wrappedItem) => wrappedItem.item.foodItemId !== undefined),
-);
 const recipeMealItems = computed((): EditableItem<MealItem>[] =>
   mealItems.value.filter((wrappedItem) => wrappedItem.item.recipeId !== undefined),
 );
@@ -156,9 +123,7 @@ const removeMealItem = () => {
 
 const createMealItem = (item: MealItem) => {
   mealItems.value.push({ item, isEditing: false });
-  if (item.foodItemId) {
-    foodMealItem.value = null;
-  } else if (item.recipeId) {
+  if (item.recipeId) {
     recipeMealItem.value = null;
   }
   isModified.value = true;
@@ -178,5 +143,3 @@ const save = () => {
   emit('save', mealToSave);
 };
 </script>
-
-<style scoped></style>
