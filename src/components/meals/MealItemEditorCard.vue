@@ -3,7 +3,7 @@
     <v-card>
       <v-card-text>
         <v-container fluid>
-          <MealItemEditorRows v-model="editMealItem" :type="type" :items="items" />
+          <MealItemEditorRows v-model="editMealItem" :items="items" />
         </v-container>
       </v-card-text>
       <v-card-actions>
@@ -16,7 +16,6 @@
 
 <script setup lang="ts">
 import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
-import type { FoodItem } from '@/models/food';
 import type { MealItem } from '@/models/meal';
 import type { Nutrition } from '@/models/nutrition';
 import type { Recipe } from '@/models/recipe';
@@ -24,8 +23,7 @@ import { computed, ref } from 'vue';
 
 const props = defineProps<{
   mealItem: Partial<MealItem>;
-  items: (FoodItem | Recipe)[];
-  type: 'food' | 'recipe';
+  items: Recipe[];
 }>();
 
 defineEmits<{
@@ -37,8 +35,8 @@ const editMealItem = ref<Partial<MealItem>>(
     ? props.mealItem
     : {
         id: globalThis.crypto.randomUUID(),
-        units: props.type === 'recipe' ? 1 : undefined,
-        unitOfMeasure: props.type === 'recipe' ? findUnitOfMeasure('serving') : undefined,
+        units: 1,
+        unitOfMeasure: findUnitOfMeasure('serving'),
       },
 );
 const valid = ref(false);
@@ -47,7 +45,6 @@ const isModified = computed(() => {
   if (!props.mealItem) return true;
   const fields: (keyof Nutrition)[] = ['calories', 'sodium', 'sugar', 'carbs', 'fat', 'protein'];
   if (
-    editMealItem.value.foodItemId !== props.mealItem?.foodItemId ||
     editMealItem.value.recipeId !== props.mealItem?.recipeId ||
     editMealItem.value.unitOfMeasure?.id !== props.mealItem?.unitOfMeasure?.id ||
     editMealItem.value.units !== props.mealItem?.units

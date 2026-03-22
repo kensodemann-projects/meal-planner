@@ -17,7 +17,6 @@
         v-if="recipeMealItem !== null"
         :meal-item="recipeMealItem"
         :items="recipes"
-        type="recipe"
         @save="createMealItem"
         @cancel="() => (recipeMealItem = null)"
       />
@@ -31,7 +30,6 @@
               v-if="recipe.isEditing"
               :meal-item="recipe.item"
               :items="recipes"
-              type="recipe"
               @save="(updatedItem) => updateMealItem(recipe, updatedItem)"
               @cancel="() => (recipe.isEditing = false)"
             />
@@ -39,49 +37,6 @@
               <NutritionData :value="recipe.item.nutrition" />
               <ModifyButton @click="() => (recipe.isEditing = true)" />
               <DeleteButton @click="askToDelete(recipe)" />
-            </div>
-          </v-expansion-panel-text>
-        </v-expansion-panel>
-      </v-expansion-panels>
-
-      <div class="d-flex justify-space-between align-center mt-8">
-        <h3>Additional Foods</h3>
-        <v-btn
-          density="compact"
-          variant="text"
-          icon="mdi-plus"
-          :disabled="foodMealItem !== null"
-          @click="() => (foodMealItem = {})"
-          data-testid="add-food-item-button"
-        ></v-btn>
-      </div>
-      <v-divider class="mb-4"></v-divider>
-      <MealItemEditorCard
-        v-if="foodMealItem !== null"
-        :meal-item="foodMealItem"
-        :items="foods"
-        type="food"
-        @save="createMealItem"
-        @cancel="() => (foodMealItem = null)"
-      />
-      <v-expansion-panels data-testid="food-item-panels">
-        <v-expansion-panel v-for="food in foodMealItems" :key="food.item.id">
-          <v-expansion-panel-title>
-            {{ food.item.name }}
-          </v-expansion-panel-title>
-          <v-expansion-panel-text>
-            <MealItemEditorCard
-              v-if="food.isEditing"
-              :meal-item="food.item"
-              :items="foods"
-              type="food"
-              @save="(updatedItem) => updateMealItem(food, updatedItem)"
-              @cancel="() => (food.isEditing = false)"
-            />
-            <div v-else>
-              <NutritionData :value="food.item.nutrition" />
-              <ModifyButton @click="() => (food.isEditing = true)" />
-              <DeleteButton @click="askToDelete(food)" />
             </div>
           </v-expansion-panel-text>
         </v-expansion-panel>
@@ -109,7 +64,6 @@
 </template>
 
 <script setup lang="ts">
-import { useFoodsData } from '@/data/foods';
 import { useRecipesData } from '@/data/recipes';
 import type { EditableItem } from '@/models/editable-item';
 import type { Meal, MealItem } from '@/models/meal';
@@ -118,10 +72,8 @@ import { computed, ref } from 'vue';
 const emit = defineEmits<{ (event: 'save', payload: Meal): void; (event: 'cancel'): void }>();
 const props = defineProps<{ meal: Meal }>();
 
-const { foods } = useFoodsData();
 const { recipes } = useRecipesData();
 
-const foodMealItem = ref<Partial<MealItem> | null>(null);
 const recipeMealItem = ref<Partial<MealItem> | null>(null);
 const mealItemToRemove = ref<MealItem | null>(null);
 const mealItems = ref<EditableItem<MealItem>[]>(props.meal.items.map((item) => ({ isEditing: false, item })));
@@ -130,16 +82,9 @@ const isModified = ref(false);
 const showConfirmDialog = ref(false);
 
 const isEditing = computed(() => {
-  return (
-    mealItems.value.some((wrappedItem) => wrappedItem.isEditing) ||
-    foodMealItem.value !== null ||
-    recipeMealItem.value !== null
-  );
+  return mealItems.value.some((wrappedItem) => wrappedItem.isEditing) || recipeMealItem.value !== null;
 });
 
-const foodMealItems = computed((): EditableItem<MealItem>[] =>
-  mealItems.value.filter((wrappedItem) => wrappedItem.item.foodItemId !== undefined),
-);
 const recipeMealItems = computed((): EditableItem<MealItem>[] =>
   mealItems.value.filter((wrappedItem) => wrappedItem.item.recipeId !== undefined),
 );
@@ -176,9 +121,7 @@ const removeMealItem = () => {
 
 const createMealItem = (item: MealItem) => {
   mealItems.value.push({ item, isEditing: false });
-  if (item.foodItemId) {
-    foodMealItem.value = null;
-  } else if (item.recipeId) {
+  if (item.recipeId) {
     recipeMealItem.value = null;
   }
   isModified.value = true;
@@ -198,5 +141,3 @@ const save = () => {
   emit('save', mealToSave);
 };
 </script>
-
-<style scoped></style>
