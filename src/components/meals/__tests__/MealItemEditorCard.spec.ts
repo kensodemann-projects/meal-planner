@@ -1,5 +1,4 @@
-import { TEST_FOODS, TEST_RECIPES } from '@/data/__tests__/test-data';
-import type { FoodItem } from '@/models/food';
+import { TEST_RECIPES } from '@/data/__tests__/test-data';
 import type { MealItem } from '@/models/meal';
 import type { Recipe } from '@/models/recipe';
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
@@ -16,9 +15,9 @@ const vuetify = createVuetify({
   directives,
 });
 const mountComponent = (
-  props: { type: 'food' | 'recipe'; items: (FoodItem | Recipe)[]; mealItem: Partial<MealItem> } = {
-    type: 'food',
-    items: TEST_FOODS,
+  props: { type: 'food' | 'recipe'; items: Recipe[]; mealItem: Partial<MealItem> } = {
+    type: 'recipe',
+    items: TEST_RECIPES,
     mealItem: {},
   },
 ) => mount(MealItemEditorCard, { props, global: { plugins: [vuetify] } });
@@ -97,16 +96,16 @@ describe('Meal Item Editor Card', () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
           expect(saveButton.attributes('disabled')).toBeDefined();
           // Choosing a recipe will default all of the other inputs, so this should enable the button
-          const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-input"]');
-          await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_MEAL_ITEM.recipeId);
+          const recipeInput = wrapper.findComponent('[data-testid="recipe-input"]');
+          await (recipeInput as any).vm.$emit('update:modelValue', TEST_MEAL_ITEM.recipeId);
           await flushPromises();
           expect(saveButton.attributes('disabled')).toBeUndefined();
         });
 
         it('emits "save" with the data', async () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-input"]');
-          await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_MEAL_ITEM.recipeId);
+          const recipeInput = wrapper.findComponent('[data-testid="recipe-input"]');
+          await (recipeInput as any).vm.$emit('update:modelValue', TEST_MEAL_ITEM.recipeId);
           await flushPromises();
           await saveButton.trigger('click');
           expect(wrapper.emitted('save')).toBeTruthy();
