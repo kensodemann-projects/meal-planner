@@ -31,7 +31,6 @@
               v-if="recipe.isEditing"
               :meal-item="recipe.item"
               :items="recipes"
-              type="recipe"
               @save="(updatedItem) => updateMealItem(recipe, updatedItem)"
               @cancel="() => (recipe.isEditing = false)"
             />

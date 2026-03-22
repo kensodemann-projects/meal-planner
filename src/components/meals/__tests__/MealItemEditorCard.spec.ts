@@ -15,8 +15,7 @@ const vuetify = createVuetify({
   directives,
 });
 const mountComponent = (
-  props: { type: 'food' | 'recipe'; items: Recipe[]; mealItem: Partial<MealItem> } = {
-    type: 'recipe',
+  props: { items: Recipe[]; mealItem: Partial<MealItem> } = {
     items: TEST_RECIPES,
     mealItem: {},
   },
@@ -69,7 +68,7 @@ describe('Meal Item Editor Card', () => {
   describe('adding', () => {
     describe('a recipe', () => {
       beforeEach(() => {
-        wrapper = mountComponent({ type: 'recipe', items: TEST_RECIPES, mealItem: {} });
+        wrapper = mountComponent({ items: TEST_RECIPES, mealItem: {} });
       });
 
       it('defaults the units and unit of measure', () => {
@@ -154,7 +153,7 @@ describe('Meal Item Editor Card', () => {
   describe('updating', () => {
     describe('a recipe', () => {
       beforeEach(() => {
-        wrapper = mountComponent({ type: 'recipe', items: TEST_RECIPES, mealItem: TEST_MEAL_ITEM });
+        wrapper = mountComponent({ items: TEST_RECIPES, mealItem: TEST_MEAL_ITEM });
       });
 
       it('initializes the inputs', () => {

@@ -230,7 +230,6 @@ describe('Meal Editor', () => {
         await modifyButton.trigger('click');
         const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
         expect(mealItemEditor.exists()).toBe(true);
-        expect(mealItemEditor.props('type')).toBe('recipe');
         expect(modifyButton.exists()).toBe(false);
         expect(deleteButton.exists()).toBe(false);
         expect(nutritionDisplay.exists()).toBe(false);
@@ -348,7 +347,6 @@ describe('Meal Editor', () => {
         await addRecipeButton.trigger('click');
         const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
         expect(mealItemEditors.length).toBe(1);
-        expect(mealItemEditors[0]!.props('type')).toBe('recipe');
       });
 
       it('becomes disabled', async () => {
