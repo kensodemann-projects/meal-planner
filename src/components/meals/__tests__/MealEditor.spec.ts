@@ -8,7 +8,6 @@ import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import MealEditor from '../MealEditor.vue';
 
-vi.mock('@/data/foods');
 vi.mock('@/data/recipes');
 
 const vuetify = createVuetify({
