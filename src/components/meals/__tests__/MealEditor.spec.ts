@@ -130,23 +130,9 @@ describe('Meal Editor', () => {
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
 
-      it('is enabled after a food is added', async () => {
-        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
-        const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
-        await addFoodItemButton.trigger('click');
-        const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-        await mealItemEditors[0]!.vm.$emit('save', foodMealItem);
-        await wrapper.vm.$nextTick();
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
-
       it('emits the save event with the meal data when clicked', async () => {
         const saveButton = wrapper.findComponent('[data-testid="save-button"]');
         const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
-        const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
-        await addFoodItemButton.trigger('click');
-        const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-        await mealItemEditors[0]!.vm.$emit('save', foodMealItem);
         await addRecipeButton.trigger('click');
         const updatedMealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
         await updatedMealItemEditors[0]!.vm.$emit('save', recipeMealItem);
@@ -156,7 +142,7 @@ describe('Meal Editor', () => {
         const emittedMeal = (wrapper.emitted('save') as unknown[][])[0]![0] as Meal;
         expect(emittedMeal).toEqual({
           ...emptyMeal,
-          items: [foodMealItem, recipeMealItem],
+          items: [recipeMealItem],
         });
       });
     });
@@ -190,16 +176,6 @@ describe('Meal Editor', () => {
         await addRecipeButton.trigger('click');
         const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
         await mealItemEditors[0]!.vm.$emit('save', recipeMealItem);
-        await wrapper.vm.$nextTick();
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled after a food is added', async () => {
-        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
-        const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
-        await addFoodItemButton.trigger('click');
-        const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-        await mealItemEditors[0]!.vm.$emit('save', foodMealItem);
         await wrapper.vm.$nextTick();
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
@@ -586,70 +562,6 @@ describe('Meal Editor', () => {
     });
   });
 
-  describe('add food item button', () => {
-    it('is active', () => {
-      wrapper = mountComponent({ meal: emptyMeal });
-      const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
-      expect(addFoodItemButton.exists()).toBe(true);
-      expect(addFoodItemButton.attributes('disabled')).toBeUndefined();
-    });
-
-    describe('on click', () => {
-      it('adds a meal item editor for a food item', async () => {
-        wrapper = mountComponent({ meal: emptyMeal });
-        const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
-        await addFoodItemButton.trigger('click');
-        const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-        expect(mealItemEditors.length).toBe(1);
-        expect(mealItemEditors[0]!.props('type')).toBe('food');
-      });
-
-      it('becomes disabled', async () => {
-        wrapper = mountComponent({ meal: emptyMeal });
-        const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
-        await addFoodItemButton.trigger('click');
-        expect(addFoodItemButton.attributes('disabled')).toBeDefined();
-      });
-
-      describe('on cancel', () => {
-        it('removes the meal item editor', async () => {
-          wrapper = mountComponent({ meal: emptyMeal });
-          const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
-          await addFoodItemButton.trigger('click');
-          let mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-          expect(mealItemEditors.length).toBe(1);
-          await mealItemEditors[0]!.vm.$emit('cancel');
-          mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-          expect(mealItemEditors.length).toBe(0);
-        });
-      });
-
-      describe('on save', () => {
-        it('removes the meal item editor', async () => {
-          wrapper = mountComponent({ meal: emptyMeal });
-          const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
-          await addFoodItemButton.trigger('click');
-          let mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-          expect(mealItemEditors.length).toBe(1);
-          await mealItemEditors[0]!.vm.$emit('save', foodMealItem);
-          mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-          expect(mealItemEditors.length).toBe(0);
-        });
-
-        it('displays the food item in the food item list', async () => {
-          wrapper = mountComponent({ meal: emptyMeal });
-          const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
-          await addFoodItemButton.trigger('click');
-          const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-          await mealItemEditors[0]!.vm.$emit('save', foodMealItem);
-          const foodItemPanels = wrapper.findComponent('[data-testid="food-item-panels"]');
-          const panels = foodItemPanels.findAllComponents(components.VExpansionPanel);
-          expect(panels.length).toBe(1);
-        });
-      });
-    });
-  });
-
   describe('Total Nutrition Display', () => {
     describe('when adding a new meal', () => {
       beforeEach(() => (wrapper = mountComponent({ meal: emptyMeal })));
@@ -693,49 +605,6 @@ describe('Meal Editor', () => {
 
         const totalNutrition = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
         expect(totalNutrition.props('value')).toEqual(recipeMealItem.nutrition);
-      });
-    });
-
-    describe('when adding a food meal item', () => {
-      beforeEach(() => (wrapper = mountComponent({ meal: emptyMeal })));
-
-      it('updates the total nutrition to reflect the added food item', async () => {
-        const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
-        await addFoodItemButton.trigger('click');
-
-        const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-        await mealItemEditors[0]!.vm.$emit('save', foodMealItem);
-
-        const totalNutrition = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
-        expect(totalNutrition.props('value')).toEqual(foodMealItem.nutrition);
-      });
-    });
-
-    describe('when adding both recipe and food items', () => {
-      beforeEach(() => (wrapper = mountComponent({ meal: emptyMeal })));
-
-      it('updates the total nutrition to reflect both items', async () => {
-        const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
-        await addRecipeButton.trigger('click');
-
-        let mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-        await mealItemEditors[0]!.vm.$emit('save', recipeMealItem);
-
-        const addFoodItemButton = wrapper.findComponent('[data-testid="add-food-item-button"]');
-        await addFoodItemButton.trigger('click');
-
-        mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-        await mealItemEditors[0]!.vm.$emit('save', foodMealItem);
-
-        const totalNutrition = wrapper.getComponent('[data-testid="total-nutrition"]') as VueWrapper<any>;
-        expect(totalNutrition.props('value')).toEqual({
-          calories: 620,
-          sodium: 220,
-          fat: 20,
-          protein: 52,
-          carbs: 54,
-          sugar: 2,
-        });
       });
     });
 

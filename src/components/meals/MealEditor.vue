@@ -44,26 +44,6 @@
         </v-expansion-panel>
       </v-expansion-panels>
 
-      <div class="d-flex justify-space-between align-center mt-8">
-        <h3>Additional Foods</h3>
-        <v-btn
-          density="compact"
-          variant="text"
-          icon="mdi-plus"
-          :disabled="foodMealItem !== null"
-          @click="() => (foodMealItem = {})"
-          data-testid="add-food-item-button"
-        ></v-btn>
-      </div>
-      <v-divider class="mb-4"></v-divider>
-      <MealItemEditorCard
-        v-if="foodMealItem !== null"
-        :meal-item="foodMealItem"
-        :items="foods"
-        type="food"
-        @save="createMealItem"
-        @cancel="() => (foodMealItem = null)"
-      />
       <v-expansion-panels data-testid="food-item-panels">
         <v-expansion-panel v-for="food in foodMealItems" :key="food.item.id">
           <v-expansion-panel-title>
