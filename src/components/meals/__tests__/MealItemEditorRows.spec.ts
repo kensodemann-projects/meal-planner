@@ -37,34 +37,33 @@ describe('Meal Item Editor Rows', () => {
 
     it('has the proper label', () => {
       wrapper = mountComponent({ modelValue: {}, items: TEST_RECIPES });
-      const foodSelect = wrapper.findComponent(
-        '[data-testid="recipe-or-food-input"]',
+      const recipeSelect = wrapper.findComponent(
+        '[data-testid="recipe-input"]',
       ) as VueWrapper<components.VAutocomplete>;
-      expect(foodSelect.props('label')).toBe('Select Recipe');
+      expect(recipeSelect.props('label')).toBe('Select Recipe');
     });
 
     it('is required', async () => {
       wrapper = mountComponent({ modelValue: {}, items: TEST_RECIPES });
-      await autocompleteIsRequired(wrapper, 'recipe-or-food-input');
+      await autocompleteIsRequired(wrapper, 'recipe-input');
     });
 
     it('emits changes', async () => {
       wrapper = mountComponent({ modelValue: {}, items: TEST_RECIPES });
-      const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-or-food-input"]');
+      const recipeInput = wrapper.findComponent('[data-testid="recipe-input"]');
 
-      await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_RECIPES[1]!.id);
+      await (recipeInput as any).vm.$emit('update:modelValue', TEST_RECIPES[1]!.id);
 
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
-      expect((emitted![0]![0] as MealItem).foodItemId).toBeUndefined();
       expect((emitted![0]![0] as MealItem).recipeId).toBe(TEST_RECIPES[1]!.id);
     });
 
     it('defaults the nutrition information', async () => {
       wrapper = mountComponent({ modelValue: {}, items: TEST_RECIPES });
       const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
-      const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-or-food-input"]');
-      await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_RECIPES[1]!.id);
+      const recipeInput = wrapper.findComponent('[data-testid="recipe-input"]');
+      await (recipeInput as any).vm.$emit('update:modelValue', TEST_RECIPES[1]!.id);
       expect(nutritionEditor.props('modelValue')).toEqual({
         calories: TEST_RECIPES[1]!.calories,
         sodium: TEST_RECIPES[1]!.sodium,

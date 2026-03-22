@@ -9,7 +9,7 @@
           item-title="name"
           item-value="id"
           :rules="[validationRules.required]"
-          data-testid="recipe-or-food-input"
+          data-testid="recipe-input"
         ></v-autocomplete>
       </v-col>
       <v-col cols="12" md="4">

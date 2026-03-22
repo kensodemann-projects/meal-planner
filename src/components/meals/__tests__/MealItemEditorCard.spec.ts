@@ -24,7 +24,7 @@ const mountComponent = (
 ) => mount(MealItemEditorCard, { props, global: { plugins: [vuetify] } });
 
 const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
-  recipeOrFoodInput: wrapper.findComponent('[data-testid="recipe-or-food-input"]').find('input'),
+  recipeInput: wrapper.findComponent('[data-testid="recipe-input"]').find('input'),
   unitsInput: wrapper.findComponent('[data-testid="units-input"]').find('input'),
   unitOfMeasureInput: wrapper.findComponent('[data-testid="unit-of-measure-input"]').find('input'),
   caloriesInput: wrapper.findComponent('[data-testid="calories-input"]').find('input'),
@@ -35,7 +35,7 @@ const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
   proteinInput: wrapper.findComponent('[data-testid="protein-input"]').find('input'),
 });
 
-const TEST_RECIPE_MEAL_ITEM: MealItem = {
+const TEST_MEAL_ITEM: MealItem = {
   id: '4498eae8-b4c9-4327-b1c2-518f071981f2',
   units: 1,
   unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
@@ -97,16 +97,16 @@ describe('Meal Item Editor Card', () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
           expect(saveButton.attributes('disabled')).toBeDefined();
           // Choosing a recipe will default all of the other inputs, so this should enable the button
-          const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-or-food-input"]');
-          await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_RECIPE_MEAL_ITEM.recipeId);
+          const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-input"]');
+          await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_MEAL_ITEM.recipeId);
           await flushPromises();
           expect(saveButton.attributes('disabled')).toBeUndefined();
         });
 
         it('emits "save" with the data', async () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-or-food-input"]');
-          await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_RECIPE_MEAL_ITEM.recipeId);
+          const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-input"]');
+          await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_MEAL_ITEM.recipeId);
           await flushPromises();
           await saveButton.trigger('click');
           expect(wrapper.emitted('save')).toBeTruthy();
@@ -155,21 +155,21 @@ describe('Meal Item Editor Card', () => {
   describe('updating', () => {
     describe('a recipe', () => {
       beforeEach(() => {
-        wrapper = mountComponent({ type: 'recipe', items: TEST_RECIPES, mealItem: TEST_RECIPE_MEAL_ITEM });
+        wrapper = mountComponent({ type: 'recipe', items: TEST_RECIPES, mealItem: TEST_MEAL_ITEM });
       });
 
       it('initializes the inputs', () => {
         const inputs = getInputs(wrapper);
         // it is hard to directly test the autocomplete value, so we check the underlying model
-        expect((wrapper.vm as any).editMealItem.recipeId).toBe(TEST_RECIPE_MEAL_ITEM.recipeId);
+        expect((wrapper.vm as any).editMealItem.recipeId).toBe(TEST_MEAL_ITEM.recipeId);
         expect((wrapper.vm as any).editMealItem.unitOfMeasure.id).toBe('serving');
-        expect(inputs.unitsInput.element.value).toBe(TEST_RECIPE_MEAL_ITEM.units.toString());
-        expect(inputs.caloriesInput.element.value).toBe(TEST_RECIPE_MEAL_ITEM.nutrition.calories.toString());
-        expect(inputs.sodiumInput.element.value).toBe(TEST_RECIPE_MEAL_ITEM.nutrition.sodium.toString());
-        expect(inputs.sugarInput.element.value).toBe(TEST_RECIPE_MEAL_ITEM.nutrition.sugar.toString());
-        expect(inputs.carbsInput.element.value).toBe(TEST_RECIPE_MEAL_ITEM.nutrition.carbs.toString());
-        expect(inputs.fatInput.element.value).toBe(TEST_RECIPE_MEAL_ITEM.nutrition.fat.toString());
-        expect(inputs.proteinInput.element.value).toBe(TEST_RECIPE_MEAL_ITEM.nutrition.protein.toString());
+        expect(inputs.unitsInput.element.value).toBe(TEST_MEAL_ITEM.units.toString());
+        expect(inputs.caloriesInput.element.value).toBe(TEST_MEAL_ITEM.nutrition.calories.toString());
+        expect(inputs.sodiumInput.element.value).toBe(TEST_MEAL_ITEM.nutrition.sodium.toString());
+        expect(inputs.sugarInput.element.value).toBe(TEST_MEAL_ITEM.nutrition.sugar.toString());
+        expect(inputs.carbsInput.element.value).toBe(TEST_MEAL_ITEM.nutrition.carbs.toString());
+        expect(inputs.fatInput.element.value).toBe(TEST_MEAL_ITEM.nutrition.fat.toString());
+        expect(inputs.proteinInput.element.value).toBe(TEST_MEAL_ITEM.nutrition.protein.toString());
       });
 
       describe('the cancel button', () => {
@@ -195,35 +195,35 @@ describe('Meal Item Editor Card', () => {
         it('is enabled when a value is validly changed', async () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
           const inputs = getInputs(wrapper);
-          const recipeOrFoodInput = wrapper.findComponent('[data-testid="recipe-or-food-input"]');
+          const recipeInput = wrapper.findComponent('[data-testid="recipe-input"]');
           expect(saveButton.attributes('disabled')).toBeDefined();
-          await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_RECIPES[1]!.id);
+          await (recipeInput as any).vm.$emit('update:modelValue', TEST_RECIPES[1]!.id);
           expect(saveButton.attributes('disabled')).toBeUndefined();
-          await (recipeOrFoodInput as any).vm.$emit('update:modelValue', TEST_RECIPE_MEAL_ITEM.recipeId);
+          await (recipeInput as any).vm.$emit('update:modelValue', TEST_MEAL_ITEM.recipeId);
           expect(saveButton.attributes('disabled')).toBeDefined();
           await inputs.caloriesInput.setValue(1);
           expect(saveButton.attributes('disabled')).toBeUndefined();
-          await inputs.caloriesInput.setValue(TEST_RECIPE_MEAL_ITEM.nutrition.calories);
+          await inputs.caloriesInput.setValue(TEST_MEAL_ITEM.nutrition.calories);
           expect(saveButton.attributes('disabled')).toBeDefined();
           await inputs.sugarInput.setValue(1);
           expect(saveButton.attributes('disabled')).toBeUndefined();
-          await inputs.sugarInput.setValue(TEST_RECIPE_MEAL_ITEM.nutrition.sugar);
+          await inputs.sugarInput.setValue(TEST_MEAL_ITEM.nutrition.sugar);
           expect(saveButton.attributes('disabled')).toBeDefined();
           await inputs.carbsInput.setValue(1);
           expect(saveButton.attributes('disabled')).toBeUndefined();
-          await inputs.carbsInput.setValue(TEST_RECIPE_MEAL_ITEM.nutrition.carbs);
+          await inputs.carbsInput.setValue(TEST_MEAL_ITEM.nutrition.carbs);
           expect(saveButton.attributes('disabled')).toBeDefined();
           await inputs.fatInput.setValue(1);
           expect(saveButton.attributes('disabled')).toBeUndefined();
-          await inputs.fatInput.setValue(TEST_RECIPE_MEAL_ITEM.nutrition.fat);
+          await inputs.fatInput.setValue(TEST_MEAL_ITEM.nutrition.fat);
           expect(saveButton.attributes('disabled')).toBeDefined();
           await inputs.proteinInput.setValue(1);
           expect(saveButton.attributes('disabled')).toBeUndefined();
-          await inputs.proteinInput.setValue(TEST_RECIPE_MEAL_ITEM.nutrition.protein);
+          await inputs.proteinInput.setValue(TEST_MEAL_ITEM.nutrition.protein);
           expect(saveButton.attributes('disabled')).toBeDefined();
           await inputs.sodiumInput.setValue(1);
           expect(saveButton.attributes('disabled')).toBeUndefined();
-          await inputs.sodiumInput.setValue(TEST_RECIPE_MEAL_ITEM.nutrition.sodium);
+          await inputs.sodiumInput.setValue(TEST_MEAL_ITEM.nutrition.sodium);
           expect(saveButton.attributes('disabled')).toBeDefined();
         });
 
@@ -237,9 +237,9 @@ describe('Meal Item Editor Card', () => {
           expect(wrapper.emitted('save')).toHaveLength(1);
           expect(wrapper.emitted('save')?.[0]).toEqual([
             {
-              ...TEST_RECIPE_MEAL_ITEM,
+              ...TEST_MEAL_ITEM,
               nutrition: {
-                ...TEST_RECIPE_MEAL_ITEM.nutrition,
+                ...TEST_MEAL_ITEM.nutrition,
                 calories: 631,
                 sodium: 781,
               },
