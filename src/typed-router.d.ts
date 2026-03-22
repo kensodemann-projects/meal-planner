@@ -107,13 +107,6 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
-    '/shopping/': RouteRecordInfo<
-      '/shopping/',
-      '/shopping',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
   }
 
   /**
@@ -196,12 +189,6 @@ declare module 'vue-router/auto-routes' {
     'src/pages/settings.vue': {
       routes:
         | '/settings'
-      views:
-        | never
-    }
-    'src/pages/shopping/index.vue': {
-      routes:
-        | '/shopping/'
       views:
         | never
     }
