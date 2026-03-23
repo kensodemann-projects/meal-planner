@@ -1,5 +1,4 @@
 import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
-import type { FoodItem } from '@/models/food';
 import type { Meal } from '@/models/meal';
 import type { MealPlan } from '@/models/meal-plan';
 import type { Portion } from '@/models/portion';
@@ -15,23 +14,6 @@ export const TEST_PORTION: Portion = {
   carbs: 35,
   protein: 5,
   fat: 35,
-};
-
-export const TEST_FOOD: FoodItem = {
-  name: 'Hot Dog',
-  brand: "Jimmy's",
-  fdcId: 429930,
-  category: 'Meats',
-  grams: 100,
-  unitOfMeasure: findUnitOfMeasure('g'),
-  units: 100,
-  calories: 450,
-  sodium: 1243,
-  sugar: 6,
-  carbs: 12,
-  protein: 0,
-  fat: 16,
-  alternativePortions: [],
 };
 
 export const TEST_RECIPES: Recipe[] = [

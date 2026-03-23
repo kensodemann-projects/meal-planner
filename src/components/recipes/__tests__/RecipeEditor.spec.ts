@@ -15,8 +15,6 @@ import {
 } from '../../__tests__/test-utils';
 import StepEditorRow from '../StepEditorRow.vue';
 
-vi.mock('@/data/foods');
-
 const vuetify = createVuetify({
   components,
   directives,

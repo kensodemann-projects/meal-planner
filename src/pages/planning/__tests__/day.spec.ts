@@ -12,7 +12,6 @@ import type { Meal, MealItem } from '@/models/meal';
 import ConfirmDialog from '@/components/core/ConfirmDialog.vue';
 
 vi.mock('vue-router');
-vi.mock('@/data/foods');
 vi.mock('@/data/meal-plans');
 vi.mock('@/data/recipes');
 vi.mock('@/data/settings');
