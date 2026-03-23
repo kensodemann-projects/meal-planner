@@ -4,8 +4,6 @@ import type { Meal } from '@/models/meal';
 import type { MealPlan } from '@/models/meal-plan';
 import type { Portion } from '@/models/portion';
 import type { Recipe } from '@/models/recipe';
-import type { UnitOfMeasure } from '@/models/unit-of-measure';
-import type { FdcFoodSearchFoodItem } from '@/models/usda-fdc';
 
 export const TEST_PORTION: Portion = {
   grams: 240,
@@ -18,42 +16,6 @@ export const TEST_PORTION: Portion = {
   protein: 5,
   fat: 35,
 };
-
-export const TEST_PORTIONS: Portion[] = [
-  {
-    grams: 240,
-    unitOfMeasure: findUnitOfMeasure('each'),
-    units: 2,
-    calories: 940,
-    sodium: 2500,
-    sugar: 3,
-    carbs: 35,
-    protein: 5,
-    fat: 35,
-  },
-  {
-    grams: 1000,
-    unitOfMeasure: findUnitOfMeasure('liter'),
-    units: 1,
-    calories: 3917,
-    sodium: 10417,
-    sugar: 12.5,
-    carbs: 145.8,
-    protein: 20.8,
-    fat: 145.8,
-  },
-  {
-    grams: 480,
-    unitOfMeasure: findUnitOfMeasure('c'),
-    units: 2,
-    calories: 1880,
-    sodium: 5000,
-    sugar: 6,
-    carbs: 70,
-    protein: 10,
-    fat: 70,
-  },
-];
 
 export const TEST_FOOD: FoodItem = {
   name: 'Hot Dog',
@@ -71,167 +33,6 @@ export const TEST_FOOD: FoodItem = {
   fat: 16,
   alternativePortions: [],
 };
-
-const makePortion = (units: number, uom: UnitOfMeasure, grams: number, calories: number): Portion => ({
-  units,
-  unitOfMeasure: uom,
-  grams,
-  calories,
-  sodium: 0,
-  fat: 0,
-  protein: 0,
-  carbs: 0,
-  sugar: 0,
-});
-
-export const TEST_FOODS: FoodItem[] = [
-  {
-    id: '1',
-    name: 'Classic Whole Milk',
-    brand: 'Dairy Farm Co',
-    category: 'Dairy',
-    fdcId: 1100001,
-    units: 1,
-    unitOfMeasure: findUnitOfMeasure('cup'),
-    grams: 244,
-    calories: 150,
-    sodium: 125,
-    fat: 8,
-    protein: 8,
-    carbs: 12,
-    sugar: 12,
-    alternativePortions: [makePortion(240, findUnitOfMeasure('g'), 240, 150)],
-  },
-  {
-    id: '2',
-    name: 'Large Brown Egg',
-    brand: 'Free Range Eggs',
-    category: 'Unknown',
-    fdcId: 1100002,
-    units: 1,
-    unitOfMeasure: findUnitOfMeasure('each'),
-    grams: 50,
-    calories: 78,
-    sodium: 62,
-    fat: 5,
-    protein: 6,
-    carbs: 0.6,
-    sugar: 0.6,
-    alternativePortions: [makePortion(2, findUnitOfMeasure('each'), 100, 156)],
-  },
-  {
-    id: '3',
-    name: 'All-Purpose Flour',
-    brand: 'Baker’s Best',
-    category: 'Bakery',
-    fdcId: 1100003,
-    units: 1,
-    unitOfMeasure: findUnitOfMeasure('c'),
-    grams: 120,
-    calories: 455,
-    sodium: 2,
-    fat: 1,
-    protein: 13,
-    carbs: 95,
-    sugar: 0.3,
-    alternativePortions: [makePortion(0.125, findUnitOfMeasure('each'), 15, 57)],
-  },
-  {
-    id: '4',
-    name: 'Granulated Sugar',
-    brand: 'SweetLife',
-    category: 'Sweets',
-    fdcId: 1100004,
-    units: 1,
-    unitOfMeasure: findUnitOfMeasure('c'),
-    grams: 200,
-    calories: 774,
-    sodium: 0,
-    fat: 0,
-    protein: 0,
-    carbs: 200,
-    sugar: 200,
-    alternativePortions: [makePortion(1, findUnitOfMeasure('tbsp'), 12.5, 49)],
-  },
-  {
-    id: '5',
-    name: 'Russet Potato',
-    brand: null,
-    category: 'Produce',
-    fdcId: 1100005,
-    units: 1,
-    unitOfMeasure: findUnitOfMeasure('each'),
-    grams: 213,
-    calories: 168,
-    sodium: 17,
-    fat: 0.2,
-    protein: 4.6,
-    carbs: 37,
-    sugar: 2.1,
-    alternativePortions: [makePortion(0.5, findUnitOfMeasure('each'), 106.5, 84)],
-  },
-  {
-    id: '6',
-    name: 'Boneless Skinless Chicken Breast',
-    brand: 'Farm Fresh',
-    category: 'Meats',
-    fdcId: 1100006,
-    units: 3,
-    unitOfMeasure: findUnitOfMeasure('each'),
-    grams: 85,
-    calories: 165,
-    sodium: 74,
-    fat: 3.6,
-    protein: 31,
-    carbs: 0,
-    sugar: 0,
-    alternativePortions: [makePortion(1, findUnitOfMeasure('each'), 28, 55)],
-  },
-  {
-    id: '7',
-    name: 'Extra Virgin Olive Oil',
-    brand: 'Oliva',
-    category: 'Fats & Oils',
-    fdcId: 1100007,
-    units: 1,
-    unitOfMeasure: findUnitOfMeasure('tbsp'),
-    grams: 13.5,
-    calories: 119,
-    sodium: 0,
-    fat: 13.5,
-    protein: 0,
-    carbs: 0,
-    sugar: 0,
-    alternativePortions: [makePortion(15, findUnitOfMeasure('g'), 15, 132)],
-  },
-  {
-    id: '8',
-    name: 'Plain Greek Yogurt',
-    brand: 'Yogurt Co',
-    category: 'Dairy',
-    fdcId: 1100008,
-    units: 1,
-    unitOfMeasure: findUnitOfMeasure('each'),
-    grams: 150,
-    calories: 100,
-    sodium: 50,
-    fat: 0,
-    protein: 17,
-    carbs: 6,
-    sugar: 4,
-    alternativePortions: [
-      makePortion(1, findUnitOfMeasure('cup'), 245, 163),
-      makePortion(2, findUnitOfMeasure('quart'), 1960, 1304),
-      makePortion(5, findUnitOfMeasure('oz'), 140, 93),
-    ],
-  },
-];
-
-export const TEST_FDC_FOODS: FdcFoodSearchFoodItem[] = TEST_FOODS.filter((f) => !!f.fdcId).map((f) => ({
-  fdcId: f.fdcId!,
-  description: f.name,
-  foodCategory: f.category,
-}));
 
 export const TEST_RECIPES: Recipe[] = [
   {
@@ -796,9 +597,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-1-1-1',
             name: 'Rolled Oats',
-            foodItemId: 'food-test-1',
+            recipeId: 'food-test-1',
             units: 1,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 300,
               sodium: 100,
@@ -811,9 +612,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-1-1-2',
             name: 'Mixed Berries',
-            foodItemId: 'food-test-2',
-            units: 0.5,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            recipeId: 'food-test-2',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 50,
               sodium: 50,
@@ -832,9 +633,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-1-2-1',
             name: 'Chicken Breast',
-            foodItemId: 'food-test-3',
-            units: 150,
-            unitOfMeasure: { id: 'g', name: 'gram', type: 'weight', system: 'metric' },
+            recipeId: 'food-test-3',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 250,
               sodium: 120,
@@ -847,9 +648,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-1-2-2',
             name: 'Mixed Greens',
-            foodItemId: 'food-test-4',
-            units: 2,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            recipeId: 'food-test-4',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 170,
               sodium: 360,
@@ -868,9 +669,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-1-3-1',
             name: 'Salmon Fillet',
-            foodItemId: 'food-test-5',
-            units: 180,
-            unitOfMeasure: { id: 'g', name: 'gram', type: 'weight', system: 'metric' },
+            recipeId: 'food-test-5',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 360,
               sodium: 100,
@@ -883,9 +684,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-1-3-2',
             name: 'Roasted Vegetables',
-            foodItemId: 'food-test-6',
-            units: 1.5,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            recipeId: 'food-test-6',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 220,
               sodium: 320,
@@ -904,9 +705,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-1-4-1',
             name: 'Greek Yogurt',
-            foodItemId: 'food-test-7',
+            recipeId: 'food-test-7',
             units: 1,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 180,
               sodium: 75,
@@ -931,9 +732,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-2-1-1',
             name: 'Eggs',
-            foodItemId: 'food-test-8',
-            units: 3,
-            unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+            recipeId: 'food-test-8',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 210,
               sodium: 180,
@@ -946,9 +747,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-2-1-2',
             name: 'Whole Wheat Toast',
-            foodItemId: 'food-test-9',
-            units: 2,
-            unitOfMeasure: { id: 'slice', name: 'slice', type: 'quantity', system: 'none' },
+            recipeId: 'food-test-9',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 170,
               sodium: 340,
@@ -967,9 +768,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-2-2-1',
             name: 'Turkey Breast',
-            foodItemId: 'food-test-10',
-            units: 100,
-            unitOfMeasure: { id: 'g', name: 'gram', type: 'weight', system: 'metric' },
+            recipeId: 'food-test-10',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 120,
               sodium: 420,
@@ -982,9 +783,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-2-2-2',
             name: 'Whole Grain Bread',
-            foodItemId: 'food-test-11',
-            units: 2,
-            unitOfMeasure: { id: 'slice', name: 'slice', type: 'quantity', system: 'none' },
+            recipeId: 'food-test-11',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 330,
               sodium: 460,
@@ -1018,9 +819,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-2-3-2',
             name: 'Mixed Vegetables',
-            foodItemId: 'food-test-12',
-            units: 2,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            recipeId: 'food-test-12',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 300,
               sodium: 600,
@@ -1045,9 +846,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-3-1-1',
             name: 'Banana',
-            foodItemId: 'food-test-13',
-            units: 2,
-            unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+            recipeId: 'food-test-13',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 210,
               sodium: 2,
@@ -1060,9 +861,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-3-1-2',
             name: 'Protein Powder',
-            foodItemId: 'food-test-14',
+            recipeId: 'food-test-14',
             units: 1,
-            unitOfMeasure: { id: 'scoop', name: 'scoop', type: 'quantity', system: 'none' },
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 110,
               sodium: 118,
@@ -1081,9 +882,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-3-2-1',
             name: 'Quinoa',
-            foodItemId: 'food-test-15',
+            recipeId: 'food-test-15',
             units: 1,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 220,
               sodium: 130,
@@ -1096,9 +897,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-3-2-2',
             name: 'Chickpeas',
-            foodItemId: 'food-test-16',
-            units: 0.5,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            recipeId: 'food-test-16',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 260,
               sodium: 250,
@@ -1132,9 +933,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-3-3-2',
             name: 'Sweet Potato',
-            foodItemId: 'food-test-17',
+            recipeId: 'food-test-17',
             units: 1,
-            unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 340,
               sodium: 220,
@@ -1153,9 +954,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-3-4-1',
             name: 'Apple',
-            foodItemId: 'food-test-18',
+            recipeId: 'food-test-18',
             units: 1,
-            unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 95,
               sodium: 2,
@@ -1168,9 +969,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-3-4-2',
             name: 'Almond Butter',
-            foodItemId: 'food-test-19',
-            units: 2,
-            unitOfMeasure: { id: 'tbsp', name: 'tablespoon', type: 'volume', system: 'customary' },
+            recipeId: 'food-test-19',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 115,
               sodium: 83,
@@ -1195,9 +996,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-4-1-1',
             name: 'Pancake Mix',
-            foodItemId: 'food-test-20',
-            units: 0.5,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            recipeId: 'food-test-20',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 310,
               sodium: 230,
@@ -1210,9 +1011,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-4-1-2',
             name: 'Protein Powder',
-            foodItemId: 'food-test-21',
+            recipeId: 'food-test-21',
             units: 1,
-            unitOfMeasure: { id: 'scoop', name: 'scoop', type: 'quantity', system: 'none' },
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 110,
               sodium: 50,
@@ -1231,9 +1032,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-4-2-1',
             name: 'Whole Wheat Tortilla',
-            foodItemId: 'food-test-22',
+            recipeId: 'food-test-22',
             units: 1,
-            unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 140,
               sodium: 320,
@@ -1246,9 +1047,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-4-2-2',
             name: 'Hummus',
-            foodItemId: 'food-test-23',
-            units: 0.25,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            recipeId: 'food-test-23',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 350,
               sodium: 300,
@@ -1267,9 +1068,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-4-3-1',
             name: 'Chicken Breast',
-            foodItemId: 'food-test-24',
-            units: 120,
-            unitOfMeasure: { id: 'g', name: 'gram', type: 'weight', system: 'metric' },
+            recipeId: 'food-test-24',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 200,
               sodium: 96,
@@ -1282,9 +1083,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-4-3-2',
             name: 'Whole Wheat Pasta',
-            foodItemId: 'food-test-25',
-            units: 2,
-            unitOfMeasure: { id: 'oz', name: 'ounce', type: 'weight', system: 'customary' },
+            recipeId: 'food-test-25',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 440,
               sodium: 484,
@@ -1309,9 +1110,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-5-1-1',
             name: 'Sourdough Bread',
-            foodItemId: 'food-test-26',
-            units: 2,
-            unitOfMeasure: { id: 'slice', name: 'slice', type: 'quantity', system: 'none' },
+            recipeId: 'food-test-26',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 160,
               sodium: 320,
@@ -1324,9 +1125,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-5-1-2',
             name: 'Avocado',
-            foodItemId: 'food-test-27',
-            units: 0.5,
-            unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+            recipeId: 'food-test-27',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 120,
               sodium: 10,
@@ -1339,9 +1140,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-5-1-3',
             name: 'Eggs',
-            foodItemId: 'food-test-28',
-            units: 2,
-            unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+            recipeId: 'food-test-28',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 160,
               sodium: 130,
@@ -1360,9 +1161,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-5-2-1',
             name: 'Rice Noodles',
-            foodItemId: 'food-test-29',
-            units: 2,
-            unitOfMeasure: { id: 'oz', name: 'ounce', type: 'weight', system: 'customary' },
+            recipeId: 'food-test-29',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 210,
               sodium: 280,
@@ -1375,9 +1176,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-5-2-2',
             name: 'Edamame',
-            foodItemId: 'food-test-30',
-            units: 0.5,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            recipeId: 'food-test-30',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 250,
               sodium: 440,
@@ -1396,9 +1197,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-5-3-1',
             name: 'Pork Chop',
-            foodItemId: 'food-test-31',
-            units: 180,
-            unitOfMeasure: { id: 'g', name: 'gram', type: 'weight', system: 'metric' },
+            recipeId: 'food-test-31',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 400,
               sodium: 180,
@@ -1411,9 +1212,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-5-3-2',
             name: 'Brussels Sprouts',
-            foodItemId: 'food-test-32',
-            units: 1.5,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            recipeId: 'food-test-32',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 160,
               sodium: 300,
@@ -1432,9 +1233,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-5-4-1',
             name: 'Protein Bar',
-            foodItemId: 'food-test-33',
+            recipeId: 'food-test-33',
             units: 1,
-            unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 200,
               sodium: 180,
@@ -1459,9 +1260,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-6-1-1',
             name: 'Eggs',
-            foodItemId: 'food-test-34',
-            units: 3,
-            unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+            recipeId: 'food-test-34',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 210,
               sodium: 180,
@@ -1474,9 +1275,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-6-1-2',
             name: 'Mixed Vegetables',
-            foodItemId: 'food-test-35',
+            recipeId: 'food-test-35',
             units: 1,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 130,
               sodium: 360,
@@ -1495,9 +1296,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-6-2-1',
             name: 'Canned Tuna',
-            foodItemId: 'food-test-36',
-            units: 150,
-            unitOfMeasure: { id: 'g', name: 'gram', type: 'weight', system: 'metric' },
+            recipeId: 'food-test-36',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 200,
               sodium: 420,
@@ -1510,9 +1311,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-6-2-2',
             name: 'Mixed Greens',
-            foodItemId: 'food-test-37',
-            units: 2,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            recipeId: 'food-test-37',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 180,
               sodium: 200,
@@ -1531,9 +1332,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-6-3-1',
             name: 'Shrimp',
-            foodItemId: 'food-test-38',
-            units: 200,
-            unitOfMeasure: { id: 'g', name: 'gram', type: 'weight', system: 'metric' },
+            recipeId: 'food-test-38',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 200,
               sodium: 380,
@@ -1546,9 +1347,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-6-3-2',
             name: 'Corn Tortillas',
-            foodItemId: 'food-test-39',
-            units: 3,
-            unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+            recipeId: 'food-test-39',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 320,
               sodium: 400,
@@ -1573,9 +1374,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-7-1-1',
             name: 'Large Tortilla',
-            foodItemId: 'food-test-40',
+            recipeId: 'food-test-40',
             units: 1,
-            unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 170,
               sodium: 320,
@@ -1588,9 +1389,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-7-1-2',
             name: 'Eggs',
-            foodItemId: 'food-test-41',
-            units: 2,
-            unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+            recipeId: 'food-test-41',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 140,
               sodium: 120,
@@ -1603,9 +1404,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-7-1-3',
             name: 'Black Beans',
-            foodItemId: 'food-test-42',
-            units: 0.25,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            recipeId: 'food-test-42',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 210,
               sodium: 240,
@@ -1624,9 +1425,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-7-2-1',
             name: 'Chicken Breast',
-            foodItemId: 'food-test-43',
-            units: 150,
-            unitOfMeasure: { id: 'g', name: 'gram', type: 'weight', system: 'metric' },
+            recipeId: 'food-test-43',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 250,
               sodium: 120,
@@ -1639,9 +1440,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-7-2-2',
             name: 'Romaine Lettuce',
-            foodItemId: 'food-test-44',
-            units: 2,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            recipeId: 'food-test-44',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 190,
               sodium: 700,
@@ -1660,9 +1461,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-7-3-1',
             name: 'Ribeye Steak',
-            foodItemId: 'food-test-45',
-            units: 200,
-            unitOfMeasure: { id: 'g', name: 'gram', type: 'weight', system: 'metric' },
+            recipeId: 'food-test-45',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 480,
               sodium: 140,
@@ -1675,9 +1476,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-7-3-2',
             name: 'Mashed Potatoes',
-            foodItemId: 'food-test-46',
+            recipeId: 'food-test-46',
             units: 1,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 200,
               sodium: 400,
@@ -1696,9 +1497,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-7-4-1',
             name: 'Mixed Nuts',
-            foodItemId: 'food-test-47',
-            units: 0.25,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            recipeId: 'food-test-47',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 180,
               sodium: 120,
@@ -1723,9 +1524,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-8-1-1',
             name: 'Whole Wheat Bagel',
-            foodItemId: 'food-test-48',
+            recipeId: 'food-test-48',
             units: 1,
-            unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 280,
               sodium: 460,
@@ -1738,9 +1539,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-8-1-2',
             name: 'Cream Cheese',
-            foodItemId: 'food-test-49',
-            units: 2,
-            unitOfMeasure: { id: 'tbsp', name: 'tablespoon', type: 'volume', system: 'customary' },
+            recipeId: 'food-test-49',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 100,
               sodium: 80,
@@ -1759,9 +1560,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-8-2-1',
             name: 'Veggie Patty',
-            foodItemId: 'food-test-50',
+            recipeId: 'food-test-50',
             units: 1,
-            unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 240,
               sodium: 420,
@@ -1774,9 +1575,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-8-2-2',
             name: 'Whole Wheat Bun',
-            foodItemId: 'food-test-51',
+            recipeId: 'food-test-51',
             units: 1,
-            unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 220,
               sodium: 300,
@@ -1795,9 +1596,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-8-3-1',
             name: 'Chicken Thighs',
-            foodItemId: 'food-test-52',
-            units: 200,
-            unitOfMeasure: { id: 'g', name: 'gram', type: 'weight', system: 'metric' },
+            recipeId: 'food-test-52',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 380,
               sodium: 260,
@@ -1810,9 +1611,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-8-3-2',
             name: 'Quinoa',
-            foodItemId: 'food-test-53',
+            recipeId: 'food-test-53',
             units: 1,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 220,
               sodium: 260,
@@ -1837,9 +1638,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-9-1-1',
             name: 'Chia Seeds',
-            foodItemId: 'food-test-54',
-            units: 3,
-            unitOfMeasure: { id: 'tbsp', name: 'tablespoon', type: 'volume', system: 'customary' },
+            recipeId: 'food-test-54',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 140,
               sodium: 40,
@@ -1852,9 +1653,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-9-1-2',
             name: 'Almond Milk',
-            foodItemId: 'food-test-55',
+            recipeId: 'food-test-55',
             units: 1,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 140,
               sodium: 100,
@@ -1873,9 +1674,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-9-2-1',
             name: 'Ciabatta Roll',
-            foodItemId: 'food-test-56',
+            recipeId: 'food-test-56',
             units: 1,
-            unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 220,
               sodium: 480,
@@ -1888,9 +1689,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-9-2-2',
             name: 'Fresh Mozzarella',
-            foodItemId: 'food-test-57',
-            units: 50,
-            unitOfMeasure: { id: 'g', name: 'gram', type: 'weight', system: 'metric' },
+            recipeId: 'food-test-57',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 200,
               sodium: 200,
@@ -1924,9 +1725,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-9-3-2',
             name: 'Zucchini Noodles',
-            foodItemId: 'food-test-58',
-            units: 2,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            recipeId: 'food-test-58',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 180,
               sodium: 200,
@@ -1939,9 +1740,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-9-3-2',
             name: 'Fresh Mozzarella',
-            foodItemId: 'food-test-57',
-            units: 50,
-            unitOfMeasure: { id: 'g', name: 'gram', type: 'weight', system: 'metric' },
+            recipeId: 'food-test-57',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 200,
               sodium: 200,
@@ -1960,9 +1761,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-9-4-1',
             name: 'Cottage Cheese',
-            foodItemId: 'food-test-59',
-            units: 0.5,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            recipeId: 'food-test-59',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 110,
               sodium: 360,
@@ -1975,9 +1776,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-9-4-2',
             name: 'Pineapple Chunks',
-            foodItemId: 'food-test-60',
-            units: 0.5,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            recipeId: 'food-test-60',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 80,
               sodium: 20,
@@ -2002,9 +1803,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-10-1-1',
             name: 'Brioche Bread',
-            foodItemId: 'food-test-61',
-            units: 3,
-            unitOfMeasure: { id: 'slice', name: 'slice', type: 'quantity', system: 'none' },
+            recipeId: 'food-test-61',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 320,
               sodium: 300,
@@ -2017,9 +1818,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-10-1-2',
             name: 'Eggs',
-            foodItemId: 'food-test-62',
-            units: 2,
-            unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+            recipeId: 'food-test-62',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 140,
               sodium: 120,
@@ -2038,9 +1839,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-10-2-1',
             name: 'Brown Rice',
-            foodItemId: 'food-test-63',
+            recipeId: 'food-test-63',
             units: 1,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 220,
               sodium: 280,
@@ -2053,9 +1854,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-10-2-2',
             name: 'Black Beans',
-            foodItemId: 'food-test-64',
-            units: 0.5,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            recipeId: 'food-test-64',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 320,
               sodium: 400,
@@ -2074,9 +1875,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-10-3-1',
             name: 'Lamb Chops',
-            foodItemId: 'food-test-65',
-            units: 200,
-            unitOfMeasure: { id: 'g', name: 'gram', type: 'weight', system: 'metric' },
+            recipeId: 'food-test-65',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 520,
               sodium: 380,
@@ -2089,9 +1890,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-10-3-2',
             name: 'Asparagus',
-            foodItemId: 'food-test-66',
+            recipeId: 'food-test-66',
             units: 1,
-            unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 100,
               sodium: 100,
@@ -2110,9 +1911,9 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
           {
             id: 'item-10-4-1',
             name: 'Dark Chocolate',
-            foodItemId: 'food-test-67',
-            units: 2,
-            unitOfMeasure: { id: 'square', name: 'square', type: 'quantity', system: 'none' },
+            recipeId: 'food-test-67',
+            units: 1,
+            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
             nutrition: {
               calories: 120,
               sodium: 15,
@@ -2138,9 +1939,9 @@ export const TEST_MEAL_PLAN: MealPlan = {
         {
           id: 'item-11-1-1',
           name: 'Eggs',
-          foodItemId: 'food-test-68',
-          units: 3,
-          unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+          recipeId: 'food-test-68',
+          units: 1,
+          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
           nutrition: {
             calories: 210,
             sodium: 180,
@@ -2153,9 +1954,9 @@ export const TEST_MEAL_PLAN: MealPlan = {
         {
           id: 'item-11-1-2',
           name: 'Baby Spinach',
-          foodItemId: 'food-test-69',
+          recipeId: 'food-test-69',
           units: 1,
-          unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
           nutrition: {
             calories: 7,
             sodium: 24,
@@ -2168,9 +1969,9 @@ export const TEST_MEAL_PLAN: MealPlan = {
         {
           id: 'item-11-1-3',
           name: 'Feta Cheese',
-          foodItemId: 'food-test-70',
-          units: 30,
-          unitOfMeasure: { id: 'g', name: 'gram', type: 'weight', system: 'metric' },
+          recipeId: 'food-test-70',
+          units: 1,
+          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
           nutrition: {
             calories: 80,
             sodium: 320,
@@ -2204,9 +2005,9 @@ export const TEST_MEAL_PLAN: MealPlan = {
         {
           id: 'item-11-2-2',
           name: 'Whole Wheat Wrap',
-          foodItemId: 'food-test-71',
+          recipeId: 'food-test-71',
           units: 1,
-          unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
           nutrition: {
             calories: 140,
             sodium: 320,
@@ -2219,9 +2020,9 @@ export const TEST_MEAL_PLAN: MealPlan = {
         {
           id: 'item-11-2-3',
           name: 'Peanut Sauce',
-          foodItemId: 'food-test-72',
-          units: 3,
-          unitOfMeasure: { id: 'tbsp', name: 'tablespoon', type: 'volume', system: 'customary' },
+          recipeId: 'food-test-72',
+          units: 1,
+          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
           nutrition: {
             calories: 150,
             sodium: 240,
@@ -2234,9 +2035,9 @@ export const TEST_MEAL_PLAN: MealPlan = {
         {
           id: 'item-11-2-4',
           name: 'Shredded Carrots',
-          foodItemId: 'food-test-73',
-          units: 0.5,
-          unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+          recipeId: 'food-test-73',
+          units: 1,
+          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
           nutrition: {
             calories: 25,
             sodium: 45,
@@ -2270,9 +2071,9 @@ export const TEST_MEAL_PLAN: MealPlan = {
         {
           id: 'item-11-3-2',
           name: 'Wild Rice Blend',
-          foodItemId: 'food-test-74',
+          recipeId: 'food-test-74',
           units: 1,
-          unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
           nutrition: {
             calories: 170,
             sodium: 5,
@@ -2285,9 +2086,9 @@ export const TEST_MEAL_PLAN: MealPlan = {
         {
           id: 'item-11-3-3',
           name: 'Steamed Broccoli',
-          foodItemId: 'food-test-75',
-          units: 1.5,
-          unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+          recipeId: 'food-test-75',
+          units: 1,
+          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
           nutrition: {
             calories: 55,
             sodium: 50,
@@ -2306,9 +2107,9 @@ export const TEST_MEAL_PLAN: MealPlan = {
         {
           id: 'item-11-4-1',
           name: 'Hummus',
-          foodItemId: 'food-test-76',
-          units: 0.25,
-          unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+          recipeId: 'food-test-76',
+          units: 1,
+          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
           nutrition: {
             calories: 100,
             sodium: 150,
@@ -2321,9 +2122,9 @@ export const TEST_MEAL_PLAN: MealPlan = {
         {
           id: 'item-11-4-2',
           name: 'Carrot Sticks',
-          foodItemId: 'food-test-77',
-          units: 10,
-          unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+          recipeId: 'food-test-77',
+          units: 1,
+          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
           nutrition: {
             calories: 35,
             sodium: 60,
@@ -2336,9 +2137,9 @@ export const TEST_MEAL_PLAN: MealPlan = {
         {
           id: 'item-11-4-3',
           name: 'Celery Sticks',
-          foodItemId: 'food-test-78',
-          units: 5,
-          unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+          recipeId: 'food-test-78',
+          units: 1,
+          unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
           nutrition: {
             calories: 8,
             sodium: 40,
@@ -2375,9 +2176,9 @@ export const TEST_MEAL: Meal = {
     {
       id: 'da5534ca-5bf7-4c08-abc0-7a5c72e2d162',
       name: 'Whole Wheat Wrap',
-      foodItemId: 'food-test-71',
+      recipeId: 'food-test-71',
       units: 1,
-      unitOfMeasure: { id: 'item', name: 'item', type: 'quantity', system: 'none' },
+      unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
       nutrition: {
         calories: 140,
         sodium: 320,
@@ -2390,9 +2191,9 @@ export const TEST_MEAL: Meal = {
     {
       id: '37e89356-5a0d-4c7a-ba1c-e6fd6f449841',
       name: 'Peanut Sauce',
-      foodItemId: 'food-test-72',
-      units: 3,
-      unitOfMeasure: { id: 'tbsp', name: 'tablespoon', type: 'volume', system: 'customary' },
+      recipeId: 'food-test-72',
+      units: 1,
+      unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
       nutrition: {
         calories: 150,
         sodium: 240,
@@ -2405,9 +2206,9 @@ export const TEST_MEAL: Meal = {
     {
       id: '16cc4e27-23ff-40e7-9315-d665ac80645b',
       name: 'Shredded Carrots',
-      foodItemId: 'food-test-73',
-      units: 0.5,
-      unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+      recipeId: 'food-test-73',
+      units: 1,
+      unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
       nutrition: {
         calories: 25,
         sodium: 45,

@@ -1,4 +1,4 @@
-import { TEST_FOOD, TEST_PORTION, TEST_RECIPE } from '@/data/__tests__/test-data';
+import { TEST_PORTION, TEST_RECIPE } from '@/data/__tests__/test-data';
 import type { Nutrition } from '@/models/nutrition';
 import { mount } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -38,16 +38,6 @@ describe('NutritionData', () => {
     expect(wrapper.text()).toContain(`Total Carbs: ${TEST_PORTION.carbs}g`);
     expect(wrapper.text()).toContain(`Fat: ${TEST_PORTION.fat}g`);
     expect(wrapper.text()).toContain(`Protein: ${TEST_PORTION.protein}g`);
-  });
-
-  it('displays the data from the test food', () => {
-    wrapper = mountComponent({ value: TEST_FOOD });
-    expect(wrapper.text()).toContain(`Calories: ${TEST_FOOD.calories}`);
-    expect(wrapper.text()).toContain(`Sodium: ${TEST_FOOD.sodium}mg`);
-    expect(wrapper.text()).toContain(`Sugar: ${TEST_FOOD.sugar}g`);
-    expect(wrapper.text()).toContain(`Total Carbs: ${TEST_FOOD.carbs}g`);
-    expect(wrapper.text()).toContain(`Fat: ${TEST_FOOD.fat}g`);
-    expect(wrapper.text()).toContain(`Protein: ${TEST_FOOD.protein}g`);
   });
 
   it('displays the data from the test recipe', () => {
