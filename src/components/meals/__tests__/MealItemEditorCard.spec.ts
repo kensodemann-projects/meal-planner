@@ -38,7 +38,7 @@ const TEST_MEAL_ITEM: MealItem = {
   units: 1,
   unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
   name: TEST_RECIPES[0]!.name,
-  recipeId: TEST_RECIPES[0]!.id,
+  recipeId: TEST_RECIPES[0]!.id!,
   nutrition: {
     calories: 630,
     sodium: 780,

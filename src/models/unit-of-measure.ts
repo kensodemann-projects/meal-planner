@@ -3,5 +3,4 @@ export interface UnitOfMeasure {
   name: string;
   type: 'weight' | 'volume' | 'quantity';
   system: 'metric' | 'customary' | 'none';
-  fdcId?: number;
 }
