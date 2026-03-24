@@ -2,7 +2,7 @@ import { unitsOfMeasure } from '@/data/units-of-measure';
 import { type UnitOfMeasure } from '../models/unit-of-measure';
 
 /**
- * Finds a unit of measure by either a search string or FDC ID.
+ * Finds a unit of measure by a search string.
  *
  * @param match - Unit name/abbreviation
  * @returns The matching UnitOfMeasure, or 'item' as a fallback if no match is found
