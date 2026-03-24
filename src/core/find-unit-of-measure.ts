@@ -1,5 +1,5 @@
 import { unitsOfMeasure } from '@/data/units-of-measure';
-import { type UnitOfMeasure } from '../models/unit-of-measure';
+import { type UnitOfMeasure } from '@/models/unit-of-measure';
 
 /**
  * Finds a unit of measure by a search string.
