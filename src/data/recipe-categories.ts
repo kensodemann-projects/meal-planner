@@ -5,6 +5,7 @@ export const recipeCategories: RecipeCategory[] = [
   'Beverage',
   'Breakfast',
   'Bread',
+  'Grain',
   'Pasta',
   'Beef',
   'Pork',
