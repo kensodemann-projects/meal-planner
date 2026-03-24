@@ -1,4 +1,4 @@
-import { TEST_FOOD } from '@/data/__tests__/test-data';
+import { TEST_RECIPE } from '@/data/__tests__/test-data';
 import type { Nutrition } from '@/models/nutrition';
 import { mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -45,13 +45,13 @@ describe('NutritionEditorRows', () => {
     });
 
     it('is initialized properly', () => {
-      wrapper = mountComponent({ ...TEST_FOOD, calories: 143 });
+      wrapper = mountComponent({ ...TEST_RECIPE, calories: 143 });
       const calsInput = wrapper.findComponent('[data-testid="calories-input"]') as VueWrapper<components.VNumberInput>;
       expect(calsInput.find('input').element.value).toBe('143');
     });
 
     it('is emitted on change', async () => {
-      wrapper = mountComponent({ ...TEST_FOOD, calories: 42 });
+      wrapper = mountComponent({ ...TEST_RECIPE, calories: 42 });
       const input = wrapper.findComponent('[data-testid="calories-input"]') as VueWrapper<components.VNumberInput>;
       await input.setValue(173);
       const emitted = wrapper.emitted('update:modelValue');
@@ -74,13 +74,13 @@ describe('NutritionEditorRows', () => {
     });
 
     it('is initialized properly', () => {
-      wrapper = mountComponent({ ...TEST_FOOD, sodium: 19 });
+      wrapper = mountComponent({ ...TEST_RECIPE, sodium: 19 });
       const sodiumInput = wrapper.findComponent('[data-testid="sodium-input"]') as VueWrapper<components.VNumberInput>;
       expect(sodiumInput.find('input').element.value).toBe('19');
     });
 
     it('is emitted on change', async () => {
-      wrapper = mountComponent({ ...TEST_FOOD, sodium: 42 });
+      wrapper = mountComponent({ ...TEST_RECIPE, sodium: 42 });
       const input = wrapper.findComponent('[data-testid="sodium-input"]') as VueWrapper<components.VNumberInput>;
       await input.setValue(267);
       const emitted = wrapper.emitted('update:modelValue');
@@ -103,13 +103,13 @@ describe('NutritionEditorRows', () => {
     });
 
     it('is initialized properly', () => {
-      wrapper = mountComponent({ ...TEST_FOOD, sugar: 143 });
+      wrapper = mountComponent({ ...TEST_RECIPE, sugar: 143 });
       const sugarInput = wrapper.findComponent('[data-testid="sugar-input"]') as VueWrapper<components.VNumberInput>;
       expect(sugarInput.find('input').element.value).toBe('143');
     });
 
     it('is emitted on change', async () => {
-      wrapper = mountComponent({ ...TEST_FOOD, sugar: 92 });
+      wrapper = mountComponent({ ...TEST_RECIPE, sugar: 92 });
       const input = wrapper.findComponent('[data-testid="sugar-input"]') as VueWrapper<components.VNumberInput>;
       await input.setValue(486);
       const emitted = wrapper.emitted('update:modelValue');
@@ -132,13 +132,13 @@ describe('NutritionEditorRows', () => {
     });
 
     it('is initialized properly', () => {
-      wrapper = mountComponent({ ...TEST_FOOD, carbs: 18 });
+      wrapper = mountComponent({ ...TEST_RECIPE, carbs: 18 });
       const carbsInput = wrapper.findComponent('[data-testid="carbs-input"]') as VueWrapper<components.VNumberInput>;
       expect(carbsInput.find('input').element.value).toBe('18');
     });
 
     it('is emitted on change', async () => {
-      wrapper = mountComponent({ ...TEST_FOOD, carbs: 13 });
+      wrapper = mountComponent({ ...TEST_RECIPE, carbs: 13 });
       const input = wrapper.findComponent('[data-testid="carbs-input"]') as VueWrapper<components.VNumberInput>;
       await input.setValue(27);
       const emitted = wrapper.emitted('update:modelValue');
@@ -161,13 +161,13 @@ describe('NutritionEditorRows', () => {
     });
 
     it('is initialized properly', () => {
-      wrapper = mountComponent({ ...TEST_FOOD, fat: 8 });
+      wrapper = mountComponent({ ...TEST_RECIPE, fat: 8 });
       const fatInput = wrapper.findComponent('[data-testid="fat-input"]') as VueWrapper<components.VNumberInput>;
       expect(fatInput.find('input').element.value).toBe('8');
     });
 
     it('is emitted on change', async () => {
-      wrapper = mountComponent({ ...TEST_FOOD, fat: 4 });
+      wrapper = mountComponent({ ...TEST_RECIPE, fat: 4 });
       const input = wrapper.findComponent('[data-testid="fat-input"]') as VueWrapper<components.VNumberInput>;
       await input.setValue(19);
       const emitted = wrapper.emitted('update:modelValue');
@@ -192,7 +192,7 @@ describe('NutritionEditorRows', () => {
     });
 
     it('is initialized properly', () => {
-      wrapper = mountComponent({ ...TEST_FOOD, protein: 12 });
+      wrapper = mountComponent({ ...TEST_RECIPE, protein: 12 });
       const proteinInput = wrapper.findComponent(
         '[data-testid="protein-input"]',
       ) as VueWrapper<components.VNumberInput>;
@@ -200,7 +200,7 @@ describe('NutritionEditorRows', () => {
     });
 
     it('is emitted on change', async () => {
-      wrapper = mountComponent({ ...TEST_FOOD, protein: 14 });
+      wrapper = mountComponent({ ...TEST_RECIPE, protein: 14 });
       const input = wrapper.findComponent('[data-testid="protein-input"]') as VueWrapper<components.VNumberInput>;
       await input.setValue(23);
       const emitted = wrapper.emitted('update:modelValue');

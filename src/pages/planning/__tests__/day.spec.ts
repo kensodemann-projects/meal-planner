@@ -12,7 +12,6 @@ import type { Meal, MealItem } from '@/models/meal';
 import ConfirmDialog from '@/components/core/ConfirmDialog.vue';
 
 vi.mock('vue-router');
-vi.mock('@/data/foods');
 vi.mock('@/data/meal-plans');
 vi.mock('@/data/recipes');
 vi.mock('@/data/settings');
@@ -38,7 +37,7 @@ const FULL_MEAL_PLAN: MealPlan = { ...TEST_MEAL_PLANS[0]!, date: '2026-02-18' };
 const MODIFIED_MEAL_ITEM: MealItem = {
   id: 'modified-item',
   name: 'Modified Item',
-  foodItemId: 'food-1',
+  recipeId: 'recipe-1',
   units: 2,
   unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
   nutrition: { calories: 100, sodium: 50, fat: 1, protein: 5, carbs: 20, sugar: 1 },
