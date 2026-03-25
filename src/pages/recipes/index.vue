@@ -2,8 +2,8 @@
   <h1 class="text-center">My Recipes</h1>
 
   <div>
-    <v-container fluid dense>
-      <v-row dense>
+    <v-container fluid>
+      <v-row density="compact">
         <v-col cols="12">
           <v-text-field
             placeholder="Search for a recipe..."
@@ -14,7 +14,7 @@
         </v-col>
       </v-row>
 
-      <v-row dense>
+      <v-row density="compact">
         <v-col cols="12" md="4">
           <v-autocomplete
             label="Category"
@@ -48,7 +48,7 @@
         </v-col>
       </v-row>
 
-      <v-row dense>
+      <v-row density="compact">
         <v-col class="text-right text-medium-emphasis font-weight-light">
           <div v-if="!loading" data-testid="recipe-count">
             Displaying {{ filteredRecipes.length }} of {{ recipes.length }} recipe{{ recipes.length === 1 ? '' : 's' }}
@@ -65,8 +65,8 @@
   <div class="text-center my-12" v-else-if="!loading && filteredRecipes.length === 0">
     <h2>No recipes match your search criteria.</h2>
   </div>
-  <v-container v-else fluid dense>
-    <v-row>
+  <v-container v-else fluid>
+    <v-row density="compact">
       <v-col cols="12" md="4" v-for="recipe in filteredRecipes" :key="recipe.id">
         <RecipeSummaryCard :recipe="recipe as Recipe" @click="router.push(`recipes/${recipe.id}`)" />
       </v-col>

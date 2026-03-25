@@ -4,8 +4,8 @@
   <h2>Current Weeks</h2>
   <v-divider class="my-4"></v-divider>
 
-  <v-container fluid dense>
-    <v-row dense>
+  <v-container fluid>
+    <v-row density="compact">
       <v-col cols="12" md="6">
         <v-card
           outlined
@@ -67,8 +67,8 @@
 
   <h2>Recent Weeks</h2>
   <v-divider class="my-4"></v-divider>
-  <v-container fluid dense>
-    <v-row dense>
+  <v-container fluid>
+    <v-row density="compact">
       <v-col cols="12" md="6" v-for="week in previousWeeks" :key="week.startDate.getTime()">
         <v-card
           outlined
