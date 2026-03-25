@@ -126,6 +126,13 @@ A quick list of common questions to get started engaging with this project [also
 
 - See the [build notes](#build-and-deploy) for details on how this tool is used within this project.
 
+## Authentiateion
+
+If using the emulator, login in using:
+
+- `ken.sodemann@gmail.com`
+- `tester`
+
 ## ❗️ Important Links
 
 - 📄 [Vuetify Docs](https://vuetifyjs.com/)
