@@ -126,6 +126,10 @@ A quick list of common questions to get started engaging with this project [also
 
 - See the [build notes](#build-and-deploy) for details on how this tool is used within this project.
 
+## Authentication
+
+If using the emulator, log in using the configured test user credentials (for example, `test.user@example.com` / `password123`). Refer to your emulator seed configuration for the actual values.
+
 ## ❗️ Important Links
 
 - 📄 [Vuetify Docs](https://vuetifyjs.com/)

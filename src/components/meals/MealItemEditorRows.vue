@@ -1,6 +1,6 @@
 <template>
-  <v-container fluid dense>
-    <v-row>
+  <v-container fluid>
+    <v-row density="compact">
       <v-col cols="12" md="4">
         <v-autocomplete
           label="Select Recipe"

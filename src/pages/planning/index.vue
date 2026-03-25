@@ -4,11 +4,11 @@
   <h2>Current Weeks</h2>
   <v-divider class="my-4"></v-divider>
 
-  <v-container fluid dense>
-    <v-row dense>
+  <v-container fluid>
+    <v-row density="compact">
       <v-col cols="12" md="6">
         <v-card
-          outlined
+          variant="outlined"
           @click="router.push({ path: 'planning/week', query: { dt: format(thisWeek!.startDate, 'yyyy-MM-dd') } })"
         >
           <v-card-title>This Week</v-card-title>
@@ -36,7 +36,7 @@
       </v-col>
       <v-col cols="12" md="6">
         <v-card
-          outlined
+          variant="outlined"
           @click="router.push({ path: 'planning/week', query: { dt: format(nextWeek!.startDate, 'yyyy-MM-dd') } })"
         >
           <v-card-title>Next Week (Planning)</v-card-title>
@@ -67,11 +67,11 @@
 
   <h2>Recent Weeks</h2>
   <v-divider class="my-4"></v-divider>
-  <v-container fluid dense>
-    <v-row dense>
+  <v-container fluid>
+    <v-row density="compact">
       <v-col cols="12" md="6" v-for="week in previousWeeks" :key="week.startDate.getTime()">
         <v-card
-          outlined
+          variant="outlined"
           @click="router.push({ path: 'planning/week', query: { dt: format(week.startDate, 'yyyy-MM-dd') } })"
         >
           <v-card-title
