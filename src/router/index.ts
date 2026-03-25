@@ -5,34 +5,28 @@
  */
 
 // Composables
-import { createRouter, createWebHistory, type NavigationGuardNext, type RouteLocationNormalized } from 'vue-router';
+import { createRouter, createWebHistory, type RouteLocationNormalized } from 'vue-router';
 import { setupLayouts } from 'virtual:generated-layouts';
 import { routes } from 'vue-router/auto-routes';
 import { useAuthentication } from '@/core/authentication';
 import { isValid, parseISO } from 'date-fns';
 
-const checkAuthStatus = async (
-  to: RouteLocationNormalized,
-  from: RouteLocationNormalized,
-  next: NavigationGuardNext,
-) => {
+const checkAuthStatus = async (to: RouteLocationNormalized) => {
   if (!to.meta.allowAnonymous) {
     const { isAuthenticated } = useAuthentication();
     if (!(await isAuthenticated())) {
-      return next('/login');
+      return '/login';
     }
   }
-  next();
 };
 
-const validateWeekParams = (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+const validateWeekParams = (to: RouteLocationNormalized) => {
   if (to.path === '/planning/week' || to.path === '/planning/day') {
     const dt = to.query.dt as string | undefined;
     if (!dt || !isValid(parseISO(dt))) {
-      return next('/error');
+      return '/error';
     }
   }
-  next();
 };
 
 const router = createRouter({
@@ -43,23 +37,10 @@ const router = createRouter({
 router.beforeEach(checkAuthStatus);
 router.beforeEach(validateWeekParams);
 
-// Workaround for https://github.com/vitejs/vite/issues/11804
-router.onError((err, to) => {
-  if (err?.message?.includes?.('Failed to fetch dynamically imported module')) {
-    if (localStorage.getItem('vuetify:dynamic-reload')) {
-      console.error('Dynamic import error, reloading page did not fix it', err);
-    } else {
-      console.log('Reloading page to fix dynamic import error');
-      localStorage.setItem('vuetify:dynamic-reload', 'true');
-      location.assign(to.fullPath);
-    }
-  } else {
-    console.error(err);
-  }
-});
-
-router.isReady().then(() => {
-  localStorage.removeItem('vuetify:dynamic-reload');
+// Reload the page when a dynamic import fails due to version skew after deployment.
+// See: https://vite.dev/guide/build#load-error-handling
+window.addEventListener('vite:preloadError', () => {
+  window.location.reload();
 });
 
 export default router;
