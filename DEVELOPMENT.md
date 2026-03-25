@@ -128,10 +128,7 @@ A quick list of common questions to get started engaging with this project [also
 
 ## Authentication
 
-If using the emulator, log in using:
-
-- `ken.sodemann@gmail.com`
-- `tester`
+If using the emulator, log in using the test user and password `tester`
 
 ## ❗️ Important Links
 

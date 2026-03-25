@@ -8,7 +8,7 @@
       <v-chip color="secondary">{{ recipe.category }}</v-chip>
     </div>
     <v-container fluid>
-      <v-row desity="compact">
+      <v-row density="compact">
         <v-col cols="12" sm="6" md="3">
           <v-card>
             <v-card-text>
@@ -56,7 +56,7 @@
   <v-divider class="my-4" />
 
   <v-container fluid>
-    <v-row desity="compact">
+    <v-row density="compact">
       <v-col cols="12" md="6">
         <section data-testid="ingredients-section">
           <h2>Ingredients</h2>
