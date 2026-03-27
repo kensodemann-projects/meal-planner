@@ -23,8 +23,7 @@ const mountComponent = (
 
 const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
   recipeInput: wrapper.findComponent('[data-testid="recipe-input"]').find('input'),
-  unitsInput: wrapper.findComponent('[data-testid="units-input"]').find('input'),
-  unitOfMeasureInput: wrapper.findComponent('[data-testid="unit-of-measure-input"]').find('input'),
+  servingsInput: wrapper.findComponent('[data-testid="servings-input"]').find('input'),
   caloriesInput: wrapper.findComponent('[data-testid="calories-input"]').find('input'),
   sodiumInput: wrapper.findComponent('[data-testid="sodium-input"]').find('input'),
   sugarInput: wrapper.findComponent('[data-testid="sugar-input"]').find('input'),
@@ -35,8 +34,7 @@ const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
 
 const TEST_MEAL_ITEM: MealItem = {
   id: '4498eae8-b4c9-4327-b1c2-518f071981f2',
-  units: 1,
-  unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
+  servings: 1,
   name: TEST_RECIPES[0]!.name,
   recipeId: TEST_RECIPES[0]!.id!,
   nutrition: {
@@ -71,12 +69,11 @@ describe('Meal Item Editor Card', () => {
         wrapper = mountComponent({ items: TEST_RECIPES, mealItem: {} });
       });
 
-      it('defaults the units and unit of measure', () => {
+      it('defaults the servings', () => {
         const inputs = getInputs(wrapper);
         // it is hard to directly test the autocomplete value, so we check the underlying model
         expect((wrapper.vm as any).editMealItem.recipeId).toBeUndefined();
-        expect((wrapper.vm as any).editMealItem.unitOfMeasure.id).toBe('serving');
-        expect(inputs.unitsInput.element.value).toBe('1');
+        expect(inputs.servingsInput.element.value).toBe('1');
         expect(inputs.caloriesInput.element.value).toBe('');
         expect(inputs.sodiumInput.element.value).toBe('');
         expect(inputs.sugarInput.element.value).toBe('');
@@ -114,13 +111,7 @@ describe('Meal Item Editor Card', () => {
               id: expect.any(String),
               recipeId: '1',
               name: 'Classic Spaghetti Carbonara',
-              units: 1,
-              unitOfMeasure: {
-                id: 'serving',
-                name: 'Serving',
-                system: 'none',
-                type: 'quantity',
-              },
+              servings: 1,
               nutrition: {
                 calories: 630,
                 carbs: 55,
@@ -160,8 +151,7 @@ describe('Meal Item Editor Card', () => {
         const inputs = getInputs(wrapper);
         // it is hard to directly test the autocomplete value, so we check the underlying model
         expect((wrapper.vm as any).editMealItem.recipeId).toBe(TEST_MEAL_ITEM.recipeId);
-        expect((wrapper.vm as any).editMealItem.unitOfMeasure.id).toBe('serving');
-        expect(inputs.unitsInput.element.value).toBe(TEST_MEAL_ITEM.units.toString());
+        expect(inputs.servingsInput.element.value).toBe(TEST_MEAL_ITEM.servings.toString());
         expect(inputs.caloriesInput.element.value).toBe(TEST_MEAL_ITEM.nutrition.calories.toString());
         expect(inputs.sodiumInput.element.value).toBe(TEST_MEAL_ITEM.nutrition.sodium.toString());
         expect(inputs.sugarInput.element.value).toBe(TEST_MEAL_ITEM.nutrition.sugar.toString());

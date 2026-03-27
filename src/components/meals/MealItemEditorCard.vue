@@ -15,7 +15,6 @@
 </template>
 
 <script setup lang="ts">
-import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import type { MealItem } from '@/models/meal';
 import type { Nutrition } from '@/models/nutrition';
 import type { Recipe } from '@/models/recipe';
@@ -30,13 +29,13 @@ defineEmits<{
   (e: 'save', value: MealItem): void;
   (e: 'cancel'): void;
 }>();
+
 const editMealItem = ref<Partial<MealItem>>(
   props.mealItem.id
     ? props.mealItem
     : {
         id: globalThis.crypto.randomUUID(),
-        units: 1,
-        unitOfMeasure: findUnitOfMeasure('serving'),
+        servings: 1,
       },
 );
 const valid = ref(false);
@@ -46,8 +45,7 @@ const isModified = computed(() => {
   const fields: (keyof Nutrition)[] = ['calories', 'sodium', 'sugar', 'carbs', 'fat', 'protein'];
   if (
     editMealItem.value.recipeId !== props.mealItem?.recipeId ||
-    editMealItem.value.unitOfMeasure?.id !== props.mealItem?.unitOfMeasure?.id ||
-    editMealItem.value.units !== props.mealItem?.units
+    editMealItem.value.servings !== props.mealItem?.servings
   ) {
     return true;
   }

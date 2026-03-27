@@ -1,4 +1,4 @@
-import { autocompleteIsRequired } from '@/components/__tests__/test-utils';
+import { autocompleteIsRequired, numberInputIsRequired } from '@/components/__tests__/test-utils';
 import { TEST_RECIPES } from '@/data/__tests__/test-data';
 import type { MealItem } from '@/models/meal';
 import type { Recipe } from '@/models/recipe';
@@ -82,21 +82,28 @@ describe('Meal Item Editor Rows', () => {
     });
   });
 
-  describe('units', () => {
-    it('is disabled', () => {
+  describe('servings', () => {
+    it('is required', async () => {
       wrapper = mountComponent({ modelValue: {}, items: TEST_RECIPES });
-      const units = wrapper.findComponent('[data-testid="units-input"]');
-      const input = units.find('input');
-      expect(input.element.disabled).toBe(true);
+      await numberInputIsRequired(wrapper, 'servings-input');
     });
-  });
 
-  describe('unit of measure', () => {
-    it('is disabled', () => {
+    it('emits changes', async () => {
       wrapper = mountComponent({ modelValue: {}, items: TEST_RECIPES });
-      const unitOfMeasure = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
-      const input = unitOfMeasure.find('input');
-      expect(input.element.disabled).toBe(true);
+      const servings = wrapper.findComponent('[data-testid="servings-input"]');
+      await servings.find('input').setValue('3');
+
+      const emitted = wrapper.emitted('update:modelValue');
+      expect(emitted?.length).toBe(1);
+      expect((emitted![0]![0] as MealItem).servings).toBe(3);
+    });
+
+    describe('for an existing meal item', () => {
+      it('is initialized based on the meal item', () => {
+        wrapper = mountComponent({ modelValue: TEST_MEAL_ITEM, items: TEST_RECIPES });
+        const servings = wrapper.findComponent('[data-testid="servings-input"]');
+        expect((servings.find('input').element as HTMLInputElement).value).toBe('2');
+      });
     });
   });
 
@@ -144,8 +151,7 @@ describe('Meal Item Editor Rows', () => {
 
 const TEST_MEAL_ITEM: Partial<MealItem> = {
   id: '4498eae8-b4c9-4327-b1c2-518f071981f2',
-  units: 1,
-  unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
+  servings: 2,
   recipeId: TEST_RECIPES[0]!.id,
   nutrition: {
     calories: 630,

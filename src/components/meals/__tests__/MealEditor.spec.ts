@@ -41,8 +41,7 @@ const recipeMealItem = {
   id: 'item-2-3-1',
   name: 'Beef Sirloin',
   recipeId: '3',
-  units: 1,
-  unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
+  servings: 1,
   nutrition: {
     calories: 320,
     sodium: 120,
@@ -249,7 +248,7 @@ describe('Meal Editor', () => {
         const updatedItem = {
           ...originalItem,
           name: 'Updated Grilled Chicken',
-          units: 2,
+          servings: 2,
           nutrition: {
             calories: 400,
             sodium: 192,
@@ -380,8 +379,7 @@ describe('Meal Editor', () => {
             id: 'item-2-3-1',
             name: 'Beef Sirloin',
             recipeId: '3',
-            units: 1,
-            unitOfMeasure: { id: 'serving', name: 'Serving', type: 'quantity', system: 'none' },
+            servings: 1,
             nutrition: {
               calories: 320,
               sodium: 120,
