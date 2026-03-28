@@ -1,12 +1,10 @@
 import type { Nutrition } from './nutrition';
-import type { UnitOfMeasure } from './unit-of-measure';
 
 export interface MealItem {
   id: string;
   name: string;
   recipeId: string;
-  units: number;
-  unitOfMeasure: UnitOfMeasure;
+  servings: number;
   nutrition: Nutrition;
 }
 

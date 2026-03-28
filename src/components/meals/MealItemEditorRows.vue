@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row density="compact">
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="6">
         <v-autocomplete
           label="Select Recipe"
           v-model="recipeId"
@@ -12,24 +12,13 @@
           data-testid="recipe-input"
         ></v-autocomplete>
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="6">
         <v-number-input
-          label="Units"
-          v-model="units"
+          label="Servings"
+          v-model="servings"
           :rules="[validationRules.required]"
-          disabled
-          data-testid="units-input"
+          data-testid="servings-input"
         ></v-number-input>
-      </v-col>
-      <v-col cols="12" md="4">
-        <v-autocomplete
-          label="Unit of Measure"
-          v-model="unitOfMeasureId"
-          :items="unitOfMeasureOptions"
-          :rules="[validationRules.required]"
-          disabled
-          data-testid="unit-of-measure-input"
-        ></v-autocomplete>
       </v-col>
     </v-row>
 
@@ -38,9 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import { validationRules } from '@/core/validation-rules';
-import { unitOfMeasureOptions } from '@/data/unit-of-measure';
 import type { MealItem } from '@/models/meal';
 import type { Nutrition } from '@/models/nutrition';
 import type { Recipe } from '@/models/recipe';
@@ -84,24 +71,12 @@ const recipeId = computed({
   },
 });
 
-const units = computed({
-  get: () => mealItem.value?.units,
-  set: (units: number) => {
+const servings = computed({
+  get: () => mealItem.value?.servings,
+  set: (servings: number) => {
     mealItem.value = {
       ...mealItem.value,
-      units,
-      nutrition: getNutrition(recipeId.value) || ({} as Nutrition),
-    };
-  },
-});
-
-const unitOfMeasureId = computed({
-  get: () => mealItem.value?.unitOfMeasure?.id,
-  set: (id: string) => {
-    const unitOfMeasure = findUnitOfMeasure(id);
-    mealItem.value = {
-      ...mealItem.value,
-      unitOfMeasure,
+      servings,
       nutrition: getNutrition(recipeId.value) || ({} as Nutrition),
     };
   },

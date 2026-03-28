@@ -38,8 +38,7 @@ const MODIFIED_MEAL_ITEM: MealItem = {
   id: 'modified-item',
   name: 'Modified Item',
   recipeId: 'recipe-1',
-  units: 2,
-  unitOfMeasure: { id: 'cup', name: 'cup', type: 'volume', system: 'customary' },
+  servings: 2,
   nutrition: { calories: 100, sodium: 50, fat: 1, protein: 5, carbs: 20, sugar: 1 },
 };
 const buildModifiedMeal = (baseMeal: Meal): Meal => ({ ...baseMeal, items: [MODIFIED_MEAL_ITEM] });
