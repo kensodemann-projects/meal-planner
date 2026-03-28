@@ -38,12 +38,12 @@ const TEST_MEAL_ITEM: MealItem = {
   name: TEST_RECIPES[0]!.name,
   recipeId: TEST_RECIPES[0]!.id!,
   nutrition: {
-    calories: 630,
-    sodium: 780,
-    sugar: 3,
-    carbs: 55,
-    fat: 35,
-    protein: 28,
+    calories: 157.5,
+    sodium: 195,
+    sugar: 0.75,
+    carbs: 13.75,
+    fat: 8.75,
+    protein: 7,
   },
 };
 
@@ -113,12 +113,12 @@ describe('Meal Item Editor Card', () => {
               name: 'Classic Spaghetti Carbonara',
               servings: 1,
               nutrition: {
-                calories: 630,
-                carbs: 55,
-                fat: 35,
-                protein: 28,
-                sodium: 780,
-                sugar: 3,
+                calories: 157.5,
+                carbs: 13.75,
+                fat: 8.75,
+                protein: 7,
+                sodium: 195,
+                sugar: 0.75,
               },
             },
           ]);

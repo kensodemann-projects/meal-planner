@@ -52,32 +52,57 @@ const getNutritionFromRecipe = (id: string): Nutrition | undefined => {
   }
 };
 
-const getNutrition = (id: string | undefined): Nutrition | undefined => {
-  if (id) {
-    return getNutritionFromRecipe(id);
-  }
-  return undefined;
-};
+const scaleNutrition = (nutrition: Nutrition, factor: number): Nutrition => ({
+  calories: nutrition.calories * factor,
+  sodium: nutrition.sodium * factor,
+  sugar: nutrition.sugar * factor,
+  protein: nutrition.protein * factor,
+  carbs: nutrition.carbs * factor,
+  fat: nutrition.fat * factor,
+});
 
 const recipeId = computed({
   get: () => mealItem.value?.recipeId,
   set: (id: string) => {
+    const recipe = props.items.find((item) => item.id === id);
+    const baseNutrition = getNutritionFromRecipe(id);
+    const currentServings = mealItem.value?.servings;
+    let nutrition: Nutrition;
+    if (baseNutrition && recipe?.servings && currentServings) {
+      nutrition = scaleNutrition(baseNutrition, currentServings / recipe.servings);
+    } else {
+      nutrition = baseNutrition || ({} as Nutrition);
+    }
     mealItem.value = {
       ...mealItem.value,
       recipeId: id,
-      name: props.items.find((item) => item.id === id)?.name || '',
-      nutrition: getNutrition(id) || ({} as Nutrition),
+      name: recipe?.name || '',
+      nutrition,
     };
   },
 });
 
 const servings = computed({
   get: () => mealItem.value?.servings,
-  set: (servings: number) => {
+  set: (newServings: number) => {
+    const oldServings = mealItem.value?.servings;
+    const currentNutrition = mealItem.value?.nutrition;
+    let nutrition: Nutrition;
+    if (currentNutrition && Object.keys(currentNutrition).length > 0 && oldServings) {
+      nutrition = scaleNutrition(currentNutrition as Nutrition, newServings / oldServings);
+    } else {
+      const recipeNutrition = recipeId.value ? getNutritionFromRecipe(recipeId.value) : undefined;
+      if (recipeNutrition) {
+        const recipe = props.items.find((item) => item.id === recipeId.value);
+        nutrition = scaleNutrition(recipeNutrition, recipe?.servings ? newServings / recipe.servings : 1);
+      } else {
+        nutrition = {} as Nutrition;
+      }
+    }
     mealItem.value = {
       ...mealItem.value,
-      servings,
-      nutrition: getNutrition(recipeId.value) || ({} as Nutrition),
+      servings: newServings,
+      nutrition,
     };
   },
 });
