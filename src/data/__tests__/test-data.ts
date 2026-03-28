@@ -3349,7 +3349,7 @@ export const TEST_MEAL_PLANS: MealPlan[] = [
             },
           },
           {
-            id: 'item-9-3-2',
+            id: 'item-9-3-3',
             name: 'Fresh Mozzarella',
             recipeId: 'food-test-57',
             servings: 1,
