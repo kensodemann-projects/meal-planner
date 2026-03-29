@@ -38,5 +38,20 @@ export const useMealPlansData = () => {
     return mealPlans.value.find((f) => f.date === dt) || null;
   };
 
-  return { addMealPlan, error, mealPlans, getMealPlan, getMealPlanForDate, loading, removeMealPlan, updateMealPlan };
+  const getMealPlansForPeriod = async (startDate: string, endDate: string): Promise<MealPlan[]> => {
+    await mealPlans.promise.value;
+    return mealPlans.value.filter((f) => f.date >= startDate && f.date <= endDate);
+  };
+
+  return {
+    addMealPlan,
+    error,
+    mealPlans,
+    getMealPlan,
+    getMealPlanForDate,
+    getMealPlansForPeriod,
+    loading,
+    removeMealPlan,
+    updateMealPlan,
+  };
 };
