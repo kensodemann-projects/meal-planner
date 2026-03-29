@@ -127,22 +127,37 @@ describe('Meal Item Editor Rows', () => {
     });
 
     describe('nutrition scaling', () => {
-      it('scales nutrition proportionally when editing existing servings', async () => {
-        wrapper = mountComponent({ modelValue: TEST_MEAL_ITEM, items: TEST_RECIPES });
+      it('scales proportionally when editing existing servings', async () => {
+        const modifiedMealItem = {
+          ...TEST_MEAL_ITEM,
+          servings: 2,
+          nutrition: {
+            calories: TEST_RECIPES[0]!.calories * 2 + 42,
+            sodium: TEST_RECIPES[0]!.sodium * 2,
+            sugar: TEST_RECIPES[0]!.sugar * 2,
+            carbs: TEST_RECIPES[0]!.carbs * 2,
+            fat: TEST_RECIPES[0]!.fat * 2,
+            protein: TEST_RECIPES[0]!.protein * 2,
+          },
+        };
+        wrapper = mountComponent({
+          modelValue: modifiedMealItem,
+          items: TEST_RECIPES,
+        });
         const servingsInput = wrapper.findComponent('[data-testid="servings-input"]');
         await servingsInput.find('input').setValue('3');
 
         const emitted = wrapper.emitted('update:modelValue');
         expect(emitted?.length).toBe(1);
         const nutrition = (emitted![0]![0] as MealItem).nutrition;
-        const scale = 3 / TEST_MEAL_ITEM.servings!;
+        const scale = 3 / modifiedMealItem.servings!;
         expect(nutrition).toEqual({
-          calories: TEST_MEAL_ITEM.nutrition!.calories * scale,
-          sodium: TEST_MEAL_ITEM.nutrition!.sodium * scale,
-          sugar: TEST_MEAL_ITEM.nutrition!.sugar * scale,
-          carbs: TEST_MEAL_ITEM.nutrition!.carbs * scale,
-          fat: TEST_MEAL_ITEM.nutrition!.fat * scale,
-          protein: TEST_MEAL_ITEM.nutrition!.protein * scale,
+          calories: modifiedMealItem.nutrition!.calories * scale,
+          sodium: modifiedMealItem.nutrition!.sodium * scale,
+          sugar: modifiedMealItem.nutrition!.sugar * scale,
+          carbs: modifiedMealItem.nutrition!.carbs * scale,
+          fat: modifiedMealItem.nutrition!.fat * scale,
+          protein: modifiedMealItem.nutrition!.protein * scale,
         });
       });
 
