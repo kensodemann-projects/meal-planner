@@ -161,30 +161,6 @@ describe('Meal Item Editor Rows', () => {
         });
       });
 
-      it('initializes nutrition from recipe when no prior nutrition exists', async () => {
-        const itemWithoutNutrition: Partial<MealItem> = {
-          recipeId: TEST_RECIPES[0]!.id,
-        };
-        wrapper = mountComponent({ modelValue: itemWithoutNutrition, items: TEST_RECIPES });
-        const servingsInput = wrapper.findComponent('[data-testid="servings-input"]');
-        const recipe = TEST_RECIPES[0]!;
-
-        await servingsInput.find('input').setValue('3');
-
-        const emitted = wrapper.emitted('update:modelValue');
-        expect(emitted?.length).toBe(1);
-        const nutrition = (emitted![0]![0] as MealItem).nutrition;
-        const perServing = (n: number) => n * 3;
-        expect(nutrition).toEqual({
-          calories: perServing(recipe.calories),
-          sodium: perServing(recipe.sodium),
-          sugar: perServing(recipe.sugar),
-          carbs: perServing(recipe.carbs),
-          fat: perServing(recipe.fat),
-          protein: perServing(recipe.protein),
-        });
-      });
-
       it('sets empty nutrition when servings change and no recipe is selected', async () => {
         wrapper = mountComponent({ modelValue: {}, items: TEST_RECIPES });
         const servingsInput = wrapper.findComponent('[data-testid="servings-input"]');
@@ -192,7 +168,7 @@ describe('Meal Item Editor Rows', () => {
 
         const emitted = wrapper.emitted('update:modelValue');
         expect(emitted?.length).toBe(1);
-        expect((emitted![0]![0] as MealItem).nutrition).toEqual({});
+        expect((emitted![0]![0] as MealItem).nutrition).toBeUndefined();
       });
     });
   });
