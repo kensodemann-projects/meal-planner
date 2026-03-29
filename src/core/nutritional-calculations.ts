@@ -80,3 +80,6 @@ export const dailyMealPlanNutrients = (mealPlan: MealPlan): Nutrition =>
  */
 export const multiDayMealPlanNutrients = (mealPlans: MealPlan[]): Nutrition =>
   mealPlans.reduce((nutrients, mealPlan) => sumNutrition(nutrients, dailyMealPlanNutrients(mealPlan)), zeroNutrition);
+
+export const daysWithMeals = (mealPlans: MealPlan[]): number =>
+  mealPlans.reduce((count, mealPlan) => (mealPlan.meals.length > 0 ? count + 1 : count), 0);
