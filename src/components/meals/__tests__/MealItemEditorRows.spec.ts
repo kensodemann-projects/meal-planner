@@ -83,7 +83,7 @@ describe('Meal Item Editor Rows', () => {
 
       const emitted = wrapper.emitted('update:modelValue');
       const nutrition = (emitted![0]![0] as MealItem).nutrition;
-      const perServing = (n: number) => (n / recipe.servings) * 2;
+      const perServing = (n: number) => n * 2;
       expect(nutrition).toEqual({
         calories: perServing(recipe.calories),
         sodium: perServing(recipe.sodium),
@@ -159,7 +159,7 @@ describe('Meal Item Editor Rows', () => {
         const emitted = wrapper.emitted('update:modelValue');
         expect(emitted?.length).toBe(1);
         const nutrition = (emitted![0]![0] as MealItem).nutrition;
-        const perServing = (n: number) => (n / recipe.servings) * 3;
+        const perServing = (n: number) => n * 3;
         expect(nutrition).toEqual({
           calories: perServing(recipe.calories),
           sodium: perServing(recipe.sodium),

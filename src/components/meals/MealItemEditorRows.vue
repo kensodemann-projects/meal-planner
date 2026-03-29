@@ -66,10 +66,10 @@ const recipeId = computed({
   set: (id: string) => {
     const recipe = props.items.find((item) => item.id === id);
     const baseNutrition = getNutritionFromRecipe(id);
-    const currentServings = mealItem.value?.servings;
+    const servings = mealItem.value?.servings;
     let nutrition: Nutrition;
-    if (baseNutrition && recipe?.servings && currentServings) {
-      nutrition = scaleNutrition(baseNutrition, currentServings / recipe.servings);
+    if (baseNutrition && servings) {
+      nutrition = scaleNutrition(baseNutrition, servings);
     } else {
       nutrition = baseNutrition || ({} as Nutrition);
     }
@@ -93,8 +93,7 @@ const servings = computed({
     } else {
       const recipeNutrition = recipeId.value ? getNutritionFromRecipe(recipeId.value) : undefined;
       if (recipeNutrition) {
-        const recipe = props.items.find((item) => item.id === recipeId.value);
-        nutrition = scaleNutrition(recipeNutrition, recipe?.servings ? newServings / recipe.servings : 1);
+        nutrition = scaleNutrition(recipeNutrition, newServings);
       } else {
         nutrition = {} as Nutrition;
       }
