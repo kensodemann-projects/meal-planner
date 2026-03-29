@@ -83,7 +83,7 @@ describe('Meal Item Editor Rows', () => {
 
       const emitted = wrapper.emitted('update:modelValue');
       const nutrition = (emitted![0]![0] as MealItem).nutrition;
-      const perServing = (n: number) => (n / recipe.servings) * 2;
+      const perServing = (n: number) => n * 2;
       expect(nutrition).toEqual({
         calories: perServing(recipe.calories),
         sodium: perServing(recipe.sodium),
@@ -127,57 +127,48 @@ describe('Meal Item Editor Rows', () => {
     });
 
     describe('nutrition scaling', () => {
-      it('scales nutrition proportionally when editing existing servings', async () => {
-        wrapper = mountComponent({ modelValue: TEST_MEAL_ITEM, items: TEST_RECIPES });
-        const servingsInput = wrapper.findComponent('[data-testid="servings-input"]');
-        await servingsInput.find('input').setValue('3');
-
-        const emitted = wrapper.emitted('update:modelValue');
-        expect(emitted?.length).toBe(1);
-        const nutrition = (emitted![0]![0] as MealItem).nutrition;
-        const scale = 3 / TEST_MEAL_ITEM.servings!;
-        expect(nutrition).toEqual({
-          calories: TEST_MEAL_ITEM.nutrition!.calories * scale,
-          sodium: TEST_MEAL_ITEM.nutrition!.sodium * scale,
-          sugar: TEST_MEAL_ITEM.nutrition!.sugar * scale,
-          carbs: TEST_MEAL_ITEM.nutrition!.carbs * scale,
-          fat: TEST_MEAL_ITEM.nutrition!.fat * scale,
-          protein: TEST_MEAL_ITEM.nutrition!.protein * scale,
-        });
-      });
-
-      it('initializes nutrition from recipe when no prior nutrition exists', async () => {
-        const itemWithoutNutrition: Partial<MealItem> = {
-          recipeId: TEST_RECIPES[0]!.id,
+      it('scales proportionally when editing existing servings', async () => {
+        const modifiedMealItem = {
+          ...TEST_MEAL_ITEM,
+          servings: 2,
+          nutrition: {
+            calories: TEST_RECIPES[0]!.calories * 2 + 42,
+            sodium: TEST_RECIPES[0]!.sodium * 2,
+            sugar: TEST_RECIPES[0]!.sugar * 2,
+            carbs: TEST_RECIPES[0]!.carbs * 2,
+            fat: TEST_RECIPES[0]!.fat * 2,
+            protein: TEST_RECIPES[0]!.protein * 2,
+          },
         };
-        wrapper = mountComponent({ modelValue: itemWithoutNutrition, items: TEST_RECIPES });
+        wrapper = mountComponent({
+          modelValue: modifiedMealItem,
+          items: TEST_RECIPES,
+        });
         const servingsInput = wrapper.findComponent('[data-testid="servings-input"]');
-        const recipe = TEST_RECIPES[0]!;
-
         await servingsInput.find('input').setValue('3');
 
         const emitted = wrapper.emitted('update:modelValue');
         expect(emitted?.length).toBe(1);
         const nutrition = (emitted![0]![0] as MealItem).nutrition;
-        const perServing = (n: number) => (n / recipe.servings) * 3;
+        const scale = 3 / modifiedMealItem.servings!;
         expect(nutrition).toEqual({
-          calories: perServing(recipe.calories),
-          sodium: perServing(recipe.sodium),
-          sugar: perServing(recipe.sugar),
-          carbs: perServing(recipe.carbs),
-          fat: perServing(recipe.fat),
-          protein: perServing(recipe.protein),
+          calories: modifiedMealItem.nutrition!.calories * scale,
+          sodium: modifiedMealItem.nutrition!.sodium * scale,
+          sugar: modifiedMealItem.nutrition!.sugar * scale,
+          carbs: modifiedMealItem.nutrition!.carbs * scale,
+          fat: modifiedMealItem.nutrition!.fat * scale,
+          protein: modifiedMealItem.nutrition!.protein * scale,
         });
       });
 
-      it('sets empty nutrition when servings change and no recipe is selected', async () => {
+      it('sets nutrition undefined when servings change and no recipe is selected', async () => {
         wrapper = mountComponent({ modelValue: {}, items: TEST_RECIPES });
         const servingsInput = wrapper.findComponent('[data-testid="servings-input"]');
         await servingsInput.find('input').setValue('3');
 
         const emitted = wrapper.emitted('update:modelValue');
         expect(emitted?.length).toBe(1);
-        expect((emitted![0]![0] as MealItem).nutrition).toEqual({});
+        expect((emitted![0]![0] as MealItem).nutrition).toBeUndefined();
       });
     });
   });

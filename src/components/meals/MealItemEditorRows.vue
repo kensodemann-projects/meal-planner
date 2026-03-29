@@ -66,13 +66,7 @@ const recipeId = computed({
   set: (id: string) => {
     const recipe = props.items.find((item) => item.id === id);
     const baseNutrition = getNutritionFromRecipe(id);
-    const currentServings = mealItem.value?.servings;
-    let nutrition: Nutrition;
-    if (baseNutrition && recipe?.servings && currentServings) {
-      nutrition = scaleNutrition(baseNutrition, currentServings / recipe.servings);
-    } else {
-      nutrition = baseNutrition || ({} as Nutrition);
-    }
+    const nutrition = baseNutrition && scaleNutrition(baseNutrition, mealItem.value?.servings || 1);
     mealItem.value = {
       ...mealItem.value,
       recipeId: id,
@@ -85,25 +79,16 @@ const recipeId = computed({
 const servings = computed({
   get: () => mealItem.value?.servings,
   set: (newServings: number) => {
-    const oldServings = mealItem.value?.servings;
-    const currentNutrition = mealItem.value?.nutrition;
-    let nutrition: Nutrition;
-    if (currentNutrition && Object.keys(currentNutrition).length > 0 && oldServings) {
-      nutrition = scaleNutrition(currentNutrition as Nutrition, newServings / oldServings);
-    } else {
-      const recipeNutrition = recipeId.value ? getNutritionFromRecipe(recipeId.value) : undefined;
-      if (recipeNutrition) {
-        const recipe = props.items.find((item) => item.id === recipeId.value);
-        nutrition = scaleNutrition(recipeNutrition, recipe?.servings ? newServings / recipe.servings : 1);
-      } else {
-        nutrition = {} as Nutrition;
-      }
+    if (newServings) {
+      const oldServings = mealItem.value?.servings || 1;
+      const nutrition =
+        mealItem.value?.nutrition && scaleNutrition(mealItem.value?.nutrition, newServings / oldServings);
+      mealItem.value = {
+        ...mealItem.value,
+        servings: newServings,
+        nutrition,
+      };
     }
-    mealItem.value = {
-      ...mealItem.value,
-      servings: newServings,
-      nutrition,
-    };
   },
 });
 

@@ -38,12 +38,12 @@ const TEST_MEAL_ITEM: MealItem = {
   name: TEST_RECIPES[0]!.name,
   recipeId: TEST_RECIPES[0]!.id!,
   nutrition: {
-    calories: 157.5,
-    sodium: 195,
-    sugar: 0.75,
-    carbs: 13.75,
-    fat: 8.75,
-    protein: 7,
+    calories: TEST_RECIPES[0]!.calories,
+    sodium: TEST_RECIPES[0]!.sodium,
+    sugar: TEST_RECIPES[0]!.sugar,
+    carbs: TEST_RECIPES[0]!.carbs,
+    fat: TEST_RECIPES[0]!.fat,
+    protein: TEST_RECIPES[0]!.protein,
   },
 };
 
@@ -101,7 +101,7 @@ describe('Meal Item Editor Card', () => {
         it('emits "save" with the data', async () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
           const recipeInput = wrapper.findComponent('[data-testid="recipe-input"]');
-          await (recipeInput as any).vm.$emit('update:modelValue', TEST_MEAL_ITEM.recipeId);
+          await (recipeInput as any).vm.$emit('update:modelValue', TEST_RECIPES[0]!.id);
           await flushPromises();
           await saveButton.trigger('click');
           expect(wrapper.emitted('save')).toBeTruthy();
@@ -109,16 +109,16 @@ describe('Meal Item Editor Card', () => {
           expect(wrapper.emitted('save')?.[0]).toEqual([
             {
               id: expect.any(String),
-              recipeId: '1',
-              name: 'Classic Spaghetti Carbonara',
+              recipeId: TEST_RECIPES[0]!.id,
+              name: TEST_RECIPES[0]!.name,
               servings: 1,
               nutrition: {
-                calories: 157.5,
-                carbs: 13.75,
-                fat: 8.75,
-                protein: 7,
-                sodium: 195,
-                sugar: 0.75,
+                calories: TEST_RECIPES[0]!.calories,
+                carbs: TEST_RECIPES[0]!.carbs,
+                fat: TEST_RECIPES[0]!.fat,
+                protein: TEST_RECIPES[0]!.protein,
+                sodium: TEST_RECIPES[0]!.sodium,
+                sugar: TEST_RECIPES[0]!.sugar,
               },
             },
           ]);
