@@ -20,13 +20,13 @@
               Days with Meals: <strong>{{ thisWeek?.daysWithMeals }}</strong>
             </div>
             <div>
-              Highest Calories: <strong>{{ thisWeek?.highestCalories }}</strong>
+              Average Calories: <strong>{{ thisWeek?.averageCalories }}</strong>
             </div>
             <div>
-              Highest Protein: <strong>{{ thisWeek?.highestProtein }}g</strong>
+              Average Protein: <strong>{{ thisWeek?.averageProtein }}g</strong>
             </div>
             <div>
-              Highest Carbs: <strong>{{ thisWeek?.highestCarbs }}g</strong>
+              Average Carbs: <strong>{{ thisWeek?.averageCarbs }}g</strong>
             </div>
             <div>
               Cheat Days: <strong>{{ thisWeek?.cheatDays }}</strong>
@@ -48,13 +48,13 @@
               Days with Meals: <strong>{{ nextWeek?.daysWithMeals }}</strong>
             </div>
             <div>
-              Highest Calories: <strong>{{ nextWeek?.highestCalories }}</strong>
+              Average Calories: <strong>{{ nextWeek?.averageCalories }}</strong>
             </div>
             <div>
-              Highest Protein: <strong>{{ nextWeek?.highestProtein }}g</strong>
+              Average Protein: <strong>{{ nextWeek?.averageProtein }}g</strong>
             </div>
             <div>
-              Highest Carbs: <strong>{{ nextWeek?.highestCarbs }}g</strong>
+              Average Carbs: <strong>{{ nextWeek?.averageCarbs }}g</strong>
             </div>
             <div>
               Cheat Days: <strong>{{ nextWeek?.cheatDays }}</strong>
@@ -85,13 +85,13 @@
               Days with Meals: <strong>{{ week.daysWithMeals }}</strong>
             </div>
             <div>
-              Highest Calories: <strong>{{ week.highestCalories }}</strong>
+              Average Calories: <strong>{{ week.averageCalories }}</strong>
             </div>
             <div>
-              Highest Protein: <strong>{{ week.highestProtein }}g</strong>
+              Average Protein: <strong>{{ week.averageProtein }}g</strong>
             </div>
             <div>
-              Highest Carbs: <strong>{{ week.highestCarbs }}g</strong>
+              Average Carbs: <strong>{{ week.averageCarbs }}g</strong>
             </div>
             <div>
               Cheat Days: <strong>{{ week.cheatDays }}</strong>
@@ -113,9 +113,9 @@ interface WeeklyData {
   startDate: Date;
   endDate: Date;
   daysWithMeals: number;
-  highestCalories: number;
-  highestProtein: number;
-  highestCarbs: number;
+  averageCalories: number;
+  averageProtein: number;
+  averageCarbs: number;
   cheatDays: number;
 }
 const thisWeek = ref<WeeklyData>();
@@ -140,18 +140,18 @@ settings.promise.value
       startDate: start,
       endDate: end,
       daysWithMeals: randomDays(),
-      highestCalories: randomCalories(),
-      highestProtein: randomProtein(),
-      highestCarbs: randomCarbs(),
+      averageCalories: randomCalories(),
+      averageProtein: randomProtein(),
+      averageCarbs: randomCarbs(),
       cheatDays: randomCheatDays(),
     };
     nextWeek.value = {
       startDate: addWeeks(start, 1),
       endDate: addWeeks(end, 1),
       daysWithMeals: randomDays(),
-      highestCalories: randomCalories(),
-      highestProtein: randomProtein(),
-      highestCarbs: randomCarbs(),
+      averageCalories: randomCalories(),
+      averageProtein: randomProtein(),
+      averageCarbs: randomCarbs(),
       cheatDays: randomCheatDays(),
     };
     [4, 3, 2, 1].forEach((i) => {
@@ -161,9 +161,9 @@ settings.promise.value
         startDate: prevStart,
         endDate: prevEnd,
         daysWithMeals: randomDays(),
-        highestCalories: randomCalories(),
-        highestProtein: randomProtein(),
-        highestCarbs: randomCarbs(),
+        averageCalories: randomCalories(),
+        averageProtein: randomProtein(),
+        averageCarbs: randomCarbs(),
         cheatDays: randomCheatDays(),
       });
     });
