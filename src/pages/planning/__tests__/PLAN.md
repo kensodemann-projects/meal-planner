@@ -79,7 +79,22 @@ expect(useMealPlansData).toHaveBeenCalled();
 
 ---
 
-#### Test 2: fetches meal plans for this week
+#### Test 2: fetches six meal plans
+
+**Context:** Verifies the component obtains exactly six meal plans via `getMealPlansForPeriod`.
+
+**Assertions:**
+
+```typescript
+expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-12-15', '2025-12-21');
+expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-12-08', '2025-12-14');
+expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-12-01', '2025-12-07');
+expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-11-24', '2025-11-30');
+```
+
+---
+
+#### Test 3: fetches meal plans for this week
 
 **Context:** `getMealPlansForPeriod` is called with the exact date range for this week.  
 System time: `2025-12-25`. Week starts Monday (from settings mock `weekStartDay: 1`).  
@@ -101,7 +116,7 @@ expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-12-22', '2025-12-28');
 
 ---
 
-#### Test 3: fetches meal plans for next week
+#### Test 4: fetches meal plans for next week
 
 **Context:** `getMealPlansForPeriod` is called with the date range for next week: `2025-12-29` → `2026-01-04`.
 
@@ -113,7 +128,7 @@ expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-12-29', '2026-01-04');
 
 ---
 
-#### Test 4: fetches meal plans for all four previous weeks
+#### Test 5: fetches meal plans for all four previous weeks
 
 **Context:** One `getMealPlansForPeriod` call per previous week card.
 
@@ -159,13 +174,13 @@ expect(text.text()).toContain('Days with Meals: 5');
 #### Test 6: displays average calories from `multiDayMealPlanNutrients()`
 
 **Context:** `averageCalories` = `multiDayMealPlanNutrients(plans).calories / daysWithMeals(plans)`.  
-Use a whole-number setup to keep assertions simple.
+The display should use Math.round() to round to the nearest whole number. Choose numerators that exercise this.
 
 **Setup:**
 
 ```typescript
 (multiDayMealPlanNutrients as Mock).mockReturnValue({
-  calories: 14000,
+  calories: 14002,
   protein: 0,
   fat: 0,
   carbs: 0,
@@ -196,7 +211,7 @@ expect(text.text()).toContain('Average Calories: 2000');
 ```typescript
 (multiDayMealPlanNutrients as Mock).mockReturnValue({
   calories: 0,
-  protein: 700,
+  protein: 703,
   fat: 0,
   carbs: 0,
   sugar: 0,
@@ -224,7 +239,7 @@ expect(text.text()).toContain('Average Protein: 100g');
   calories: 0,
   protein: 0,
   fat: 0,
-  carbs: 2100,
+  carbs: 2102,
   sugar: 0,
   sodium: 0,
 });

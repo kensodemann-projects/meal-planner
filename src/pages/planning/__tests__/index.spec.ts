@@ -6,9 +6,14 @@ import * as directives from 'vuetify/directives';
 import IndexPage from '../index.vue';
 import { useSettingsData } from '@/data/settings';
 import { useRouter } from 'vue-router';
+import { useMealPlansData } from '@/data/meal-plans';
+import { multiDayMealPlanNutrients, daysWithMeals, dailyMealPlanNutrients } from '@/core/nutritional-calculations';
+import { TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
 
 vi.mock('@/data/settings');
 vi.mock('vue-router');
+vi.mock('@/data/meal-plans');
+vi.mock('@/core/nutritional-calculations');
 
 const vuetify = createVuetify({
   components,
@@ -76,6 +81,105 @@ describe('Planning', () => {
           query: { dt: '2025-12-22' },
         });
       });
+
+      describe('stats', () => {
+        it('displays days with meals from daysWithMeals()', async () => {
+          (daysWithMeals as Mock).mockReturnValue(5);
+          wrapper = mountPage();
+          await flushPromises();
+          const card = wrapper.findAllComponents(components.VCard)[0]!;
+          const text = card.findComponent(components.VCardText);
+          expect(text.text()).toContain('Days with Meals: 5');
+        });
+
+        it('displays average calories from multiDayMealPlanNutrients()', async () => {
+          (multiDayMealPlanNutrients as Mock).mockReturnValue({
+            calories: 14002,
+            protein: 0,
+            fat: 0,
+            carbs: 0,
+            sugar: 0,
+            sodium: 0,
+          });
+          (daysWithMeals as Mock).mockReturnValue(7);
+          wrapper = mountPage();
+          await flushPromises();
+          const card = wrapper.findAllComponents(components.VCard)[0]!;
+          const text = card.findComponent(components.VCardText);
+          expect(text.text()).toContain('Average Calories: 2000');
+        });
+
+        it('displays average protein from multiDayMealPlanNutrients()', async () => {
+          (multiDayMealPlanNutrients as Mock).mockReturnValue({
+            calories: 0,
+            protein: 703,
+            fat: 0,
+            carbs: 0,
+            sugar: 0,
+            sodium: 0,
+          });
+          (daysWithMeals as Mock).mockReturnValue(7);
+          wrapper = mountPage();
+          await flushPromises();
+          const card = wrapper.findAllComponents(components.VCard)[0]!;
+          const text = card.findComponent(components.VCardText);
+          expect(text.text()).toContain('Average Protein: 100g');
+        });
+
+        it('displays average carbs from multiDayMealPlanNutrients()', async () => {
+          (multiDayMealPlanNutrients as Mock).mockReturnValue({
+            calories: 0,
+            protein: 0,
+            fat: 0,
+            carbs: 2102,
+            sugar: 0,
+            sodium: 0,
+          });
+          (daysWithMeals as Mock).mockReturnValue(7);
+          wrapper = mountPage();
+          await flushPromises();
+          const card = wrapper.findAllComponents(components.VCard)[0]!;
+          const text = card.findComponent(components.VCardText);
+          expect(text.text()).toContain('Average Carbs: 300g');
+        });
+
+        it('displays cheat days count', async () => {
+          const { getMealPlansForPeriod } = useMealPlansData();
+          (getMealPlansForPeriod as Mock).mockResolvedValueOnce([
+            TEST_MEAL_PLANS[0],
+            TEST_MEAL_PLANS[1],
+            TEST_MEAL_PLANS[2],
+          ]);
+          (dailyMealPlanNutrients as Mock)
+            .mockReturnValueOnce({ calories: 3000, protein: 0, fat: 0, carbs: 0, sugar: 0, sodium: 0 })
+            .mockReturnValueOnce({ calories: 2000, protein: 0, fat: 0, carbs: 0, sugar: 0, sodium: 0 })
+            .mockReturnValueOnce({ calories: 2800, protein: 0, fat: 0, carbs: 0, sugar: 0, sodium: 0 });
+          wrapper = mountPage();
+          await flushPromises();
+          const card = wrapper.findAllComponents(components.VCard)[0]!;
+          const text = card.findComponent(components.VCardText);
+          expect(text.text()).toContain('Cheat Days: 2');
+        });
+
+        it('displays zero average when no plans exist', async () => {
+          (daysWithMeals as Mock).mockReturnValue(0);
+          (multiDayMealPlanNutrients as Mock).mockReturnValue({
+            calories: 0,
+            protein: 0,
+            fat: 0,
+            carbs: 0,
+            sugar: 0,
+            sodium: 0,
+          });
+          wrapper = mountPage();
+          await flushPromises();
+          const card = wrapper.findAllComponents(components.VCard)[0]!;
+          const text = card.findComponent(components.VCardText);
+          expect(text.text()).toContain('Average Calories: 0');
+          expect(text.text()).toContain('Average Protein: 0g');
+          expect(text.text()).toContain('Average Carbs: 0g');
+        });
+      });
     });
 
     describe('next week', () => {
@@ -133,6 +237,38 @@ describe('Planning', () => {
             query: { dt: targetDates[i - 2] },
           });
         }
+      });
+    });
+
+    describe('data fetching', () => {
+      it('calls useMealPlansData', async () => {
+        wrapper = mountPage();
+        await flushPromises();
+        expect(useMealPlansData).toHaveBeenCalled();
+      });
+
+      it('fetches meal plans for this week', async () => {
+        const { getMealPlansForPeriod } = useMealPlansData();
+        wrapper = mountPage();
+        await flushPromises();
+        expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-12-22', '2025-12-28');
+      });
+
+      it('fetches meal plans for next week', async () => {
+        const { getMealPlansForPeriod } = useMealPlansData();
+        wrapper = mountPage();
+        await flushPromises();
+        expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-12-29', '2026-01-04');
+      });
+
+      it('fetches meal plans for all four previous weeks', async () => {
+        const { getMealPlansForPeriod } = useMealPlansData();
+        wrapper = mountPage();
+        await flushPromises();
+        expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-12-15', '2025-12-21');
+        expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-12-08', '2025-12-14');
+        expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-12-01', '2025-12-07');
+        expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-11-24', '2025-11-30');
       });
     });
   });

@@ -16,3 +16,4 @@ export const dailyMealPlanNutrients: typeof import('@/core/nutritional-calculati
 export const multiDayMealPlanNutrients: typeof import('@/core/nutritional-calculations').multiDayMealPlanNutrients = vi
   .fn()
   .mockReturnValue(zeroNutrition);
+export const daysWithMeals: typeof import('@/core/nutritional-calculations').daysWithMeals = vi.fn().mockReturnValue(0);
