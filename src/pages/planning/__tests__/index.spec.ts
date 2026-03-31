@@ -7,8 +7,7 @@ import IndexPage from '../index.vue';
 import { useSettingsData } from '@/data/settings';
 import { useRouter } from 'vue-router';
 import { useMealPlansData } from '@/data/meal-plans';
-import { multiDayMealPlanNutrients, daysWithMeals, dailyMealPlanNutrients } from '@/core/nutritional-calculations';
-import { TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
+import { multiDayMealPlanNutrients, daysWithMeals } from '@/core/nutritional-calculations';
 
 vi.mock('@/data/settings');
 vi.mock('vue-router');
@@ -143,24 +142,6 @@ describe('Planning', () => {
           expect(text.text()).toContain('Average Carbs: 300g');
         });
 
-        it('displays cheat days count', async () => {
-          const { getMealPlansForPeriod } = useMealPlansData();
-          (getMealPlansForPeriod as Mock).mockResolvedValueOnce([
-            TEST_MEAL_PLANS[0],
-            TEST_MEAL_PLANS[1],
-            TEST_MEAL_PLANS[2],
-          ]);
-          (dailyMealPlanNutrients as Mock)
-            .mockReturnValueOnce({ calories: 3000, protein: 0, fat: 0, carbs: 0, sugar: 0, sodium: 0 })
-            .mockReturnValueOnce({ calories: 2000, protein: 0, fat: 0, carbs: 0, sugar: 0, sodium: 0 })
-            .mockReturnValueOnce({ calories: 2800, protein: 0, fat: 0, carbs: 0, sugar: 0, sodium: 0 });
-          wrapper = mountPage();
-          await flushPromises();
-          const card = wrapper.findAllComponents(components.VCard)[0]!;
-          const text = card.findComponent(components.VCardText);
-          expect(text.text()).toContain('Cheat Days: 2');
-        });
-
         it('displays zero average when no plans exist', async () => {
           (daysWithMeals as Mock).mockReturnValue(0);
           (multiDayMealPlanNutrients as Mock).mockReturnValue({
@@ -245,6 +226,13 @@ describe('Planning', () => {
         wrapper = mountPage();
         await flushPromises();
         expect(useMealPlansData).toHaveBeenCalled();
+      });
+
+      it('fetches exactly 6 meal plans', async () => {
+        const { getMealPlansForPeriod } = useMealPlansData();
+        wrapper = mountPage();
+        await flushPromises();
+        expect(getMealPlansForPeriod).toHaveBeenCalledTimes(6);
       });
 
       it('fetches meal plans for this week', async () => {

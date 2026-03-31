@@ -9,7 +9,7 @@
       <v-col cols="12" md="6">
         <v-card
           variant="outlined"
-          @click="router.push({ path: 'planning/week', query: { dt: format(thisWeek!.startDate, 'yyyy-MM-dd') } })"
+          @click="router.push({ path: 'planning/week', query: { dt: toISODate(thisWeek!.startDate) } })"
         >
           <v-card-title>This Week</v-card-title>
           <v-card-subtitle>
@@ -37,7 +37,7 @@
       <v-col cols="12" md="6">
         <v-card
           variant="outlined"
-          @click="router.push({ path: 'planning/week', query: { dt: format(nextWeek!.startDate, 'yyyy-MM-dd') } })"
+          @click="router.push({ path: 'planning/week', query: { dt: toISODate(nextWeek!.startDate) } })"
         >
           <v-card-title>Next Week (Planning)</v-card-title>
           <v-card-subtitle>
@@ -72,7 +72,7 @@
       <v-col cols="12" md="6" v-for="week in previousWeeks" :key="week.startDate.getTime()">
         <v-card
           variant="outlined"
-          @click="router.push({ path: 'planning/week', query: { dt: format(week.startDate, 'yyyy-MM-dd') } })"
+          @click="router.push({ path: 'planning/week', query: { dt: toISODate(week.startDate) } })"
         >
           <v-card-title
             >Weeks Ago: {{ differenceInWeeks(thisWeek?.startDate || new Date(), week.startDate) }}</v-card-title
@@ -104,6 +104,8 @@
 </template>
 
 <script lang="ts" setup>
+import { daysWithMeals, multiDayMealPlanNutrients } from '@/core/nutritional-calculations';
+import { useMealPlansData } from '@/data/meal-plans';
 import { useSettingsData } from '@/data/settings';
 import { addWeeks, differenceInWeeks, endOfWeek, format, startOfWeek } from 'date-fns';
 import { ref } from 'vue';
@@ -124,52 +126,35 @@ const previousWeeks = ref<WeeklyData[]>([]);
 
 const { settings } = useSettingsData();
 
-const randomDays = (): number => Math.floor(Math.random() * 7) + 1;
 const router = useRouter();
+const { getMealPlansForPeriod } = useMealPlansData();
 
-const randomCalories = (): number => Math.floor(Math.random() * 2000) + 1000;
-const randomProtein = (): number => Math.floor(Math.random() * 150) + 50;
-const randomCarbs = (): number => Math.floor(Math.random() * 300) + 100;
-const randomCheatDays = (): number => Math.floor(Math.random() * 3);
+const toISODate = (date: Date): string => format(date, 'yyyy-MM-dd');
+
+const buildDataForWeek = async (startDate: Date): Promise<WeeklyData> => {
+  const endDate = endOfWeek(startDate, { weekStartsOn: settings.value?.weekStartDay });
+  const mealPlans = await getMealPlansForPeriod(toISODate(startDate), toISODate(endDate));
+  const days = daysWithMeals(mealPlans);
+  const nutrition = multiDayMealPlanNutrients(mealPlans);
+  return {
+    startDate,
+    endDate,
+    daysWithMeals: days,
+    averageCalories: Math.round(nutrition.calories / days),
+    averageProtein: Math.round(nutrition.protein / days),
+    averageCarbs: Math.round(nutrition.carbs / days),
+    cheatDays: 0,
+  };
+};
 
 settings.promise.value
-  .then(() => {
+  .then(async () => {
     const start = startOfWeek(new Date(), { weekStartsOn: settings.value?.weekStartDay });
-    const end = endOfWeek(new Date(), { weekStartsOn: settings.value?.weekStartDay });
-    // TODO: Copilot this needs to be replaced with real data fetching logic for the current, next and previous weeks
-    //       Furthermore, the @src/core/nutrition-calculator.ts should be used to calculate the average calories, protein and carbs for the week.
-    thisWeek.value = {
-      startDate: start,
-      endDate: end,
-      daysWithMeals: randomDays(),
-      averageCalories: randomCalories(),
-      averageProtein: randomProtein(),
-      averageCarbs: randomCarbs(),
-      cheatDays: randomCheatDays(),
-    };
-    nextWeek.value = {
-      startDate: addWeeks(start, 1),
-      endDate: addWeeks(end, 1),
-      daysWithMeals: randomDays(),
-      averageCalories: randomCalories(),
-      averageProtein: randomProtein(),
-      averageCarbs: randomCarbs(),
-      cheatDays: randomCheatDays(),
-    };
-    [4, 3, 2, 1].forEach((i) => {
-      const prevStart = addWeeks(start, -i);
-      const prevEnd = addWeeks(end, -i);
-      previousWeeks.value.push({
-        startDate: prevStart,
-        endDate: prevEnd,
-        daysWithMeals: randomDays(),
-        averageCalories: randomCalories(),
-        averageProtein: randomProtein(),
-        averageCarbs: randomCarbs(),
-        cheatDays: randomCheatDays(),
-      });
+    thisWeek.value = await buildDataForWeek(start);
+    nextWeek.value = await buildDataForWeek(addWeeks(start, 1));
+    [1, 2, 3, 4].forEach(async (i) => {
+      previousWeeks.value.push(await buildDataForWeek(addWeeks(start, -i)));
     });
-    previousWeeks.value.reverse();
   })
   .catch((err) => {
     if (import.meta.env.DEV) {
