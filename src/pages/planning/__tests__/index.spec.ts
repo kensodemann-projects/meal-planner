@@ -1,5 +1,6 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+import { ref } from 'vue';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -8,6 +9,7 @@ import { useSettingsData } from '@/data/settings';
 import { useRouter } from 'vue-router';
 import { useMealPlansData } from '@/data/meal-plans';
 import { multiDayMealPlanNutrients, daysWithMeals } from '@/core/nutritional-calculations';
+import type { Settings } from '@/models/settings';
 
 vi.mock('@/data/settings');
 vi.mock('vue-router');
@@ -257,6 +259,60 @@ describe('Planning', () => {
         expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-12-08', '2025-12-14');
         expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-12-01', '2025-12-07');
         expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-11-24', '2025-11-30');
+      });
+
+      describe('with weekStartDay: 5 (Friday)', () => {
+        const fridaySettings = ref<Settings>({
+          dailyCalorieLimit: 2500,
+          dailySugarLimit: 35,
+          dailyProteinTarget: 85,
+          tolerance: 15,
+          cheatDays: 2,
+          weekStartDay: 5,
+        });
+        (fridaySettings as any).promise = { value: Promise.resolve(fridaySettings) };
+
+        beforeEach(() => {
+          (useSettingsData as Mock).mockReturnValue({ settings: fridaySettings });
+        });
+
+        it('computes correct week boundaries for this week', async () => {
+          wrapper = mountPage();
+          await flushPromises();
+          const subTitle = wrapper.findAllComponents(components.VCard)[0]?.findComponent(components.VCardSubtitle);
+          expect(subTitle?.text()).toBe('12/19/2025 - 12/25/2025');
+        });
+
+        it('computes correct week boundaries for next week', async () => {
+          wrapper = mountPage();
+          await flushPromises();
+          const subTitle = wrapper.findAllComponents(components.VCard)[1]?.findComponent(components.VCardSubtitle);
+          expect(subTitle?.text()).toBe('12/26/2025 - 1/1/2026');
+        });
+
+        it('fetches meal plans for this week', async () => {
+          const { getMealPlansForPeriod } = useMealPlansData();
+          wrapper = mountPage();
+          await flushPromises();
+          expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-12-19', '2025-12-25');
+        });
+
+        it('fetches meal plans for next week', async () => {
+          const { getMealPlansForPeriod } = useMealPlansData();
+          wrapper = mountPage();
+          await flushPromises();
+          expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-12-26', '2026-01-01');
+        });
+
+        it('fetches meal plans for all four previous weeks', async () => {
+          const { getMealPlansForPeriod } = useMealPlansData();
+          wrapper = mountPage();
+          await flushPromises();
+          expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-12-12', '2025-12-18');
+          expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-12-05', '2025-12-11');
+          expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-11-28', '2025-12-04');
+          expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-11-21', '2025-11-27');
+        });
       });
     });
   });
