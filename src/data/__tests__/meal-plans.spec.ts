@@ -117,7 +117,7 @@ describe('Meal Plans Data Service', () => {
       ]);
     });
 
-    it('resovles [] if the start and end dates are reversed', async () => {
+    it('resolves [] if the start and end dates are reversed', async () => {
       const { getMealPlansForPeriod } = useMealPlansData();
       await expect(getMealPlansForPeriod(TEST_MEAL_PLANS[3]!.date, TEST_MEAL_PLANS[1]?.date)).resolves.toEqual([]);
     });
