@@ -5,7 +5,7 @@ import { computed } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
 
 export const useMealPlansData = () => {
-  const minDate = format(subWeeks(startOfWeek(new Date(), { weekStartsOn: 0 }), 4), 'yyyy-MM-dd');
+  const minDate = format(subWeeks(startOfWeek(new Date(), { weekStartsOn: 0 }), 5), 'yyyy-MM-dd');
   const db = useFirestore();
   const path = 'meal-plans';
   const mealPlansCollection = collection(db, path);
