@@ -28,9 +28,6 @@
             <div>
               Average Carbs: <strong>{{ thisWeek?.averageCarbs }}g</strong>
             </div>
-            <div>
-              Cheat Days: <strong>{{ thisWeek?.cheatDays }}</strong>
-            </div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -55,9 +52,6 @@
             </div>
             <div>
               Average Carbs: <strong>{{ nextWeek?.averageCarbs }}g</strong>
-            </div>
-            <div>
-              Cheat Days: <strong>{{ nextWeek?.cheatDays }}</strong>
             </div>
           </v-card-text>
         </v-card>
@@ -93,9 +87,6 @@
             <div>
               Average Carbs: <strong>{{ week.averageCarbs }}g</strong>
             </div>
-            <div>
-              Cheat Days: <strong>{{ week.cheatDays }}</strong>
-            </div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -118,7 +109,6 @@ interface WeeklyData {
   averageCalories: number;
   averageProtein: number;
   averageCarbs: number;
-  cheatDays: number;
 }
 const thisWeek = ref<WeeklyData>();
 const nextWeek = ref<WeeklyData>();
@@ -140,10 +130,9 @@ const buildDataForWeek = async (startDate: Date): Promise<WeeklyData> => {
     startDate,
     endDate,
     daysWithMeals: days,
-    averageCalories: Math.round(nutrition.calories / days),
-    averageProtein: Math.round(nutrition.protein / days),
-    averageCarbs: Math.round(nutrition.carbs / days),
-    cheatDays: 0,
+    averageCalories: Math.round(nutrition.calories / (days || 1)),
+    averageProtein: Math.round(nutrition.protein / (days || 1)),
+    averageCarbs: Math.round(nutrition.carbs / (days || 1)),
   };
 };
 
