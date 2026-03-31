@@ -136,6 +136,8 @@ settings.promise.value
   .then(() => {
     const start = startOfWeek(new Date(), { weekStartsOn: settings.value?.weekStartDay });
     const end = endOfWeek(new Date(), { weekStartsOn: settings.value?.weekStartDay });
+    // TODO: Copilot this needs to be replaced with real data fetching logic for the current, next and previous weeks
+    //       Furthermore, the @src/core/nutrition-calculator.ts should be used to calculate the average calories, protein and carbs for the week.
     thisWeek.value = {
       startDate: start,
       endDate: end,
