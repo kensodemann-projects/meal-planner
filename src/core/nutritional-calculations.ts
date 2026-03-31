@@ -80,3 +80,20 @@ export const dailyMealPlanNutrients = (mealPlan: MealPlan): Nutrition =>
  */
 export const multiDayMealPlanNutrients = (mealPlans: MealPlan[]): Nutrition =>
   mealPlans.reduce((nutrients, mealPlan) => sumNutrition(nutrients, dailyMealPlanNutrients(mealPlan)), zeroNutrition);
+
+/**
+ * Calculate the number of days with at least one meal planned across multiple meal plans (e.g., weekly totals).
+ *
+ * This counts the number of meal plans that contain at least one meal, which can be useful for tracking.
+ * It is assumed that each day will have at most one meal plan. If multiple meal plans are provided for the same day,
+ * this function will count each meal plan separately.
+ *
+ * @param mealPlans - Array of meal plans to aggregate
+ * @returns The number of days with at least one meal planned across all provided meal plans
+ *
+ * @example
+ * const weeklyPlans = [...]; // Array of MealPlan objects
+ * const days = daysWithMeals(weeklyPlans);
+ */
+export const daysWithMeals = (mealPlans: MealPlan[]): number =>
+  mealPlans.reduce((count, mealPlan) => (mealPlan.meals.length > 0 ? count + 1 : count), 0);

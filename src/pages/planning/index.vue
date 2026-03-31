@@ -9,7 +9,7 @@
       <v-col cols="12" md="6">
         <v-card
           variant="outlined"
-          @click="router.push({ path: 'planning/week', query: { dt: format(thisWeek!.startDate, 'yyyy-MM-dd') } })"
+          @click="router.push({ path: 'planning/week', query: { dt: toISODate(thisWeek!.startDate) } })"
         >
           <v-card-title>This Week</v-card-title>
           <v-card-subtitle>
@@ -20,16 +20,13 @@
               Days with Meals: <strong>{{ thisWeek?.daysWithMeals }}</strong>
             </div>
             <div>
-              Highest Calories: <strong>{{ thisWeek?.highestCalories }}</strong>
+              Average Calories: <strong>{{ thisWeek?.averageCalories }}</strong>
             </div>
             <div>
-              Highest Protein: <strong>{{ thisWeek?.highestProtein }}g</strong>
+              Average Protein: <strong>{{ thisWeek?.averageProtein }}g</strong>
             </div>
             <div>
-              Highest Carbs: <strong>{{ thisWeek?.highestCarbs }}g</strong>
-            </div>
-            <div>
-              Cheat Days: <strong>{{ thisWeek?.cheatDays }}</strong>
+              Average Carbs: <strong>{{ thisWeek?.averageCarbs }}g</strong>
             </div>
           </v-card-text>
         </v-card>
@@ -37,7 +34,7 @@
       <v-col cols="12" md="6">
         <v-card
           variant="outlined"
-          @click="router.push({ path: 'planning/week', query: { dt: format(nextWeek!.startDate, 'yyyy-MM-dd') } })"
+          @click="router.push({ path: 'planning/week', query: { dt: toISODate(nextWeek!.startDate) } })"
         >
           <v-card-title>Next Week (Planning)</v-card-title>
           <v-card-subtitle>
@@ -48,16 +45,13 @@
               Days with Meals: <strong>{{ nextWeek?.daysWithMeals }}</strong>
             </div>
             <div>
-              Highest Calories: <strong>{{ nextWeek?.highestCalories }}</strong>
+              Average Calories: <strong>{{ nextWeek?.averageCalories }}</strong>
             </div>
             <div>
-              Highest Protein: <strong>{{ nextWeek?.highestProtein }}g</strong>
+              Average Protein: <strong>{{ nextWeek?.averageProtein }}g</strong>
             </div>
             <div>
-              Highest Carbs: <strong>{{ nextWeek?.highestCarbs }}g</strong>
-            </div>
-            <div>
-              Cheat Days: <strong>{{ nextWeek?.cheatDays }}</strong>
+              Average Carbs: <strong>{{ nextWeek?.averageCarbs }}g</strong>
             </div>
           </v-card-text>
         </v-card>
@@ -72,7 +66,7 @@
       <v-col cols="12" md="6" v-for="week in previousWeeks" :key="week.startDate.getTime()">
         <v-card
           variant="outlined"
-          @click="router.push({ path: 'planning/week', query: { dt: format(week.startDate, 'yyyy-MM-dd') } })"
+          @click="router.push({ path: 'planning/week', query: { dt: toISODate(week.startDate) } })"
         >
           <v-card-title
             >Weeks Ago: {{ differenceInWeeks(thisWeek?.startDate || new Date(), week.startDate) }}</v-card-title
@@ -85,16 +79,13 @@
               Days with Meals: <strong>{{ week.daysWithMeals }}</strong>
             </div>
             <div>
-              Highest Calories: <strong>{{ week.highestCalories }}</strong>
+              Average Calories: <strong>{{ week.averageCalories }}</strong>
             </div>
             <div>
-              Highest Protein: <strong>{{ week.highestProtein }}g</strong>
+              Average Protein: <strong>{{ week.averageProtein }}g</strong>
             </div>
             <div>
-              Highest Carbs: <strong>{{ week.highestCarbs }}g</strong>
-            </div>
-            <div>
-              Cheat Days: <strong>{{ week.cheatDays }}</strong>
+              Average Carbs: <strong>{{ week.averageCarbs }}g</strong>
             </div>
           </v-card-text>
         </v-card>
@@ -104,6 +95,8 @@
 </template>
 
 <script lang="ts" setup>
+import { daysWithMeals, multiDayMealPlanNutrients } from '@/core/nutritional-calculations';
+import { useMealPlansData } from '@/data/meal-plans';
 import { useSettingsData } from '@/data/settings';
 import { addWeeks, differenceInWeeks, endOfWeek, format, startOfWeek } from 'date-fns';
 import { ref } from 'vue';
@@ -113,10 +106,9 @@ interface WeeklyData {
   startDate: Date;
   endDate: Date;
   daysWithMeals: number;
-  highestCalories: number;
-  highestProtein: number;
-  highestCarbs: number;
-  cheatDays: number;
+  averageCalories: number;
+  averageProtein: number;
+  averageCarbs: number;
 }
 const thisWeek = ref<WeeklyData>();
 const nextWeek = ref<WeeklyData>();
@@ -124,50 +116,38 @@ const previousWeeks = ref<WeeklyData[]>([]);
 
 const { settings } = useSettingsData();
 
-const randomDays = (): number => Math.floor(Math.random() * 7) + 1;
 const router = useRouter();
+const { getMealPlansForPeriod } = useMealPlansData();
 
-const randomCalories = (): number => Math.floor(Math.random() * 2000) + 1000;
-const randomProtein = (): number => Math.floor(Math.random() * 150) + 50;
-const randomCarbs = (): number => Math.floor(Math.random() * 300) + 100;
-const randomCheatDays = (): number => Math.floor(Math.random() * 3);
+const toISODate = (date: Date): string => format(date, 'yyyy-MM-dd');
+
+const buildDataForWeek = async (startDate: Date): Promise<WeeklyData> => {
+  const endDate = endOfWeek(startDate, { weekStartsOn: settings.value?.weekStartDay });
+  const mealPlans = await getMealPlansForPeriod(toISODate(startDate), toISODate(endDate));
+  const days = daysWithMeals(mealPlans);
+  const nutrition = multiDayMealPlanNutrients(mealPlans);
+  return {
+    startDate,
+    endDate,
+    daysWithMeals: days,
+    averageCalories: Math.round(nutrition.calories / (days || 1)),
+    averageProtein: Math.round(nutrition.protein / (days || 1)),
+    averageCarbs: Math.round(nutrition.carbs / (days || 1)),
+  };
+};
 
 settings.promise.value
-  .then(() => {
+  .then(async () => {
     const start = startOfWeek(new Date(), { weekStartsOn: settings.value?.weekStartDay });
-    const end = endOfWeek(new Date(), { weekStartsOn: settings.value?.weekStartDay });
-    thisWeek.value = {
-      startDate: start,
-      endDate: end,
-      daysWithMeals: randomDays(),
-      highestCalories: randomCalories(),
-      highestProtein: randomProtein(),
-      highestCarbs: randomCarbs(),
-      cheatDays: randomCheatDays(),
-    };
-    nextWeek.value = {
-      startDate: addWeeks(start, 1),
-      endDate: addWeeks(end, 1),
-      daysWithMeals: randomDays(),
-      highestCalories: randomCalories(),
-      highestProtein: randomProtein(),
-      highestCarbs: randomCarbs(),
-      cheatDays: randomCheatDays(),
-    };
-    [4, 3, 2, 1].forEach((i) => {
-      const prevStart = addWeeks(start, -i);
-      const prevEnd = addWeeks(end, -i);
-      previousWeeks.value.push({
-        startDate: prevStart,
-        endDate: prevEnd,
-        daysWithMeals: randomDays(),
-        highestCalories: randomCalories(),
-        highestProtein: randomProtein(),
-        highestCarbs: randomCarbs(),
-        cheatDays: randomCheatDays(),
-      });
-    });
-    previousWeeks.value.reverse();
+    thisWeek.value = await buildDataForWeek(start);
+    nextWeek.value = await buildDataForWeek(addWeeks(start, 1));
+    const indices = [1, 2, 3, 4];
+    const previousWeekPromises = indices.map((i) => buildDataForWeek(addWeeks(start, -i)));
+    const loadedPreviousWeeks = await Promise.all(previousWeekPromises);
+    loadedPreviousWeeks.sort(
+      (a, b) => b.startDate.getTime() - a.startDate.getTime(),
+    );
+    previousWeeks.value = loadedPreviousWeeks;
   })
   .catch((err) => {
     if (import.meta.env.DEV) {

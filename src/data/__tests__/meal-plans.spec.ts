@@ -101,6 +101,33 @@ describe('Meal Plans Data Service', () => {
     });
   });
 
+  describe('get meal plans for period', () => {
+    beforeEach(() => {
+      const mealPlans = ref(TEST_MEAL_PLANS);
+      (mealPlans as any).promise = { value: Promise.resolve() };
+      (useCollection as Mock).mockReturnValueOnce(mealPlans);
+    });
+
+    it('finds the meal plans in the list between the start and end', async () => {
+      const { getMealPlansForPeriod } = useMealPlansData();
+      await expect(getMealPlansForPeriod(TEST_MEAL_PLANS[1]!.date, TEST_MEAL_PLANS[3]?.date)).resolves.toEqual([
+        TEST_MEAL_PLANS[1],
+        TEST_MEAL_PLANS[2],
+        TEST_MEAL_PLANS[3],
+      ]);
+    });
+
+    it('resolves [] if the start and end dates are reversed', async () => {
+      const { getMealPlansForPeriod } = useMealPlansData();
+      await expect(getMealPlansForPeriod(TEST_MEAL_PLANS[3]!.date, TEST_MEAL_PLANS[1]?.date)).resolves.toEqual([]);
+    });
+
+    it('resolves [] if there are no meal plans', async () => {
+      const { getMealPlansForPeriod } = useMealPlansData();
+      await expect(getMealPlansForPeriod('2099-01-01', '2099-01-05')).resolves.toEqual([]);
+    });
+  });
+
   describe('remove meal plan', () => {
     it('obtains a reference to the doc', () => {
       const { removeMealPlan } = useMealPlansData();

@@ -5,7 +5,7 @@ import { computed } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
 
 export const useMealPlansData = () => {
-  const minDate = format(subWeeks(startOfWeek(new Date(), { weekStartsOn: 0 }), 4), 'yyyy-MM-dd');
+  const minDate = format(subWeeks(startOfWeek(new Date(), { weekStartsOn: 0 }), 5), 'yyyy-MM-dd');
   const db = useFirestore();
   const path = 'meal-plans';
   const mealPlansCollection = collection(db, path);
@@ -38,5 +38,20 @@ export const useMealPlansData = () => {
     return mealPlans.value.find((f) => f.date === dt) || null;
   };
 
-  return { addMealPlan, error, mealPlans, getMealPlan, getMealPlanForDate, loading, removeMealPlan, updateMealPlan };
+  const getMealPlansForPeriod = async (startDate: string, endDate: string): Promise<MealPlan[]> => {
+    await mealPlans.promise.value;
+    return mealPlans.value.filter((f) => f.date >= startDate && f.date <= endDate);
+  };
+
+  return {
+    addMealPlan,
+    error,
+    mealPlans,
+    getMealPlan,
+    getMealPlanForDate,
+    getMealPlansForPeriod,
+    loading,
+    removeMealPlan,
+    updateMealPlan,
+  };
 };

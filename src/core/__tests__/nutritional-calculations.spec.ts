@@ -2,7 +2,12 @@ import { TEST_MEAL_PLAN, TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
 import type { MealItem } from '@/models/meal';
 import type { Nutrition } from '@/models/nutrition';
 import { describe, expect, it } from 'vitest';
-import { dailyMealPlanNutrients, mealNutrients, multiDayMealPlanNutrients } from '../nutritional-calculations';
+import {
+  dailyMealPlanNutrients,
+  daysWithMeals,
+  mealNutrients,
+  multiDayMealPlanNutrients,
+} from '../nutritional-calculations';
 
 const sumMealItemNutrients = (items: MealItem[]): Nutrition => {
   return items.reduce(
@@ -54,6 +59,19 @@ describe('Nutritional Calculations', () => {
       });
       const expected = sumMealItemNutrients(mealItems);
       expect(multiDayMealPlanNutrients(mealPlans)).toEqual(expected);
+    });
+  });
+
+  describe('days with meals', () => {
+    it('returns the number of days that have meals', () => {
+      const mealPlans = [
+        TEST_MEAL_PLANS[0],
+        TEST_MEAL_PLANS[1],
+        { ...TEST_MEAL_PLANS[2], meals: [] },
+        TEST_MEAL_PLANS[5],
+        TEST_MEAL_PLANS[7],
+      ];
+      expect(daysWithMeals(mealPlans)).toBe(4);
     });
   });
 });
