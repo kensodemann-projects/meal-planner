@@ -141,9 +141,13 @@ settings.promise.value
     const start = startOfWeek(new Date(), { weekStartsOn: settings.value?.weekStartDay });
     thisWeek.value = await buildDataForWeek(start);
     nextWeek.value = await buildDataForWeek(addWeeks(start, 1));
-    [1, 2, 3, 4].forEach(async (i) => {
-      previousWeeks.value.push(await buildDataForWeek(addWeeks(start, -i)));
-    });
+    const indices = [1, 2, 3, 4];
+    const previousWeekPromises = indices.map((i) => buildDataForWeek(addWeeks(start, -i)));
+    const loadedPreviousWeeks = await Promise.all(previousWeekPromises);
+    loadedPreviousWeeks.sort(
+      (a, b) => b.startDate.getTime() - a.startDate.getTime(),
+    );
+    previousWeeks.value = loadedPreviousWeeks;
   })
   .catch((err) => {
     if (import.meta.env.DEV) {
