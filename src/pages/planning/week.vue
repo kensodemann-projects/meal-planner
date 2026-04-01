@@ -1,6 +1,7 @@
 <template>
   <div class="week-planner">
     <h1 class="text-center">Weekly Plan</h1>
+    <p v-if="loadError" data-testid="load-error">{{ loadError }}</p>
     <div v-for="row in weekRows" :key="row.iso" class="day-plan">
       <h2 @click="router.push({ path: '/planning/day', query: { dt: row.iso } })">
         {{ intlFormat(row.day, { dateStyle: 'full' }) }}
@@ -22,7 +23,7 @@
 <script setup lang="ts">
 import type { MealPlan } from '@/models/meal-plan';
 import { addDays, format, intlFormat, parseISO } from 'date-fns';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useMealPlansData } from '@/data/meal-plans';
 
@@ -33,12 +34,13 @@ const route = useRoute();
 const router = useRouter();
 const dateToISO = (date: Date) => format(date, 'yyyy-MM-dd');
 
-const dt = route.query.dt as string;
-const weekDays = [0, 1, 2, 3, 4, 5, 6].map((offset) => addDays(parseISO(dt), offset));
+const dt = computed(() => route.query.dt as string);
+const weekDays = computed(() => [0, 1, 2, 3, 4, 5, 6].map((offset) => addDays(parseISO(dt.value), offset)));
 const mealPlans = ref<MealPlan[]>([]);
+const loadError = ref<string | null>(null);
 
 const weekRows = computed<DayRow[]>(() =>
-  weekDays.map((d) => {
+  weekDays.value.map((d) => {
     const iso = dateToISO(d);
     const plan = mealPlans.value.find((p) => p.date === iso) ?? null;
     return { day: d, iso, plan };
@@ -46,8 +48,14 @@ const weekRows = computed<DayRow[]>(() =>
 );
 
 const loadMealPlans = async () => {
-  mealPlans.value = await getMealPlansForPeriod(dateToISO(weekDays[0]), dateToISO(weekDays[6]));
+  try {
+    loadError.value = null;
+    const days = weekDays.value;
+    mealPlans.value = await getMealPlansForPeriod(dateToISO(days[0]!), dateToISO(days[6]!));
+  } catch {
+    loadError.value = 'Failed to load meal plans. Please check your connection and try again.';
+  }
 };
 
-loadMealPlans();
+watch(() => route.query.dt, loadMealPlans, { immediate: true });
 </script>

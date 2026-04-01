@@ -1,6 +1,7 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { intlFormat } from 'date-fns';
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+import { reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
@@ -96,5 +97,43 @@ describe('week', () => {
     await wrapper.findAll('h2')[0]!.trigger('click');
     const { push } = useRouter();
     expect(push).toHaveBeenCalledExactlyOnceWith({ path: '/planning/day', query: { dt: '2025-12-29' } });
+  });
+
+  it('shows an error message when getMealPlansForPeriod rejects', async () => {
+    (useMealPlansData().getMealPlansForPeriod as Mock).mockRejectedValueOnce(new Error('Network error'));
+    wrapper = await renderPage();
+    expect(wrapper.find('[data-testid="load-error"]').text()).toBe(
+      'Failed to load meal plans. Please check your connection and try again.',
+    );
+  });
+
+  it('does not show the error message on a successful load', async () => {
+    wrapper = await renderPage();
+    expect(wrapper.find('[data-testid="load-error"]').exists()).toBe(false);
+  });
+
+  it('clears the error message when a subsequent load succeeds after dt changes', async () => {
+    const mockQuery = reactive({ dt: '2025-12-29' });
+    (useRoute as Mock).mockReturnValue({ query: mockQuery });
+    (useMealPlansData().getMealPlansForPeriod as Mock).mockRejectedValueOnce(new Error('Network error'));
+    wrapper = await renderPage();
+    expect(wrapper.find('[data-testid="load-error"]').exists()).toBe(true);
+
+    mockQuery.dt = '2026-01-05';
+    await flushPromises();
+    expect(wrapper.find('[data-testid="load-error"]').exists()).toBe(false);
+  });
+
+  it('reloads meal plans when the dt query param changes', async () => {
+    const mockQuery = reactive({ dt: '2025-12-29' });
+    (useRoute as Mock).mockReturnValue({ query: mockQuery });
+    wrapper = await renderPage();
+    const { getMealPlansForPeriod } = useMealPlansData();
+    expect(getMealPlansForPeriod).toHaveBeenCalledTimes(1);
+
+    mockQuery.dt = '2026-01-05';
+    await flushPromises();
+    expect(getMealPlansForPeriod).toHaveBeenCalledTimes(2);
+    expect(getMealPlansForPeriod).toHaveBeenLastCalledWith('2026-01-05', '2026-01-11');
   });
 });
