@@ -61,5 +61,5 @@ const loadMealPlans = async () => {
 };
 
 onMounted(loadMealPlans);
-watch(dt, loadMealPlans);
+watch(dt, loadMealPlans, { immediate: true });
 </script>
