@@ -49,8 +49,8 @@ describe('week', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it('displays the proper headers for the week starting with dt', () => {
-    wrapper = mountPage();
+  it('displays the proper headers for the week starting with dt', async () => {
+    wrapper = await renderPage();
     const headers = wrapper.findAll('h2');
     expect(headers).toHaveLength(7);
     expect(headers[0]!.text()).toBe(intlFormat(new Date(2025, 11, 29), { dateStyle: 'full' }));
@@ -60,6 +60,16 @@ describe('week', () => {
     expect(headers[4]!.text()).toBe(intlFormat(new Date(2026, 0, 2), { dateStyle: 'full' }));
     expect(headers[5]!.text()).toBe(intlFormat(new Date(2026, 0, 3), { dateStyle: 'full' }));
     expect(headers[6]!.text()).toBe(intlFormat(new Date(2026, 0, 4), { dateStyle: 'full' }));
+  });
+
+  it('shows a loading indicator while meal plans are being fetched', () => {
+    wrapper = mountPage();
+    expect(wrapper.findComponent({ name: 'VProgressCircular' }).exists()).toBe(true);
+  });
+
+  it('hides the loading indicator once meal plans have loaded', async () => {
+    wrapper = await renderPage();
+    expect(wrapper.findComponent({ name: 'VProgressCircular' }).exists()).toBe(false);
   });
 
   it('calls getMealPlansForPeriod with the correct start and end dates', async () => {
