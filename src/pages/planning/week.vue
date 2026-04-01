@@ -25,11 +25,11 @@
 </template>
 
 <script setup lang="ts">
+import { useMealPlansData } from '@/data/meal-plans';
 import type { MealPlan } from '@/models/meal-plan';
 import { addDays, format, intlFormat, parseISO } from 'date-fns';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useMealPlansData } from '@/data/meal-plans';
 
 type DayRow = { day: Date; iso: string; plan: MealPlan | null };
 
@@ -60,6 +60,5 @@ const loadMealPlans = async () => {
   }
 };
 
-onMounted(loadMealPlans);
 watch(dt, loadMealPlans, { immediate: true });
 </script>
