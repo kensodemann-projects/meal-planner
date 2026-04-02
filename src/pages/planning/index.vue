@@ -7,54 +7,20 @@
   <v-container fluid>
     <v-row density="compact">
       <v-col cols="12" md="6">
-        <v-card
-          variant="outlined"
-          @click="router.push({ path: 'planning/week', query: { dt: dateToISO(thisWeek!.startDate) } })"
-        >
-          <v-card-title>This Week</v-card-title>
-          <v-card-subtitle>
-            {{ thisWeek?.startDate.toLocaleDateString() }} - {{ thisWeek?.endDate.toLocaleDateString() }}
-          </v-card-subtitle>
-          <v-card-text>
-            <div>
-              Days with Meals: <strong>{{ thisWeek?.daysWithMeals }}</strong>
-            </div>
-            <div>
-              Average Calories: <strong>{{ thisWeek?.averageCalories }}</strong>
-            </div>
-            <div>
-              Average Protein: <strong>{{ thisWeek?.averageProtein }}g</strong>
-            </div>
-            <div>
-              Average Carbs: <strong>{{ thisWeek?.averageCarbs }}g</strong>
-            </div>
-          </v-card-text>
-        </v-card>
+        <WeeklySummaryCard
+          v-if="thisWeek"
+          title="This Week"
+          :week="thisWeek"
+          @click="router.push({ path: 'planning/week', query: { dt: dateToISO(thisWeek.startDate) } })"
+        />
       </v-col>
       <v-col cols="12" md="6">
-        <v-card
-          variant="outlined"
-          @click="router.push({ path: 'planning/week', query: { dt: dateToISO(nextWeek!.startDate) } })"
-        >
-          <v-card-title>Next Week (Planning)</v-card-title>
-          <v-card-subtitle>
-            {{ nextWeek?.startDate.toLocaleDateString() }} - {{ nextWeek?.endDate.toLocaleDateString() }}
-          </v-card-subtitle>
-          <v-card-text>
-            <div>
-              Days with Meals: <strong>{{ nextWeek?.daysWithMeals }}</strong>
-            </div>
-            <div>
-              Average Calories: <strong>{{ nextWeek?.averageCalories }}</strong>
-            </div>
-            <div>
-              Average Protein: <strong>{{ nextWeek?.averageProtein }}g</strong>
-            </div>
-            <div>
-              Average Carbs: <strong>{{ nextWeek?.averageCarbs }}g</strong>
-            </div>
-          </v-card-text>
-        </v-card>
+        <WeeklySummaryCard
+          v-if="nextWeek"
+          title="Next Week (Planning)"
+          :week="nextWeek"
+          @click="router.push({ path: 'planning/week', query: { dt: dateToISO(nextWeek.startDate) } })"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -64,31 +30,11 @@
   <v-container fluid>
     <v-row density="compact">
       <v-col cols="12" md="6" v-for="week in previousWeeks" :key="week.startDate.getTime()">
-        <v-card
-          variant="outlined"
+        <WeeklySummaryCard
+          :title="`Weeks Ago: ${differenceInWeeks(thisWeek?.startDate || new Date(), week.startDate)}`"
+          :week="week"
           @click="router.push({ path: 'planning/week', query: { dt: dateToISO(week.startDate) } })"
-        >
-          <v-card-title
-            >Weeks Ago: {{ differenceInWeeks(thisWeek?.startDate || new Date(), week.startDate) }}</v-card-title
-          >
-          <v-card-subtitle>
-            {{ week.startDate.toLocaleDateString() }} - {{ week.endDate.toLocaleDateString() }}
-          </v-card-subtitle>
-          <v-card-text>
-            <div>
-              Days with Meals: <strong>{{ week.daysWithMeals }}</strong>
-            </div>
-            <div>
-              Average Calories: <strong>{{ week.averageCalories }}</strong>
-            </div>
-            <div>
-              Average Protein: <strong>{{ week.averageProtein }}g</strong>
-            </div>
-            <div>
-              Average Carbs: <strong>{{ week.averageCarbs }}g</strong>
-            </div>
-          </v-card-text>
-        </v-card>
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -98,18 +44,11 @@
 import { daysWithMeals, multiDayMealPlanNutrients } from '@/core/nutritional-calculations';
 import { useMealPlansData } from '@/data/meal-plans';
 import { useSettingsData } from '@/data/settings';
+import type { WeeklyData } from '@/models/weekly-data';
 import { addWeeks, differenceInWeeks, endOfWeek, format, startOfWeek } from 'date-fns';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-interface WeeklyData {
-  startDate: Date;
-  endDate: Date;
-  daysWithMeals: number;
-  averageCalories: number;
-  averageProtein: number;
-  averageCarbs: number;
-}
 const thisWeek = ref<WeeklyData>();
 const nextWeek = ref<WeeklyData>();
 const previousWeeks = ref<WeeklyData[]>([]);
