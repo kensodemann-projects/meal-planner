@@ -9,7 +9,7 @@
       <v-col cols="12" md="6">
         <v-card
           variant="outlined"
-          @click="router.push({ path: 'planning/week', query: { dt: toISODate(thisWeek!.startDate) } })"
+          @click="router.push({ path: 'planning/week', query: { dt: dateToISO(thisWeek!.startDate) } })"
         >
           <v-card-title>This Week</v-card-title>
           <v-card-subtitle>
@@ -34,7 +34,7 @@
       <v-col cols="12" md="6">
         <v-card
           variant="outlined"
-          @click="router.push({ path: 'planning/week', query: { dt: toISODate(nextWeek!.startDate) } })"
+          @click="router.push({ path: 'planning/week', query: { dt: dateToISO(nextWeek!.startDate) } })"
         >
           <v-card-title>Next Week (Planning)</v-card-title>
           <v-card-subtitle>
@@ -66,7 +66,7 @@
       <v-col cols="12" md="6" v-for="week in previousWeeks" :key="week.startDate.getTime()">
         <v-card
           variant="outlined"
-          @click="router.push({ path: 'planning/week', query: { dt: toISODate(week.startDate) } })"
+          @click="router.push({ path: 'planning/week', query: { dt: dateToISO(week.startDate) } })"
         >
           <v-card-title
             >Weeks Ago: {{ differenceInWeeks(thisWeek?.startDate || new Date(), week.startDate) }}</v-card-title
@@ -119,11 +119,11 @@ const { settings } = useSettingsData();
 const router = useRouter();
 const { getMealPlansForPeriod } = useMealPlansData();
 
-const toISODate = (date: Date): string => format(date, 'yyyy-MM-dd');
+const dateToISO = (date: Date): string => format(date, 'yyyy-MM-dd');
 
 const buildDataForWeek = async (startDate: Date): Promise<WeeklyData> => {
   const endDate = endOfWeek(startDate, { weekStartsOn: settings.value?.weekStartDay });
-  const mealPlans = await getMealPlansForPeriod(toISODate(startDate), toISODate(endDate));
+  const mealPlans = await getMealPlansForPeriod(dateToISO(startDate), dateToISO(endDate));
   const days = daysWithMeals(mealPlans);
   const nutrition = multiDayMealPlanNutrients(mealPlans);
   return {
@@ -144,9 +144,7 @@ settings.promise.value
     const indices = [1, 2, 3, 4];
     const previousWeekPromises = indices.map((i) => buildDataForWeek(addWeeks(start, -i)));
     const loadedPreviousWeeks = await Promise.all(previousWeekPromises);
-    loadedPreviousWeeks.sort(
-      (a, b) => b.startDate.getTime() - a.startDate.getTime(),
-    );
+    loadedPreviousWeeks.sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
     previousWeeks.value = loadedPreviousWeeks;
   })
   .catch((err) => {
