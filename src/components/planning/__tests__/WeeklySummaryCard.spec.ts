@@ -75,10 +75,36 @@ describe('Weekly Summary Card', () => {
     });
   });
 
-  it('emits click when the card is clicked', async () => {
-    wrapper = mountComponent();
-    const card = wrapper.findComponent(components.VCard);
-    await card.trigger('click');
-    expect(wrapper.emitted('click')).toHaveLength(1);
+  describe('interactions', () => {
+    it('emits click when the card is clicked', async () => {
+      wrapper = mountComponent();
+      const card = wrapper.findComponent(components.VCard);
+      await card.trigger('click');
+      expect(wrapper.emitted('click')).toHaveLength(1);
+    });
+
+    it('emits click when Enter is pressed on the card', async () => {
+      wrapper = mountComponent();
+      const card = wrapper.findComponent(components.VCard);
+      await card.trigger('keydown', { key: 'Enter' });
+      expect(wrapper.emitted('click')).toHaveLength(1);
+    });
+
+    it('emits click and prevents default when Space is pressed on the card', async () => {
+      wrapper = mountComponent();
+      const card = wrapper.findComponent(components.VCard);
+      const event = new KeyboardEvent('keydown', {
+        key: ' ',
+        code: 'Space',
+        bubbles: true,
+        cancelable: true,
+      });
+
+      card.element.dispatchEvent(event);
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.emitted('click')).toHaveLength(1);
+      expect(event.defaultPrevented).toBe(true);
+    });
   });
 });
