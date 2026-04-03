@@ -201,18 +201,12 @@ describe('Planning', () => {
         const titles = weekCards.slice(2).map((card) => card.props('title'));
         const weeks = weekCards.slice(2).map((card) => card.props('week') as WeeklyData);
         expect(titles).toEqual(['Weeks Ago: 1', 'Weeks Ago: 2', 'Weeks Ago: 3', 'Weeks Ago: 4']);
-        expect(weeks.map((w) => w.startDate.toLocaleDateString())).toEqual([
-          '12/15/2025',
-          '12/8/2025',
-          '12/1/2025',
-          '11/24/2025',
-        ]);
-        expect(weeks.map((w) => w.endDate.toLocaleDateString())).toEqual([
-          '12/21/2025',
-          '12/14/2025',
-          '12/7/2025',
-          '11/30/2025',
-        ]);
+        expect(weeks.map((w) => w.startDate.getFullYear())).toEqual([2025, 2025, 2025, 2025]);
+        expect(weeks.map((w) => w.startDate.getMonth())).toEqual([11, 11, 11, 10]);
+        expect(weeks.map((w) => w.startDate.getDate())).toEqual([15, 8, 1, 24]);
+        expect(weeks.map((w) => w.endDate.getFullYear())).toEqual([2025, 2025, 2025, 2025]);
+        expect(weeks.map((w) => w.endDate.getMonth())).toEqual([11, 11, 11, 10]);
+        expect(weeks.map((w) => w.endDate.getDate())).toEqual([21, 14, 7, 30]);
       });
 
       it('navigates to the week page', async () => {
@@ -288,16 +282,24 @@ describe('Planning', () => {
           wrapper = mountPage();
           await flushPromises();
           const week = wrapper.findAllComponents(WeeklySummaryCard)[0]?.props('week') as WeeklyData;
-          expect(week.startDate.toLocaleDateString()).toBe('12/19/2025');
-          expect(week.endDate.toLocaleDateString()).toBe('12/25/2025');
+          expect(week.startDate.getFullYear()).toBe(2025);
+          expect(week.startDate.getMonth()).toBe(11);
+          expect(week.startDate.getDate()).toBe(19);
+          expect(week.endDate.getFullYear()).toBe(2025);
+          expect(week.endDate.getMonth()).toBe(11);
+          expect(week.endDate.getDate()).toBe(25);
         });
 
         it('computes correct week boundaries for next week', async () => {
           wrapper = mountPage();
           await flushPromises();
           const week = wrapper.findAllComponents(WeeklySummaryCard)[1]?.props('week') as WeeklyData;
-          expect(week.startDate.toLocaleDateString()).toBe('12/26/2025');
-          expect(week.endDate.toLocaleDateString()).toBe('1/1/2026');
+          expect(week.startDate.getFullYear()).toBe(2025);
+          expect(week.startDate.getMonth()).toBe(11);
+          expect(week.startDate.getDate()).toBe(26);
+          expect(week.endDate.getFullYear()).toBe(2026);
+          expect(week.endDate.getMonth()).toBe(0);
+          expect(week.endDate.getDate()).toBe(1);
         });
 
         it('fetches meal plans for this week', async () => {
