@@ -5,11 +5,13 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import IndexPage from '../index.vue';
+import WeeklySummaryCard from '@/components/planning/WeeklySummaryCard.vue';
 import { useSettingsData } from '@/data/settings';
 import { useRouter } from 'vue-router';
 import { useMealPlansData } from '@/data/meal-plans';
 import { multiDayMealPlanNutrients, daysWithMeals } from '@/core/nutritional-calculations';
 import type { Settings } from '@/models/settings';
+import type { WeeklyData } from '@/models/weekly-data';
 
 vi.mock('@/data/settings');
 vi.mock('vue-router');
@@ -55,7 +57,7 @@ describe('Planning', () => {
     it('exists for 6 weeks', async () => {
       wrapper = mountPage();
       await flushPromises();
-      const weekCards = wrapper.findAllComponents(components.VCard);
+      const weekCards = wrapper.findAllComponents(WeeklySummaryCard);
       expect(weekCards.length).toBe(6);
     });
 
@@ -63,20 +65,23 @@ describe('Planning', () => {
       it('is the first card', async () => {
         wrapper = mountPage();
         await flushPromises();
-        const weekCards = wrapper.findAllComponents(components.VCard);
-        const title = weekCards[0]?.findComponent(components.VCardTitle);
-        const subTitle = weekCards[0]?.findComponent(components.VCardSubtitle);
-        expect(title?.text()).toBe('This Week');
-        expect(subTitle?.text()).toBe('12/22/2025 - 12/28/2025');
+        const weekCards = wrapper.findAllComponents(WeeklySummaryCard);
+        expect(weekCards[0]?.props('title')).toBe('This Week');
+        const week = weekCards[0]?.props('week') as WeeklyData;
+        expect(week.startDate.getFullYear()).toBe(2025);
+        expect(week.startDate.getMonth()).toBe(11); // December (0-based)
+        expect(week.startDate.getDate()).toBe(22);
+        expect(week.endDate.getFullYear()).toBe(2025);
+        expect(week.endDate.getMonth()).toBe(11); // December (0-based)
+        expect(week.endDate.getDate()).toBe(28);
       });
 
       it('navigates to the week details for next week', async () => {
         const router = useRouter();
         wrapper = mountPage();
         await flushPromises();
-        const weekCards = wrapper.findAllComponents(components.VCard);
-        const nextWeekCard = weekCards[0]!;
-        await nextWeekCard.trigger('click');
+        const weekCards = wrapper.findAllComponents(WeeklySummaryCard);
+        await weekCards[0]!.trigger('click');
         expect(router.push).toHaveBeenCalledExactlyOnceWith({
           path: 'planning/week',
           query: { dt: '2025-12-22' },
@@ -88,9 +93,8 @@ describe('Planning', () => {
           (daysWithMeals as Mock).mockReturnValue(5);
           wrapper = mountPage();
           await flushPromises();
-          const card = wrapper.findAllComponents(components.VCard)[0]!;
-          const text = card.findComponent(components.VCardText);
-          expect(text.text()).toContain('Days with Meals: 5');
+          const week = wrapper.findAllComponents(WeeklySummaryCard)[0]!.props('week') as WeeklyData;
+          expect(week.daysWithMeals).toBe(5);
         });
 
         it('displays average calories from multiDayMealPlanNutrients()', async () => {
@@ -105,9 +109,8 @@ describe('Planning', () => {
           (daysWithMeals as Mock).mockReturnValue(7);
           wrapper = mountPage();
           await flushPromises();
-          const card = wrapper.findAllComponents(components.VCard)[0]!;
-          const text = card.findComponent(components.VCardText);
-          expect(text.text()).toContain('Average Calories: 2000');
+          const week = wrapper.findAllComponents(WeeklySummaryCard)[0]!.props('week') as WeeklyData;
+          expect(week.averageCalories).toBe(2000);
         });
 
         it('displays average protein from multiDayMealPlanNutrients()', async () => {
@@ -122,9 +125,8 @@ describe('Planning', () => {
           (daysWithMeals as Mock).mockReturnValue(7);
           wrapper = mountPage();
           await flushPromises();
-          const card = wrapper.findAllComponents(components.VCard)[0]!;
-          const text = card.findComponent(components.VCardText);
-          expect(text.text()).toContain('Average Protein: 100g');
+          const week = wrapper.findAllComponents(WeeklySummaryCard)[0]!.props('week') as WeeklyData;
+          expect(week.averageProtein).toBe(100);
         });
 
         it('displays average carbs from multiDayMealPlanNutrients()', async () => {
@@ -139,9 +141,8 @@ describe('Planning', () => {
           (daysWithMeals as Mock).mockReturnValue(7);
           wrapper = mountPage();
           await flushPromises();
-          const card = wrapper.findAllComponents(components.VCard)[0]!;
-          const text = card.findComponent(components.VCardText);
-          expect(text.text()).toContain('Average Carbs: 300g');
+          const week = wrapper.findAllComponents(WeeklySummaryCard)[0]!.props('week') as WeeklyData;
+          expect(week.averageCarbs).toBe(300);
         });
 
         it('displays zero average when no plans exist', async () => {
@@ -156,11 +157,10 @@ describe('Planning', () => {
           });
           wrapper = mountPage();
           await flushPromises();
-          const card = wrapper.findAllComponents(components.VCard)[0]!;
-          const text = card.findComponent(components.VCardText);
-          expect(text.text()).toContain('Average Calories: 0');
-          expect(text.text()).toContain('Average Protein: 0g');
-          expect(text.text()).toContain('Average Carbs: 0g');
+          const week = wrapper.findAllComponents(WeeklySummaryCard)[0]!.props('week') as WeeklyData;
+          expect(week.averageCalories).toBe(0);
+          expect(week.averageProtein).toBe(0);
+          expect(week.averageCarbs).toBe(0);
         });
       });
     });
@@ -169,20 +169,23 @@ describe('Planning', () => {
       it('is the second card', async () => {
         wrapper = mountPage();
         await flushPromises();
-        const weekCards = wrapper.findAllComponents(components.VCard);
-        const title = weekCards[1]?.findComponent(components.VCardTitle);
-        const subTitle = weekCards[1]?.findComponent(components.VCardSubtitle);
-        expect(title?.text()).toBe('Next Week (Planning)');
-        expect(subTitle?.text()).toBe('12/29/2025 - 1/4/2026');
+        const weekCards = wrapper.findAllComponents(WeeklySummaryCard);
+        expect(weekCards[1]?.props('title')).toBe('Next Week (Planning)');
+        const week = weekCards[1]?.props('week') as WeeklyData;
+        expect(week.startDate.getFullYear()).toBe(2025);
+        expect(week.startDate.getMonth()).toBe(11);
+        expect(week.startDate.getDate()).toBe(29);
+        expect(week.endDate.getFullYear()).toBe(2026);
+        expect(week.endDate.getMonth()).toBe(0);
+        expect(week.endDate.getDate()).toBe(4);
       });
 
       it('navigates to the week details for next week', async () => {
         const router = useRouter();
         wrapper = mountPage();
         await flushPromises();
-        const weekCards = wrapper.findAllComponents(components.VCard);
-        const nextWeekCard = weekCards[1]!;
-        await nextWeekCard.trigger('click');
+        const weekCards = wrapper.findAllComponents(WeeklySummaryCard);
+        await weekCards[1]!.trigger('click');
         expect(router.push).toHaveBeenCalledExactlyOnceWith({
           path: 'planning/week',
           query: { dt: '2025-12-29' },
@@ -194,16 +197,16 @@ describe('Planning', () => {
       it('are in the correct order', async () => {
         wrapper = mountPage();
         await flushPromises();
-        const weekCards = wrapper.findAllComponents(components.VCard);
-        const titles = weekCards.slice(2).map((card) => card.findComponent(components.VCardTitle).text());
-        const subTitles = weekCards.slice(2).map((card) => card.findComponent(components.VCardSubtitle).text());
+        const weekCards = wrapper.findAllComponents(WeeklySummaryCard);
+        const titles = weekCards.slice(2).map((card) => card.props('title'));
+        const weeks = weekCards.slice(2).map((card) => card.props('week') as WeeklyData);
         expect(titles).toEqual(['Weeks Ago: 1', 'Weeks Ago: 2', 'Weeks Ago: 3', 'Weeks Ago: 4']);
-        expect(subTitles).toEqual([
-          '12/15/2025 - 12/21/2025',
-          '12/8/2025 - 12/14/2025',
-          '12/1/2025 - 12/7/2025',
-          '11/24/2025 - 11/30/2025',
-        ]);
+        expect(weeks.map((w) => w.startDate.getFullYear())).toEqual([2025, 2025, 2025, 2025]);
+        expect(weeks.map((w) => w.startDate.getMonth())).toEqual([11, 11, 11, 10]);
+        expect(weeks.map((w) => w.startDate.getDate())).toEqual([15, 8, 1, 24]);
+        expect(weeks.map((w) => w.endDate.getFullYear())).toEqual([2025, 2025, 2025, 2025]);
+        expect(weeks.map((w) => w.endDate.getMonth())).toEqual([11, 11, 11, 10]);
+        expect(weeks.map((w) => w.endDate.getDate())).toEqual([21, 14, 7, 30]);
       });
 
       it('navigates to the week page', async () => {
@@ -211,10 +214,9 @@ describe('Planning', () => {
         wrapper = mountPage();
         const targetDates = ['2025-12-15', '2025-12-08', '2025-12-01', '2025-11-24'];
         await flushPromises();
-        const weekCards = wrapper.findAllComponents(components.VCard);
+        const weekCards = wrapper.findAllComponents(WeeklySummaryCard);
         for (let i = 2; i < weekCards.length; i++) {
-          const weekCard = weekCards[i]!;
-          await weekCard.trigger('click');
+          await weekCards[i]!.trigger('click');
           expect(router.push).toHaveBeenCalledWith({
             path: 'planning/week',
             query: { dt: targetDates[i - 2] },
@@ -279,15 +281,25 @@ describe('Planning', () => {
         it('computes correct week boundaries for this week', async () => {
           wrapper = mountPage();
           await flushPromises();
-          const subTitle = wrapper.findAllComponents(components.VCard)[0]?.findComponent(components.VCardSubtitle);
-          expect(subTitle?.text()).toBe('12/19/2025 - 12/25/2025');
+          const week = wrapper.findAllComponents(WeeklySummaryCard)[0]?.props('week') as WeeklyData;
+          expect(week.startDate.getFullYear()).toBe(2025);
+          expect(week.startDate.getMonth()).toBe(11);
+          expect(week.startDate.getDate()).toBe(19);
+          expect(week.endDate.getFullYear()).toBe(2025);
+          expect(week.endDate.getMonth()).toBe(11);
+          expect(week.endDate.getDate()).toBe(25);
         });
 
         it('computes correct week boundaries for next week', async () => {
           wrapper = mountPage();
           await flushPromises();
-          const subTitle = wrapper.findAllComponents(components.VCard)[1]?.findComponent(components.VCardSubtitle);
-          expect(subTitle?.text()).toBe('12/26/2025 - 1/1/2026');
+          const week = wrapper.findAllComponents(WeeklySummaryCard)[1]?.props('week') as WeeklyData;
+          expect(week.startDate.getFullYear()).toBe(2025);
+          expect(week.startDate.getMonth()).toBe(11);
+          expect(week.startDate.getDate()).toBe(26);
+          expect(week.endDate.getFullYear()).toBe(2026);
+          expect(week.endDate.getMonth()).toBe(0);
+          expect(week.endDate.getDate()).toBe(1);
         });
 
         it('fetches meal plans for this week', async () => {
