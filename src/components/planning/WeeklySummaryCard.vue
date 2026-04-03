@@ -1,5 +1,12 @@
 <template>
-  <v-card data-testid="weekly-summary-card" variant="outlined" @click="$emit('click')">
+  <v-card
+    data-testid="weekly-summary-card"
+    variant="outlined"
+    role="button"
+    tabindex="0"
+    @click="$emit('click')"
+    @keydown.enter.space.prevent="$emit('click')"
+  >
     <v-card-title>{{ title }}</v-card-title>
     <v-card-subtitle>
       {{ week.startDate.toLocaleDateString() }} - {{ week.endDate.toLocaleDateString() }}
