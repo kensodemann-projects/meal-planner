@@ -172,8 +172,12 @@ describe('Planning', () => {
         const weekCards = wrapper.findAllComponents(WeeklySummaryCard);
         expect(weekCards[1]?.props('title')).toBe('Next Week (Planning)');
         const week = weekCards[1]?.props('week') as WeeklyData;
-        expect(week.startDate.toLocaleDateString()).toBe('12/29/2025');
-        expect(week.endDate.toLocaleDateString()).toBe('1/4/2026');
+        expect(week.startDate.getFullYear()).toBe(2025);
+        expect(week.startDate.getMonth()).toBe(11);
+        expect(week.startDate.getDate()).toBe(29);
+        expect(week.endDate.getFullYear()).toBe(2026);
+        expect(week.endDate.getMonth()).toBe(0);
+        expect(week.endDate.getDate()).toBe(4);
       });
 
       it('navigates to the week details for next week', async () => {
