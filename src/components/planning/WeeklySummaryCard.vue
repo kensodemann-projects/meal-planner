@@ -8,9 +8,7 @@
     @keydown.enter.space.prevent="$emit('click')"
   >
     <v-card-title>{{ title }}</v-card-title>
-    <v-card-subtitle>
-      {{ week.startDate.toLocaleDateString() }} - {{ week.endDate.toLocaleDateString() }}
-    </v-card-subtitle>
+    <v-card-subtitle>{{ dateRange }}</v-card-subtitle>
     <v-card-text>
       <div>
         Days with Meals: <strong>{{ week.daysWithMeals }}</strong>
@@ -30,8 +28,9 @@
 
 <script setup lang="ts">
 import type { WeeklyData } from '@/models/weekly-data';
+import { computed } from 'vue';
 
-defineProps<{
+const props = defineProps<{
   title: string;
   week: WeeklyData;
 }>();
@@ -39,4 +38,7 @@ defineProps<{
 defineEmits<{
   (event: 'click'): void;
 }>();
+
+const formatter = new Intl.DateTimeFormat('en-US');
+const dateRange = computed(() => `${formatter.format(props.week.startDate)} - ${formatter.format(props.week.endDate)}`);
 </script>

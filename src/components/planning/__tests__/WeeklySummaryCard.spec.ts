@@ -44,7 +44,9 @@ describe('Weekly Summary Card', () => {
   it('displays the date range in the subtitle', () => {
     wrapper = mountComponent();
     const subtitle = wrapper.findComponent(components.VCardSubtitle);
-    expect(subtitle.text()).toBe('12/22/2025 - 12/28/2025');
+    const formatter = new Intl.DateTimeFormat('en-US');
+    const expectedSubtitle = `${formatter.format(TEST_WEEK.startDate)} - ${formatter.format(TEST_WEEK.endDate)}`;
+    expect(subtitle.text()).toBe(expectedSubtitle);
   });
 
   describe('stats', () => {
