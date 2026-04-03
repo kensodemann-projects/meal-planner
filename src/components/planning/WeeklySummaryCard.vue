@@ -30,6 +30,8 @@
 import type { WeeklyData } from '@/models/weekly-data';
 import { computed } from 'vue';
 
+const formatter = new Intl.DateTimeFormat('en-US');
+
 const props = defineProps<{
   title: string;
   week: WeeklyData;
@@ -39,6 +41,5 @@ defineEmits<{
   (event: 'click'): void;
 }>();
 
-const formatter = new Intl.DateTimeFormat('en-US');
 const dateRange = computed(() => `${formatter.format(props.week.startDate)} - ${formatter.format(props.week.endDate)}`);
 </script>
