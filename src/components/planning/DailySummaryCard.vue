@@ -9,7 +9,7 @@
     @keydown.space.prevent="$emit('click')"
   >
     <v-card-title>{{ title }}</v-card-title>
-    <v-card-subtitle>{{ dateRange }}</v-card-subtitle>
+    <v-card-subtitle>Nutrition Summary</v-card-subtitle>
     <v-card-text>
       <!--
       <div>
@@ -31,19 +31,14 @@
 </template>
 
 <script setup lang="ts">
-import type { WeeklyData } from '@/models/weekly-data';
-import { computed } from 'vue';
+import type { MealPlan } from '@/models/meal-plan';
 
-const formatter = new Intl.DateTimeFormat('en-US');
-
-const props = defineProps<{
+defineProps<{
   title: string;
-  week: WeeklyData;
+  mealPlan: MealPlan;
 }>();
 
 defineEmits<{
   (event: 'click'): void;
 }>();
-
-const dateRange = computed(() => `${formatter.format(props.week.startDate)} - ${formatter.format(props.week.endDate)}`);
 </script>
