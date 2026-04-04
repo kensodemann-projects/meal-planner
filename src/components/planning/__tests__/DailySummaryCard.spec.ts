@@ -12,9 +12,8 @@ const vuetify = createVuetify({ components, directives });
 
 const TEST_MEAL_PLAN = TEST_MEAL_PLANS[0];
 
-const mountComponent = (
-  props: { date: Date; mealPlan: MealPlan } = { date: parseISO(TEST_MEAL_PLAN.date), mealPlan: TEST_MEAL_PLAN },
-) => mount(DailySummaryCard, { props, global: { plugins: [vuetify] } });
+const mountComponent = (props: { date: Date; mealPlan?: MealPlan } = { date: parseISO('2026-04-02') }) =>
+  mount(DailySummaryCard, { props, global: { plugins: [vuetify] } });
 
 describe('Weekly Summary Card', () => {
   let wrapper: ReturnType<typeof mountComponent>;
@@ -31,8 +30,8 @@ describe('Weekly Summary Card', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it('displays the meal date in the card title', () => {
-    const expectedTitle = intlFormat(parseISO(TEST_MEAL_PLAN.date), { dateStyle: 'full' });
+  it('displays the date in the card title', () => {
+    const expectedTitle = intlFormat(parseISO('2026-04-02'), { dateStyle: 'full' });
     wrapper = mountComponent();
     const title = wrapper.findComponent(components.VCardTitle);
     expect(title.text()).toBe(expectedTitle);
@@ -43,32 +42,6 @@ describe('Weekly Summary Card', () => {
     const subtitle = wrapper.findComponent(components.VCardSubtitle);
     expect(subtitle.text()).toBe('Nutrition Summary');
   });
-
-  // describe('nutrition', () => {
-  //   beforeEach(() => {
-  //     wrapper = mountComponent();
-  //   });
-  //
-  //   it('displays days with meals', () => {
-  //     const text = wrapper.findComponent(components.VCardText);
-  //     expect(text.text()).toContain('Days with Meals: 5');
-  //   });
-  //
-  //   it('displays average calories', () => {
-  //     const text = wrapper.findComponent(components.VCardText);
-  //     expect(text.text()).toContain('Average Calories: 2000');
-  //   });
-  //
-  //   it('displays average protein with g suffix', () => {
-  //     const text = wrapper.findComponent(components.VCardText);
-  //     expect(text.text()).toContain('Average Protein: 100g');
-  //   });
-  //
-  //   it('displays average carbs with g suffix', () => {
-  //     const text = wrapper.findComponent(components.VCardText);
-  //     expect(text.text()).toContain('Average Carbs: 250g');
-  //   });
-  // });
 
   describe('interactions', () => {
     it('emits click when the card is clicked', async () => {
