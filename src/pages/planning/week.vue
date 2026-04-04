@@ -6,9 +6,8 @@
     </div>
     <template v-else>
       <div v-for="row in weekRows" :key="row.iso" class="day-plan">
-        <!-- if we want to show a card for each day, we need to have the component handle not having a plan -->
         <DailySummaryCard
-          v-if="row.plan"
+          :date="row.day"
           :mealPlan="row.plan"
           @click="router.push({ path: '/planning/day', query: { dt: row.iso } })"
         />
@@ -25,7 +24,7 @@ import { addDays, format, parseISO } from 'date-fns';
 import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-type DayRow = { day: Date; iso: string; plan: MealPlan | null };
+type DayRow = { day: Date; iso: string; plan?: MealPlan };
 
 const { getMealPlansForPeriod } = useMealPlansData();
 const route = useRoute();
@@ -40,7 +39,7 @@ const isLoading = ref(true);
 const weekRows = computed<DayRow[]>(() =>
   weekDays.value.map((d) => {
     const iso = dateToISO(d);
-    const plan = mealPlans.value.find((p) => p.date === iso) ?? null;
+    const plan = mealPlans.value.find((p) => p.date === iso);
     return { day: d, iso, plan };
   }),
 );
