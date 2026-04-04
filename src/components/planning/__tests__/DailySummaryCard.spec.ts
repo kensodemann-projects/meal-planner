@@ -75,4 +75,82 @@ describe('Weekly Summary Card', () => {
       expect(event.defaultPrevented).toBe(true);
     });
   });
+
+  describe('card content', () => {
+    describe('without a meal plan', () => {
+      it('displays a message indicating no meals exist for the day', () => {
+        wrapper = mountComponent({ date: parseISO('2026-04-02') });
+        const mealsSummary = wrapper.find('[data-testid="meals-summary"]');
+        expect(mealsSummary.text()).toBe('Meals: None');
+      });
+
+      it('does not display any nutrition information', () => {
+        wrapper = mountComponent({ date: parseISO('2026-04-02') });
+        const nutritionData = wrapper.findComponent({ name: 'NutritionData' });
+        expect(nutritionData.exists()).toBe(false);
+      });
+    });
+
+    describe('with a meal plan that has all meals', () => {
+      it('displays a message indicating the meals', () => {
+        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: TEST_MEAL_PLAN });
+        const mealsSummary = wrapper.find('[data-testid="meals-summary"]');
+        expect(mealsSummary.text()).toBe('Meals: Breakfast, Lunch, Dinner, Snack');
+      });
+
+      it('displays total nutrition information', () => {
+        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: TEST_MEAL_PLAN });
+        const nutritionData = wrapper.findComponent({ name: 'NutritionData' });
+        expect(nutritionData.exists()).toBe(true);
+        expect(nutritionData.props('value')).toEqual({
+          calories: 1530,
+          sodium: 1125,
+          fat: 58,
+          protein: 110,
+          carbs: 145,
+          sugar: 56,
+        });
+      });
+    });
+
+    describe('with a meal plan that has some meals', () => {
+      const PARTIAL_MEAL_PLAN = { ...TEST_MEAL_PLAN, meals: TEST_MEAL_PLAN.meals.slice(0, 2) };
+
+      it('displays a message indicating the meals in the plan', () => {
+        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: PARTIAL_MEAL_PLAN });
+        const mealsSummary = wrapper.find('[data-testid="meals-summary"]');
+        expect(mealsSummary.text()).toBe('Meals: Breakfast, Lunch');
+      });
+
+      it('displays total nutrition information', () => {
+        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: PARTIAL_MEAL_PLAN });
+        const nutritionData = wrapper.findComponent({ name: 'NutritionData' });
+        expect(nutritionData.exists()).toBe(true);
+        expect(nutritionData.props('value')).toEqual({
+          calories: 770,
+          sodium: 630,
+          fat: 26,
+          protein: 50,
+          carbs: 86,
+          sugar: 26,
+        });
+      });
+    });
+
+    describe('with a meal plan without meals', () => {
+      const EMPTY_MEAL_PLAN = { ...TEST_MEAL_PLAN, meals: [] };
+
+      it('displays a message indicating no meals exist for the day', () => {
+        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: EMPTY_MEAL_PLAN });
+        const mealsSummary = wrapper.find('[data-testid="meals-summary"]');
+        expect(mealsSummary.text()).toBe('Meals: None');
+      });
+
+      it('does not display any nutrition information', () => {
+        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: EMPTY_MEAL_PLAN });
+        const nutritionData = wrapper.findComponent({ name: 'NutritionData' });
+        expect(nutritionData.exists()).toBe(false);
+      });
+    });
+  });
 });
