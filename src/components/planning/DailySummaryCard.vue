@@ -11,6 +11,7 @@
     <v-card-title>{{ title }}</v-card-title>
     <v-card-subtitle>{{ dateRange }}</v-card-subtitle>
     <v-card-text>
+      <!--
       <div>
         Days with Meals: <strong>{{ week.daysWithMeals }}</strong>
       </div>
@@ -23,6 +24,8 @@
       <div>
         Average Carbs: <strong>{{ week.averageCarbs }}g</strong>
       </div>
+      -->
+      <p>Click to view details</p>
     </v-card-text>
   </v-card>
 </template>
