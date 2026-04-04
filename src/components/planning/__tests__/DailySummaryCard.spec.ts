@@ -15,7 +15,7 @@ const TEST_MEAL_PLAN = TEST_MEAL_PLANS[0];
 const mountComponent = (props: { date: Date; mealPlan?: MealPlan } = { date: parseISO('2026-04-02') }) =>
   mount(DailySummaryCard, { props, global: { plugins: [vuetify] } });
 
-describe('Weekly Summary Card', () => {
+describe('Daily Summary Card', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
   afterEach(() => {
