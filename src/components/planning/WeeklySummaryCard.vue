@@ -41,5 +41,5 @@ defineEmits<{
   (event: 'click'): void;
 }>();
 
-const dateRange = computed(() => `${format(props.week.startDate, 'P')} - ${format(props.week.endDate, 'P')}`);
+const dateRange = computed(() => `${format(props.week.startDate, 'M/d/yyyy')} - ${format(props.week.endDate, 'M/d/yyyy')}`);
 </script>
