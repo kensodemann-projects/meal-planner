@@ -6,28 +6,22 @@
     </div>
     <template v-else>
       <div v-for="row in weekRows" :key="row.iso" class="day-plan">
-        <h2 @click="router.push({ path: '/planning/day', query: { dt: row.iso } })">
-          {{ intlFormat(row.day, { dateStyle: 'full' }) }}
-        </h2>
-        <v-divider class="my-2" />
-        <div v-if="row.plan">
-          <h4>Meals:</h4>
-          <ul>
-            <li v-for="meal in row.plan.meals" :key="meal.id">{{ meal.type }}</li>
-          </ul>
-        </div>
-        <div v-else>
-          <p>No meal plan for this day.</p>
-        </div>
+        <!-- if we want to show a card for each day, we need to have the component handle not having a plan -->
+        <DailySummaryCard
+          v-if="row.plan"
+          :mealPlan="row.plan"
+          @click="router.push({ path: '/planning/day', query: { dt: row.iso } })"
+        />
       </div>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
+import DailySummaryCard from '@/components/planning/DailySummaryCard.vue';
 import { useMealPlansData } from '@/data/meal-plans';
 import type { MealPlan } from '@/models/meal-plan';
-import { addDays, format, intlFormat, parseISO } from 'date-fns';
+import { addDays, format, parseISO } from 'date-fns';
 import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
