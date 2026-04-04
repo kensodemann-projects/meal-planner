@@ -1,5 +1,6 @@
 import type { WeeklyData } from '@/models/weekly-data';
 import { mount } from '@vue/test-utils';
+import { format } from 'date-fns';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
@@ -44,8 +45,7 @@ describe('Weekly Summary Card', () => {
   it('displays the date range in the subtitle', () => {
     wrapper = mountComponent();
     const subtitle = wrapper.findComponent(components.VCardSubtitle);
-    const formatter = new Intl.DateTimeFormat('en-US');
-    const expectedSubtitle = `${formatter.format(TEST_WEEK.startDate)} - ${formatter.format(TEST_WEEK.endDate)}`;
+    const expectedSubtitle = `${format(TEST_WEEK.startDate, 'M/d/yyyy')} - ${format(TEST_WEEK.endDate, 'M/d/yyyy')}`;
     expect(subtitle.text()).toBe(expectedSubtitle);
   });
 
