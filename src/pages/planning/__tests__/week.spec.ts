@@ -1,5 +1,8 @@
+import DailySummaryCard from '@/components/planning/DailySummaryCard.vue';
+import { TEST_MEAL_PLAN, TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
 import { useMealPlansData } from '@/data/meal-plans';
 import { flushPromises, mount } from '@vue/test-utils';
+import { format } from 'date-fns';
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { useRoute, useRouter } from 'vue-router';
 import { createVuetify } from 'vuetify';
@@ -62,7 +65,54 @@ describe('week', () => {
     expect(getMealPlansForPeriod).toHaveBeenCalledExactlyOnceWith('2025-12-29', '2026-01-04');
   });
 
-  // TODO: Add a test that verifies the correct meal plans are rendered for the week once loaded.
-  //       Include that they are rendered in the correct order (sorted by date) and that the
-  //       DailySummaryCard component is used for day, including days without a meal plan.
+  describe('when displaying meal plans for the week', () => {
+    const weekDates = [
+      '2025-12-29',
+      '2025-12-30',
+      '2025-12-31',
+      '2026-01-01',
+      '2026-01-02',
+      '2026-01-03',
+      '2026-01-04',
+    ];
+
+    it('renders a DailySummaryCard for each day in order when all days have a meal plan', async () => {
+      const weekPlans = [...TEST_MEAL_PLANS.filter((p) => p.date >= '2025-12-29'), TEST_MEAL_PLAN];
+      (useMealPlansData().getMealPlansForPeriod as Mock).mockResolvedValue(weekPlans);
+      wrapper = await renderPage();
+
+      const cards = wrapper.findAllComponents(DailySummaryCard);
+      expect(cards).toHaveLength(7);
+      weekDates.forEach((date, i) => {
+        expect(format(cards[i]!.props('date'), 'yyyy-MM-dd')).toBe(date);
+        expect(cards[i]!.props('mealPlan')).toEqual(weekPlans[i]);
+      });
+    });
+
+    it('renders a DailySummaryCard for each day in order when only some days have a meal plan', async () => {
+      const sparseDates = ['2025-12-29', '2025-12-31', '2026-01-02'];
+      const sparseWeekPlans = TEST_MEAL_PLANS.filter((p) => sparseDates.includes(p.date));
+      (useMealPlansData().getMealPlansForPeriod as Mock).mockResolvedValue(sparseWeekPlans);
+      wrapper = await renderPage();
+
+      const cards = wrapper.findAllComponents(DailySummaryCard);
+      expect(cards).toHaveLength(7);
+      weekDates.forEach((date, i) => {
+        expect(format(cards[i]!.props('date'), 'yyyy-MM-dd')).toBe(date);
+        expect(cards[i]!.props('mealPlan')).toEqual(sparseWeekPlans.find((p) => p.date === date));
+      });
+    });
+
+    it('renders a DailySummaryCard for each day in order when no days have a meal plan', async () => {
+      (useMealPlansData().getMealPlansForPeriod as Mock).mockResolvedValue([]);
+      wrapper = await renderPage();
+
+      const cards = wrapper.findAllComponents(DailySummaryCard);
+      expect(cards).toHaveLength(7);
+      weekDates.forEach((date, i) => {
+        expect(format(cards[i]!.props('date'), 'yyyy-MM-dd')).toBe(date);
+        expect(cards[i]!.props('mealPlan')).toBeUndefined();
+      });
+    });
+  });
 });
