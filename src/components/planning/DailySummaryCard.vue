@@ -9,9 +9,8 @@
     @keydown.space.prevent="$emit('click')"
   >
     <v-card-title>{{ intlFormat(date, { dateStyle: 'full' }) }}</v-card-title>
-    <v-card-subtitle>Nutrition Summary</v-card-subtitle>
+    <v-card-subtitle>Meals: {{ meals }}</v-card-subtitle>
     <v-card-text>
-      <div data-testid="meals-summary">Meals: {{ meals }}</div>
       <NutritionData v-if="nutrition" :value="nutrition" />
     </v-card-text>
   </v-card>

@@ -37,12 +37,6 @@ describe('Weekly Summary Card', () => {
     expect(title.text()).toBe(expectedTitle);
   });
 
-  it('displays the subtitle', () => {
-    wrapper = mountComponent();
-    const subtitle = wrapper.findComponent(components.VCardSubtitle);
-    expect(subtitle.text()).toBe('Nutrition Summary');
-  });
-
   describe('interactions', () => {
     it('emits click when the card is clicked', async () => {
       wrapper = mountComponent();
@@ -76,12 +70,12 @@ describe('Weekly Summary Card', () => {
     });
   });
 
-  describe('card content', () => {
+  describe('meal sensitive content', () => {
     describe('without a meal plan', () => {
-      it('displays a message indicating no meals exist for the day', () => {
+      it('displays a subtitle indicating no meals exist for the day', () => {
         wrapper = mountComponent({ date: parseISO('2026-04-02') });
-        const mealsSummary = wrapper.find('[data-testid="meals-summary"]');
-        expect(mealsSummary.text()).toBe('Meals: None');
+        const subtitle = wrapper.findComponent(components.VCardSubtitle);
+        expect(subtitle.text()).toBe('Meals: None');
       });
 
       it('does not display any nutrition information', () => {
@@ -92,10 +86,10 @@ describe('Weekly Summary Card', () => {
     });
 
     describe('with a meal plan that has all meals', () => {
-      it('displays a message indicating the meals', () => {
+      it('displays a subtitle indicating the meals', () => {
         wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: TEST_MEAL_PLAN });
-        const mealsSummary = wrapper.find('[data-testid="meals-summary"]');
-        expect(mealsSummary.text()).toBe('Meals: Breakfast, Lunch, Dinner, Snack');
+        const subtitle = wrapper.findComponent(components.VCardSubtitle);
+        expect(subtitle.text()).toBe('Meals: Breakfast, Lunch, Dinner, Snack');
       });
 
       it('displays total nutrition information', () => {
@@ -116,10 +110,10 @@ describe('Weekly Summary Card', () => {
     describe('with a meal plan that has some meals', () => {
       const PARTIAL_MEAL_PLAN = { ...TEST_MEAL_PLAN, meals: TEST_MEAL_PLAN.meals.slice(0, 2) };
 
-      it('displays a message indicating the meals in the plan', () => {
+      it('displays a subtitle indicating the meals in the plan', () => {
         wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: PARTIAL_MEAL_PLAN });
-        const mealsSummary = wrapper.find('[data-testid="meals-summary"]');
-        expect(mealsSummary.text()).toBe('Meals: Breakfast, Lunch');
+        const subtitle = wrapper.findComponent(components.VCardSubtitle);
+        expect(subtitle.text()).toBe('Meals: Breakfast, Lunch');
       });
 
       it('displays total nutrition information', () => {
@@ -140,10 +134,10 @@ describe('Weekly Summary Card', () => {
     describe('with a meal plan without meals', () => {
       const EMPTY_MEAL_PLAN = { ...TEST_MEAL_PLAN, meals: [] };
 
-      it('displays a message indicating no meals exist for the day', () => {
+      it('displays a subtitle indicating no meals exist for the day', () => {
         wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: EMPTY_MEAL_PLAN });
-        const mealsSummary = wrapper.find('[data-testid="meals-summary"]');
-        expect(mealsSummary.text()).toBe('Meals: None');
+        const subtitle = wrapper.findComponent(components.VCardSubtitle);
+        expect(subtitle.text()).toBe('Meals: None');
       });
 
       it('does not display any nutrition information', () => {
