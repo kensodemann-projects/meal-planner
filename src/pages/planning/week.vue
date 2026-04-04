@@ -5,7 +5,7 @@
       <v-progress-circular indeterminate />
     </div>
     <template v-else>
-      <div v-for="row in weekRows" :key="row.iso" class="day-plan">
+      <div v-for="row in weekRows" :key="row.iso" class="day-plan mb-4">
         <DailySummaryCard
           :date="row.day"
           :mealPlan="row.plan"
