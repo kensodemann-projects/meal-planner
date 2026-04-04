@@ -6,14 +6,14 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import DailySummaryCard from '../DailySummaryCard.vue';
+import { intlFormat, parseISO } from 'date-fns';
 
 const vuetify = createVuetify({ components, directives });
 
 const TEST_MEAL_PLAN = TEST_MEAL_PLANS[0];
 
-const mountComponent = (
-  props: { title: string; mealPlan: MealPlan } = { title: 'This Week', mealPlan: TEST_MEAL_PLAN },
-) => mount(DailySummaryCard, { props, global: { plugins: [vuetify] } });
+const mountComponent = (props: { mealPlan: MealPlan } = { mealPlan: TEST_MEAL_PLAN }) =>
+  mount(DailySummaryCard, { props, global: { plugins: [vuetify] } });
 
 describe('Weekly Summary Card', () => {
   let wrapper: ReturnType<typeof mountComponent>;
@@ -30,10 +30,11 @@ describe('Weekly Summary Card', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it('displays the title prop in the card title', () => {
-    wrapper = mountComponent({ title: 'Next Week (Planning)', mealPlan: TEST_MEAL_PLAN });
+  it('displays the meal date in the card title', () => {
+    const expectedTitle = intlFormat(parseISO(TEST_MEAL_PLAN.date), { dateStyle: 'full' });
+    wrapper = mountComponent({ mealPlan: TEST_MEAL_PLAN });
     const title = wrapper.findComponent(components.VCardTitle);
-    expect(title.text()).toBe('Next Week (Planning)');
+    expect(title.text()).toBe(expectedTitle);
   });
 
   it('displays the subtitle', () => {

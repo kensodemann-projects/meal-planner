@@ -8,7 +8,7 @@
     @keydown.enter.prevent="$emit('click')"
     @keydown.space.prevent="$emit('click')"
   >
-    <v-card-title>{{ title }}</v-card-title>
+    <v-card-title>{{ intlFormat(parseISO(mealPlan.date), { dateStyle: 'full' }) }}</v-card-title>
     <v-card-subtitle>Nutrition Summary</v-card-subtitle>
     <v-card-text>
       <!--
@@ -32,9 +32,9 @@
 
 <script setup lang="ts">
 import type { MealPlan } from '@/models/meal-plan';
+import { intlFormat, parseISO } from 'date-fns';
 
 defineProps<{
-  title: string;
   mealPlan: MealPlan;
 }>();
 
