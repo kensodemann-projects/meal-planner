@@ -11,7 +11,7 @@ import { useRouter } from 'vue-router';
 
 const menuItems = [
   { icon: 'mdi-view-dashboard-outline', title: 'Dashboard', value: 'dashboard', path: '/dashboard' },
-  { icon: 'mdi-clipboard-list-outline', title: 'Planning', value: 'planning', path: '/planning' },
+  { icon: 'mdi-clipboard-list-outline', title: 'Planning & Logging', value: 'planning', path: '/planning' },
   { icon: 'mdi-pasta', title: 'Recipes', value: 'recipes', path: '/recipes' },
 ];
 

@@ -1,5 +1,5 @@
 <template>
-  <h1 class="text-center">Meal Planning</h1>
+  <h1 class="text-center">Planning &amp; Logging</h1>
 
   <h2>Current Weeks</h2>
   <v-divider class="my-4"></v-divider>

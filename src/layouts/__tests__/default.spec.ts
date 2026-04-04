@@ -58,7 +58,7 @@ describe('DefaultLayout', () => {
     const items = wrapper.findAllComponents(components.VListItem);
     expect(items.length).toBe(5);
     expect(items[0]?.text()).toBe('Dashboard');
-    expect(items[1]?.text()).toBe('Planning');
+    expect(items[1]?.text()).toBe('Planning & Logging');
     expect(items[2]?.text()).toBe('Recipes');
     expect(items[3]?.text()).toBe('Settings');
     expect(items[4]?.text()).toBe('Logout');
