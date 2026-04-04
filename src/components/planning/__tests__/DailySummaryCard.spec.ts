@@ -12,8 +12,9 @@ const vuetify = createVuetify({ components, directives });
 
 const TEST_MEAL_PLAN = TEST_MEAL_PLANS[0];
 
-const mountComponent = (props: { mealPlan: MealPlan } = { mealPlan: TEST_MEAL_PLAN }) =>
-  mount(DailySummaryCard, { props, global: { plugins: [vuetify] } });
+const mountComponent = (
+  props: { date: Date; mealPlan: MealPlan } = { date: parseISO(TEST_MEAL_PLAN.date), mealPlan: TEST_MEAL_PLAN },
+) => mount(DailySummaryCard, { props, global: { plugins: [vuetify] } });
 
 describe('Weekly Summary Card', () => {
   let wrapper: ReturnType<typeof mountComponent>;
@@ -32,7 +33,7 @@ describe('Weekly Summary Card', () => {
 
   it('displays the meal date in the card title', () => {
     const expectedTitle = intlFormat(parseISO(TEST_MEAL_PLAN.date), { dateStyle: 'full' });
-    wrapper = mountComponent({ mealPlan: TEST_MEAL_PLAN });
+    wrapper = mountComponent();
     const title = wrapper.findComponent(components.VCardTitle);
     expect(title.text()).toBe(expectedTitle);
   });
