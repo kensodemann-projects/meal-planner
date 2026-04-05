@@ -1,13 +1,5 @@
 <template>
-  <v-card
-    data-testid="daily-summary-card"
-    variant="outlined"
-    role="button"
-    tabindex="0"
-    @click="$emit('click')"
-    @keydown.enter.prevent="$emit('click')"
-    @keydown.space.prevent="$emit('click')"
-  >
+  <v-card data-testid="daily-summary-card" variant="outlined" :to="to">
     <v-card-title>{{ intlFormat(date, { dateStyle: 'full' }) }}</v-card-title>
     <v-card-subtitle>Meals: {{ meals }}</v-card-subtitle>
     <v-card-text>
@@ -21,11 +13,13 @@ import type { MealPlan } from '@/models/meal-plan';
 import type { Nutrition } from '@/models/nutrition';
 import { intlFormat } from 'date-fns';
 import { computed } from 'vue';
+import type { RouteLocationRaw } from 'vue-router';
 import { dailyMealPlanNutrients } from '@/core/nutritional-calculations';
 
 const props = defineProps<{
   date: Date;
   mealPlan?: MealPlan;
+  to?: RouteLocationRaw;
 }>();
 
 const buildMealSummary = (mealPlan: MealPlan): string => {
@@ -43,8 +37,4 @@ const nutrition = computed<Nutrition | undefined>(() =>
 const meals = computed(() =>
   props.mealPlan && props.mealPlan.meals.length > 0 ? buildMealSummary(props.mealPlan) : 'None',
 );
-
-defineEmits<{
-  (event: 'click'): void;
-}>();
 </script>

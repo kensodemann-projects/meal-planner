@@ -9,7 +9,7 @@
         <DailySummaryCard
           :date="row.day"
           :mealPlan="row.plan"
-          @click="router.push({ path: '/planning/day', query: { dt: row.iso } })"
+          :to="{ path: '/planning/day', query: { dt: row.iso } }"
         />
       </div>
     </template>
@@ -22,13 +22,12 @@ import { useMealPlansData } from '@/data/meal-plans';
 import type { MealPlan } from '@/models/meal-plan';
 import { addDays, format, parseISO } from 'date-fns';
 import { computed, ref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 
 type DayRow = { day: Date; iso: string; plan?: MealPlan };
 
 const { getMealPlansForPeriod } = useMealPlansData();
 const route = useRoute();
-const router = useRouter();
 const dateToISO = (date: Date) => format(date, 'yyyy-MM-dd');
 
 const dt = computed(() => route.query.dt as string);

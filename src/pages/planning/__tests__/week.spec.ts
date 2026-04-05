@@ -4,7 +4,7 @@ import { useMealPlansData } from '@/data/meal-plans';
 import { flushPromises, mount } from '@vue/test-utils';
 import { format } from 'date-fns';
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -30,9 +30,6 @@ describe('week', () => {
   beforeEach(() => {
     (useRoute as Mock).mockReturnValue({
       query: { dt: '2025-12-29' },
-    });
-    (useRouter as Mock).mockReturnValue({
-      push: vi.fn(),
     });
   });
 
@@ -115,15 +112,12 @@ describe('week', () => {
       });
     });
 
-    it('navigates to the day planning page when a DailySummaryCard is clicked', async () => {
+    it('passes the correct to prop to each DailySummaryCard for navigation', async () => {
       (useMealPlansData().getMealPlansForPeriod as Mock).mockResolvedValue([]);
       wrapper = await renderPage();
 
-      const router = useRouter();
       const cards = wrapper.findAllComponents(DailySummaryCard);
-      await cards[2]!.trigger('click');
-
-      expect(router.push).toHaveBeenCalledExactlyOnceWith({ path: '/planning/day', query: { dt: '2025-12-31' } });
+      expect(cards[2]!.props('to')).toEqual({ path: '/planning/day', query: { dt: '2025-12-31' } });
     });
   });
 });
