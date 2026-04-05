@@ -14,6 +14,7 @@ declare module 'vue' {
     CancelButton: typeof import('./components/core/buttons/CancelButton.vue')['default']
     CloseButton: typeof import('./components/core/buttons/CloseButton.vue')['default']
     ConfirmDialog: typeof import('./components/core/ConfirmDialog.vue')['default']
+    DailySummaryCard: typeof import('./components/planning/DailySummaryCard.vue')['default']
     DangerButton: typeof import('./components/core/buttons/DangerButton.vue')['default']
     DeleteButton: typeof import('./components/core/buttons/DeleteButton.vue')['default']
     IngredientEditorRow: typeof import('./components/recipes/IngredientEditorRow.vue')['default']

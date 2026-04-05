@@ -1,13 +1,13 @@
+import DailySummaryCard from '@/components/planning/DailySummaryCard.vue';
+import { TEST_MEAL_PLAN, TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
+import { useMealPlansData } from '@/data/meal-plans';
 import { flushPromises, mount } from '@vue/test-utils';
-import { intlFormat } from 'date-fns';
+import { format } from 'date-fns';
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { useRoute, useRouter } from 'vue-router';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import { useMealPlansData } from '@/data/meal-plans';
-import { TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
-import type { MealPlan } from '@/models/meal-plan';
 import week from '../week.vue';
 
 vi.mock('vue-router');
@@ -49,19 +49,6 @@ describe('week', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it('displays the proper headers for the week starting with dt', async () => {
-    wrapper = await renderPage();
-    const headers = wrapper.findAll('h2');
-    expect(headers).toHaveLength(7);
-    expect(headers[0]!.text()).toBe(intlFormat(new Date(2025, 11, 29), { dateStyle: 'full' }));
-    expect(headers[1]!.text()).toBe(intlFormat(new Date(2025, 11, 30), { dateStyle: 'full' }));
-    expect(headers[2]!.text()).toBe(intlFormat(new Date(2025, 11, 31), { dateStyle: 'full' }));
-    expect(headers[3]!.text()).toBe(intlFormat(new Date(2026, 0, 1), { dateStyle: 'full' }));
-    expect(headers[4]!.text()).toBe(intlFormat(new Date(2026, 0, 2), { dateStyle: 'full' }));
-    expect(headers[5]!.text()).toBe(intlFormat(new Date(2026, 0, 3), { dateStyle: 'full' }));
-    expect(headers[6]!.text()).toBe(intlFormat(new Date(2026, 0, 4), { dateStyle: 'full' }));
-  });
-
   it('shows a loading indicator while meal plans are being fetched', () => {
     wrapper = mountPage();
     expect(wrapper.findComponent({ name: 'VProgressCircular' }).exists()).toBe(true);
@@ -78,33 +65,65 @@ describe('week', () => {
     expect(getMealPlansForPeriod).toHaveBeenCalledExactlyOnceWith('2025-12-29', '2026-01-04');
   });
 
-  it('shows "No meal plan for this day." for every day when no plans are returned', async () => {
-    wrapper = await renderPage();
-    const noPlanMessages = wrapper.findAll('p').filter((p) => p.text() === 'No meal plan for this day.');
-    expect(noPlanMessages).toHaveLength(7);
-  });
+  describe('when displaying meal plans for the week', () => {
+    const weekDates = [
+      '2025-12-29',
+      '2025-12-30',
+      '2025-12-31',
+      '2026-01-01',
+      '2026-01-02',
+      '2026-01-03',
+      '2026-01-04',
+    ];
 
-  it('shows the meals for a day that has a plan', async () => {
-    const planForTuesday: MealPlan = { ...TEST_MEAL_PLANS[0]!, date: '2025-12-30' };
-    (useMealPlansData().getMealPlansForPeriod as Mock).mockResolvedValueOnce([planForTuesday]);
-    wrapper = await renderPage();
-    const mealTypes = wrapper.findAll('li').map((li) => li.text());
-    expect(mealTypes).toContain('Breakfast');
-    expect(mealTypes).toContain('Lunch');
-    expect(mealTypes).toContain('Dinner');
-  });
+    it('renders a DailySummaryCard for each day in order when all days have a meal plan', async () => {
+      const weekPlans = [...TEST_MEAL_PLANS.filter((p) => p.date >= '2025-12-29'), TEST_MEAL_PLAN];
+      (useMealPlansData().getMealPlansForPeriod as Mock).mockResolvedValue(weekPlans);
+      wrapper = await renderPage();
 
-  it('does not show the meals section for days without a plan', async () => {
-    const planForTuesday: MealPlan = { ...TEST_MEAL_PLANS[0]!, date: '2025-12-30' };
-    (useMealPlansData().getMealPlansForPeriod as Mock).mockResolvedValueOnce([planForTuesday]);
-    wrapper = await renderPage();
-    expect(wrapper.findAll('ul')).toHaveLength(1);
-  });
+      const cards = wrapper.findAllComponents(DailySummaryCard);
+      expect(cards).toHaveLength(7);
+      weekDates.forEach((date, i) => {
+        expect(format(cards[i]!.props('date'), 'yyyy-MM-dd')).toBe(date);
+        expect(cards[i]!.props('mealPlan')).toEqual(weekPlans[i]);
+      });
+    });
 
-  it('navigates to the day planning page when a day header is clicked', async () => {
-    wrapper = await renderPage();
-    await wrapper.findAll('h2')[0]!.trigger('click');
-    const { push } = useRouter();
-    expect(push).toHaveBeenCalledExactlyOnceWith({ path: '/planning/day', query: { dt: '2025-12-29' } });
+    it('renders a DailySummaryCard for each day in order when only some days have a meal plan', async () => {
+      const sparseDates = ['2025-12-29', '2025-12-31', '2026-01-02'];
+      const sparseWeekPlans = TEST_MEAL_PLANS.filter((p) => sparseDates.includes(p.date));
+      (useMealPlansData().getMealPlansForPeriod as Mock).mockResolvedValue(sparseWeekPlans);
+      wrapper = await renderPage();
+
+      const cards = wrapper.findAllComponents(DailySummaryCard);
+      expect(cards).toHaveLength(7);
+      weekDates.forEach((date, i) => {
+        expect(format(cards[i]!.props('date'), 'yyyy-MM-dd')).toBe(date);
+        expect(cards[i]!.props('mealPlan')).toEqual(sparseWeekPlans.find((p) => p.date === date));
+      });
+    });
+
+    it('renders a DailySummaryCard for each day in order when no days have a meal plan', async () => {
+      (useMealPlansData().getMealPlansForPeriod as Mock).mockResolvedValue([]);
+      wrapper = await renderPage();
+
+      const cards = wrapper.findAllComponents(DailySummaryCard);
+      expect(cards).toHaveLength(7);
+      weekDates.forEach((date, i) => {
+        expect(format(cards[i]!.props('date'), 'yyyy-MM-dd')).toBe(date);
+        expect(cards[i]!.props('mealPlan')).toBeUndefined();
+      });
+    });
+
+    it('navigates to the day planning page when a DailySummaryCard is clicked', async () => {
+      (useMealPlansData().getMealPlansForPeriod as Mock).mockResolvedValue([]);
+      wrapper = await renderPage();
+
+      const router = useRouter();
+      const cards = wrapper.findAllComponents(DailySummaryCard);
+      await cards[2]!.trigger('click');
+
+      expect(router.push).toHaveBeenCalledExactlyOnceWith({ path: '/planning/day', query: { dt: '2025-12-31' } });
+    });
   });
 });
