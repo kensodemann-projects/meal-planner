@@ -183,6 +183,14 @@ describe('Meal Item Editor Rows', () => {
         });
       });
 
+      it('does not update nutrition when servings is set to zero', async () => {
+        wrapper = mountComponent({ modelValue: TEST_MEAL_ITEM, items: TEST_RECIPES });
+        const servingsInput = wrapper.findComponent('[data-testid="servings-input"]');
+        await servingsInput.find('input').setValue('0');
+
+        expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+      });
+
       it('sets nutrition undefined when servings change and no recipe is selected', async () => {
         wrapper = mountComponent({ modelValue: {}, items: TEST_RECIPES });
         const servingsInput = wrapper.findComponent('[data-testid="servings-input"]');
