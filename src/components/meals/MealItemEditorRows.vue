@@ -16,7 +16,8 @@
         <v-number-input
           label="Servings"
           v-model="servings"
-          :rules="[validationRules.required]"
+          :precision="null"
+          :rules="[validationRules.required, validationRules.positive]"
           data-testid="servings-input"
         ></v-number-input>
       </v-col>

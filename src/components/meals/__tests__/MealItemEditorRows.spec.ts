@@ -118,6 +118,28 @@ describe('Meal Item Editor Rows', () => {
       expect((emitted![0]![0] as MealItem).servings).toBe(3);
     });
 
+    it('accepts fractional values', async () => {
+      wrapper = mountComponent({ modelValue: {}, items: TEST_RECIPES });
+      const servingsInput = wrapper.findComponent('[data-testid="servings-input"]');
+      await servingsInput.find('input').setValue('2.5');
+
+      const emitted = wrapper.emitted('update:modelValue');
+      expect(emitted?.length).toBe(1);
+      expect((emitted![0]![0] as MealItem).servings).toBe(2.5);
+    });
+
+    it('shows an error for negative values', async () => {
+      wrapper = mountComponent({ modelValue: {}, items: TEST_RECIPES });
+      const servingsInput = wrapper.findComponent('[data-testid="servings-input"]');
+      const input = servingsInput.find('input');
+
+      expect(wrapper.text()).not.toContain('Must be a positive number');
+      await input.trigger('focus');
+      await input.setValue('-1');
+      await input.trigger('blur');
+      expect(wrapper.text()).toContain('Must be a positive number');
+    });
+
     describe('for an existing meal item', () => {
       it('is initialized based on the meal item', () => {
         wrapper = mountComponent({ modelValue: TEST_MEAL_ITEM, items: TEST_RECIPES });
@@ -159,6 +181,14 @@ describe('Meal Item Editor Rows', () => {
           fat: modifiedMealItem.nutrition!.fat * scale,
           protein: modifiedMealItem.nutrition!.protein * scale,
         });
+      });
+
+      it('does not update nutrition when servings is set to zero', async () => {
+        wrapper = mountComponent({ modelValue: TEST_MEAL_ITEM, items: TEST_RECIPES });
+        const servingsInput = wrapper.findComponent('[data-testid="servings-input"]');
+        await servingsInput.find('input').setValue('0');
+
+        expect(wrapper.emitted('update:modelValue')).toBeUndefined();
       });
 
       it('sets nutrition undefined when servings change and no recipe is selected', async () => {
