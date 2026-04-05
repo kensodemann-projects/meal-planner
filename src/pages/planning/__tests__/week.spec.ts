@@ -114,5 +114,16 @@ describe('week', () => {
         expect(cards[i]!.props('mealPlan')).toBeUndefined();
       });
     });
+
+    it('navigates to the day planning page when a DailySummaryCard is clicked', async () => {
+      (useMealPlansData().getMealPlansForPeriod as Mock).mockResolvedValue([]);
+      wrapper = await renderPage();
+
+      const router = useRouter();
+      const cards = wrapper.findAllComponents(DailySummaryCard);
+      await cards[2]!.trigger('click');
+
+      expect(router.push).toHaveBeenCalledExactlyOnceWith({ path: '/planning/day', query: { dt: '2025-12-31' } });
+    });
   });
 });
