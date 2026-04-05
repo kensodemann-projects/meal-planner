@@ -126,4 +126,18 @@ describe('week', () => {
       expect(router.push).toHaveBeenCalledExactlyOnceWith({ path: '/planning/day', query: { dt: '2025-12-31' } });
     });
   });
+
+  describe('close button', () => {
+    it('is rendered', async () => {
+      wrapper = await renderPage();
+      expect(wrapper.find('[data-testid="close-button"]').exists()).toBe(true);
+    });
+
+    it('navigates to /planning when clicked', async () => {
+      wrapper = await renderPage();
+      await wrapper.find('[data-testid="close-button"]').trigger('click');
+      const { push } = useRouter();
+      expect(push).toHaveBeenCalledExactlyOnceWith('/planning');
+    });
+  });
 });
