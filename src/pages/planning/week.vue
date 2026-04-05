@@ -21,6 +21,11 @@
         </div>
       </div>
     </template>
+    <v-container fluid>
+      <v-row class="pa-4" justify="end">
+        <CloseButton @click="router.push('/planning')" />
+      </v-row>
+    </v-container>
   </div>
 </template>
 
