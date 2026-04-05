@@ -20,6 +20,7 @@
 import type { MealPlan } from '@/models/meal-plan';
 import type { Nutrition } from '@/models/nutrition';
 import { intlFormat } from 'date-fns';
+import { computed } from 'vue';
 import { dailyMealPlanNutrients } from '@/core/nutritional-calculations';
 
 const props = defineProps<{
@@ -36,9 +37,12 @@ const buildMealSummary = (mealPlan: MealPlan): string => {
   return summary;
 };
 
-const nutrition: Nutrition | undefined =
-  props.mealPlan && props.mealPlan.meals.length > 0 ? dailyMealPlanNutrients(props.mealPlan) : undefined;
-const meals = props.mealPlan && props.mealPlan.meals.length > 0 ? buildMealSummary(props.mealPlan) : 'None';
+const nutrition = computed<Nutrition | undefined>(() =>
+  props.mealPlan && props.mealPlan.meals.length > 0 ? dailyMealPlanNutrients(props.mealPlan) : undefined,
+);
+const meals = computed(() =>
+  props.mealPlan && props.mealPlan.meals.length > 0 ? buildMealSummary(props.mealPlan) : 'None',
+);
 
 defineEmits<{
   (event: 'click'): void;
