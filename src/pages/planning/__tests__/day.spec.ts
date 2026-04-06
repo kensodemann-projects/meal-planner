@@ -268,6 +268,41 @@ describe('day', () => {
       expect(wrapper.findComponent('[data-testid="breakfast-view"]').exists()).toBe(false);
     });
 
+    describe('when the meal editor is cancelled after modify', () => {
+      it('hides the editor', async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+        wrapper = await renderPage();
+        const breakfastView = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
+        await breakfastView.vm.$emit('modify');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        await editor.vm.$emit('cancel');
+        expect(wrapper.findComponent({ name: 'MealEditor' }).exists()).toBe(false);
+      });
+
+      it('shows the breakfast view again', async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+        wrapper = await renderPage();
+        const breakfastView = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
+        await breakfastView.vm.$emit('modify');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        await editor.vm.$emit('cancel');
+        expect(wrapper.findComponent('[data-testid="breakfast-view"]').exists()).toBe(true);
+      });
+
+      it('does not show the add breakfast button', async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+        wrapper = await renderPage();
+        const breakfastView = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
+        await breakfastView.vm.$emit('modify');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        await editor.vm.$emit('cancel');
+        expect(wrapper.findComponent('[data-testid="add-breakfast-button"]').exists()).toBe(false);
+      });
+    });
+
     describe('the delete event', () => {
       it('displays the confirmation dialog', async () => {
         const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
@@ -507,6 +542,41 @@ describe('day', () => {
       expect(editor.exists()).toBe(true);
       expect(editor.props('meal')).toEqual(FULL_MEAL_PLAN.meals[1]);
       expect(wrapper.findComponent('[data-testid="lunch-view"]').exists()).toBe(false);
+    });
+
+    describe('when the meal editor is cancelled after modify', () => {
+      it('hides the editor', async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+        wrapper = await renderPage();
+        const lunchView = wrapper.findComponent('[data-testid="lunch-view"]') as VueWrapper<any>;
+        await lunchView.vm.$emit('modify');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        await editor.vm.$emit('cancel');
+        expect(wrapper.findComponent({ name: 'MealEditor' }).exists()).toBe(false);
+      });
+
+      it('shows the lunch view again', async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+        wrapper = await renderPage();
+        const lunchView = wrapper.findComponent('[data-testid="lunch-view"]') as VueWrapper<any>;
+        await lunchView.vm.$emit('modify');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        await editor.vm.$emit('cancel');
+        expect(wrapper.findComponent('[data-testid="lunch-view"]').exists()).toBe(true);
+      });
+
+      it('does not show the add lunch button', async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+        wrapper = await renderPage();
+        const lunchView = wrapper.findComponent('[data-testid="lunch-view"]') as VueWrapper<any>;
+        await lunchView.vm.$emit('modify');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        await editor.vm.$emit('cancel');
+        expect(wrapper.findComponent('[data-testid="add-lunch-button"]').exists()).toBe(false);
+      });
     });
 
     describe('the delete event', () => {
@@ -750,6 +820,41 @@ describe('day', () => {
       expect(wrapper.findComponent('[data-testid="dinner-view"]').exists()).toBe(false);
     });
 
+    describe('when the meal editor is cancelled after modify', () => {
+      it('hides the editor', async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+        wrapper = await renderPage();
+        const dinnerView = wrapper.findComponent('[data-testid="dinner-view"]') as VueWrapper<any>;
+        await dinnerView.vm.$emit('modify');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        await editor.vm.$emit('cancel');
+        expect(wrapper.findComponent({ name: 'MealEditor' }).exists()).toBe(false);
+      });
+
+      it('shows the dinner view again', async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+        wrapper = await renderPage();
+        const dinnerView = wrapper.findComponent('[data-testid="dinner-view"]') as VueWrapper<any>;
+        await dinnerView.vm.$emit('modify');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        await editor.vm.$emit('cancel');
+        expect(wrapper.findComponent('[data-testid="dinner-view"]').exists()).toBe(true);
+      });
+
+      it('does not show the add dinner button', async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+        wrapper = await renderPage();
+        const dinnerView = wrapper.findComponent('[data-testid="dinner-view"]') as VueWrapper<any>;
+        await dinnerView.vm.$emit('modify');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        await editor.vm.$emit('cancel');
+        expect(wrapper.findComponent('[data-testid="add-dinner-button"]').exists()).toBe(false);
+      });
+    });
+
     describe('the delete event', () => {
       it('displays the confirmation dialog', async () => {
         const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
@@ -989,6 +1094,41 @@ describe('day', () => {
       expect(editor.exists()).toBe(true);
       expect(editor.props('meal')).toEqual(FULL_MEAL_PLAN.meals[3]);
       expect(wrapper.findComponent('[data-testid="snack-view"]').exists()).toBe(false);
+    });
+
+    describe('when the meal editor is cancelled after modify', () => {
+      it('hides the editor', async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+        wrapper = await renderPage();
+        const snackView = wrapper.findComponent('[data-testid="snack-view"]') as VueWrapper<any>;
+        await snackView.vm.$emit('modify');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        await editor.vm.$emit('cancel');
+        expect(wrapper.findComponent({ name: 'MealEditor' }).exists()).toBe(false);
+      });
+
+      it('shows the snack view again', async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+        wrapper = await renderPage();
+        const snackView = wrapper.findComponent('[data-testid="snack-view"]') as VueWrapper<any>;
+        await snackView.vm.$emit('modify');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        await editor.vm.$emit('cancel');
+        expect(wrapper.findComponent('[data-testid="snack-view"]').exists()).toBe(true);
+      });
+
+      it('does not show the add snack button', async () => {
+        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+        wrapper = await renderPage();
+        const snackView = wrapper.findComponent('[data-testid="snack-view"]') as VueWrapper<any>;
+        await snackView.vm.$emit('modify');
+        const editor = wrapper.findComponent({ name: 'MealEditor' });
+        await editor.vm.$emit('cancel');
+        expect(wrapper.findComponent('[data-testid="add-snack-button"]').exists()).toBe(false);
+      });
     });
 
     describe('the delete event', () => {
