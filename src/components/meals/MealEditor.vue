@@ -69,7 +69,11 @@ import type { EditableItem } from '@/models/editable-item';
 import type { Meal, MealItem } from '@/models/meal';
 import { computed, ref } from 'vue';
 
-const emit = defineEmits<{ (event: 'save', payload: Meal): void; (event: 'cancel'): void }>();
+const emit = defineEmits<{
+  (event: 'save', payload: Meal): void;
+  (event: 'cancel'): void;
+  (event: 'meal-changed', value: Meal): void;
+}>();
 const props = defineProps<{ meal: Meal }>();
 
 const { recipes } = useRecipesData();
@@ -111,12 +115,18 @@ const askToDelete = (item: EditableItem<MealItem>) => {
   showConfirmDialog.value = true;
 };
 
+const currentMeal = (): Meal => ({
+  ...props.meal,
+  items: mealItems.value.map((wrappedItem) => wrappedItem.item),
+});
+
 const removeMealItem = () => {
   if (mealItemToRemove.value) {
     mealItems.value = mealItems.value.filter((wrappedItem) => wrappedItem.item !== mealItemToRemove.value);
   }
   mealItemToRemove.value = null;
   showConfirmDialog.value = false;
+  emit('meal-changed', currentMeal());
 };
 
 const createMealItem = (item: MealItem) => {
@@ -125,19 +135,17 @@ const createMealItem = (item: MealItem) => {
     recipeMealItem.value = null;
   }
   isModified.value = true;
+  emit('meal-changed', currentMeal());
 };
 
 const updateMealItem = (wrapper: EditableItem<MealItem>, item: MealItem) => {
   wrapper.item = item;
   wrapper.isEditing = false;
   isModified.value = true;
+  emit('meal-changed', currentMeal());
 };
 
 const save = () => {
-  const mealToSave: Meal = {
-    ...props.meal,
-    items: mealItems.value.map((wrappedItem) => wrappedItem.item),
-  };
-  emit('save', mealToSave);
+  emit('save', currentMeal());
 };
 </script>

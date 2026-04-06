@@ -270,6 +270,26 @@ describe('Meal Editor', () => {
         expect(nutritionDisplay.props('value')).toEqual(updatedItem.nutrition);
       });
 
+      it('emits meal-changed with the updated meal when save is clicked', async () => {
+        const modifyButton = panel.findComponent('[data-testid="modify-button"]');
+        await modifyButton.trigger('click');
+        const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
+
+        const originalItem = TEST_MEAL.items.find((item) => item.recipeId);
+        if (!originalItem) throw new Error('TEST_MEAL should contain at least one recipe item');
+
+        const updatedItem = { ...originalItem, name: 'Updated Recipe Name' };
+        await mealItemEditor.vm.$emit('save', updatedItem);
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.emitted('meal-changed')).toBeDefined();
+        const emittedMeal = (wrapper.emitted('meal-changed') as unknown[][])[0]![0] as Meal;
+        expect(emittedMeal).toEqual({
+          ...TEST_MEAL,
+          items: TEST_MEAL.items.map((item) => (item === originalItem ? updatedItem : item)),
+        });
+      });
+
       it('restores the nutritional information when cancel is clicked', async () => {
         const modifyButton = panel.findComponent('[data-testid="modify-button"]');
         await modifyButton.trigger('click');
@@ -289,6 +309,26 @@ describe('Meal Editor', () => {
         await wrapper.vm.$nextTick();
         const confirmDialog = wrapper.findComponent({ name: 'ConfirmDialog' });
         expect(confirmDialog.exists()).toBe(true);
+      });
+
+      it('emits meal-changed with the updated meal when deletion is confirmed', async () => {
+        const originalItem = TEST_MEAL.items.find((item) => item.recipeId);
+        if (!originalItem) throw new Error('TEST_MEAL should contain at least one recipe item');
+
+        const deleteButton = panel.findComponent('[data-testid="delete-button"]');
+        await deleteButton.trigger('click');
+        await wrapper.vm.$nextTick();
+
+        const confirmDialog = wrapper.findComponent({ name: 'ConfirmDialog' });
+        await confirmDialog.vm.$emit('confirm');
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.emitted('meal-changed')).toBeDefined();
+        const emittedMeal = (wrapper.emitted('meal-changed') as unknown[][])[0]![0] as Meal;
+        expect(emittedMeal).toEqual({
+          ...TEST_MEAL,
+          items: TEST_MEAL.items.filter((item) => item !== originalItem),
+        });
       });
 
       it('removes the recipe from the list when deletion is confirmed', async () => {
@@ -402,6 +442,18 @@ describe('Meal Editor', () => {
           const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
           const panels = recipePanels.findAllComponents(components.VExpansionPanel);
           expect(panels.length).toBe(1);
+        });
+
+        it('emits meal-changed with the updated meal', async () => {
+          wrapper = mountComponent({ meal: emptyMeal });
+          const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
+          await addRecipeButton.trigger('click');
+          const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+          await mealItemEditors[0]!.vm.$emit('save', recipeMealItem);
+          await wrapper.vm.$nextTick();
+          expect(wrapper.emitted('meal-changed')).toBeDefined();
+          const emittedMeal = (wrapper.emitted('meal-changed') as unknown[][])[0]![0] as Meal;
+          expect(emittedMeal).toEqual({ ...emptyMeal, items: [recipeMealItem] });
         });
       });
     });
