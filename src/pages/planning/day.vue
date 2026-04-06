@@ -218,7 +218,9 @@ const cancelMeal = (mealType: MealType) => {
   const mealRef = mealRefs[mealType];
   if (mealRef && mealRef.value) {
     mealRef.value.isEditing = false;
-    mealRef.value.item = undefined;
+    if (mealRef.value.item && !mealRef.value.item.items.length) {
+      mealRef.value.item = undefined;
+    }
   }
 };
 
