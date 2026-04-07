@@ -270,7 +270,7 @@ describe('Meal Editor', () => {
         expect(nutritionDisplay.props('value')).toEqual(updatedItem.nutrition);
       });
 
-      it('emits meal-changed with the updated meal when save is clicked', async () => {
+      it('emits meal-changed with the updated meal when the meal item editor saves an updated item', async () => {
         const modifyButton = panel.findComponent('[data-testid="modify-button"]');
         await modifyButton.trigger('click');
         const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
