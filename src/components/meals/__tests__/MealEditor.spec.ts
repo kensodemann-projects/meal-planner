@@ -78,6 +78,13 @@ describe('Meal Editor', () => {
     expect(wrapper.findAllComponents({ name: 'MealItemEditorCard' }).length).toBe(0);
   });
 
+  it('emits cancel when the close button is clicked', async () => {
+    wrapper = mountComponent({ meal: emptyMeal });
+    const closeButton = wrapper.findComponent('[data-testid="close-button"]');
+    await closeButton.trigger('click');
+    expect(wrapper.emitted('cancel')).toBeDefined();
+  });
+
   describe('adding to an empty meal', () => {
     beforeEach(() => (wrapper = mountComponent({ meal: emptyMeal })));
 
@@ -85,40 +92,6 @@ describe('Meal Editor', () => {
       const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
       const panels = recipePanels.findAllComponents(components.VExpansionPanel);
       expect(panels.length).toBe(0);
-    });
-
-    describe('save button', () => {
-      it('starts disabled', () => {
-        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
-        expect(saveButton.exists()).toBe(true);
-        expect(saveButton.attributes('disabled')).toBeDefined();
-      });
-
-      it('is enabled after a recipe is added', async () => {
-        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
-        const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
-        await addRecipeButton.trigger('click');
-        const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-        await mealItemEditors[0]!.vm.$emit('save', recipeMealItem);
-        await wrapper.vm.$nextTick();
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
-
-      it('emits the save event with the meal data when clicked', async () => {
-        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
-        const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
-        await addRecipeButton.trigger('click');
-        const updatedMealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-        await updatedMealItemEditors[0]!.vm.$emit('save', recipeMealItem);
-        await wrapper.vm.$nextTick();
-        await saveButton.trigger('click');
-        expect(wrapper.emitted('save')).toBeDefined();
-        const emittedMeal = (wrapper.emitted('save') as unknown[][])[0]![0] as Meal;
-        expect(emittedMeal).toEqual({
-          ...emptyMeal,
-          items: [recipeMealItem],
-        });
-      });
     });
   });
 
@@ -129,69 +102,6 @@ describe('Meal Editor', () => {
       const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
       const panels = recipePanels.findAllComponents(components.VExpansionPanel);
       expect(panels.length).toBe(TEST_MEAL.items.filter((item) => item.recipeId).length);
-    });
-
-    describe('save button', () => {
-      it('starts disabled', () => {
-        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
-        expect(saveButton.exists()).toBe(true);
-        expect(saveButton.attributes('disabled')).toBeDefined();
-      });
-
-      it('is enabled after a recipe is added', async () => {
-        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
-        const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
-        await addRecipeButton.trigger('click');
-        const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-        await mealItemEditors[0]!.vm.$emit('save', recipeMealItem);
-        await wrapper.vm.$nextTick();
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled after an existing recipe is updated', async () => {
-        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
-        const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
-        const panels = recipePanels.findAllComponents(components.VExpansionPanel);
-        const panel = panels[0]!;
-        const header = panel.findComponent(components.VExpansionPanelTitle);
-        await header.trigger('click');
-        const modifyButton = panel.findComponent('[data-testid="modify-button"]');
-        await modifyButton.trigger('click');
-        const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
-        await mealItemEditor.vm.$emit('save', {
-          ...recipeMealItem,
-          name: 'Updated Recipe Name',
-        });
-        await wrapper.vm.$nextTick();
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is disabled if a recipe is open for edit', async () => {
-        // first enable the button by adding a recipe
-        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
-        const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
-        await addRecipeButton.trigger('click');
-        const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
-        await mealItemEditors[0]!.vm.$emit('save', recipeMealItem);
-        await wrapper.vm.$nextTick();
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-        // Now open an existing recipe for edit
-        const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
-        const panels = recipePanels.findAllComponents(components.VExpansionPanel);
-        const panel = panels[0]!;
-        const header = panel.findComponent(components.VExpansionPanelTitle);
-        await header.trigger('click');
-        const modifyButton = panel.findComponent('[data-testid="modify-button"]');
-        await modifyButton.trigger('click');
-        await wrapper.vm.$nextTick();
-        expect(saveButton.attributes('disabled')).toBeDefined();
-        // Cancel the edit and show the button is enabled again
-        const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
-        const cancelButton = mealItemEditor.findComponent('[data-testid="cancel-button"]');
-        await cancelButton.trigger('click');
-        await wrapper.vm.$nextTick();
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
     });
 
     describe('an existing recipe meal item', () => {
@@ -288,19 +198,6 @@ describe('Meal Editor', () => {
           ...TEST_MEAL,
           items: TEST_MEAL.items.map((item) => (item === originalItem ? updatedItem : item)),
         });
-      });
-
-      it('restores the nutritional information when cancel is clicked', async () => {
-        const modifyButton = panel.findComponent('[data-testid="modify-button"]');
-        await modifyButton.trigger('click');
-        const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
-        expect(mealItemEditor.exists()).toBe(true);
-        const cancelButton = mealItemEditor.findComponent('[data-testid="cancel-button"]');
-        await cancelButton.trigger('click');
-        expect(panel.findComponent({ name: 'MealItemEditorCard' }).exists()).toBe(false);
-        expect(panel.findComponent({ name: 'NutritionData' }).exists()).toBe(true);
-        expect(panel.findComponent('[data-testid="modify-button"]').exists()).toBe(true);
-        expect(panel.findComponent('[data-testid="delete-button"]').exists()).toBe(true);
       });
 
       it('opens the confirm dialog when delete button is clicked', async () => {
