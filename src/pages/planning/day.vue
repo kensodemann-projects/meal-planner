@@ -23,7 +23,7 @@
     <MealEditor
       v-if="breakfast.isEditing"
       :meal="breakfast.item!"
-      @save="(meal) => setMeal('Breakfast', meal)"
+      @meal-changed="(meal) => setMeal('Breakfast', meal)"
       @cancel="cancelMeal('Breakfast')"
     />
   </div>
@@ -50,7 +50,7 @@
     <MealEditor
       v-if="lunch.isEditing"
       :meal="lunch.item!"
-      @save="(meal) => setMeal('Lunch', meal)"
+      @meal-changed="(meal) => setMeal('Lunch', meal)"
       @cancel="cancelMeal('Lunch')"
     />
   </div>
@@ -77,7 +77,7 @@
     <MealEditor
       v-if="dinner.isEditing"
       :meal="dinner.item!"
-      @save="(meal) => setMeal('Dinner', meal)"
+      @meal-changed="(meal) => setMeal('Dinner', meal)"
       @cancel="cancelMeal('Dinner')"
     />
   </div>
@@ -104,7 +104,7 @@
     <MealEditor
       v-if="snack.isEditing"
       :meal="snack.item!"
-      @save="(meal) => setMeal('Snack', meal)"
+      @meal-changed="(meal) => setMeal('Snack', meal)"
       @cancel="cancelMeal('Snack')"
     />
   </div>
