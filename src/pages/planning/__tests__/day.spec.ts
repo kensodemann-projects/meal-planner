@@ -1016,7 +1016,8 @@ describe('day', () => {
           const editor = wrapper.findComponent({ name: 'MealEditor' });
           expect(editor.exists()).toBe(true);
           const newMeal: Meal = { id: 'meal-snack-123', type: 'Snack', items: [] };
-          editor.vm.$emit('meal-changed', newMeal);
+          await editor.vm.$emit('meal-changed', newMeal);
+          await wrapper.vm.$nextTick();
           const snackButton = wrapper.findComponent('[data-testid="add-snack-button"]');
           expect(snackButton.exists()).toBe(false);
         });
