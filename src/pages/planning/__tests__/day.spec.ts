@@ -191,6 +191,12 @@ describe('day', () => {
             await flushPromises();
             expect(addMealPlan).toHaveBeenCalled();
             expect(updateMealPlan).not.toHaveBeenCalled();
+            expect(addMealPlan).toHaveBeenCalledWith(
+              expect.objectContaining({
+                date: '2026-02-18',
+                meals: expect.arrayContaining([expect.objectContaining({ id: 'meal-new-123', type })]),
+              }),
+            );
           });
 
           it('saves further changes to the meal plan via update', async () => {
@@ -326,6 +332,13 @@ describe('day', () => {
             await flushPromises();
             expect(updateMealPlan).toHaveBeenCalled();
             expect(addMealPlan).not.toHaveBeenCalled();
+            expect(updateMealPlan).toHaveBeenCalledWith(
+              FULL_MEAL_PLAN.id,
+              expect.objectContaining({
+                date: '2026-02-18',
+                meals: expect.arrayContaining([expect.objectContaining({ id: 'meal-new-123', type })]),
+              }),
+            );
           });
         });
 
@@ -377,6 +390,13 @@ describe('day', () => {
               await flushPromises();
               expect(updateMealPlan).toHaveBeenCalled();
               expect(addMealPlan).not.toHaveBeenCalled();
+              expect(updateMealPlan).toHaveBeenCalledWith(
+                FULL_MEAL_PLAN.id,
+                expect.objectContaining({
+                  date: '2026-02-18',
+                  meals: expect.not.arrayContaining([expect.objectContaining({ type })]),
+                }),
+              );
             });
           });
 
@@ -473,6 +493,13 @@ describe('day', () => {
             await flushPromises();
             expect(updateMealPlan).toHaveBeenCalled();
             expect(addMealPlan).not.toHaveBeenCalled();
+            expect(updateMealPlan).toHaveBeenCalledWith(
+              EMPTY_MEAL_PLAN.id,
+              expect.objectContaining({
+                date: '2026-02-18',
+                meals: expect.arrayContaining([expect.objectContaining({ id: 'meal-new-123', type })]),
+              }),
+            );
           });
         });
       });
