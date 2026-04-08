@@ -84,18 +84,10 @@ mount(Component, { global: { plugins: [vuetify] } });
 ```
 
 - Mock Firebase/VueFire composables: `vi.mock('@/core/authentication')`
-- Coverage excludes: `.d.ts`, config files, models, plugins, router, root-level `.vue`/`.ts`
 - Use `vi.hoisted()` for mocks that must be hoisted before imports (e.g., mocking `firebase/ai` module-level calls)
 - Shared test data lives in `src/data/__tests__/test-data.ts` (exports `TEST_FOODS`, `TEST_MEAL_PLAN`, `TEST_MEAL_PLANS`, etc.)
 - Shared form-validation test helpers live in `src/components/__tests__/test-utils.ts` (e.g., `textFieldIsRequired`, `numberInputIsRequired`)
 - Query testable elements via `data-testid` attributes: `wrapper.findComponent('[data-testid="my-input"]')`
-
-### Release Process
-
-1. `pnpm changeset` - Document changes in branch
-2. Code, test, commit, PR, merge
-3. When ready to release: `pnpm bump` (updates version), commit, tag (`vX.Y.Z`), push with tags
-4. `pnpm release` - builds and deploys to Firebase
 
 ## Code Conventions
 
@@ -105,87 +97,13 @@ mount(Component, { global: { plugins: [vuetify] } });
 - **Types**: Centralized in `src/models/`, use TypeScript interfaces for domain entities
 - **Minimal comments**: Explain "why", not "what" (code should be self-documenting)
 
-## ESLint Rules
-
-- `no-console/debugger`: Warn in production only
-- `vue/multi-word-component-names`: Off for pages/layouts (single-word OK for routes)
-- `@typescript-eslint/no-explicit-any`: Off (pragmatic for rapid development)
-
 ## GitHub Issue Templates
 
-### Feature Request Structure
+Templates for Feature, Task, and Bug issues are in `.github/ISSUE_TEMPLATE/`. Read the appropriate template before creating or suggesting issues to ensure the correct structure and frontmatter.
 
-```markdown
----
-name: Feature
-about: I have an awesome idea
-title: ''
-type: feature
-assignees: ''
----
-
-# Synopsis
-
-[Brief description of the feature]
-
-# User stories
-
-1. As a user, I would like to...
-
-# Processes
-
-[Key workflows or processes affected]
-
-# Components
-
-[Components/files that will be created or modified]
-
-# Acceptance Criteria
-
-- [ ] [Testable criteria for completion]
-```
-
-### Task Structure
-
-```markdown
----
-name: Task
-about: Just do it!
-title: ''
-type: task
-assignees: ''
----
-
-# User Story
-
-As a user, I would like to...
-
-# Details
-
-[Implementation details, technical considerations]
-
-# Acceptance Criteria
-
-- [ ] [Testable criteria for completion]
-```
-
-**Subtasks**: When generating subtasks, **DO NOT create files**. Instead, output the complete markdown for each subtask in the chat only. The user will manually create GitHub issues from the provided markdown. Link subtasks to the parent Feature/Task using GitHub's task list syntax or by referencing the issue number (e.g., "Related to #123").
+**Subtasks**: When generating subtasks, **DO NOT create files**. Instead, output the complete markdown for each subtask in the chat first for review. When asked, create the GitHub issues using the `gh` CLI. Link subtasks to the parent using the issue number (e.g., "Related to #123").
 
 ## Pull Request Reviews
-
-### Focus Areas
-
-- **Security**: No hardcoded secrets, proper input validation, auth checks
-- **Performance**: Avoid inefficient algorithms (watch for O(n²) operations)
-- **Testing**: Adequate coverage for new features, especially data operations
-- **Comments**: Minimal, explain "why" not "what"
-
-### Review Style
-
-- Provide specific, actionable feedback with code examples
-- Acknowledge good patterns and creative solutions
-- Link to best-practices documentation when relevant
-- Focus on improvement, not criticism
 
 ### Review Comment Format
 
@@ -232,100 +150,26 @@ When asked to create a test plan for TODO comments (e.g., "create a test plan fo
 
 ### PLAN.md Structure
 
-For each TODO test case, include:
+For each TODO test case, include: test location (line number and describe block hierarchy), context (scenario, user workflow, and implementation status), setup steps (mock data, mounting, async considerations), test actions (interactions, queries, event emissions), assertions (visibility, props, DOM state, mock calls), pattern references (similar tests by line number, test data used), and key implementation notes (relevant source code, what needs to be implemented for TDD tests).
 
-#### Test Location
-
-- Line number and nesting context (describe block hierarchy)
-- Test case name
-
-#### Context
-
-- What scenario is being tested
-- What user workflow or interaction is covered
-- Where in the test suite it fits (e.g., "within add button > click > on save")
-- **Implementation status**: Whether feature exists or needs to be built (TDD)
-
-#### Implementation Plan
-
-**Setup:**
-
-- List all setup steps needed (mock data, component mounting, state preparation)
-- Include specific method calls with parameters
-- Note any async operations requiring `await` or `flushPromises()`
-
-**Test Actions:**
-
-- Specific user interactions to simulate (button clicks, event emissions)
-- Component queries needed (findComponent, findAllComponents)
-- Event emissions with their payloads
-
-**Assertions:**
-
-- Expected component visibility states
-- Expected prop values
-- Expected DOM states
-- Expected method calls (for TDD)
-- Use specific matcher syntax from the test framework
-
-**Pattern Reference:**
-
-- Link to similar tests in the same file (by line number)
-- Note any test patterns being followed
-- Reference test data structures used
-
-#### Key Implementation Notes
-
-- Component behavior excerpts from source code
-- Test data structures and their contents
-- Testing utilities and their usage patterns
-- Similar patterns in other parts of the test suite
-- **If TDD**: Code changes required for tests to pass
-
-#### Why This Test Matters
-
-- Explain the user workflow being validated
-- Note what could break without this test
-- Clarify the relationship to other tests
+Use clear markdown with headers and code blocks. Make it detailed enough that implementation is straightforward. Do not modify any code — only create the PLAN.md file.
 
 ### TDD vs. Testing Existing Functionality
 
-When planning tests, clearly indicate whether:
+Clearly indicate for each test:
 
-- **TDD Mode**: Feature doesn't exist yet
-  - Tests will fail initially (this is expected)
-  - Include code snippets showing what needs to be implemented
-  - Mark tests as "failing" in the plan
-  - Example: "This test will fail until `updateMealPlan` is called instead of `addMealPlan`"
+- **TDD**: Feature doesn't exist yet — tests will fail initially, and **that is expected and OK**. Note what code changes are needed to make them pass (e.g., "This test will fail until `updateMealPlan` is called instead of `addMealPlan`").
+- **Existing functionality**: Tests should pass immediately (or reveal bugs). Reference the existing code that implements the behavior.
 
-- **Testing Existing Functionality**: Feature already exists
-  - Tests should pass immediately (or reveal bugs)
-  - Reference existing code that implements the behavior
-  - Example: "The component already has `setMeal` which sets `isDirty = true`"
+### Workflow and Implementation
 
-### Output Format
+The expected workflow is:
 
-- Create a single PLAN.md file (do not modify any code)
-- Use clear markdown formatting with headers and code blocks
-- Include code examples from existing tests where helpful
-- Provide specific line number references
-- Make the plan detailed enough that implementation is straightforward
-- **Clearly label** whether tests are for TDD (will fail initially) or existing functionality (should pass)
+1. Create PLAN.md (do not implement tests yet)
+2. User reviews and potentially modifies PLAN.md
+3. User instructs you to implement tests from the plan
 
-### Example Request Patterns
+When implementing, always read the current PLAN.md first — the user may have modified it. Do not rely on the original TODO comments alone.
 
-These phrases should trigger this workflow:
-
-- "create a test plan for TODOs in @file"
-- "plan the TODO tests in @file"
-- "generate a plan for the TODO comments in @file"
-- "help me plan the missing tests in @file"
-
-### Implementation After Planning
-
-When asked to implement tests from a plan:
-
-- **If user requests TDD style**: Create failing tests first, note what needs to be implemented
-- **If user requests implementation**: Create tests that should pass for existing functionality
-- Always verify if tests pass or fail and explain why
-- For TDD tests that fail, provide clear guidance on what code changes are needed
+- For TDD tests: implement the failing tests as written; failing is expected — note what code changes are needed to make them pass
+- For existing functionality tests: tests should pass; if they don't, investigate and explain why
