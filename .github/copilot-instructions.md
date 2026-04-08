@@ -115,7 +115,7 @@ mount(Component, { global: { plugins: [vuetify] } });
 
 Templates for Feature, Task, and Bug issues are in `.github/ISSUE_TEMPLATE/`. Read the appropriate template before creating or suggesting issues to ensure the correct structure and frontmatter.
 
-**Subtasks**: When generating subtasks, **DO NOT create files**. Instead, output the complete markdown for each subtask in the chat only. The user will manually create GitHub issues from the provided markdown. Link subtasks to the parent using the issue number (e.g., "Related to #123").
+**Subtasks**: When generating subtasks, **DO NOT create files**. Instead, output the complete markdown for each subtask in the chat first for review. When asked, create the GitHub issues using the `gh` CLI. Link subtasks to the parent using the issue number (e.g., "Related to #123").
 
 ## Pull Request Reviews
 
