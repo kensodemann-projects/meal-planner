@@ -24,7 +24,7 @@
       v-if="breakfast.isEditing"
       :meal="breakfast.item!"
       @meal-changed="(meal) => updateMeal('Breakfast', meal)"
-      @cancel="cancelMeal('Breakfast')"
+      @close="cancelMeal('Breakfast')"
     />
   </div>
   <div class="d-flex justify-space-between align-center">
@@ -51,7 +51,7 @@
       v-if="lunch.isEditing"
       :meal="lunch.item!"
       @meal-changed="(meal) => updateMeal('Lunch', meal)"
-      @cancel="cancelMeal('Lunch')"
+      @close="cancelMeal('Lunch')"
     />
   </div>
   <div class="d-flex justify-space-between align-center">
@@ -78,7 +78,7 @@
       v-if="dinner.isEditing"
       :meal="dinner.item!"
       @meal-changed="(meal) => updateMeal('Dinner', meal)"
-      @cancel="cancelMeal('Dinner')"
+      @close="cancelMeal('Dinner')"
     />
   </div>
   <div class="d-flex justify-space-between align-center">
@@ -105,7 +105,7 @@
       v-if="snack.isEditing"
       :meal="snack.item!"
       @meal-changed="(meal) => updateMeal('Snack', meal)"
-      @cancel="cancelMeal('Snack')"
+      @close="cancelMeal('Snack')"
     />
   </div>
   <div class="d-flex justify-end mt-4">

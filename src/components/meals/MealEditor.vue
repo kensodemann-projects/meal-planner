@@ -48,7 +48,7 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer />
-      <CloseButton class="mr-4" @click="$emit('cancel')" />
+      <CloseButton class="mr-4" @click="$emit('close')" />
     </v-card-actions>
   </v-card>
 
@@ -69,7 +69,7 @@ import type { Meal, MealItem } from '@/models/meal';
 import { computed, ref } from 'vue';
 
 const emit = defineEmits<{
-  (event: 'cancel'): void;
+  (event: 'close'): void;
   (event: 'meal-changed', value: Meal): void;
 }>();
 const props = defineProps<{ meal: Meal }>();

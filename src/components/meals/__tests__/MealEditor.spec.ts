@@ -78,11 +78,11 @@ describe('Meal Editor', () => {
     expect(wrapper.findAllComponents({ name: 'MealItemEditorCard' }).length).toBe(0);
   });
 
-  it('emits cancel when the close button is clicked', async () => {
+  it('emits close when the close button is clicked', async () => {
     wrapper = mountComponent({ meal: emptyMeal });
     const closeButton = wrapper.findComponent('[data-testid="close-button"]');
     await closeButton.trigger('click');
-    expect(wrapper.emitted('cancel')).toBeDefined();
+    expect(wrapper.emitted('close')).toBeDefined();
   });
 
   describe('adding to an empty meal', () => {
