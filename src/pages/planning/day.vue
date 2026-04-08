@@ -23,7 +23,7 @@
     <MealEditor
       v-if="breakfast.isEditing"
       :meal="breakfast.item!"
-      @meal-changed="(meal) => setMeal('Breakfast', meal)"
+      @meal-changed="(meal) => updateMeal('Breakfast', meal)"
       @cancel="cancelMeal('Breakfast')"
     />
   </div>
@@ -50,7 +50,7 @@
     <MealEditor
       v-if="lunch.isEditing"
       :meal="lunch.item!"
-      @meal-changed="(meal) => setMeal('Lunch', meal)"
+      @meal-changed="(meal) => updateMeal('Lunch', meal)"
       @cancel="cancelMeal('Lunch')"
     />
   </div>
@@ -77,7 +77,7 @@
     <MealEditor
       v-if="dinner.isEditing"
       :meal="dinner.item!"
-      @meal-changed="(meal) => setMeal('Dinner', meal)"
+      @meal-changed="(meal) => updateMeal('Dinner', meal)"
       @cancel="cancelMeal('Dinner')"
     />
   </div>
@@ -104,7 +104,7 @@
     <MealEditor
       v-if="snack.isEditing"
       :meal="snack.item!"
-      @meal-changed="(meal) => setMeal('Snack', meal)"
+      @meal-changed="(meal) => updateMeal('Snack', meal)"
       @cancel="cancelMeal('Snack')"
     />
   </div>
@@ -205,12 +205,11 @@ const mealRefs: Record<string, typeof breakfast> = {
   Snack: snack,
 };
 
-const setMeal = (mealType: MealType, meal: Meal | undefined) => {
+const updateMeal = (mealType: MealType, meal: Meal) => {
   const mealRef = mealRefs[mealType];
   if (mealRef && mealRef.value) {
     mealRef.value.item = meal;
     isDirty.value = true;
-    mealRef.value.isEditing = false;
   }
 };
 
