@@ -189,9 +189,8 @@ describe('day', () => {
             const newMeal: Meal = { id: 'meal-new-123', type, items: [MODIFIED_MEAL_ITEM] };
             await editor.vm.$emit('meal-changed', newMeal);
             await flushPromises();
-            expect(addMealPlan).toHaveBeenCalled();
             expect(updateMealPlan).not.toHaveBeenCalled();
-            expect(addMealPlan).toHaveBeenCalledWith(
+            expect(addMealPlan).toHaveBeenCalledExactlyOnceWith(
               expect.objectContaining({
                 date: '2026-02-18',
                 meals: expect.arrayContaining([expect.objectContaining({ id: 'meal-new-123', type })]),
@@ -330,9 +329,8 @@ describe('day', () => {
             const newMeal: Meal = { id: 'meal-new-123', type, items: [MODIFIED_MEAL_ITEM] };
             await editor.vm.$emit('meal-changed', newMeal);
             await flushPromises();
-            expect(updateMealPlan).toHaveBeenCalled();
             expect(addMealPlan).not.toHaveBeenCalled();
-            expect(updateMealPlan).toHaveBeenCalledWith(
+            expect(updateMealPlan).toHaveBeenCalledExactlyOnceWith(
               FULL_MEAL_PLAN.id,
               expect.objectContaining({
                 date: '2026-02-18',
@@ -388,9 +386,8 @@ describe('day', () => {
               await flushPromises();
               wrapper.findComponent(ConfirmDialog).vm.$emit('confirm');
               await flushPromises();
-              expect(updateMealPlan).toHaveBeenCalled();
               expect(addMealPlan).not.toHaveBeenCalled();
-              expect(updateMealPlan).toHaveBeenCalledWith(
+              expect(updateMealPlan).toHaveBeenCalledExactlyOnceWith(
                 FULL_MEAL_PLAN.id,
                 expect.objectContaining({
                   date: '2026-02-18',
@@ -491,9 +488,8 @@ describe('day', () => {
             const newMeal: Meal = { id: 'meal-new-123', type, items: [MODIFIED_MEAL_ITEM] };
             await editor.vm.$emit('meal-changed', newMeal);
             await flushPromises();
-            expect(updateMealPlan).toHaveBeenCalled();
             expect(addMealPlan).not.toHaveBeenCalled();
-            expect(updateMealPlan).toHaveBeenCalledWith(
+            expect(updateMealPlan).toHaveBeenCalledExactlyOnceWith(
               EMPTY_MEAL_PLAN.id,
               expect.objectContaining({
                 date: '2026-02-18',
