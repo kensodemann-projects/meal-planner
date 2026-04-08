@@ -146,7 +146,6 @@ const lunch = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: unde
 const dinner = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 const snack = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 
-const isDirty = ref(false);
 const showConfirmDialog = ref(false);
 const mealToDelete = ref<MealType | null>(null);
 
@@ -218,12 +217,11 @@ const saveDayPlan = async () => {
   }
 };
 
-const updateMeal = (mealType: MealType, meal: Meal) => {
+const updateMeal = async (mealType: MealType, meal: Meal) => {
   const mealRef = mealRefs[mealType];
   if (mealRef && mealRef.value) {
     mealRef.value.item = meal;
-    isDirty.value = true;
-    saveDayPlan();
+    await saveDayPlan();
   }
 };
 
@@ -248,7 +246,6 @@ const doDelete = async () => {
     const mealRef = mealRefs[mealType];
     if (mealRef && mealRef.value) {
       mealRef.value.item = undefined;
-      isDirty.value = true;
     }
   }
   mealToDelete.value = null;
