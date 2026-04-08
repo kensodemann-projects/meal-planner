@@ -108,8 +108,8 @@
       @close="closeMealEditor('Snack')"
     />
   </div>
-  <div class="d-flex justify-end mt-4">
-    <CancelButton @click="cancelDayPlan" />
+  <div class="d-flex justify-end mt-4" data-testid="day-footer">
+    <CloseButton @click="closeDayPlan" />
   </div>
 
   <v-dialog v-model="showConfirmDialog" max-width="600px" data-testid="confirm-dialog">
@@ -265,7 +265,7 @@ const navigateToWeek = () => {
   router.replace({ path: '/planning/week', query: { dt: iso } });
 };
 
-const cancelDayPlan = () => navigateToWeek();
+const closeDayPlan = () => navigateToWeek();
 
 getMealPlanForDate(dateParam).then((plan) => {
   mealPlan.value = plan || {

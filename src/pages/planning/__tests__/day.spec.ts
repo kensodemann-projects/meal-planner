@@ -1207,7 +1207,7 @@ describe('day', () => {
     });
   });
 
-  describe('cancel button', () => {
+  describe('close button', () => {
     beforeEach(async () => {
       wrapper = await renderPage();
       const button = wrapper.findComponent('[data-testid="add-snack-button"]');
@@ -1220,21 +1220,21 @@ describe('day', () => {
     });
 
     it('exists', async () => {
-      const button = wrapper.findComponent('[data-testid="cancel-button"]');
+      const button = wrapper.find('[data-testid="day-footer"] [data-testid="close-button"]');
       expect(button.exists()).toBe(true);
     });
 
     it('does not save the meal plan', async () => {
       const { addMealPlan, updateMealPlan } = useMealPlansData();
       expect(addMealPlan).not.toHaveBeenCalled();
-      const button = wrapper.findComponent('[data-testid="cancel-button"]');
+      const button = wrapper.find('[data-testid="day-footer"] [data-testid="close-button"]');
       await button.trigger('click');
       expect(addMealPlan).not.toHaveBeenCalled();
       expect(updateMealPlan).not.toHaveBeenCalled();
     });
 
     it('navigates to the week page', async () => {
-      const button = wrapper.findComponent('[data-testid="cancel-button"]');
+      const button = wrapper.find('[data-testid="day-footer"] [data-testid="close-button"]');
       await button.trigger('click');
       expect(useRouter().replace).toHaveBeenCalledExactlyOnceWith({
         path: '/planning/week',
