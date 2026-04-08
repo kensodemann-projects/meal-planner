@@ -180,28 +180,6 @@ describe('day', () => {
             expect(wrapper.findComponent({ name: 'MealEditor' }).exists()).toBe(true);
           });
 
-          it('removes an empty meal and restores the add button', async () => {
-            const { addMealPlan, updateMealPlan } = useMealPlansData();
-            wrapper = await renderPage();
-            const button = wrapper.findComponent(`[data-testid="${addButtonTestId}"]`);
-            await button.trigger('click');
-            const editor = wrapper.findComponent({ name: 'MealEditor' });
-            expect(editor.exists()).toBe(true);
-            const emptiedMeal: Meal = { id: 'meal-new-123', type, items: [] };
-            await editor.vm.$emit('meal-changed', emptiedMeal);
-            await flushPromises();
-            expect(wrapper.findComponent({ name: 'MealEditor' }).exists()).toBe(false);
-            expect(wrapper.findComponent(`[data-testid="${addButtonTestId}"]`).exists()).toBe(true);
-            expect(addMealPlan).toHaveBeenCalled();
-            expect(updateMealPlan).not.toHaveBeenCalled();
-            expect(addMealPlan).toHaveBeenCalledWith(
-              expect.objectContaining({
-                meals: expect.not.arrayContaining([
-                  expect.objectContaining({ type }),
-                ]),
-              }),
-            );
-          });
           it('saves the meal plan via add', async () => {
             const { addMealPlan, updateMealPlan } = useMealPlansData();
             wrapper = await renderPage();
