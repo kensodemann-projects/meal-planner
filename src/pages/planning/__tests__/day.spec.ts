@@ -210,8 +210,20 @@ describe('day', () => {
             const updatedMeal: Meal = { id: 'meal-new-123', type, items: [MODIFIED_MEAL_ITEM, MODIFIED_MEAL_ITEM] };
             await editor.vm.$emit('meal-changed', updatedMeal);
             await flushPromises();
-            expect(updateMealPlan).toHaveBeenCalled();
             expect(addMealPlan).toHaveBeenCalledTimes(1);
+            expect(updateMealPlan).toHaveBeenCalledExactlyOnceWith(
+              'mock-id',
+              expect.objectContaining({
+                date: '2026-02-18',
+                meals: expect.arrayContaining([
+                  expect.objectContaining({
+                    id: 'meal-new-123',
+                    type,
+                    items: [MODIFIED_MEAL_ITEM, MODIFIED_MEAL_ITEM],
+                  }),
+                ]),
+              }),
+            );
           });
 
           it(`does not show the add ${label} button again`, async () => {
