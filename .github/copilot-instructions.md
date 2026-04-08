@@ -113,63 +113,9 @@ mount(Component, { global: { plugins: [vuetify] } });
 
 ## GitHub Issue Templates
 
-### Feature Request Structure
+Templates for Feature, Task, and Bug issues are in `.github/ISSUE_TEMPLATE/`. Read the appropriate template before creating or suggesting issues to ensure the correct structure and frontmatter.
 
-```markdown
----
-name: Feature
-about: I have an awesome idea
-title: ''
-type: feature
-assignees: ''
----
-
-# Synopsis
-
-[Brief description of the feature]
-
-# User stories
-
-1. As a user, I would like to...
-
-# Processes
-
-[Key workflows or processes affected]
-
-# Components
-
-[Components/files that will be created or modified]
-
-# Acceptance Criteria
-
-- [ ] [Testable criteria for completion]
-```
-
-### Task Structure
-
-```markdown
----
-name: Task
-about: Just do it!
-title: ''
-type: task
-assignees: ''
----
-
-# User Story
-
-As a user, I would like to...
-
-# Details
-
-[Implementation details, technical considerations]
-
-# Acceptance Criteria
-
-- [ ] [Testable criteria for completion]
-```
-
-**Subtasks**: When generating subtasks, **DO NOT create files**. Instead, output the complete markdown for each subtask in the chat only. The user will manually create GitHub issues from the provided markdown. Link subtasks to the parent Feature/Task using GitHub's task list syntax or by referencing the issue number (e.g., "Related to #123").
+**Subtasks**: When generating subtasks, **DO NOT create files**. Instead, output the complete markdown for each subtask in the chat only. The user will manually create GitHub issues from the provided markdown. Link subtasks to the parent using the issue number (e.g., "Related to #123").
 
 ## Pull Request Reviews
 
