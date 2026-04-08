@@ -23,8 +23,8 @@
     <MealEditor
       v-if="breakfast.isEditing"
       :meal="breakfast.item!"
-      @save="(meal) => setMeal('Breakfast', meal)"
-      @cancel="cancelMeal('Breakfast')"
+      @meal-changed="(meal) => updateMeal('Breakfast', meal)"
+      @close="cancelMeal('Breakfast')"
     />
   </div>
   <div class="d-flex justify-space-between align-center">
@@ -50,8 +50,8 @@
     <MealEditor
       v-if="lunch.isEditing"
       :meal="lunch.item!"
-      @save="(meal) => setMeal('Lunch', meal)"
-      @cancel="cancelMeal('Lunch')"
+      @meal-changed="(meal) => updateMeal('Lunch', meal)"
+      @close="cancelMeal('Lunch')"
     />
   </div>
   <div class="d-flex justify-space-between align-center">
@@ -77,8 +77,8 @@
     <MealEditor
       v-if="dinner.isEditing"
       :meal="dinner.item!"
-      @save="(meal) => setMeal('Dinner', meal)"
-      @cancel="cancelMeal('Dinner')"
+      @meal-changed="(meal) => updateMeal('Dinner', meal)"
+      @close="cancelMeal('Dinner')"
     />
   </div>
   <div class="d-flex justify-space-between align-center">
@@ -104,8 +104,8 @@
     <MealEditor
       v-if="snack.isEditing"
       :meal="snack.item!"
-      @save="(meal) => setMeal('Snack', meal)"
-      @cancel="cancelMeal('Snack')"
+      @meal-changed="(meal) => updateMeal('Snack', meal)"
+      @close="cancelMeal('Snack')"
     />
   </div>
   <div class="d-flex justify-end mt-4">
@@ -205,12 +205,11 @@ const mealRefs: Record<string, typeof breakfast> = {
   Snack: snack,
 };
 
-const setMeal = (mealType: MealType, meal: Meal | undefined) => {
+const updateMeal = (mealType: MealType, meal: Meal) => {
   const mealRef = mealRefs[mealType];
   if (mealRef && mealRef.value) {
     mealRef.value.item = meal;
     isDirty.value = true;
-    mealRef.value.isEditing = false;
   }
 };
 
