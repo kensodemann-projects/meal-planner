@@ -221,11 +221,7 @@ const saveDayPlan = async () => {
 const updateMeal = (mealType: MealType, meal: Meal) => {
   const mealRef = mealRefs[mealType];
   if (mealRef && mealRef.value) {
-    if (meal.items.length === 0) {
-      mealRef.value.item = undefined;
-    } else {
-      mealRef.value.item = meal;
-    }
+    mealRef.value.item = meal;
     isDirty.value = true;
     saveDayPlan();
   }
