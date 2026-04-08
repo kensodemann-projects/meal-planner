@@ -205,10 +205,10 @@ const mealRefs: Record<string, typeof breakfast> = {
 
 const saveDayPlan = async () => {
   const meals: Meal[] = [];
-  if (breakfast.value.item) meals.push(breakfast.value.item);
-  if (lunch.value.item) meals.push(lunch.value.item);
-  if (dinner.value.item) meals.push(dinner.value.item);
-  if (snack.value.item) meals.push(snack.value.item);
+  if (breakfast.value.item?.items.length) meals.push(breakfast.value.item);
+  if (lunch.value.item?.items.length) meals.push(lunch.value.item);
+  if (dinner.value.item?.items.length) meals.push(dinner.value.item);
+  if (snack.value.item?.items.length) meals.push(snack.value.item);
   if (mealPlan.value.id) {
     const { id, ...planFields } = mealPlan.value;
     await updateMealPlan(id, { ...planFields, meals });
