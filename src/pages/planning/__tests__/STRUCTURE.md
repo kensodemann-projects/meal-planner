@@ -20,7 +20,7 @@
 - hides the button
 - displays the editor for ${label}
 
-###### on cancel
+###### on close
 
 - hides the editor
 - shows the add ${label} button again
@@ -28,6 +28,7 @@
 ###### on meal changed
 
 - keeps the editor open
+- saves the meal plan via add
 - does not show the add ${label} button again
 - assigns the meal to the ${label} view after the editor is closed
 - displays the ${label} in the editor when the ${label} view emits the modify event
@@ -44,6 +45,11 @@
 
 - hides the ${label} view
 - displays the ${label} in the editor
+
+###### on meal changed
+
+- keeps the editor open
+- saves the meal plan via update
 
 ###### the delete event
 
@@ -63,6 +69,16 @@
 
 - the add ${label} button exists
 - the ${label} view is not displayed
+
+###### clicking the add button
+
+- hides the button
+- displays the editor for ${label}
+
+###### on meal changed
+
+- keeps the editor open
+- saves the meal plan via update
 
 ---
 
