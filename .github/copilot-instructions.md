@@ -105,12 +105,6 @@ mount(Component, { global: { plugins: [vuetify] } });
 - **Types**: Centralized in `src/models/`, use TypeScript interfaces for domain entities
 - **Minimal comments**: Explain "why", not "what" (code should be self-documenting)
 
-## ESLint Rules
-
-- `no-console/debugger`: Warn in production only
-- `vue/multi-word-component-names`: Off for pages/layouts (single-word OK for routes)
-- `@typescript-eslint/no-explicit-any`: Off (pragmatic for rapid development)
-
 ## GitHub Issue Templates
 
 Templates for Feature, Task, and Bug issues are in `.github/ISSUE_TEMPLATE/`. Read the appropriate template before creating or suggesting issues to ensure the correct structure and frontmatter.
