@@ -24,7 +24,7 @@
       v-if="breakfast.isEditing"
       :meal="breakfast.item!"
       @meal-changed="(meal) => updateMeal('Breakfast', meal)"
-      @close="cancelMeal('Breakfast')"
+      @close="closeMealEditor('Breakfast')"
     />
   </div>
   <div class="d-flex justify-space-between align-center">
@@ -51,7 +51,7 @@
       v-if="lunch.isEditing"
       :meal="lunch.item!"
       @meal-changed="(meal) => updateMeal('Lunch', meal)"
-      @close="cancelMeal('Lunch')"
+      @close="closeMealEditor('Lunch')"
     />
   </div>
   <div class="d-flex justify-space-between align-center">
@@ -78,7 +78,7 @@
       v-if="dinner.isEditing"
       :meal="dinner.item!"
       @meal-changed="(meal) => updateMeal('Dinner', meal)"
-      @close="cancelMeal('Dinner')"
+      @close="closeMealEditor('Dinner')"
     />
   </div>
   <div class="d-flex justify-space-between align-center">
@@ -105,12 +105,11 @@
       v-if="snack.isEditing"
       :meal="snack.item!"
       @meal-changed="(meal) => updateMeal('Snack', meal)"
-      @close="cancelMeal('Snack')"
+      @close="closeMealEditor('Snack')"
     />
   </div>
   <div class="d-flex justify-end mt-4">
     <CancelButton @click="cancelDayPlan" />
-    <SaveButton @click="saveDayPlan" :disabled="!isDirty" />
   </div>
 
   <v-dialog v-model="showConfirmDialog" max-width="600px" data-testid="confirm-dialog">
@@ -205,15 +204,34 @@ const mealRefs: Record<string, typeof breakfast> = {
   Snack: snack,
 };
 
-const updateMeal = (mealType: MealType, meal: Meal) => {
-  const mealRef = mealRefs[mealType];
-  if (mealRef && mealRef.value) {
-    mealRef.value.item = meal;
-    isDirty.value = true;
+const saveDayPlan = async () => {
+  const meals: Meal[] = [];
+  if (breakfast.value.item) meals.push(breakfast.value.item);
+  if (lunch.value.item) meals.push(lunch.value.item);
+  if (dinner.value.item) meals.push(dinner.value.item);
+  if (snack.value.item) meals.push(snack.value.item);
+  if (mealPlan.value.id) {
+    const { id, ...planFields } = mealPlan.value;
+    await updateMealPlan(id, { ...planFields, meals });
+  } else {
+    await addMealPlan({ ...mealPlan.value, meals });
   }
 };
 
-const cancelMeal = (mealType: MealType) => {
+const updateMeal = (mealType: MealType, meal: Meal) => {
+  const mealRef = mealRefs[mealType];
+  if (mealRef && mealRef.value) {
+    if (meal.items.length === 0) {
+      mealRef.value.item = undefined;
+    } else {
+      mealRef.value.item = meal;
+    }
+    isDirty.value = true;
+    saveDayPlan();
+  }
+};
+
+const closeMealEditor = (mealType: MealType) => {
   const mealRef = mealRefs[mealType];
   if (mealRef && mealRef.value) {
     mealRef.value.isEditing = false;
@@ -248,21 +266,6 @@ const navigateToWeek = () => {
 };
 
 const cancelDayPlan = () => navigateToWeek();
-
-const saveDayPlan = async () => {
-  const meals: Meal[] = [];
-  if (breakfast.value.item) meals.push(breakfast.value.item);
-  if (lunch.value.item) meals.push(lunch.value.item);
-  if (dinner.value.item) meals.push(dinner.value.item);
-  if (snack.value.item) meals.push(snack.value.item);
-  if (mealPlan.value.id) {
-    const { id, ...planFields } = mealPlan.value;
-    await updateMealPlan(id, { ...planFields, meals });
-  } else {
-    await addMealPlan({ ...mealPlan.value, meals });
-  }
-  navigateToWeek();
-};
 
 getMealPlanForDate(dateParam).then((plan) => {
   mealPlan.value = plan || {

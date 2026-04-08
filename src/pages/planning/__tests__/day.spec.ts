@@ -1,3 +1,8 @@
+import ConfirmDialog from '@/components/core/ConfirmDialog.vue';
+import { TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
+import { useMealPlansData } from '@/data/meal-plans';
+import type { Meal, MealItem } from '@/models/meal';
+import type { MealPlan } from '@/models/meal-plan';
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { useRoute, useRouter } from 'vue-router';
@@ -5,11 +10,6 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import day from '../day.vue';
-import { useMealPlansData } from '@/data/meal-plans';
-import type { MealPlan } from '@/models/meal-plan';
-import { TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
-import type { Meal, MealItem } from '@/models/meal';
-import ConfirmDialog from '@/components/core/ConfirmDialog.vue';
 
 vi.mock('vue-router');
 vi.mock('@/data/meal-plans');
@@ -41,7 +41,7 @@ const MODIFIED_MEAL_ITEM: MealItem = {
   servings: 2,
   nutrition: { calories: 100, sodium: 50, fat: 1, protein: 5, carbs: 20, sugar: 1 },
 };
-const buildModifiedMeal = (baseMeal: Meal): Meal => ({ ...baseMeal, items: [MODIFIED_MEAL_ITEM] });
+// const buildModifiedMeal = (baseMeal: Meal): Meal => ({ ...baseMeal, items: [MODIFIED_MEAL_ITEM] });
 
 describe('day', () => {
   let wrapper: ReturnType<typeof mountPage>;
@@ -174,7 +174,7 @@ describe('day', () => {
           await button.trigger('click');
           const editor = wrapper.findComponent({ name: 'MealEditor' });
           expect(editor.exists()).toBe(true);
-          const newMeal: Meal = { id: 'meal-123', type: 'Breakfast', items: [] };
+          const newMeal: Meal = { id: 'meal-123', type: 'Breakfast', items: [MODIFIED_MEAL_ITEM] };
           await editor.vm.$emit('meal-changed', newMeal);
           expect(wrapper.findComponent({ name: 'MealEditor' }).exists()).toBe(true);
         });
@@ -185,7 +185,7 @@ describe('day', () => {
           await button.trigger('click');
           const editor = wrapper.findComponent({ name: 'MealEditor' });
           expect(editor.exists()).toBe(true);
-          const newMeal: Meal = { id: 'meal-123', type: 'Breakfast', items: [] };
+          const newMeal: Meal = { id: 'meal-123', type: 'Breakfast', items: [MODIFIED_MEAL_ITEM] };
           await editor.vm.$emit('meal-changed', newMeal);
           await wrapper.vm.$nextTick();
           const breakfastButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
@@ -452,7 +452,7 @@ describe('day', () => {
           await button.trigger('click');
           const editor = wrapper.findComponent({ name: 'MealEditor' });
           expect(editor.exists()).toBe(true);
-          const newMeal: Meal = { id: 'meal-456', type: 'Lunch', items: [] };
+          const newMeal: Meal = { id: 'meal-456', type: 'Lunch', items: [MODIFIED_MEAL_ITEM] };
           await editor.vm.$emit('meal-changed', newMeal);
           expect(wrapper.findComponent({ name: 'MealEditor' }).exists()).toBe(true);
         });
@@ -463,7 +463,7 @@ describe('day', () => {
           await button.trigger('click');
           const editor = wrapper.findComponent({ name: 'MealEditor' });
           expect(editor.exists()).toBe(true);
-          const newMeal: Meal = { id: 'meal-456', type: 'Lunch', items: [] };
+          const newMeal: Meal = { id: 'meal-456', type: 'Lunch', items: [MODIFIED_MEAL_ITEM] };
           await editor.vm.$emit('meal-changed', newMeal);
           const lunchButton = wrapper.findComponent('[data-testid="add-lunch-button"]');
           expect(lunchButton.exists()).toBe(false);
@@ -729,7 +729,7 @@ describe('day', () => {
           await button.trigger('click');
           const editor = wrapper.findComponent({ name: 'MealEditor' });
           expect(editor.exists()).toBe(true);
-          const newMeal: Meal = { id: 'meal-789', type: 'Dinner', items: [] };
+          const newMeal: Meal = { id: 'meal-789', type: 'Dinner', items: [MODIFIED_MEAL_ITEM] };
           await editor.vm.$emit('meal-changed', newMeal);
           expect(wrapper.findComponent({ name: 'MealEditor' }).exists()).toBe(true);
         });
@@ -740,7 +740,7 @@ describe('day', () => {
           await button.trigger('click');
           const editor = wrapper.findComponent({ name: 'MealEditor' });
           expect(editor.exists()).toBe(true);
-          const newMeal: Meal = { id: 'meal-789', type: 'Dinner', items: [] };
+          const newMeal: Meal = { id: 'meal-789', type: 'Dinner', items: [MODIFIED_MEAL_ITEM] };
           await editor.vm.$emit('meal-changed', newMeal);
           const dinnerButton = wrapper.findComponent('[data-testid="add-dinner-button"]');
           expect(dinnerButton.exists()).toBe(false);
@@ -1006,7 +1006,7 @@ describe('day', () => {
           await button.trigger('click');
           const editor = wrapper.findComponent({ name: 'MealEditor' });
           expect(editor.exists()).toBe(true);
-          const newMeal: Meal = { id: 'meal-snack-123', type: 'Snack', items: [] };
+          const newMeal: Meal = { id: 'meal-snack-123', type: 'Snack', items: [MODIFIED_MEAL_ITEM] };
           await editor.vm.$emit('meal-changed', newMeal);
           expect(wrapper.findComponent({ name: 'MealEditor' }).exists()).toBe(true);
         });
@@ -1017,7 +1017,7 @@ describe('day', () => {
           await button.trigger('click');
           const editor = wrapper.findComponent({ name: 'MealEditor' });
           expect(editor.exists()).toBe(true);
-          const newMeal: Meal = { id: 'meal-snack-123', type: 'Snack', items: [] };
+          const newMeal: Meal = { id: 'meal-snack-123', type: 'Snack', items: [MODIFIED_MEAL_ITEM] };
           await editor.vm.$emit('meal-changed', newMeal);
           await wrapper.vm.$nextTick();
           const snackButton = wrapper.findComponent('[data-testid="add-snack-button"]');
@@ -1214,8 +1214,9 @@ describe('day', () => {
       await button.trigger('click');
       const editor = wrapper.findComponent({ name: 'MealEditor' });
       expect(editor.exists()).toBe(true);
-      const newMeal: Meal = { id: 'meal-snack-123', type: 'Snack', items: [] };
+      const newMeal: Meal = { id: 'meal-snack-123', type: 'Snack', items: [MODIFIED_MEAL_ITEM] };
       await editor.vm.$emit('meal-changed', newMeal);
+      vi.clearAllMocks();
     });
 
     it('exists', async () => {
@@ -1225,6 +1226,7 @@ describe('day', () => {
 
     it('does not save the meal plan', async () => {
       const { addMealPlan, updateMealPlan } = useMealPlansData();
+      expect(addMealPlan).not.toHaveBeenCalled();
       const button = wrapper.findComponent('[data-testid="cancel-button"]');
       await button.trigger('click');
       expect(addMealPlan).not.toHaveBeenCalled();
@@ -1237,226 +1239,6 @@ describe('day', () => {
       expect(useRouter().replace).toHaveBeenCalledExactlyOnceWith({
         path: '/planning/week',
         query: { dt: '2026-02-16' },
-      });
-    });
-  });
-
-  describe('save button', () => {
-    it('exists', async () => {
-      wrapper = await renderPage();
-      const button = wrapper.findComponent('[data-testid="save-button"]');
-      expect(button.exists()).toBe(true);
-    });
-
-    describe('for an existing meal plan', () => {
-      beforeEach(async () => {
-        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
-        getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
-        wrapper = await renderPage();
-      });
-
-      it('starts disabled', async () => {
-        const button = wrapper.findComponent('[data-testid="save-button"]');
-        expect(button.attributes('disabled')).toBeDefined();
-      });
-
-      it('is enabled if breakfast is modified', async () => {
-        const breakfastView = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
-        await breakfastView.vm.$emit('modify');
-        const editor = wrapper.findComponent({ name: 'MealEditor' });
-        const modifiedBreakfast = buildModifiedMeal(FULL_MEAL_PLAN.meals[0]!);
-        await editor.vm.$emit('meal-changed', modifiedBreakfast);
-        const button = wrapper.findComponent('[data-testid="save-button"]');
-        expect(button.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if lunch is modified', async () => {
-        const lunchView = wrapper.findComponent('[data-testid="lunch-view"]') as VueWrapper<any>;
-        await lunchView.vm.$emit('modify');
-        const editor = wrapper.findComponent({ name: 'MealEditor' });
-        const modifiedLunch = buildModifiedMeal(FULL_MEAL_PLAN.meals[1]!);
-        await editor.vm.$emit('meal-changed', modifiedLunch);
-        const button = wrapper.findComponent('[data-testid="save-button"]');
-        expect(button.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if dinner is modified', async () => {
-        const dinnerView = wrapper.findComponent('[data-testid="dinner-view"]') as VueWrapper<any>;
-        await dinnerView.vm.$emit('modify');
-        const editor = wrapper.findComponent({ name: 'MealEditor' });
-        const modifiedDinner = buildModifiedMeal(FULL_MEAL_PLAN.meals[2]!);
-        await editor.vm.$emit('meal-changed', modifiedDinner);
-        const button = wrapper.findComponent('[data-testid="save-button"]');
-        expect(button.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if snack is modified', async () => {
-        const snackView = wrapper.findComponent('[data-testid="snack-view"]') as VueWrapper<any>;
-        await snackView.vm.$emit('modify');
-        const editor = wrapper.findComponent({ name: 'MealEditor' });
-        const modifiedSnack = buildModifiedMeal(FULL_MEAL_PLAN.meals[3]!);
-        await editor.vm.$emit('meal-changed', modifiedSnack);
-        const button = wrapper.findComponent('[data-testid="save-button"]');
-        expect(button.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if a meal is deleted', async () => {
-        const breakfastView = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
-        await breakfastView.vm.$emit('delete');
-        await flushPromises();
-        const confirmDialog = wrapper.findComponent(ConfirmDialog);
-        confirmDialog.vm.$emit('confirm');
-        await flushPromises();
-        const button = wrapper.findComponent('[data-testid="save-button"]');
-        expect(button.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if lunch is deleted', async () => {
-        const lunchView = wrapper.findComponent('[data-testid="lunch-view"]') as VueWrapper<any>;
-        await lunchView.vm.$emit('delete');
-        await flushPromises();
-        const confirmDialog = wrapper.findComponent(ConfirmDialog);
-        confirmDialog.vm.$emit('confirm');
-        await flushPromises();
-        const button = wrapper.findComponent('[data-testid="save-button"]');
-        expect(button.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if dinner is deleted', async () => {
-        const dinnerView = wrapper.findComponent('[data-testid="dinner-view"]') as VueWrapper<any>;
-        await dinnerView.vm.$emit('delete');
-        await flushPromises();
-        const confirmDialog = wrapper.findComponent(ConfirmDialog);
-        confirmDialog.vm.$emit('confirm');
-        await flushPromises();
-        const button = wrapper.findComponent('[data-testid="save-button"]');
-        expect(button.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if snack is deleted', async () => {
-        const snackView = wrapper.findComponent('[data-testid="snack-view"]') as VueWrapper<any>;
-        await snackView.vm.$emit('delete');
-        await flushPromises();
-        const confirmDialog = wrapper.findComponent(ConfirmDialog);
-        confirmDialog.vm.$emit('confirm');
-        await flushPromises();
-        const button = wrapper.findComponent('[data-testid="save-button"]');
-        expect(button.attributes('disabled')).toBeUndefined();
-      });
-
-      it('saves the meal plan', async () => {
-        const breakfastView = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
-        await breakfastView.vm.$emit('modify');
-        const editor = wrapper.findComponent({ name: 'MealEditor' });
-        const modifiedBreakfast = buildModifiedMeal(FULL_MEAL_PLAN.meals[0]!);
-        await editor.vm.$emit('meal-changed', modifiedBreakfast);
-        const button = wrapper.findComponent('[data-testid="save-button"]');
-        await button.trigger('click');
-        const { updateMealPlan, addMealPlan } = useMealPlansData();
-        expect(addMealPlan).not.toHaveBeenCalled();
-        expect(updateMealPlan).toHaveBeenCalledExactlyOnceWith(FULL_MEAL_PLAN.id, {
-          date: '2026-02-18',
-          meals: [modifiedBreakfast, FULL_MEAL_PLAN.meals[1], FULL_MEAL_PLAN.meals[2], FULL_MEAL_PLAN.meals[3]],
-        });
-      });
-    });
-
-    describe('for a new meal plan', () => {
-      beforeEach(async () => {
-        const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
-        getMealPlanForDate.mockResolvedValueOnce(null);
-        wrapper = await renderPage();
-      });
-
-      it('starts disabled', async () => {
-        const button = wrapper.findComponent('[data-testid="save-button"]');
-        expect(button.attributes('disabled')).toBeDefined();
-      });
-
-      it('is enabled if a breakfast is added', async () => {
-        const button = wrapper.findComponent('[data-testid="save-button"]');
-        const addButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
-        await addButton.trigger('click');
-        const editor = wrapper.findComponent({ name: 'MealEditor' });
-        await editor.vm.$emit('meal-changed', { id: 'meal-123', type: 'Breakfast', items: [] });
-        expect(button.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if a lunch is added', async () => {
-        const button = wrapper.findComponent('[data-testid="save-button"]');
-        const addButton = wrapper.findComponent('[data-testid="add-lunch-button"]');
-        await addButton.trigger('click');
-        const editor = wrapper.findComponent({ name: 'MealEditor' });
-        await editor.vm.$emit('meal-changed', { id: 'meal-123', type: 'Lunch', items: [] });
-        expect(button.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if a dinner is added', async () => {
-        const button = wrapper.findComponent('[data-testid="save-button"]');
-        const addButton = wrapper.findComponent('[data-testid="add-dinner-button"]');
-        await addButton.trigger('click');
-        const editor = wrapper.findComponent({ name: 'MealEditor' });
-        await editor.vm.$emit('meal-changed', { id: 'meal-123', type: 'Dinner', items: [] });
-        expect(button.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if a snack is added', async () => {
-        const button = wrapper.findComponent('[data-testid="save-button"]');
-        const addButton = wrapper.findComponent('[data-testid="add-snack-button"]');
-        await addButton.trigger('click');
-        const editor = wrapper.findComponent({ name: 'MealEditor' });
-        await editor.vm.$emit('meal-changed', { id: 'meal-123', type: 'Snack', items: [] });
-        expect(button.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if a meal is deleted', async () => {
-        const addButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
-        await addButton.trigger('click');
-        const editor = wrapper.findComponent({ name: 'MealEditor' });
-        await editor.vm.$emit('meal-changed', { id: 'meal-123', type: 'Breakfast', items: [MODIFIED_MEAL_ITEM] });
-        await editor.vm.$emit('close');
-        const breakfastView = wrapper.findComponent('[data-testid="breakfast-view"]') as VueWrapper<any>;
-        await breakfastView.vm.$emit('delete');
-        await flushPromises();
-        const confirmDialog = wrapper.findComponent(ConfirmDialog);
-        confirmDialog.vm.$emit('confirm');
-        await flushPromises();
-        const button = wrapper.findComponent('[data-testid="save-button"]');
-        expect(button.attributes('disabled')).toBeUndefined();
-      });
-
-      it('saves the meal plan', async () => {
-        const button = wrapper.findComponent('[data-testid="save-button"]');
-        const breakfastMeal = { id: 'meal-123', type: 'Breakfast', items: [MODIFIED_MEAL_ITEM] };
-        const dinnerMeal = { id: 'meal-456', type: 'Dinner', items: [MODIFIED_MEAL_ITEM] };
-        let addButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
-        await addButton.trigger('click');
-        let editor = wrapper.findComponent({ name: 'MealEditor' });
-        await editor.vm.$emit('meal-changed', breakfastMeal);
-        await editor.vm.$emit('close');
-        addButton = wrapper.findComponent('[data-testid="add-dinner-button"]');
-        await addButton.trigger('click');
-        editor = wrapper.findComponent({ name: 'MealEditor' });
-        await editor.vm.$emit('meal-changed', dinnerMeal);
-        await button.trigger('click');
-        const { addMealPlan } = useMealPlansData();
-        expect(addMealPlan).toHaveBeenCalledExactlyOnceWith({
-          date: '2026-02-18',
-          meals: [breakfastMeal, dinnerMeal],
-        });
-      });
-
-      it('navigates to the week page', async () => {
-        const button = wrapper.findComponent('[data-testid="save-button"]');
-        const addButton = wrapper.findComponent('[data-testid="add-breakfast-button"]');
-        await addButton.trigger('click');
-        const editor = wrapper.findComponent({ name: 'MealEditor' });
-        await editor.vm.$emit('meal-changed', { id: 'meal-123', type: 'Breakfast', items: [] });
-        await button.trigger('click');
-        expect(useRouter().replace).toHaveBeenCalledExactlyOnceWith({
-          path: '/planning/week',
-          query: { dt: '2026-02-16' },
-        });
       });
     });
   });
