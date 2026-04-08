@@ -14,7 +14,7 @@ interface MealPlansData {
   updateMealPlan: (id: string, fields: Omit<MealPlan, 'id'>) => Promise<void>;
 }
 
-const addMealPlan = vi.fn();
+const addMealPlan = vi.fn().mockResolvedValue('mock-id');
 const getMealPlan = vi.fn().mockResolvedValue(null);
 const getMealPlanForDate = vi.fn().mockResolvedValue(null);
 const getMealPlansForPeriod = vi.fn().mockResolvedValue([]);

@@ -214,7 +214,7 @@ const saveDayPlan = async () => {
     const { id, ...planFields } = mealPlan.value;
     await updateMealPlan(id, { ...planFields, meals });
   } else {
-    await addMealPlan({ ...mealPlan.value, meals });
+    mealPlan.value.id = await addMealPlan({ ...mealPlan.value, meals });
   }
 };
 
@@ -246,7 +246,7 @@ const confirmDelete = (mealType: MealType) => {
   mealToDelete.value = mealType;
 };
 
-const doDelete = () => {
+const doDelete = async () => {
   const mealType = mealToDelete.value;
   if (mealType) {
     const mealRef = mealRefs[mealType];
@@ -257,6 +257,7 @@ const doDelete = () => {
   }
   mealToDelete.value = null;
   showConfirmDialog.value = false;
+  await saveDayPlan();
 };
 
 const navigateToWeek = () => {

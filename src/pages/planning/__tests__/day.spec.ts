@@ -193,6 +193,22 @@ describe('day', () => {
             expect(updateMealPlan).not.toHaveBeenCalled();
           });
 
+          it('saves further changes to the meal plan via update', async () => {
+            const { addMealPlan, updateMealPlan } = useMealPlansData();
+            wrapper = await renderPage();
+            const button = wrapper.findComponent(`[data-testid="${addButtonTestId}"]`);
+            await button.trigger('click');
+            const editor = wrapper.findComponent({ name: 'MealEditor' });
+            const newMeal: Meal = { id: 'meal-new-123', type, items: [MODIFIED_MEAL_ITEM] };
+            await editor.vm.$emit('meal-changed', newMeal);
+            await flushPromises();
+            const updatedMeal: Meal = { id: 'meal-new-123', type, items: [MODIFIED_MEAL_ITEM, MODIFIED_MEAL_ITEM] };
+            await editor.vm.$emit('meal-changed', updatedMeal);
+            await flushPromises();
+            expect(updateMealPlan).toHaveBeenCalled();
+            expect(addMealPlan).toHaveBeenCalledTimes(1);
+          });
+
           it(`does not show the add ${label} button again`, async () => {
             wrapper = await renderPage();
             const button = wrapper.findComponent(`[data-testid="${addButtonTestId}"]`);
@@ -347,6 +363,20 @@ describe('day', () => {
               wrapper.findComponent(ConfirmDialog).vm.$emit('confirm');
               await flushPromises();
               expect(wrapper.findComponent(`[data-testid="${addButtonTestId}"]`).exists()).toBe(true);
+            });
+
+            it('saves the meal plan via update', async () => {
+              const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+              getMealPlanForDate.mockResolvedValueOnce(FULL_MEAL_PLAN);
+              const { addMealPlan, updateMealPlan } = useMealPlansData();
+              wrapper = await renderPage();
+              const mealView = wrapper.findComponent(`[data-testid="${viewTestId}"]`) as VueWrapper<any>;
+              await mealView.vm.$emit('delete');
+              await flushPromises();
+              wrapper.findComponent(ConfirmDialog).vm.$emit('confirm');
+              await flushPromises();
+              expect(updateMealPlan).toHaveBeenCalled();
+              expect(addMealPlan).not.toHaveBeenCalled();
             });
           });
 
