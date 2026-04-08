@@ -84,18 +84,10 @@ mount(Component, { global: { plugins: [vuetify] } });
 ```
 
 - Mock Firebase/VueFire composables: `vi.mock('@/core/authentication')`
-- Coverage excludes: `.d.ts`, config files, models, plugins, router, root-level `.vue`/`.ts`
 - Use `vi.hoisted()` for mocks that must be hoisted before imports (e.g., mocking `firebase/ai` module-level calls)
 - Shared test data lives in `src/data/__tests__/test-data.ts` (exports `TEST_FOODS`, `TEST_MEAL_PLAN`, `TEST_MEAL_PLANS`, etc.)
 - Shared form-validation test helpers live in `src/components/__tests__/test-utils.ts` (e.g., `textFieldIsRequired`, `numberInputIsRequired`)
 - Query testable elements via `data-testid` attributes: `wrapper.findComponent('[data-testid="my-input"]')`
-
-### Release Process
-
-1. `pnpm changeset` - Document changes in branch
-2. Code, test, commit, PR, merge
-3. When ready to release: `pnpm bump` (updates version), commit, tag (`vX.Y.Z`), push with tags
-4. `pnpm release` - builds and deploys to Firebase
 
 ## Code Conventions
 
@@ -112,20 +104,6 @@ Templates for Feature, Task, and Bug issues are in `.github/ISSUE_TEMPLATE/`. Re
 **Subtasks**: When generating subtasks, **DO NOT create files**. Instead, output the complete markdown for each subtask in the chat first for review. When asked, create the GitHub issues using the `gh` CLI. Link subtasks to the parent using the issue number (e.g., "Related to #123").
 
 ## Pull Request Reviews
-
-### Focus Areas
-
-- **Security**: No hardcoded secrets, proper input validation, auth checks
-- **Performance**: Avoid inefficient algorithms (watch for O(n²) operations)
-- **Testing**: Adequate coverage for new features, especially data operations
-- **Comments**: Minimal, explain "why" not "what"
-
-### Review Style
-
-- Provide specific, actionable feedback with code examples
-- Acknowledge good patterns and creative solutions
-- Link to best-practices documentation when relevant
-- Focus on improvement, not criticism
 
 ### Review Comment Format
 
