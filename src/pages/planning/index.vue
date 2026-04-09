@@ -41,11 +41,11 @@
 </template>
 
 <script lang="ts" setup>
-import { daysWithMeals, multiDayMealPlanNutrients } from '@/core/nutritional-calculations';
+import { buildDataForWeek } from '@/core/build-data-for-week';
 import { useMealPlansData } from '@/data/meal-plans';
 import { useSettingsData } from '@/data/settings';
 import type { WeeklyData } from '@/models/weekly-data';
-import { addWeeks, differenceInWeeks, endOfWeek, format, startOfWeek } from 'date-fns';
+import { addWeeks, differenceInWeeks, format, startOfWeek } from 'date-fns';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -60,28 +60,15 @@ const { getMealPlansForPeriod } = useMealPlansData();
 
 const dateToISO = (date: Date): string => format(date, 'yyyy-MM-dd');
 
-const buildDataForWeek = async (startDate: Date): Promise<WeeklyData> => {
-  const endDate = endOfWeek(startDate, { weekStartsOn: settings.value?.weekStartDay });
-  const mealPlans = await getMealPlansForPeriod(dateToISO(startDate), dateToISO(endDate));
-  const days = daysWithMeals(mealPlans);
-  const nutrition = multiDayMealPlanNutrients(mealPlans);
-  return {
-    startDate,
-    endDate,
-    daysWithMeals: days,
-    averageCalories: Math.round(nutrition.calories / (days || 1)),
-    averageProtein: Math.round(nutrition.protein / (days || 1)),
-    averageCarbs: Math.round(nutrition.carbs / (days || 1)),
-  };
-};
-
 settings.promise.value
   .then(async () => {
-    const start = startOfWeek(new Date(), { weekStartsOn: settings.value?.weekStartDay });
-    thisWeek.value = await buildDataForWeek(start);
-    nextWeek.value = await buildDataForWeek(addWeeks(start, 1));
+    const start = startOfWeek(new Date(), { weekStartsOn: settings.value!.weekStartDay });
+    thisWeek.value = await buildDataForWeek(start, settings.value!, getMealPlansForPeriod);
+    nextWeek.value = await buildDataForWeek(addWeeks(start, 1), settings.value!, getMealPlansForPeriod);
     const indices = [1, 2, 3, 4];
-    const previousWeekPromises = indices.map((i) => buildDataForWeek(addWeeks(start, -i)));
+    const previousWeekPromises = indices.map((i) =>
+      buildDataForWeek(addWeeks(start, -i), settings.value!, getMealPlansForPeriod),
+    );
     const loadedPreviousWeeks = await Promise.all(previousWeekPromises);
     loadedPreviousWeeks.sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
     previousWeeks.value = loadedPreviousWeeks;
