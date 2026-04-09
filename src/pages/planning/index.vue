@@ -62,12 +62,14 @@ const dateToISO = (date: Date): string => format(date, 'yyyy-MM-dd');
 
 settings.promise.value
   .then(async () => {
-    const start = startOfWeek(new Date(), { weekStartsOn: settings.value!.weekStartDay });
-    thisWeek.value = await buildDataForWeek(start, settings.value!, getMealPlansForPeriod);
-    nextWeek.value = await buildDataForWeek(addWeeks(start, 1), settings.value!, getMealPlansForPeriod);
+    const currentSettings = settings.value;
+    if (!currentSettings) return;
+    const start = startOfWeek(new Date(), { weekStartsOn: currentSettings.weekStartDay });
+    thisWeek.value = await buildDataForWeek(start, currentSettings, getMealPlansForPeriod);
+    nextWeek.value = await buildDataForWeek(addWeeks(start, 1), currentSettings, getMealPlansForPeriod);
     const indices = [1, 2, 3, 4];
     const previousWeekPromises = indices.map((i) =>
-      buildDataForWeek(addWeeks(start, -i), settings.value!, getMealPlansForPeriod),
+      buildDataForWeek(addWeeks(start, -i), currentSettings, getMealPlansForPeriod),
     );
     const loadedPreviousWeeks = await Promise.all(previousWeekPromises);
     loadedPreviousWeeks.sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
