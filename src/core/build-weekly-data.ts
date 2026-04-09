@@ -6,7 +6,7 @@ import type { MealPlan } from '@/models/meal-plan';
 
 const dateToISO = (date: Date): string => format(date, 'yyyy-MM-dd');
 
-export const buildDataForWeek = async (
+export const buildWeeklyData = async (
   startDate: Date,
   settings: Settings,
   getMealPlansForPeriod: (beginDt: string, endDt: string) => Promise<MealPlan[]>,
