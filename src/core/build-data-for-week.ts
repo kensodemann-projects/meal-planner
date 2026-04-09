@@ -1,6 +1,6 @@
 import type { Settings } from '@/models/settings';
 import { endOfWeek, format } from 'date-fns';
-import { daysWithMeals, multiDayMealPlanNutrients } from './nutritional-calculations';
+import { daysWithMeals, multiDayMealPlanNutrients } from '@/core/nutritional-calculations';
 import type { WeeklyData } from '@/models/weekly-data';
 import type { MealPlan } from '@/models/meal-plan';
 
