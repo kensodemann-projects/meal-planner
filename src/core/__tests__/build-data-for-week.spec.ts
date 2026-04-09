@@ -12,24 +12,22 @@ const makeSettings = (weekStartDay: 0 | 1 = 0): Settings => ({
   weekStartDay,
 });
 
-const makeMealPlan = (id: string, calories: number, protein: number, carbs: number): MealPlan => ({
+type ItemNutrition = { calories: number; protein: number; carbs: number };
+
+const makeMealPlan = (id: string, meals: ItemNutrition[][]): MealPlan => ({
   id,
   date: '2025-12-25',
-  meals: [
-    {
-      id: `meal-${id}`,
-      type: 'Lunch',
-      items: [
-        {
-          id: `item-${id}`,
-          name: 'Test Food',
-          recipeId: 'test-recipe',
-          servings: 1,
-          nutrition: { calories, protein, carbs, fat: 0, sugar: 0, sodium: 0 },
-        },
-      ],
-    },
-  ],
+  meals: meals.map((items, mealIndex) => ({
+    id: `meal-${id}-${mealIndex}`,
+    type: 'Lunch',
+    items: items.map((nutrition, itemIndex) => ({
+      id: `item-${id}-${mealIndex}-${itemIndex}`,
+      name: 'Test Food',
+      recipeId: 'test-recipe',
+      servings: 1,
+      nutrition: { ...nutrition, fat: 0, sugar: 0, sodium: 0 },
+    })),
+  })),
 });
 
 // Dec 25, 2025 is a Thursday
@@ -72,9 +70,9 @@ describe('buildDataForWeek', () => {
 
   it('returns the number of days that have meals', async () => {
     const mealPlans = [
-      makeMealPlan('mp-1', 500, 30, 60),
-      makeMealPlan('mp-2', 600, 40, 70),
-      { ...makeMealPlan('mp-3', 0, 0, 0), meals: [] },
+      makeMealPlan('mp-1', [[{ calories: 500, protein: 30, carbs: 60 }]]),
+      makeMealPlan('mp-2', [[{ calories: 600, protein: 40, carbs: 70 }]]),
+      makeMealPlan('mp-3', []),
     ];
     const getMealPlansForPeriod = vi.fn().mockResolvedValue(mealPlans);
     const result = await buildDataForWeek(START_DATE, makeSettings(), getMealPlansForPeriod);
@@ -82,20 +80,29 @@ describe('buildDataForWeek', () => {
   });
 
   it('calculates average calories, protein, and carbs over days with meals', async () => {
-    const mealPlans = [makeMealPlan('mp-1', 500, 31, 62), makeMealPlan('mp-2', 601, 41, 71)];
+    const mealPlans = [
+      makeMealPlan('mp-1', [[{ calories: 300, protein: 20, carbs: 40 }], [{ calories: 200, protein: 11, carbs: 22 }]]),
+      makeMealPlan('mp-2', [
+        [
+          { calories: 400, protein: 25, carbs: 35 },
+          { calories: 201, protein: 16, carbs: 36 },
+        ],
+      ]),
+    ];
     const getMealPlansForPeriod = vi.fn().mockResolvedValue(mealPlans);
     const result = await buildDataForWeek(START_DATE, makeSettings(), getMealPlansForPeriod);
+    // mp-1: 500 cal / 31 protein / 62 carbs; mp-2: 601 cal / 41 protein / 71 carbs
     expect(result.averageCalories).toBe(Math.round((500 + 601) / 2));
     expect(result.averageProtein).toBe(Math.round((31 + 41) / 2));
     expect(result.averageCarbs).toBe(Math.round((62 + 71) / 2));
   });
 
   it('rounds averages to the nearest integer', async () => {
-    // 3 items summing to values that produce non-integer averages
+    // 3 days summing to values that produce non-integer averages
     const mealPlans = [
-      makeMealPlan('mp-1', 100, 10, 20),
-      makeMealPlan('mp-2', 200, 20, 30),
-      makeMealPlan('mp-3', 300, 30, 40),
+      makeMealPlan('mp-1', [[{ calories: 100, protein: 10, carbs: 20 }]]),
+      makeMealPlan('mp-2', [[{ calories: 200, protein: 20, carbs: 30 }]]),
+      makeMealPlan('mp-3', [[{ calories: 300, protein: 30, carbs: 40 }]]),
     ];
     const getMealPlansForPeriod = vi.fn().mockResolvedValue(mealPlans);
     const result = await buildDataForWeek(START_DATE, makeSettings(), getMealPlansForPeriod);
