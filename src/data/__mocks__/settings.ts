@@ -19,7 +19,7 @@ const settings = ref<Settings>({
   cheatDays: 2,
   weekStartDay: 1,
 });
-(settings as any).promise = { value: Promise.resolve(settings) };
+(settings as any).promise = { value: Promise.resolve(settings.value) };
 const error = ref<Error | null>(null);
 const loading = ref<boolean>(false);
 

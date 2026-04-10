@@ -272,7 +272,7 @@ describe('Planning', () => {
           cheatDays: 2,
           weekStartDay: 5,
         });
-        (fridaySettings as any).promise = { value: Promise.resolve(fridaySettings) };
+        (fridaySettings as any).promise = { value: Promise.resolve(fridaySettings.value) };
 
         beforeEach(() => {
           (useSettingsData as Mock).mockReturnValue({ settings: fridaySettings });

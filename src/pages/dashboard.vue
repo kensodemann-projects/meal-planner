@@ -30,7 +30,7 @@ import { useMealPlansData } from '@/data/meal-plans';
 import { useSettingsData } from '@/data/settings';
 import type { WeeklyData } from '@/models/weekly-data';
 import { addWeeks, format, startOfWeek } from 'date-fns';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -42,17 +42,20 @@ const nextWeek = ref<WeeklyData>();
 
 const dateToISO = (date: Date): string => format(date, 'yyyy-MM-dd');
 
-settings.promise.value
-  .then(async () => {
-    const currentSettings = settings.value;
-    if (!currentSettings) return;
-    const start = startOfWeek(new Date(), { weekStartsOn: currentSettings.weekStartDay });
-    thisWeek.value = await buildWeeklyData(start, currentSettings, getMealPlansForPeriod);
-    nextWeek.value = await buildWeeklyData(addWeeks(start, 1), currentSettings, getMealPlansForPeriod);
-  })
-  .catch((err) => {
+const loadData = async (currentSettings: typeof settings.value) => {
+  if (!currentSettings) return;
+  const start = startOfWeek(new Date(), { weekStartsOn: currentSettings.weekStartDay });
+  thisWeek.value = await buildWeeklyData(start, currentSettings, getMealPlansForPeriod);
+  nextWeek.value = await buildWeeklyData(addWeeks(start, 1), currentSettings, getMealPlansForPeriod);
+};
+
+onMounted(async () => {
+  try {
+    loadData(await settings.promise.value);
+  } catch (err: unknown) {
     if (import.meta.env.DEV) {
       console.error('Failed to load settings for meal planning page', err);
     }
-  });
+  }
+});
 </script>
