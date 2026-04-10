@@ -46,7 +46,7 @@ import { useMealPlansData } from '@/data/meal-plans';
 import { useSettingsData } from '@/data/settings';
 import type { WeeklyData } from '@/models/weekly-data';
 import { addWeeks, differenceInWeeks, format, startOfWeek } from 'date-fns';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const thisWeek = ref<WeeklyData>();
@@ -60,24 +60,28 @@ const { getMealPlansForPeriod } = useMealPlansData();
 
 const dateToISO = (date: Date): string => format(date, 'yyyy-MM-dd');
 
-settings.promise.value
-  .then(async () => {
-    const currentSettings = settings.value;
-    if (!currentSettings) return;
-    const start = startOfWeek(new Date(), { weekStartsOn: currentSettings.weekStartDay });
-    thisWeek.value = await buildWeeklyData(start, currentSettings, getMealPlansForPeriod);
-    nextWeek.value = await buildWeeklyData(addWeeks(start, 1), currentSettings, getMealPlansForPeriod);
-    const indices = [1, 2, 3, 4];
-    const previousWeekPromises = indices.map((i) =>
-      buildWeeklyData(addWeeks(start, -i), currentSettings, getMealPlansForPeriod),
-    );
-    const loadedPreviousWeeks = await Promise.all(previousWeekPromises);
-    loadedPreviousWeeks.sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
-    previousWeeks.value = loadedPreviousWeeks;
-  })
-  .catch((err) => {
+const loadData = async (currentSettings: typeof settings.value) => {
+  if (!currentSettings) return;
+  const start = startOfWeek(new Date(), { weekStartsOn: currentSettings.weekStartDay });
+  thisWeek.value = await buildWeeklyData(start, currentSettings, getMealPlansForPeriod);
+  nextWeek.value = await buildWeeklyData(addWeeks(start, 1), currentSettings, getMealPlansForPeriod);
+  const indices = [1, 2, 3, 4];
+  const previousWeekPromises = indices.map((i) =>
+    buildWeeklyData(addWeeks(start, -i), currentSettings, getMealPlansForPeriod),
+  );
+  const loadedPreviousWeeks = await Promise.all(previousWeekPromises);
+  loadedPreviousWeeks.sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
+  previousWeeks.value = loadedPreviousWeeks;
+};
+
+onMounted(async () => {
+  try {
+    await settings.promise.value;
+    await loadData(settings.value);
+  } catch (err: unknown) {
     if (import.meta.env.DEV) {
-      console.error('Failed to load settings for meal planning page', err);
+      console.error('Failed to load data for meal planning page', err);
     }
-  });
+  }
+});
 </script>
