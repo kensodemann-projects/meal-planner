@@ -10,7 +10,7 @@
     <v-container fluid>
       <v-row density="compact">
         <v-col v-for="metadataItem in metadataItems" :key="metadataItem.label" cols="12" sm="6" md="3">
-          <RecipeMetadataCard :icon="metadataItem.icon" :label="metadataItem.label" :value="metadataItem.value" />
+          <DetailStatCard :icon="metadataItem.icon" :label="metadataItem.label" :value="metadataItem.value" />
         </v-col>
       </v-row>
     </v-container>
