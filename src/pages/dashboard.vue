@@ -1,5 +1,6 @@
 <template>
-  <h2>Current Weeks</h2>
+  <h1 class="text-center">Today's Outlook</h1>
+
   <v-divider class="my-4"></v-divider>
 
   <v-container fluid>
@@ -22,9 +23,6 @@
       </v-col>
     </v-row>
   </v-container>
-
-  <h2>Today's Outlook</h2>
-  <v-divider class="my-4"></v-divider>
 </template>
 
 <script lang="ts" setup>
