@@ -1,10 +1,9 @@
 import type { Settings } from '@/models/settings';
-import { endOfWeek, format } from 'date-fns';
+import { endOfWeek } from 'date-fns';
 import { daysWithMeals, multiDayMealPlanNutrients } from '@/core/nutritional-calculations';
 import type { WeeklyData } from '@/models/weekly-data';
 import type { MealPlan } from '@/models/meal-plan';
-
-const dateToISO = (date: Date): string => format(date, 'yyyy-MM-dd');
+import { dateToISO } from '@/core/dates';
 
 export const buildWeeklyData = async (
   startDate: Date,

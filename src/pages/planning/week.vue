@@ -23,9 +23,10 @@
 
 <script setup lang="ts">
 import DailySummaryCard from '@/components/planning/DailySummaryCard.vue';
+import { dateToISO } from '@/core/dates';
 import { useMealPlansData } from '@/data/meal-plans';
 import type { MealPlan } from '@/models/meal-plan';
-import { addDays, format, parseISO } from 'date-fns';
+import { addDays, parseISO } from 'date-fns';
 import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -34,8 +35,6 @@ type DayRow = { day: Date; iso: string; plan?: MealPlan };
 const { getMealPlansForPeriod } = useMealPlansData();
 const route = useRoute();
 const router = useRouter();
-const dateToISO = (date: Date) => format(date, 'yyyy-MM-dd');
-
 const dt = computed(() => route.query.dt as string);
 const weekDays = computed(() => [0, 1, 2, 3, 4, 5, 6].map((offset) => addDays(parseISO(dt.value), offset)));
 const mealPlans = ref<MealPlan[]>([]);
