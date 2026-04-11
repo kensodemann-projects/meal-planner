@@ -101,7 +101,7 @@ describe('Dashboard Page', () => {
         expect(week.endDate.getDate()).toBe(28);
       });
 
-      it('navigates to the week details for next week', async () => {
+      it('navigates to the week details for this week', async () => {
         const router = useRouter();
         wrapper = mountPage();
         await flushPromises();
