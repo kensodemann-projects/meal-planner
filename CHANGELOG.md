@@ -1,5 +1,19 @@
 # meal-planner
 
+## 0.6.0
+
+### Minor Changes
+
+- b5d78a7: simplify the meals by removing the concept of individual foods, instead relying only on recipes
+- b69654d: Add the settings values and page.
+- 030c3cc: Add filtering to the recipe browsing page.
+
+### Patch Changes
+
+- b5d78a7: add quick links to the planning for this and next week to the dashboard
+- b5d78a7: add today's outlook to the dashboard
+- 15ae26e: Refactor the recipe view components to provide more information in a compact easily read format.
+
 ## 0.5.1
 
 ### Patch Changes
