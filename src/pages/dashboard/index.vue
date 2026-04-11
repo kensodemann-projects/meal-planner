@@ -65,6 +65,9 @@ const thisWeek = ref<WeeklyData>();
 const nextWeek = ref<WeeklyData>();
 const mealPlanForToday = ref<MealPlan | null>();
 
+// TODO: Create TDD style tests:
+//   1. Today's meal plan is passed to the calculation function
+//   2. The results of the calculation function are displayed correctly in the UI
 const detailStats = [
   { icon: 'mdi-food-steak', label: 'Protein (g)', value: '400' },
   { icon: 'mdi-candy-outline', label: 'Sugar (g)', value: '250' },
@@ -74,6 +77,11 @@ const detailStats = [
   { icon: 'mdi-fire', label: 'Calories', value: '2040' },
 ];
 
+// TODO: Create TDD style tests:
+//   1. Meals from today's meal plan are passed to the calculation function
+//   2. The results of the calculation function are displayed correctly in the UI
+//   3. Clicking on a meal card navigates to the recipes page with the correct query parameter
+//   4. If the meal does not exist, the card should not be clickable and should display "N/A" instead of a value
 const meals = [
   { icon: 'mdi-coffee-outline', label: 'Breakfast', value: '400' },
   { icon: 'mdi-food-outline', label: 'Lunch', value: '400' },
