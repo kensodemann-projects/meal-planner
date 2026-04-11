@@ -15,7 +15,7 @@
     </template>
     <v-container fluid>
       <v-row class="pa-4" justify="end">
-        <CloseButton @click="router.push('/planning')" />
+        <CloseButton @click="router.back()" />
       </v-row>
     </v-container>
   </div>

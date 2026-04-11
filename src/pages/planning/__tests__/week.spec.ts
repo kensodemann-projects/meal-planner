@@ -32,6 +32,7 @@ describe('week', () => {
       query: { dt: '2025-12-29' },
     });
     (useRouter as Mock).mockReturnValue({
+      back: vi.fn(),
       push: vi.fn(),
     });
   });
@@ -133,11 +134,11 @@ describe('week', () => {
       expect(wrapper.find('[data-testid="close-button"]').exists()).toBe(true);
     });
 
-    it('navigates to /planning when clicked', async () => {
+    it('navigates back when clicked', async () => {
       wrapper = await renderPage();
       await wrapper.find('[data-testid="close-button"]').trigger('click');
-      const { push } = useRouter();
-      expect(push).toHaveBeenCalledExactlyOnceWith('/planning');
+      const { back } = useRouter();
+      expect(back).toHaveBeenCalledTimes(1);
     });
   });
 });
