@@ -126,11 +126,10 @@
 import type { Meal, MealType } from '@/models/meal';
 import { useMealPlansData } from '@/data/meal-plans';
 import type { MealPlan } from '@/models/meal-plan';
-import { format, intlFormat, parseISO, startOfWeek } from 'date-fns';
+import { intlFormat, parseISO } from 'date-fns';
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import type { EditableItem } from '@/models/editable-item';
-import { useSettingsData } from '@/data/settings';
 
 const route = useRoute();
 const dateParam = route.query.dt as string;
@@ -150,7 +149,6 @@ const showConfirmDialog = ref(false);
 const mealToDelete = ref<MealType | null>(null);
 
 const router = useRouter();
-const { settings } = useSettingsData();
 
 const addBreakfastButtonClicked = () => {
   breakfast.value = {
@@ -253,13 +251,7 @@ const doDelete = async () => {
   await saveDayPlan();
 };
 
-const navigateToWeek = () => {
-  const start = startOfWeek(currDate, { weekStartsOn: settings.value?.weekStartDay });
-  const iso = format(start, 'yyyy-MM-dd');
-  router.replace({ path: '/planning/week', query: { dt: iso } });
-};
-
-const closeDayPlan = () => navigateToWeek();
+const closeDayPlan = () => router.back();
 
 getMealPlanForDate(dateParam).then((plan) => {
   mealPlan.value = plan || {

@@ -71,7 +71,7 @@ describe('day', () => {
       query: { dt: '2026-02-18' },
     });
     (useRouter as Mock).mockReturnValue({
-      replace: vi.fn(),
+      back: vi.fn(),
     });
   });
 
@@ -540,13 +540,10 @@ describe('day', () => {
       expect(updateMealPlan).not.toHaveBeenCalled();
     });
 
-    it('navigates to the week page', async () => {
+    it('navigates back', async () => {
       const button = wrapper.find('[data-testid="day-footer"] [data-testid="close-button"]');
       await button.trigger('click');
-      expect(useRouter().replace).toHaveBeenCalledExactlyOnceWith({
-        path: '/planning/week',
-        query: { dt: '2026-02-16' },
-      });
+      expect(useRouter().back).toHaveBeenCalledTimes(1);
     });
   });
 });
