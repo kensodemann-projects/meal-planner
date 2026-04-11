@@ -55,7 +55,7 @@ onMounted(async () => {
     await loadData(await settings.promise.value);
   } catch (err: unknown) {
     if (import.meta.env.DEV) {
-      console.error('Failed to load settings for meal planning page', err);
+      console.error('Failed to load dashboard data', err);
     }
   }
 });
