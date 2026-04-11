@@ -10,6 +10,9 @@ const zeroNutrition: Nutrition = {
   sodium: 0,
 };
 
+export const mealNutrients: typeof import('@/core/nutritional-calculations').mealNutrients = vi
+  .fn()
+  .mockReturnValue(zeroNutrition);
 export const dailyMealPlanNutrients: typeof import('@/core/nutritional-calculations').dailyMealPlanNutrients = vi
   .fn()
   .mockReturnValue(zeroNutrition);

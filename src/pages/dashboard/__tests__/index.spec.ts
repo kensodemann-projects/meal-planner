@@ -6,10 +6,18 @@ import * as directives from 'vuetify/directives';
 import DashboardPage from '../index.vue';
 import { useRouter } from 'vue-router';
 import WeeklySummaryCard from '@/components/planning/WeeklySummaryCard.vue';
+import DetailStatCard from '@/components/core/DetailStatCard.vue';
 import type { WeeklyData } from '@/models/weekly-data';
-import { daysWithMeals, multiDayMealPlanNutrients } from '@/core/nutritional-calculations';
+import {
+  dailyMealPlanNutrients,
+  daysWithMeals,
+  mealNutrients,
+  multiDayMealPlanNutrients,
+} from '@/core/nutritional-calculations';
 import { useSettingsData } from '@/data/settings';
 import { useMealPlansData } from '@/data/meal-plans';
+import { TEST_MEAL_PLAN } from '@/data/__tests__/test-data';
+import type { MealPlan } from '@/models/meal-plan';
 
 vi.mock('@/data/settings');
 vi.mock('vue-router');
@@ -222,6 +230,229 @@ describe('Dashboard Page', () => {
           path: 'planning/week',
           query: { dt: '2025-12-29' },
         });
+      });
+    });
+  });
+
+  describe('detail stats', () => {
+    describe('when today has a meal plan', () => {
+      beforeEach(() => {
+        const { getMealPlanForDate } = useMealPlansData();
+        (getMealPlanForDate as Mock).mockResolvedValue(TEST_MEAL_PLAN);
+      });
+
+      it("passes today's meal plan to the daily nutritional calculation function", async () => {
+        wrapper = mountPage();
+        await flushPromises();
+        expect(dailyMealPlanNutrients).toHaveBeenCalledWith(TEST_MEAL_PLAN);
+      });
+
+      it('displays protein from the calculation result', async () => {
+        (dailyMealPlanNutrients as Mock).mockReturnValue({
+          calories: 0,
+          protein: 185,
+          fat: 0,
+          carbs: 0,
+          sugar: 0,
+          sodium: 0,
+        });
+        wrapper = mountPage();
+        await flushPromises();
+        const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Protein (g)');
+        expect(card?.props('value')).toBe(185);
+      });
+
+      it('displays sugar from the calculation result', async () => {
+        (dailyMealPlanNutrients as Mock).mockReturnValue({
+          calories: 0,
+          protein: 0,
+          fat: 0,
+          carbs: 0,
+          sugar: 42,
+          sodium: 0,
+        });
+        wrapper = mountPage();
+        await flushPromises();
+        const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Sugar (g)');
+        expect(card?.props('value')).toBe(42);
+      });
+
+      it('displays carbs from the calculation result', async () => {
+        (dailyMealPlanNutrients as Mock).mockReturnValue({
+          calories: 0,
+          protein: 0,
+          fat: 0,
+          carbs: 210,
+          sugar: 0,
+          sodium: 0,
+        });
+        wrapper = mountPage();
+        await flushPromises();
+        const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Total Carbs (g)');
+        expect(card?.props('value')).toBe(210);
+      });
+
+      it('displays sodium from the calculation result', async () => {
+        (dailyMealPlanNutrients as Mock).mockReturnValue({
+          calories: 0,
+          protein: 0,
+          fat: 0,
+          carbs: 0,
+          sugar: 0,
+          sodium: 1840,
+        });
+        wrapper = mountPage();
+        await flushPromises();
+        const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Sodium (mg)');
+        expect(card?.props('value')).toBe(1840);
+      });
+
+      it('displays fat from the calculation result', async () => {
+        (dailyMealPlanNutrients as Mock).mockReturnValue({
+          calories: 0,
+          protein: 0,
+          fat: 77,
+          carbs: 0,
+          sugar: 0,
+          sodium: 0,
+        });
+        wrapper = mountPage();
+        await flushPromises();
+        const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Fat (g)');
+        expect(card?.props('value')).toBe(77);
+      });
+
+      it('displays calories from the calculation result', async () => {
+        (dailyMealPlanNutrients as Mock).mockReturnValue({
+          calories: 1750,
+          protein: 0,
+          fat: 0,
+          carbs: 0,
+          sugar: 0,
+          sodium: 0,
+        });
+        wrapper = mountPage();
+        await flushPromises();
+        const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Calories');
+        expect(card?.props('value')).toBe(1750);
+      });
+    });
+  });
+
+  describe('meal cards', () => {
+    describe('when today has a meal plan with all meal types', () => {
+      beforeEach(() => {
+        const { getMealPlanForDate } = useMealPlansData();
+        (getMealPlanForDate as Mock).mockResolvedValue(TEST_MEAL_PLAN);
+      });
+
+      it("passes each meal from today's plan to the calculation function", async () => {
+        wrapper = mountPage();
+        await flushPromises();
+        for (const meal of TEST_MEAL_PLAN.meals) {
+          expect(mealNutrients).toHaveBeenCalledWith(meal);
+        }
+      });
+
+      it('displays breakfast calories from the calculation result', async () => {
+        (mealNutrients as Mock).mockReturnValue({ calories: 520, protein: 0, fat: 0, carbs: 0, sugar: 0, sodium: 0 });
+        wrapper = mountPage();
+        await flushPromises();
+        const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Breakfast');
+        expect(card?.props('value')).toBe(520);
+      });
+
+      it('displays lunch calories from the calculation result', async () => {
+        (mealNutrients as Mock).mockReturnValue({ calories: 680, protein: 0, fat: 0, carbs: 0, sugar: 0, sodium: 0 });
+        wrapper = mountPage();
+        await flushPromises();
+        const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Lunch');
+        expect(card?.props('value')).toBe(680);
+      });
+
+      it('displays dinner calories from the calculation result', async () => {
+        (mealNutrients as Mock).mockReturnValue({ calories: 740, protein: 0, fat: 0, carbs: 0, sugar: 0, sodium: 0 });
+        wrapper = mountPage();
+        await flushPromises();
+        const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Dinner');
+        expect(card?.props('value')).toBe(740);
+      });
+
+      it('displays snack calories from the calculation result', async () => {
+        (mealNutrients as Mock).mockReturnValue({ calories: 310, protein: 0, fat: 0, carbs: 0, sugar: 0, sodium: 0 });
+        wrapper = mountPage();
+        await flushPromises();
+        const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Snack');
+        expect(card?.props('value')).toBe(310);
+      });
+
+      describe('navigation', () => {
+        it('navigates to the recipes page for breakfast', async () => {
+          const router = useRouter();
+          wrapper = mountPage();
+          await flushPromises();
+          const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Breakfast');
+          await card!.trigger('click');
+          expect(router.push).toHaveBeenCalledWith({ path: 'dashboard/recipes', query: { mealType: 'breakfast' } });
+        });
+
+        it('navigates to the recipes page for lunch', async () => {
+          const router = useRouter();
+          wrapper = mountPage();
+          await flushPromises();
+          const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Lunch');
+          await card!.trigger('click');
+          expect(router.push).toHaveBeenCalledWith({ path: 'dashboard/recipes', query: { mealType: 'lunch' } });
+        });
+
+        it('navigates to the recipes page for dinner', async () => {
+          const router = useRouter();
+          wrapper = mountPage();
+          await flushPromises();
+          const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Dinner');
+          await card!.trigger('click');
+          expect(router.push).toHaveBeenCalledWith({ path: 'dashboard/recipes', query: { mealType: 'dinner' } });
+        });
+
+        it('navigates to the recipes page for snack', async () => {
+          const router = useRouter();
+          wrapper = mountPage();
+          await flushPromises();
+          const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Snack');
+          await card!.trigger('click');
+          expect(router.push).toHaveBeenCalledWith({ path: 'dashboard/recipes', query: { mealType: 'snack' } });
+        });
+      });
+    });
+
+    describe('when a meal type is missing from the plan', () => {
+      const planWithSomeMeals: MealPlan = {
+        date: '2025-12-25',
+        meals: [
+          { id: 'meal-b', type: 'Breakfast', items: [] },
+          { id: 'meal-l', type: 'Lunch', items: [] },
+        ],
+      };
+
+      beforeEach(() => {
+        const { getMealPlanForDate } = useMealPlansData();
+        (getMealPlanForDate as Mock).mockResolvedValue(planWithSomeMeals);
+      });
+
+      it('displays N/A for a missing meal type', async () => {
+        wrapper = mountPage();
+        await flushPromises();
+        const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Dinner');
+        expect(card?.props('value')).toBe('N/A');
+      });
+
+      it('does not navigate when a missing meal card is clicked', async () => {
+        const router = useRouter();
+        wrapper = mountPage();
+        await flushPromises();
+        const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Dinner');
+        await card!.trigger('click');
+        expect(router.push).not.toHaveBeenCalled();
       });
     });
   });
