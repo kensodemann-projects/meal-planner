@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vite
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import DashboardPage from '../dashboard.vue';
+import DashboardPage from '../index.vue';
 import { useRouter } from 'vue-router';
 import WeeklySummaryCard from '@/components/planning/WeeklySummaryCard.vue';
 import type { WeeklyData } from '@/models/weekly-data';
@@ -76,6 +76,13 @@ describe('Dashboard Page', () => {
     wrapper = mountPage();
     await flushPromises();
     expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-12-29', '2026-01-04');
+  });
+
+  it('fetches the meal plan for today', async () => {
+    const { getMealPlanForDate } = useMealPlansData();
+    wrapper = mountPage();
+    await flushPromises();
+    expect(getMealPlanForDate).toHaveBeenCalledWith('2025-12-25');
   });
 
   describe('week cards', () => {
