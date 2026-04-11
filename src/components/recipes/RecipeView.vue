@@ -60,16 +60,17 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import type { Recipe } from '@/models/recipe';
 
-const { recipe } = defineProps<{ recipe: Recipe }>();
+const props = defineProps<{ recipe: Recipe }>();
 
-const metadataItems = [
-  { icon: 'mdi-chef-hat', label: 'Difficulty', value: recipe.difficulty },
-  { icon: 'mdi-account-multiple-outline', label: 'Servings', value: recipe.servings },
-  { icon: 'mdi-clock-outline', label: 'Prep Time', value: `${recipe.prepTimeMinutes} minutes` },
-  { icon: 'mdi-timer-outline', label: 'Cook Time', value: `${recipe.cookTimeMinutes} minutes` },
-];
+const metadataItems = computed(() => [
+  { icon: 'mdi-chef-hat', label: 'Difficulty', value: props.recipe.difficulty },
+  { icon: 'mdi-account-multiple-outline', label: 'Servings', value: props.recipe.servings },
+  { icon: 'mdi-clock-outline', label: 'Prep Time', value: `${props.recipe.prepTimeMinutes} minutes` },
+  { icon: 'mdi-timer-outline', label: 'Cook Time', value: `${props.recipe.cookTimeMinutes} minutes` },
+]);
 </script>
 
 <style scoped>
