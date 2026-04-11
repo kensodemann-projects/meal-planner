@@ -12,7 +12,12 @@
   <v-container fluid>
     <v-row density="compact">
       <v-col v-for="meal in meals" :key="meal.label" cols="12" sm="6" md="3">
-        <DetailStatCard :icon="meal.icon" :label="meal.label" :value="meal.value" />
+        <DetailStatCard
+          :icon="meal.icon"
+          :label="meal.label"
+          :value="meal.value"
+          @click="router.push({ path: 'meal-recipes', query: { mealType: meal.label.toLowerCase() } })"
+        />
       </v-col>
     </v-row>
   </v-container>
