@@ -17,6 +17,7 @@ declare module 'vue' {
     DailySummaryCard: typeof import('./components/planning/DailySummaryCard.vue')['default']
     DangerButton: typeof import('./components/core/buttons/DangerButton.vue')['default']
     DeleteButton: typeof import('./components/core/buttons/DeleteButton.vue')['default']
+    DetailStatCard: typeof import('./components/core/DetailStatCard.vue')['default']
     IngredientEditorRow: typeof import('./components/recipes/IngredientEditorRow.vue')['default']
     LoginCard: typeof import('./components/auth/LoginCard.vue')['default']
     MealEditor: typeof import('./components/meals/MealEditor.vue')['default']
