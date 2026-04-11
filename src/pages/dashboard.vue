@@ -22,6 +22,9 @@
       </v-col>
     </v-row>
   </v-container>
+
+  <h2>Today's Outlook</h2>
+  <v-divider class="my-4"></v-divider>
 </template>
 
 <script lang="ts" setup>
