@@ -1,7 +1,7 @@
 import type { Nutrition } from '@/models/nutrition';
 import { vi } from 'vitest';
 
-const zeroNutrition: Nutrition = {
+export const zeroNutrition: Nutrition = {
   calories: 0,
   protein: 0,
   fat: 0,

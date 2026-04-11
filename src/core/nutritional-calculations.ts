@@ -2,7 +2,7 @@ import type { Meal } from '@/models/meal';
 import type { MealPlan } from '@/models/meal-plan';
 import type { Nutrition } from '@/models/nutrition';
 
-const zeroNutrition: Nutrition = {
+export const zeroNutrition: Nutrition = {
   calories: 0,
   protein: 0,
   fat: 0,
