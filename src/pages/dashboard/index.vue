@@ -48,11 +48,12 @@
 
 <script lang="ts" setup>
 import { buildWeeklyData } from '@/core/build-weekly-data';
+import { dateToISO } from '@/core/dates';
 import { useMealPlansData } from '@/data/meal-plans';
 import { useSettingsData } from '@/data/settings';
 import type { MealPlan } from '@/models/meal-plan';
 import type { WeeklyData } from '@/models/weekly-data';
-import { addWeeks, format, startOfWeek } from 'date-fns';
+import { addWeeks, startOfWeek } from 'date-fns';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -79,8 +80,6 @@ const meals = [
   { icon: 'mdi-food-turkey', label: 'Dinner', value: '400' },
   { icon: 'mdi-peanut-outline', label: 'Snacks', value: '400' },
 ];
-
-const dateToISO = (date: Date): string => format(date, 'yyyy-MM-dd');
 
 const loadData = async (currentSettings: typeof settings.value) => {
   if (!currentSettings) return;

@@ -42,10 +42,11 @@
 
 <script lang="ts" setup>
 import { buildWeeklyData } from '@/core/build-weekly-data';
+import { dateToISO } from '@/core/dates';
 import { useMealPlansData } from '@/data/meal-plans';
 import { useSettingsData } from '@/data/settings';
 import type { WeeklyData } from '@/models/weekly-data';
-import { addWeeks, differenceInWeeks, format, startOfWeek } from 'date-fns';
+import { addWeeks, differenceInWeeks, startOfWeek } from 'date-fns';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -57,8 +58,6 @@ const { settings } = useSettingsData();
 
 const router = useRouter();
 const { getMealPlansForPeriod } = useMealPlansData();
-
-const dateToISO = (date: Date): string => format(date, 'yyyy-MM-dd');
 
 const loadData = async (currentSettings: typeof settings.value) => {
   if (!currentSettings) return;
