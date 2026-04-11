@@ -16,7 +16,7 @@
           :icon="meal.icon"
           :label="meal.label"
           :value="meal.value"
-          @click="router.push({ path: 'meal-recipes', query: { mealType: meal.label.toLowerCase() } })"
+          @click="router.push({ path: 'dashboard/recipes', query: { mealType: meal.label.toLowerCase() } })"
         />
       </v-col>
     </v-row>
