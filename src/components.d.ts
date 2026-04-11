@@ -28,6 +28,7 @@ declare module 'vue' {
     NutritionEditorRows: typeof import('./components/portions/NutritionEditorRows.vue')['default']
     PrimaryButton: typeof import('./components/core/buttons/PrimaryButton.vue')['default']
     RecipeEditor: typeof import('./components/recipes/RecipeEditor.vue')['default']
+    RecipeMetadataCard: typeof import('./components/recipes/RecipeMetadataCard.vue')['default']
     RecipeSummaryCard: typeof import('./components/recipes/RecipeSummaryCard.vue')['default']
     RecipeView: typeof import('./components/recipes/RecipeView.vue')['default']
     ResetButton: typeof import('./components/core/buttons/ResetButton.vue')['default']

@@ -9,45 +9,8 @@
     </div>
     <v-container fluid>
       <v-row density="compact">
-        <v-col cols="12" sm="6" md="3">
-          <v-card>
-            <v-card-text>
-              <div class="d-flex flex-column align-center ga-2">
-                <v-icon size="large">mdi-chef-hat</v-icon>
-                <div><span class="font-weight-black">Difficulty:</span> {{ recipe.difficulty }}</div>
-              </div>
-            </v-card-text>
-          </v-card>
-        </v-col>
-        <v-col cols="12" sm="6" md="3">
-          <v-card>
-            <v-card-text>
-              <div class="d-flex flex-column align-center ga-2">
-                <v-icon size="large">mdi-account-multiple-outline</v-icon>
-                <div><span class="font-weight-black">Servings:</span> {{ recipe.servings }}</div>
-              </div>
-            </v-card-text>
-          </v-card>
-        </v-col>
-        <v-col cols="12" sm="6" md="3">
-          <v-card>
-            <v-card-text>
-              <div class="d-flex flex-column align-center ga-2">
-                <v-icon size="large">mdi-clock-outline</v-icon>
-                <div><span class="font-weight-black">Prep Time:</span> {{ recipe.prepTimeMinutes }} minutes</div>
-              </div>
-            </v-card-text>
-          </v-card>
-        </v-col>
-        <v-col cols="12" sm="6" md="3">
-          <v-card>
-            <v-card-text>
-              <div class="d-flex flex-column align-center ga-2">
-                <v-icon size="large">mdi-timer-outline</v-icon>
-                <div><span class="font-weight-black">Cook Time:</span> {{ recipe.cookTimeMinutes }} minutes</div>
-              </div>
-            </v-card-text>
-          </v-card>
+        <v-col v-for="metadataItem in metadataItems" :key="metadataItem.label" cols="12" sm="6" md="3">
+          <RecipeMetadataCard :icon="metadataItem.icon" :label="metadataItem.label" :value="metadataItem.value" />
         </v-col>
       </v-row>
     </v-container>
@@ -99,7 +62,14 @@
 <script setup lang="ts">
 import type { Recipe } from '@/models/recipe';
 
-defineProps<{ recipe: Recipe }>();
+const { recipe } = defineProps<{ recipe: Recipe }>();
+
+const metadataItems = [
+  { icon: 'mdi-chef-hat', label: 'Difficulty', value: recipe.difficulty },
+  { icon: 'mdi-account-multiple-outline', label: 'Servings', value: recipe.servings },
+  { icon: 'mdi-clock-outline', label: 'Prep Time', value: `${recipe.prepTimeMinutes} minutes` },
+  { icon: 'mdi-timer-outline', label: 'Cook Time', value: `${recipe.cookTimeMinutes} minutes` },
+];
 </script>
 
 <style scoped>
