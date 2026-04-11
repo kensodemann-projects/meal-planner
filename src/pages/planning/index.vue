@@ -76,8 +76,7 @@ const loadData = async (currentSettings: typeof settings.value) => {
 
 onMounted(async () => {
   try {
-    await settings.promise.value;
-    await loadData(settings.value);
+    await loadData(await settings.promise.value);
   } catch (err: unknown) {
     if (import.meta.env.DEV) {
       console.error('Failed to load data for meal planning page', err);
