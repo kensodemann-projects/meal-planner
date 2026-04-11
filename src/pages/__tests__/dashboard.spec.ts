@@ -78,6 +78,13 @@ describe('Dashboard Page', () => {
     expect(getMealPlansForPeriod).toHaveBeenCalledWith('2025-12-29', '2026-01-04');
   });
 
+  it('fetches the meal plan for today', async () => {
+    const { getMealPlanForDate } = useMealPlansData();
+    wrapper = mountPage();
+    await flushPromises();
+    expect(getMealPlanForDate).toHaveBeenCalledWith('2025-12-25');
+  });
+
   describe('week cards', () => {
     it('exists for 2 weeks', async () => {
       wrapper = mountPage();
