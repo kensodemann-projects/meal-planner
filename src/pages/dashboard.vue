@@ -9,6 +9,14 @@
     </v-row>
   </v-container>
 
+  <v-container fluid>
+    <v-row density="compact">
+      <v-col v-for="meal in meals" :key="meal.label" cols="12" sm="6" md="3">
+        <DetailStatCard :icon="meal.icon" :label="meal.label" :value="meal.value" />
+      </v-col>
+    </v-row>
+  </v-container>
+
   <v-divider class="my-4"></v-divider>
 
   <v-container fluid>
@@ -58,6 +66,13 @@ const detailStats = [
   { icon: 'mdi-shaker-outline', label: 'Sodium (mg)', value: '1250' },
   { icon: 'mdi-french-fries', label: 'Fat (g)', value: '353' },
   { icon: 'mdi-fire', label: 'Calories', value: '2040' },
+];
+
+const meals = [
+  { icon: 'mdi-coffee-outline', label: 'Breakfast', value: '400' },
+  { icon: 'mdi-food-outline', label: 'Lunch', value: '400' },
+  { icon: 'mdi-food-turkey', label: 'Dinner', value: '400' },
+  { icon: 'mdi-peanut-outline', label: 'Snacks', value: '400' },
 ];
 
 const dateToISO = (date: Date): string => format(date, 'yyyy-MM-dd');
