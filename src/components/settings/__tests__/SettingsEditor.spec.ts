@@ -161,6 +161,23 @@ describe('SettingsEditor', () => {
       await numberInputMustBePositive(wrapper, 'min-daily-protein-input');
     });
 
+    it('must be less than maximum protein', async () => {
+      wrapper = mountComponent();
+      const proteinInput = wrapper.findComponent(
+        '[data-testid="min-daily-protein-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const input = proteinInput.find('input');
+
+      expect(proteinInput.text()).not.toContain('Minimum protein must be less than maximum protein');
+      await input.trigger('focus');
+      await input.setValue(65);
+      await input.trigger('blur');
+      expect(proteinInput.text()).toContain('Minimum protein must be less than maximum protein');
+      await input.setValue(50);
+      await input.trigger('blur');
+      expect(proteinInput.text()).not.toContain('Minimum protein must be less than maximum protein');
+    });
+
     it('is initialized based on the settings', () => {
       wrapper = mountComponent();
       const proteinInput = wrapper.findComponent(
@@ -188,6 +205,23 @@ describe('SettingsEditor', () => {
     it('must be positive', async () => {
       wrapper = mountComponent();
       await numberInputMustBePositive(wrapper, 'max-daily-protein-input');
+    });
+
+    it('must be greater than minimum protein', async () => {
+      wrapper = mountComponent();
+      const proteinInput = wrapper.findComponent(
+        '[data-testid="max-daily-protein-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const input = proteinInput.find('input');
+
+      expect(proteinInput.text()).not.toContain('Maximum protein must be greater than minimum protein');
+      await input.trigger('focus');
+      await input.setValue(50);
+      await input.trigger('blur');
+      expect(proteinInput.text()).toContain('Maximum protein must be greater than minimum protein');
+      await input.setValue(65);
+      await input.trigger('blur');
+      expect(proteinInput.text()).not.toContain('Maximum protein must be greater than minimum protein');
     });
 
     it('is initialized based on the settings', () => {
@@ -219,6 +253,23 @@ describe('SettingsEditor', () => {
       await numberInputMustBePositive(wrapper, 'min-daily-fat-input');
     });
 
+    it('must be less than maximum fat', async () => {
+      wrapper = mountComponent();
+      const fatInput = wrapper.findComponent(
+        '[data-testid="min-daily-fat-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const input = fatInput.find('input');
+
+      expect(fatInput.text()).not.toContain('Minimum fat must be less than maximum fat');
+      await input.trigger('focus');
+      await input.setValue(70);
+      await input.trigger('blur');
+      expect(fatInput.text()).toContain('Minimum fat must be less than maximum fat');
+      await input.setValue(50);
+      await input.trigger('blur');
+      expect(fatInput.text()).not.toContain('Minimum fat must be less than maximum fat');
+    });
+
     it('is initialized based on the settings', () => {
       wrapper = mountComponent();
       const fatInput = wrapper.findComponent(
@@ -246,6 +297,23 @@ describe('SettingsEditor', () => {
     it('must be positive', async () => {
       wrapper = mountComponent();
       await numberInputMustBePositive(wrapper, 'max-daily-fat-input');
+    });
+
+    it('must be greater than minimum fat', async () => {
+      wrapper = mountComponent();
+      const fatInput = wrapper.findComponent(
+        '[data-testid="max-daily-fat-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const input = fatInput.find('input');
+
+      expect(fatInput.text()).not.toContain('Maximum fat must be greater than minimum fat');
+      await input.trigger('focus');
+      await input.setValue(50);
+      await input.trigger('blur');
+      expect(fatInput.text()).toContain('Maximum fat must be greater than minimum fat');
+      await input.setValue(70);
+      await input.trigger('blur');
+      expect(fatInput.text()).not.toContain('Maximum fat must be greater than minimum fat');
     });
 
     it('is initialized based on the settings', () => {
@@ -277,6 +345,23 @@ describe('SettingsEditor', () => {
       await numberInputMustBePositive(wrapper, 'min-daily-carbs-input');
     });
 
+    it('must be less than maximum carbs', async () => {
+      wrapper = mountComponent();
+      const carbsInput = wrapper.findComponent(
+        '[data-testid="min-daily-carbs-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const input = carbsInput.find('input');
+
+      expect(carbsInput.text()).not.toContain('Minimum carbs must be less than maximum carbs');
+      await input.trigger('focus');
+      await input.setValue(250);
+      await input.trigger('blur');
+      expect(carbsInput.text()).toContain('Minimum carbs must be less than maximum carbs');
+      await input.setValue(200);
+      await input.trigger('blur');
+      expect(carbsInput.text()).not.toContain('Minimum carbs must be less than maximum carbs');
+    });
+
     it('is initialized based on the settings', () => {
       wrapper = mountComponent();
       const carbsInput = wrapper.findComponent(
@@ -304,6 +389,23 @@ describe('SettingsEditor', () => {
     it('must be positive', async () => {
       wrapper = mountComponent();
       await numberInputMustBePositive(wrapper, 'max-daily-carbs-input');
+    });
+
+    it('must be greater than minimum carbs', async () => {
+      wrapper = mountComponent();
+      const carbsInput = wrapper.findComponent(
+        '[data-testid="max-daily-carbs-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const input = carbsInput.find('input');
+
+      expect(carbsInput.text()).not.toContain('Maximum carbs must be greater than minimum carbs');
+      await input.trigger('focus');
+      await input.setValue(200);
+      await input.trigger('blur');
+      expect(carbsInput.text()).toContain('Maximum carbs must be greater than minimum carbs');
+      await input.setValue(250);
+      await input.trigger('blur');
+      expect(carbsInput.text()).not.toContain('Maximum carbs must be greater than minimum carbs');
     });
 
     it('is initialized based on the settings', () => {

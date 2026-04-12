@@ -35,7 +35,11 @@
           <v-number-input
             label="Minimum Daily Protein (grams)"
             v-model="minDailyProtein"
-            :rules="[validationRules.required, validationRules.positive]"
+            :rules="[
+              validationRules.required,
+              validationRules.positive,
+              validationRules.mustBeLessThan(maxDailyProtein, 'Minimum protein must be less than maximum protein'),
+            ]"
             data-testid="min-daily-protein-input"
           ></v-number-input>
         </v-col>
@@ -43,7 +47,14 @@
           <v-number-input
             label="Maximum Daily Protein (grams)"
             v-model="maxDailyProtein"
-            :rules="[validationRules.required, validationRules.positive]"
+            :rules="[
+              validationRules.required,
+              validationRules.positive,
+              validationRules.mustBeGreaterThan(
+                minDailyProtein,
+                'Maximum protein must be greater than minimum protein',
+              ),
+            ]"
             data-testid="max-daily-protein-input"
           ></v-number-input>
         </v-col>
@@ -53,7 +64,11 @@
           <v-number-input
             label="Minimum Daily Fat (grams)"
             v-model="minDailyFat"
-            :rules="[validationRules.required, validationRules.positive]"
+            :rules="[
+              validationRules.required,
+              validationRules.positive,
+              validationRules.mustBeLessThan(maxDailyFat, 'Minimum fat must be less than maximum fat'),
+            ]"
             data-testid="min-daily-fat-input"
           ></v-number-input>
         </v-col>
@@ -61,7 +76,11 @@
           <v-number-input
             label="Maximum Daily Fat (grams)"
             v-model="maxDailyFat"
-            :rules="[validationRules.required, validationRules.positive]"
+            :rules="[
+              validationRules.required,
+              validationRules.positive,
+              validationRules.mustBeGreaterThan(minDailyFat, 'Maximum fat must be greater than minimum fat'),
+            ]"
             data-testid="max-daily-fat-input"
           ></v-number-input>
         </v-col>
@@ -71,7 +90,11 @@
           <v-number-input
             label="Minimum Daily Carbs (grams)"
             v-model="minDailyCarbs"
-            :rules="[validationRules.required, validationRules.positive]"
+            :rules="[
+              validationRules.required,
+              validationRules.positive,
+              validationRules.mustBeLessThan(maxDailyCarbs, 'Minimum carbs must be less than maximum carbs'),
+            ]"
             data-testid="min-daily-carbs-input"
           ></v-number-input>
         </v-col>
@@ -79,7 +102,11 @@
           <v-number-input
             label="Maximum Daily Carbs (grams)"
             v-model="maxDailyCarbs"
-            :rules="[validationRules.required, validationRules.positive]"
+            :rules="[
+              validationRules.required,
+              validationRules.positive,
+              validationRules.mustBeGreaterThan(minDailyCarbs, 'Maximum carbs must be greater than minimum carbs'),
+            ]"
             data-testid="max-daily-carbs-input"
           ></v-number-input>
         </v-col>
