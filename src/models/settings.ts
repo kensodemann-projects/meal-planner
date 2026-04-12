@@ -19,7 +19,8 @@ export interface Settings {
   /**
    * Acceptable percentage deviation above a maximum or below a minimum for calorie and nutrient goals.
    * This is used to determine when to show warnings about exceeding limits or not meeting targets.
-   * Must be between 0 and 100 (inclusive). Validation is performed at runtime when updating settings.
+   * Expected to be between 0 and 100 (inclusive). This interface does not enforce runtime validation;
+   * callers such as UI forms are responsible for providing a value in that range.
    */
   tolerance: number;
   /** First day of the week (0 = Sunday, 1 = Monday, etc.) */
