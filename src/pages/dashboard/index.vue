@@ -52,6 +52,7 @@ import { dateToISO } from '@/core/dates';
 import { dailyMealPlanNutrients, mealNutrients, zeroNutrition } from '@/core/nutritional-calculations';
 import { useMealPlansData } from '@/data/meal-plans';
 import { useSettingsData } from '@/data/settings';
+import type { MealType } from '@/models/meal';
 import type { MealPlan } from '@/models/meal-plan';
 import type { WeeklyData } from '@/models/weekly-data';
 import { addWeeks, startOfWeek } from 'date-fns';
@@ -78,8 +79,8 @@ const detailStats = computed(() => {
   ];
 });
 
-const getMealCalories = (mealType: string): number | string => {
-  const meal = mealPlanForToday.value?.meals.find((m) => m.type.toLowerCase() === mealType.toLowerCase());
+const getMealCalories = (mealType: MealType): number | string => {
+  const meal = mealPlanForToday.value?.meals.find((m) => m.type === mealType);
   if (!meal) return 'N/A';
   const nutrition = mealNutrients(meal);
   return nutrition.calories;
