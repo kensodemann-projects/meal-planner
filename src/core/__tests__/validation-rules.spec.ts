@@ -137,8 +137,8 @@ describe('Validation Rules', () => {
     });
 
     it('returns true if min is null or undefined', () => {
-      expect(validationRules.mustBeGreaterThan(null as unknown as number)(5)).toBe(true);
-      expect(validationRules.mustBeGreaterThan(undefined as unknown as number)(5)).toBe(true);
+      expect(validationRules.mustBeGreaterThan(null)(5)).toBe(true);
+      expect(validationRules.mustBeGreaterThan(undefined)(5)).toBe(true);
     });
 
     it('returns true for values strictly greater than min', () => {
