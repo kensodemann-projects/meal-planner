@@ -16,10 +16,7 @@
           :icon="meal.icon"
           :label="meal.label"
           :value="meal.value"
-          @click="
-            meal.value !== 'N/A' &&
-            router.push({ path: 'dashboard/recipes', query: { mealType: meal.label.toLowerCase() } })
-          "
+          @click="router.push({ path: 'dashboard/recipes', query: { mealType: meal.label.toLowerCase() } })"
         />
       </v-col>
     </v-row>

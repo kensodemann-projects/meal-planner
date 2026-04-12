@@ -445,15 +445,6 @@ describe('Dashboard Page', () => {
         const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Dinner');
         expect(card?.props('value')).toBe('N/A');
       });
-
-      it('does not navigate when a missing meal card is clicked', async () => {
-        const router = useRouter();
-        wrapper = mountPage();
-        await flushPromises();
-        const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Dinner');
-        await card!.trigger('click');
-        expect(router.push).not.toHaveBeenCalled();
-      });
     });
   });
 });
