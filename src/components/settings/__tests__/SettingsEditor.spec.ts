@@ -223,6 +223,64 @@ describe('SettingsEditor', () => {
     });
   });
 
+  describe('Minimum Daily Carbs Input', () => {
+    it('renders', () => {
+      wrapper = mountComponent();
+      const carbsInput = wrapper.findComponent(
+        '[data-testid="min-daily-carbs-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(carbsInput.exists()).toBe(true);
+      expect(carbsInput.props('label')).toBe('Minimum Daily Carbs (grams)');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsRequired(wrapper, 'min-daily-carbs-input');
+    });
+
+    it('must be positive', async () => {
+      wrapper = mountComponent();
+      await numberInputMustBePositive(wrapper, 'min-daily-carbs-input');
+    });
+
+    it('is initialized based on the settings', () => {
+      wrapper = mountComponent();
+      const carbsInput = wrapper.findComponent(
+        '[data-testid="min-daily-carbs-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(carbsInput.props('modelValue')).toBe(200);
+    });
+  });
+
+  describe('Maximum Daily Carbs Input', () => {
+    it('renders', () => {
+      wrapper = mountComponent();
+      const carbsInput = wrapper.findComponent(
+        '[data-testid="max-daily-carbs-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(carbsInput.exists()).toBe(true);
+      expect(carbsInput.props('label')).toBe('Maximum Daily Carbs (grams)');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsRequired(wrapper, 'max-daily-carbs-input');
+    });
+
+    it('must be positive', async () => {
+      wrapper = mountComponent();
+      await numberInputMustBePositive(wrapper, 'max-daily-carbs-input');
+    });
+
+    it('is initialized based on the settings', () => {
+      wrapper = mountComponent();
+      const carbsInput = wrapper.findComponent(
+        '[data-testid="max-daily-carbs-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(carbsInput.props('modelValue')).toBe(250);
+    });
+  });
+
   describe('Maximum Daily Sugar Input', () => {
     it('renders', () => {
       wrapper = mountComponent();
@@ -366,6 +424,12 @@ describe('SettingsEditor', () => {
       const fatInput = wrapper.findComponent(
         '[data-testid="max-daily-fat-input"]',
       ) as VueWrapper<components.VNumberInput>;
+      const minCarbsInput = wrapper.findComponent(
+        '[data-testid="min-daily-carbs-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const carbsInput = wrapper.findComponent(
+        '[data-testid="max-daily-carbs-input"]',
+      ) as VueWrapper<components.VNumberInput>;
       const toleranceInput = wrapper.findComponent(
         '[data-testid="tolerance-input"]',
       ) as VueWrapper<components.VNumberInput>;
@@ -380,6 +444,8 @@ describe('SettingsEditor', () => {
       await proteinInput.setValue(80);
       await minFatInput.setValue(35);
       await fatInput.setValue(90);
+      await minCarbsInput.setValue(150);
+      await carbsInput.setValue(300);
       await toleranceInput.setValue(12);
       await weekStartDayInput.setValue(1);
 
@@ -393,6 +459,8 @@ describe('SettingsEditor', () => {
       expect(proteinInput.props('modelValue')).toBe(65);
       expect(minFatInput.props('modelValue')).toBe(50);
       expect(fatInput.props('modelValue')).toBe(70);
+      expect(minCarbsInput.props('modelValue')).toBe(200);
+      expect(carbsInput.props('modelValue')).toBe(250);
       expect(toleranceInput.props('modelValue')).toBe(8);
       expect(weekStartDayInput.props('modelValue')).toBe(2);
     });
@@ -466,6 +534,12 @@ describe('SettingsEditor', () => {
       const fatInput = wrapper.findComponent(
         '[data-testid="max-daily-fat-input"]',
       ) as VueWrapper<components.VNumberInput>;
+      const minCarbsInput = wrapper.findComponent(
+        '[data-testid="min-daily-carbs-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const carbsInput = wrapper.findComponent(
+        '[data-testid="max-daily-carbs-input"]',
+      ) as VueWrapper<components.VNumberInput>;
       const toleranceInput = wrapper.findComponent(
         '[data-testid="tolerance-input"]',
       ) as VueWrapper<components.VNumberInput>;
@@ -480,6 +554,8 @@ describe('SettingsEditor', () => {
       await proteinInput.setValue(80);
       await minFatInput.setValue(35);
       await fatInput.setValue(75);
+      await minCarbsInput.setValue(160);
+      await carbsInput.setValue(280);
       await toleranceInput.setValue(12);
       await weekStartDayInput.setValue(1);
       await flushPromises();
@@ -497,8 +573,8 @@ describe('SettingsEditor', () => {
           maxDailyProtein: 80,
           minDailyFat: 35,
           maxDailyFat: 75,
-          minDailyCarbs: 0,
-          maxDailyCarbs: 0,
+          minDailyCarbs: 160,
+          maxDailyCarbs: 280,
           maxDailySugar: 55,
           tolerance: 12,
           weekStartDay: 1,
@@ -588,6 +664,30 @@ describe('SettingsEditor', () => {
       expect(saveButton.attributes('disabled')).toBeUndefined();
     });
 
+    it('is true when minDailyCarbs changes', async () => {
+      wrapper = mountComponent();
+      const saveButton = wrapper.find('[data-testid="save-button"]');
+      expect(saveButton.attributes('disabled')).toBeDefined();
+      const input = wrapper.findComponent(
+        '[data-testid="min-daily-carbs-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      await input.setValue(150);
+      await flushPromises();
+      expect(saveButton.attributes('disabled')).toBeUndefined();
+    });
+
+    it('is true when maxDailyCarbs changes', async () => {
+      wrapper = mountComponent();
+      const saveButton = wrapper.find('[data-testid="save-button"]');
+      expect(saveButton.attributes('disabled')).toBeDefined();
+      const input = wrapper.findComponent(
+        '[data-testid="max-daily-carbs-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      await input.setValue(300);
+      await flushPromises();
+      expect(saveButton.attributes('disabled')).toBeUndefined();
+    });
+
     it('is true when tolerance changes', async () => {
       wrapper = mountComponent();
       const saveButton = wrapper.find('[data-testid="save-button"]');
@@ -649,8 +749,8 @@ describe('SettingsEditor', () => {
           maxDailyProtein: 70,
           minDailyFat: 55,
           maxDailyFat: 80,
-          minDailyCarbs: 200,
-          maxDailyCarbs: 250,
+          minDailyCarbs: 220,
+          maxDailyCarbs: 275,
           maxDailySugar: 50,
           tolerance: 10,
           weekStartDay: 0,
@@ -690,6 +790,16 @@ describe('SettingsEditor', () => {
         '[data-testid="max-daily-fat-input"]',
       ) as VueWrapper<components.VNumberInput>;
       expect(fatInput.props('modelValue')).toBe(80);
+
+      const minCarbsInput = wrapper.findComponent(
+        '[data-testid="min-daily-carbs-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(minCarbsInput.props('modelValue')).toBe(220);
+
+      const carbsInput = wrapper.findComponent(
+        '[data-testid="max-daily-carbs-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(carbsInput.props('modelValue')).toBe(275);
 
       const toleranceInput = wrapper.findComponent(
         '[data-testid="tolerance-input"]',

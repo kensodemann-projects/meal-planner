@@ -6,7 +6,11 @@
           <v-number-input
             label="Minimum Daily Calories (kcal)"
             v-model="minDailyCalories"
-            :rules="[validationRules.required, validationRules.positive]"
+            :rules="[
+              validationRules.required,
+              validationRules.positive,
+              validationRules.mustBeLessThan(maxDailyCalories, 'Minimum calories must be less than maximum calories'),
+            ]"
             data-testid="min-daily-calorie-input"
           ></v-number-input>
         </v-col>
@@ -14,7 +18,14 @@
           <v-number-input
             label="Maximum Daily Calories (kcal)"
             v-model="maxDailyCalories"
-            :rules="[validationRules.required, validationRules.positive]"
+            :rules="[
+              validationRules.required,
+              validationRules.positive,
+              validationRules.mustBeGreaterThan(
+                minDailyCalories,
+                'Maximum calories must be greater than minimum calories',
+              ),
+            ]"
             data-testid="max-daily-calorie-input"
           ></v-number-input>
         </v-col>
@@ -52,6 +63,24 @@
             v-model="maxDailyFat"
             :rules="[validationRules.required, validationRules.positive]"
             data-testid="max-daily-fat-input"
+          ></v-number-input>
+        </v-col>
+      </v-row>
+      <v-row density="compact">
+        <v-col cols="12" md="6">
+          <v-number-input
+            label="Minimum Daily Carbs (grams)"
+            v-model="minDailyCarbs"
+            :rules="[validationRules.required, validationRules.positive]"
+            data-testid="min-daily-carbs-input"
+          ></v-number-input>
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-number-input
+            label="Maximum Daily Carbs (grams)"
+            v-model="maxDailyCarbs"
+            :rules="[validationRules.required, validationRules.positive]"
+            data-testid="max-daily-carbs-input"
           ></v-number-input>
         </v-col>
       </v-row>
@@ -127,6 +156,8 @@ const minDailyProtein = ref<number>(props.settings.minDailyProtein);
 const maxDailyProtein = ref<number>(props.settings.maxDailyProtein);
 const minDailyFat = ref<number>(props.settings.minDailyFat);
 const maxDailyFat = ref<number>(props.settings.maxDailyFat);
+const minDailyCarbs = ref<number>(props.settings.minDailyCarbs);
+const maxDailyCarbs = ref<number>(props.settings.maxDailyCarbs);
 const maxDailySugar = ref<number>(props.settings.maxDailySugar);
 const tolerance = ref<number>(props.settings.tolerance);
 const weekStartDay = ref<number>(props.settings.weekStartDay);
@@ -139,6 +170,8 @@ const isModified = computed(() => {
     maxDailyProtein.value !== props.settings.maxDailyProtein ||
     minDailyFat.value !== props.settings.minDailyFat ||
     maxDailyFat.value !== props.settings.maxDailyFat ||
+    minDailyCarbs.value !== props.settings.minDailyCarbs ||
+    maxDailyCarbs.value !== props.settings.maxDailyCarbs ||
     maxDailySugar.value !== props.settings.maxDailySugar ||
     tolerance.value !== props.settings.tolerance ||
     weekStartDay.value !== props.settings.weekStartDay
@@ -152,6 +185,8 @@ const reset = () => {
   maxDailyProtein.value = props.settings.maxDailyProtein;
   minDailyFat.value = props.settings.minDailyFat;
   maxDailyFat.value = props.settings.maxDailyFat;
+  minDailyCarbs.value = props.settings.minDailyCarbs;
+  maxDailyCarbs.value = props.settings.maxDailyCarbs;
   maxDailySugar.value = props.settings.maxDailySugar;
   tolerance.value = props.settings.tolerance;
   weekStartDay.value = props.settings.weekStartDay;
@@ -165,8 +200,8 @@ const save = () => {
     maxDailyCalories: maxDailyCalories.value,
     minDailyProtein: minDailyProtein.value,
     maxDailyProtein: maxDailyProtein.value,
-    minDailyCarbs: 0, // Carbs are not currently editable, so we set them to 0
-    maxDailyCarbs: 0,
+    minDailyCarbs: minDailyCarbs.value,
+    maxDailyCarbs: maxDailyCarbs.value,
     minDailyFat: minDailyFat.value,
     maxDailyFat: maxDailyFat.value,
     maxDailySugar: maxDailySugar.value,

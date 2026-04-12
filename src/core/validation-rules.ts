@@ -15,4 +15,16 @@ export const validationRules = {
     if (Number.isNaN(value)) return 'Must be a valid number zero or greater';
     return value >= 0 || 'Must be zero or greater';
   },
+  mustBeGreaterThan: (min: number, msg?: string) => (value: number | null | undefined) => {
+    if (min === null || min === undefined) return true;
+    if (value === null || value === undefined) return true;
+    if (Number.isNaN(value)) return msg || `Must be a valid number greater than ${min}`;
+    return value > min || msg || `Must be greater than ${min}`;
+  },
+  mustBeLessThan: (max: number, msg?: string) => (value: number | null | undefined) => {
+    if (max === null || max === undefined) return true;
+    if (value === null || value === undefined) return true;
+    if (Number.isNaN(value)) return msg || `Must be a valid number less than ${max}`;
+    return value < max || msg || `Must be less than ${max}`;
+  },
 };
