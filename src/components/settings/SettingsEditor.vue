@@ -1,40 +1,62 @@
 <template>
   <v-form v-model="valid">
-    <v-number-input
-      label="Maximum Daily Calories (kcal)"
-      v-model="maxDailyCalories"
-      :rules="[validationRules.required, validationRules.positive]"
-      data-testid="max-daily-calorie-input"
-    ></v-number-input>
-    <v-number-input
-      label="Maximum Daily Protein (grams)"
-      v-model="maxDailyProtein"
-      :rules="[validationRules.required, validationRules.positive]"
-      data-testid="max-daily-protein-input"
-    ></v-number-input>
-    <v-number-input
-      label="Maximum Daily Sugar (grams)"
-      v-model="maxDailySugar"
-      :rules="[validationRules.required, validationRules.positive]"
-      data-testid="max-daily-sugar-input"
-    ></v-number-input>
-    <v-number-input
-      label="Tolerance (%)"
-      v-model="tolerance"
-      :rules="[
-        validationRules.required,
-        validationRules.zeroOrGreater,
-        (value) => value <= 100 || 'Tolerance must be 100 or less',
-      ]"
-      data-testid="tolerance-input"
-    ></v-number-input>
-    <v-autocomplete
-      label="Week Start Day"
-      v-model="weekStartDay"
-      :items="daysOfTheWeek"
-      :rules="[validationRules.required]"
-      data-testid="week-start-day-input"
-    ></v-autocomplete>
+    <v-container fluid>
+      <v-row density="compact">
+        <v-col cols="12">
+          <v-number-input
+            label="Maximum Daily Calories (kcal)"
+            v-model="maxDailyCalories"
+            :rules="[validationRules.required, validationRules.positive]"
+            data-testid="max-daily-calorie-input"
+          ></v-number-input>
+        </v-col>
+      </v-row>
+      <v-row density="compact">
+        <v-col cols="12">
+          <v-number-input
+            label="Maximum Daily Protein (grams)"
+            v-model="maxDailyProtein"
+            :rules="[validationRules.required, validationRules.positive]"
+            data-testid="max-daily-protein-input"
+          ></v-number-input>
+        </v-col>
+      </v-row>
+      <v-row density="compact">
+        <v-col cols="12">
+          <v-number-input
+            label="Maximum Daily Sugar (grams)"
+            v-model="maxDailySugar"
+            :rules="[validationRules.required, validationRules.positive]"
+            data-testid="max-daily-sugar-input"
+          ></v-number-input>
+        </v-col>
+      </v-row>
+      <v-row density="compact">
+        <v-col cols="12">
+          <v-number-input
+            label="Tolerance (%)"
+            v-model="tolerance"
+            :rules="[
+              validationRules.required,
+              validationRules.zeroOrGreater,
+              (value) => value <= 100 || 'Tolerance must be 100 or less',
+            ]"
+            data-testid="tolerance-input"
+          ></v-number-input>
+        </v-col>
+      </v-row>
+      <v-row density="compact">
+        <v-col cols="12">
+          <v-autocomplete
+            label="Week Start Day"
+            v-model="weekStartDay"
+            :items="daysOfTheWeek"
+            :rules="[validationRules.required]"
+            data-testid="week-start-day-input"
+          ></v-autocomplete>
+        </v-col>
+      </v-row>
+    </v-container>
 
     <v-container fluid>
       <v-row class="pa-4" justify="end">
