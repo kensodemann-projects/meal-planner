@@ -107,6 +107,35 @@ describe('SettingsEditor', () => {
     });
   });
 
+  describe('Minimum Daily Protein Input', () => {
+    it('renders', () => {
+      wrapper = mountComponent();
+      const proteinInput = wrapper.findComponent(
+        '[data-testid="min-daily-protein-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(proteinInput.exists()).toBe(true);
+      expect(proteinInput.props('label')).toBe('Minimum Daily Protein (grams)');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsRequired(wrapper, 'min-daily-protein-input');
+    });
+
+    it('must be positive', async () => {
+      wrapper = mountComponent();
+      await numberInputMustBePositive(wrapper, 'min-daily-protein-input');
+    });
+
+    it('is initialized based on the settings', () => {
+      wrapper = mountComponent();
+      const proteinInput = wrapper.findComponent(
+        '[data-testid="min-daily-protein-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(proteinInput.props('modelValue')).toBe(50);
+    });
+  });
+
   describe('Maximum Daily Protein Input', () => {
     it('renders', () => {
       wrapper = mountComponent();
@@ -267,6 +296,9 @@ describe('SettingsEditor', () => {
       const sugarInput = wrapper.findComponent(
         '[data-testid="max-daily-sugar-input"]',
       ) as VueWrapper<components.VNumberInput>;
+      const minProteinInput = wrapper.findComponent(
+        '[data-testid="min-daily-protein-input"]',
+      ) as VueWrapper<components.VNumberInput>;
       const proteinInput = wrapper.findComponent(
         '[data-testid="max-daily-protein-input"]',
       ) as VueWrapper<components.VNumberInput>;
@@ -280,6 +312,7 @@ describe('SettingsEditor', () => {
       await minCaloriesInput.setValue(1200);
       await caloriesInput.setValue(2100);
       await sugarInput.setValue(55);
+      await minProteinInput.setValue(40);
       await proteinInput.setValue(80);
       await toleranceInput.setValue(12);
       await weekStartDayInput.setValue(1);
@@ -290,6 +323,7 @@ describe('SettingsEditor', () => {
       expect(minCaloriesInput.props('modelValue')).toBe(1500);
       expect(caloriesInput.props('modelValue')).toBe(1875);
       expect(sugarInput.props('modelValue')).toBe(45);
+      expect(minProteinInput.props('modelValue')).toBe(50);
       expect(proteinInput.props('modelValue')).toBe(65);
       expect(toleranceInput.props('modelValue')).toBe(8);
       expect(weekStartDayInput.props('modelValue')).toBe(2);
@@ -352,6 +386,9 @@ describe('SettingsEditor', () => {
       const sugarInput = wrapper.findComponent(
         '[data-testid="max-daily-sugar-input"]',
       ) as VueWrapper<components.VNumberInput>;
+      const minProteinInput = wrapper.findComponent(
+        '[data-testid="min-daily-protein-input"]',
+      ) as VueWrapper<components.VNumberInput>;
       const proteinInput = wrapper.findComponent(
         '[data-testid="max-daily-protein-input"]',
       ) as VueWrapper<components.VNumberInput>;
@@ -365,6 +402,7 @@ describe('SettingsEditor', () => {
       await minCaloriesInput.setValue(1800);
       await caloriesInput.setValue(2100);
       await sugarInput.setValue(55);
+      await minProteinInput.setValue(45);
       await proteinInput.setValue(80);
       await toleranceInput.setValue(12);
       await weekStartDayInput.setValue(1);
@@ -379,7 +417,7 @@ describe('SettingsEditor', () => {
         {
           minDailyCalories: 1800,
           maxDailyCalories: 2100,
-          minDailyProtein: 80,
+          minDailyProtein: 45,
           maxDailyProtein: 80,
           minDailyFat: 0,
           maxDailyFat: 0,
@@ -457,6 +495,11 @@ describe('SettingsEditor', () => {
         '[data-testid="max-daily-protein-input"]',
       ) as VueWrapper<components.VNumberInput>;
       expect(proteinInput.props('modelValue')).toBe(70);
+
+      const minProteinInput = wrapper.findComponent(
+        '[data-testid="min-daily-protein-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(minProteinInput.props('modelValue')).toBe(55);
 
       const toleranceInput = wrapper.findComponent(
         '[data-testid="tolerance-input"]',
