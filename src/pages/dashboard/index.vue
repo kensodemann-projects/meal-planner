@@ -16,7 +16,10 @@
           :icon="meal.icon"
           :label="meal.label"
           :value="meal.value"
-          @click="router.push({ path: 'dashboard/recipes', query: { mealType: meal.label.toLowerCase() } })"
+          @click="
+            meal.value !== 'N/A' &&
+            router.push({ path: 'dashboard/recipes', query: { mealType: meal.label.toLowerCase() } })
+          "
         />
       </v-col>
     </v-row>
@@ -47,15 +50,14 @@
 </template>
 
 <script lang="ts" setup>
-import { dailyMealPlanNutrients } from '@/core/__mocks__/nutritional-calculations';
 import { buildWeeklyData } from '@/core/build-weekly-data';
 import { dateToISO } from '@/core/dates';
-import { mealNutrients, zeroNutrition } from '@/core/nutritional-calculations';
+import { dailyMealPlanNutrients, mealNutrients, zeroNutrition } from '@/core/nutritional-calculations';
 import { useMealPlansData } from '@/data/meal-plans';
 import { useSettingsData } from '@/data/settings';
 import type { MealPlan } from '@/models/meal-plan';
 import type { WeeklyData } from '@/models/weekly-data';
-import { addWeeks, format, startOfWeek } from 'date-fns';
+import { addWeeks, startOfWeek } from 'date-fns';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
