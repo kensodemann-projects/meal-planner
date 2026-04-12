@@ -16,7 +16,7 @@
           :icon="meal.icon"
           :label="meal.label"
           :value="meal.value"
-          @click="router.push({ path: 'dashboard/recipes', query: { mealType: meal.label.toLowerCase() } })"
+          @click="router.push({ path: 'dashboard/recipes', query: { mealType: meal.type.toLowerCase() } })"
         />
       </v-col>
     </v-row>
@@ -49,12 +49,14 @@
 <script lang="ts" setup>
 import { buildWeeklyData } from '@/core/build-weekly-data';
 import { dateToISO } from '@/core/dates';
+import { dailyMealPlanNutrients, mealNutrients, zeroNutrition } from '@/core/nutritional-calculations';
 import { useMealPlansData } from '@/data/meal-plans';
 import { useSettingsData } from '@/data/settings';
+import type { MealType } from '@/models/meal';
 import type { MealPlan } from '@/models/meal-plan';
 import type { WeeklyData } from '@/models/weekly-data';
 import { addWeeks, startOfWeek } from 'date-fns';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -65,21 +67,36 @@ const thisWeek = ref<WeeklyData>();
 const nextWeek = ref<WeeklyData>();
 const mealPlanForToday = ref<MealPlan | null>();
 
-const detailStats = [
-  { icon: 'mdi-food-steak', label: 'Protein (g)', value: '400' },
-  { icon: 'mdi-candy-outline', label: 'Sugar (g)', value: '250' },
-  { icon: 'mdi-baguette', label: 'Total Carbs (g)', value: '335' },
-  { icon: 'mdi-shaker-outline', label: 'Sodium (mg)', value: '1250' },
-  { icon: 'mdi-french-fries', label: 'Fat (g)', value: '353' },
-  { icon: 'mdi-fire', label: 'Calories', value: '2040' },
-];
+const detailStats = computed(() => {
+  const nutrition = mealPlanForToday.value ? dailyMealPlanNutrients(mealPlanForToday.value) : zeroNutrition;
+  return [
+    { icon: 'mdi-food-steak', label: 'Protein (g)', value: nutrition.protein },
+    { icon: 'mdi-candy-outline', label: 'Sugar (g)', value: nutrition.sugar },
+    { icon: 'mdi-baguette', label: 'Total Carbs (g)', value: nutrition.carbs },
+    { icon: 'mdi-shaker-outline', label: 'Sodium (mg)', value: nutrition.sodium },
+    { icon: 'mdi-french-fries', label: 'Fat (g)', value: nutrition.fat },
+    { icon: 'mdi-fire', label: 'Calories', value: nutrition.calories },
+  ];
+});
 
-const meals = [
-  { icon: 'mdi-coffee-outline', label: 'Breakfast', value: '400' },
-  { icon: 'mdi-food-outline', label: 'Lunch', value: '400' },
-  { icon: 'mdi-food-turkey', label: 'Dinner', value: '400' },
-  { icon: 'mdi-peanut-outline', label: 'Snacks', value: '400' },
-];
+const getMealCalories = (mealType: MealType): number | string => {
+  const meal = mealPlanForToday.value?.meals.find((m) => m.type === mealType);
+  if (!meal) return 'N/A';
+  const nutrition = mealNutrients(meal);
+  return nutrition.calories;
+};
+
+const meals = computed(() => [
+  {
+    icon: 'mdi-coffee-outline',
+    label: 'Breakfast',
+    type: 'Breakfast' as MealType,
+    value: getMealCalories('Breakfast'),
+  },
+  { icon: 'mdi-food-outline', label: 'Lunch', type: 'Lunch' as MealType, value: getMealCalories('Lunch') },
+  { icon: 'mdi-food-turkey', label: 'Dinner', type: 'Dinner' as MealType, value: getMealCalories('Dinner') },
+  { icon: 'mdi-peanut-outline', label: 'Snacks', type: 'Snack' as MealType, value: getMealCalories('Snack') },
+]);
 
 const loadData = async (currentSettings: typeof settings.value) => {
   if (!currentSettings) return;
