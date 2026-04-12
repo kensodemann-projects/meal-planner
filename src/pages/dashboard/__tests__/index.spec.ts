@@ -378,7 +378,7 @@ describe('Dashboard Page', () => {
       it('displays N/A for all meal types', async () => {
         wrapper = mountPage();
         await flushPromises();
-        for (const label of ['Breakfast', 'Lunch', 'Dinner', 'Snack']) {
+        for (const label of ['Breakfast', 'Lunch', 'Dinner', 'Snacks']) {
           const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === label);
           expect(card?.props('value')).toBe('N/A');
         }
@@ -427,7 +427,7 @@ describe('Dashboard Page', () => {
         (mealNutrients as Mock).mockReturnValue({ calories: 310, protein: 0, fat: 0, carbs: 0, sugar: 0, sodium: 0 });
         wrapper = mountPage();
         await flushPromises();
-        const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Snack');
+        const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Snacks');
         expect(card?.props('value')).toBe(310);
       });
 
@@ -463,7 +463,7 @@ describe('Dashboard Page', () => {
           const router = useRouter();
           wrapper = mountPage();
           await flushPromises();
-          const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Snack');
+          const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Snacks');
           await card!.trigger('click');
           expect(router.push).toHaveBeenCalledWith({ path: 'dashboard/recipes', query: { mealType: 'snack' } });
         });

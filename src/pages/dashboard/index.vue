@@ -95,7 +95,7 @@ const meals = computed(() => [
   },
   { icon: 'mdi-food-outline', label: 'Lunch', type: 'Lunch' as MealType, value: getMealCalories('Lunch') },
   { icon: 'mdi-food-turkey', label: 'Dinner', type: 'Dinner' as MealType, value: getMealCalories('Dinner') },
-  { icon: 'mdi-peanut-outline', label: 'Snack', type: 'Snack' as MealType, value: getMealCalories('Snack') },
+  { icon: 'mdi-peanut-outline', label: 'Snacks', type: 'Snack' as MealType, value: getMealCalories('Snack') },
 ]);
 
 const loadData = async (currentSettings: typeof settings.value) => {
