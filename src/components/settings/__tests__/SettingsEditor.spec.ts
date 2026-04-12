@@ -69,6 +69,23 @@ describe('SettingsEditor', () => {
       await numberInputMustBePositive(wrapper, 'min-daily-calorie-input');
     });
 
+    it('must be less than maximum calories', async () => {
+      wrapper = mountComponent();
+      const caloriesInput = wrapper.findComponent(
+        '[data-testid="min-daily-calorie-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const input = caloriesInput.find('input');
+
+      expect(caloriesInput.text()).not.toContain('Minimum calories must be less than maximum calories');
+      await input.trigger('focus');
+      await input.setValue(1875);
+      await input.trigger('blur');
+      expect(caloriesInput.text()).toContain('Minimum calories must be less than maximum calories');
+      await input.setValue(1500);
+      await input.trigger('blur');
+      expect(caloriesInput.text()).not.toContain('Minimum calories must be less than maximum calories');
+    });
+
     it('is initialized based on the settings', () => {
       wrapper = mountComponent();
       const caloriesInput = wrapper.findComponent(
@@ -96,6 +113,23 @@ describe('SettingsEditor', () => {
     it('must be positive', async () => {
       wrapper = mountComponent();
       await numberInputMustBePositive(wrapper, 'max-daily-calorie-input');
+    });
+
+    it('must be greater than minimum calories', async () => {
+      wrapper = mountComponent();
+      const caloriesInput = wrapper.findComponent(
+        '[data-testid="max-daily-calorie-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const input = caloriesInput.find('input');
+
+      expect(caloriesInput.text()).not.toContain('Maximum calories must be greater than minimum calories');
+      await input.trigger('focus');
+      await input.setValue(1500);
+      await input.trigger('blur');
+      expect(caloriesInput.text()).toContain('Maximum calories must be greater than minimum calories');
+      await input.setValue(1875);
+      await input.trigger('blur');
+      expect(caloriesInput.text()).not.toContain('Maximum calories must be greater than minimum calories');
     });
 
     it('is initialized based on the settings', () => {
