@@ -12,11 +12,16 @@ interface SettingsData {
 
 const updateSettings = vi.fn();
 const settings = ref<Settings>({
-  dailyCalorieLimit: 2500,
-  dailySugarLimit: 35,
-  dailyProteinTarget: 85,
+  minDailyCalories: 1500,
+  maxDailyCalories: 2500,
+  minDailyProtein: 85,
+  maxDailyProtein: 150,
+  minDailyCarbs: 130,
+  maxDailyCarbs: 300,
+  minDailyFat: 20,
+  maxDailyFat: 70,
+  maxDailySugar: 35,
   tolerance: 15,
-  cheatDays: 2,
   weekStartDay: 1,
 });
 (settings as any).promise = { value: Promise.resolve(settings.value) };

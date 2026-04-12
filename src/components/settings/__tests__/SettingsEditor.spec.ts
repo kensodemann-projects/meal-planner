@@ -18,11 +18,16 @@ const vuetify = createVuetify({
 const mountComponent = (
   props: { settings: Settings } = {
     settings: {
-      dailyCalorieLimit: 1875,
-      dailySugarLimit: 45,
-      dailyProteinTarget: 65,
+      minDailyCalories: 1500,
+      maxDailyCalories: 1875,
+      minDailyProtein: 50,
+      maxDailyProtein: 65,
+      minDailyFat: 50,
+      maxDailyFat: 70,
+      minDailyCarbs: 200,
+      maxDailyCarbs: 250,
+      maxDailySugar: 45,
       tolerance: 8,
-      cheatDays: 3,
       weekStartDay: 2,
     },
   },
@@ -177,52 +182,6 @@ describe('SettingsEditor', () => {
     });
   });
 
-  describe('Cheat Days', () => {
-    it('renders', () => {
-      wrapper = mountComponent();
-      const caloriesInput = wrapper.findComponent(
-        '[data-testid="cheat-days-input"]',
-      ) as VueWrapper<components.VNumberInput>;
-      expect(caloriesInput.exists()).toBe(true);
-      expect(caloriesInput.props('label')).toBe('Cheat Days per Week');
-    });
-
-    it('is required', async () => {
-      wrapper = mountComponent();
-      await numberInputIsRequired(wrapper, 'cheat-days-input');
-    });
-
-    it('must be zero or greater', async () => {
-      wrapper = mountComponent();
-      await numberInputMustBeZeroOrGreater(wrapper, 'cheat-days-input');
-    });
-
-    it('must be seven or less', async () => {
-      wrapper = mountComponent();
-      const caloriesInput = wrapper.findComponent(
-        '[data-testid="cheat-days-input"]',
-      ) as VueWrapper<components.VNumberInput>;
-      const input = caloriesInput.find('input');
-
-      expect(caloriesInput.text()).not.toContain('must be 7 or fewer');
-      await input.trigger('focus');
-      await input.setValue(8);
-      await input.trigger('blur');
-      expect(caloriesInput.text()).toContain('must be 7 or fewer');
-      await input.setValue(7);
-      await input.trigger('blur');
-      expect(caloriesInput.text()).not.toContain('must be 7 or fewer');
-    });
-
-    it('is initialized based on the settings', () => {
-      wrapper = mountComponent();
-      const caloriesInput = wrapper.findComponent(
-        '[data-testid="cheat-days-input"]',
-      ) as VueWrapper<components.VNumberInput>;
-      expect(caloriesInput.props('modelValue')).toBe(3);
-    });
-  });
-
   describe('Week Start Day', () => {
     it('renders', () => {
       wrapper = mountComponent();
@@ -282,9 +241,6 @@ describe('SettingsEditor', () => {
       const toleranceInput = wrapper.findComponent(
         '[data-testid="tolerance-input"]',
       ) as VueWrapper<components.VNumberInput>;
-      const cheatDaysInput = wrapper.findComponent(
-        '[data-testid="cheat-days-input"]',
-      ) as VueWrapper<components.VNumberInput>;
       const weekStartDayInput = wrapper.findComponent(
         '[data-testid="week-start-day-input"]',
       ) as VueWrapper<components.VAutocomplete>;
@@ -293,7 +249,6 @@ describe('SettingsEditor', () => {
       await sugarInput.setValue(55);
       await proteinInput.setValue(80);
       await toleranceInput.setValue(12);
-      await cheatDaysInput.setValue(2);
       await weekStartDayInput.setValue(1);
 
       const resetButton = wrapper.find('[data-testid="reset-button"]');
@@ -303,7 +258,6 @@ describe('SettingsEditor', () => {
       expect(sugarInput.props('modelValue')).toBe(45);
       expect(proteinInput.props('modelValue')).toBe(65);
       expect(toleranceInput.props('modelValue')).toBe(8);
-      expect(cheatDaysInput.props('modelValue')).toBe(3);
       expect(weekStartDayInput.props('modelValue')).toBe(2);
     });
 
@@ -367,9 +321,6 @@ describe('SettingsEditor', () => {
       const toleranceInput = wrapper.findComponent(
         '[data-testid="tolerance-input"]',
       ) as VueWrapper<components.VNumberInput>;
-      const cheatDaysInput = wrapper.findComponent(
-        '[data-testid="cheat-days-input"]',
-      ) as VueWrapper<components.VNumberInput>;
       const weekStartDayInput = wrapper.findComponent(
         '[data-testid="week-start-day-input"]',
       ) as VueWrapper<components.VAutocomplete>;
@@ -378,7 +329,6 @@ describe('SettingsEditor', () => {
       await sugarInput.setValue(55);
       await proteinInput.setValue(80);
       await toleranceInput.setValue(12);
-      await cheatDaysInput.setValue(2);
       await weekStartDayInput.setValue(1);
       await flushPromises();
 
@@ -389,11 +339,16 @@ describe('SettingsEditor', () => {
       expect(wrapper.emitted('save')?.length).toBe(1);
       expect(wrapper.emitted('save')?.[0]).toEqual([
         {
-          dailyCalorieLimit: 2100,
-          dailySugarLimit: 55,
-          dailyProteinTarget: 80,
+          minDailyCalories: 2100,
+          maxDailyCalories: 2100,
+          minDailyProtein: 80,
+          maxDailyProtein: 80,
+          minDailyFat: 0,
+          maxDailyFat: 0,
+          minDailyCarbs: 0,
+          maxDailyCarbs: 0,
+          maxDailySugar: 55,
           tolerance: 12,
-          cheatDays: 2,
           weekStartDay: 1,
         },
       ]);
@@ -404,11 +359,16 @@ describe('SettingsEditor', () => {
     it('resets form when settings prop changes', async () => {
       wrapper = mountComponent({
         settings: {
-          dailyCalorieLimit: 1800,
-          dailySugarLimit: 40,
-          dailyProteinTarget: 60,
+          minDailyCalories: 1500,
+          maxDailyCalories: 1800,
+          minDailyProtein: 50,
+          maxDailyProtein: 60,
+          minDailyFat: 50,
+          maxDailyFat: 70,
+          minDailyCarbs: 200,
+          maxDailyCarbs: 250,
+          maxDailySugar: 40,
           tolerance: 5,
-          cheatDays: 2,
           weekStartDay: 1,
         },
       });
@@ -427,11 +387,16 @@ describe('SettingsEditor', () => {
       // Update props - watchEffect should reset the form
       await wrapper.setProps({
         settings: {
-          dailyCalorieLimit: 2200,
-          dailySugarLimit: 50,
-          dailyProteinTarget: 70,
+          minDailyCalories: 1850,
+          maxDailyCalories: 2200,
+          minDailyProtein: 55,
+          maxDailyProtein: 70,
+          minDailyFat: 50,
+          maxDailyFat: 70,
+          minDailyCarbs: 200,
+          maxDailyCarbs: 250,
+          maxDailySugar: 50,
           tolerance: 10,
-          cheatDays: 1,
           weekStartDay: 0,
         },
       });
@@ -455,11 +420,6 @@ describe('SettingsEditor', () => {
       ) as VueWrapper<components.VNumberInput>;
       expect(toleranceInput.props('modelValue')).toBe(10);
 
-      const cheatDaysInput = wrapper.findComponent(
-        '[data-testid="cheat-days-input"]',
-      ) as VueWrapper<components.VNumberInput>;
-      expect(cheatDaysInput.props('modelValue')).toBe(1);
-
       const weekStartDayInput = wrapper.findComponent(
         '[data-testid="week-start-day-input"]',
       ) as VueWrapper<components.VAutocomplete>;
@@ -469,11 +429,16 @@ describe('SettingsEditor', () => {
     it('resets isModified state when props change', async () => {
       wrapper = mountComponent({
         settings: {
-          dailyCalorieLimit: 1800,
-          dailySugarLimit: 40,
-          dailyProteinTarget: 60,
+          minDailyCalories: 1500,
+          maxDailyCalories: 1800,
+          maxDailySugar: 40,
+          minDailyProtein: 50,
+          maxDailyProtein: 60,
+          minDailyFat: 50,
+          maxDailyFat: 70,
+          minDailyCarbs: 200,
+          maxDailyCarbs: 250,
           tolerance: 5,
-          cheatDays: 2,
           weekStartDay: 1,
         },
       });
@@ -496,11 +461,16 @@ describe('SettingsEditor', () => {
       // Update props - should reset and disable save button
       await wrapper.setProps({
         settings: {
-          dailyCalorieLimit: 2200,
-          dailySugarLimit: 50,
-          dailyProteinTarget: 70,
+          minDailyCalories: 1850,
+          maxDailyCalories: 2200,
+          maxDailySugar: 50,
+          minDailyProtein: 55,
+          maxDailyProtein: 70,
+          minDailyFat: 50,
+          maxDailyFat: 70,
+          minDailyCarbs: 200,
+          maxDailyCarbs: 250,
           tolerance: 10,
-          cheatDays: 1,
           weekStartDay: 0,
         },
       });

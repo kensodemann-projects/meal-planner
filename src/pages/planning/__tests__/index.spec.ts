@@ -265,11 +265,16 @@ describe('Planning', () => {
 
       describe('with weekStartDay: 5 (Friday)', () => {
         const fridaySettings = ref<Settings>({
-          dailyCalorieLimit: 2500,
-          dailySugarLimit: 35,
-          dailyProteinTarget: 85,
+          minDailyCalories: 1950,
+          maxDailyCalories: 2150,
+          minDailyProtein: 140,
+          maxDailyProtein: 160,
+          minDailyCarbs: 210,
+          maxDailyCarbs: 235,
+          minDailyFat: 60,
+          maxDailyFat: 75,
+          maxDailySugar: 38,
           tolerance: 15,
-          cheatDays: 2,
           weekStartDay: 5,
         });
         (fridaySettings as any).promise = { value: Promise.resolve(fridaySettings.value) };

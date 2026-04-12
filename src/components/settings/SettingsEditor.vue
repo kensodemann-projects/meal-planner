@@ -28,16 +28,6 @@
       ]"
       data-testid="tolerance-input"
     ></v-number-input>
-    <v-number-input
-      label="Cheat Days per Week"
-      v-model="cheatDays"
-      :rules="[
-        validationRules.required,
-        validationRules.zeroOrGreater,
-        (value) => value <= 7 || 'Cheat days must be 7 or fewer',
-      ]"
-      data-testid="cheat-days-input"
-    ></v-number-input>
     <v-autocomplete
       label="Week Start Day"
       v-model="weekStartDay"
@@ -75,30 +65,27 @@ const daysOfTheWeek = [
 
 // Reactive properties to control the editor
 const valid = ref(false);
-const dailyCalorieLimit = ref<number>(props.settings.dailyCalorieLimit);
-const dailySugarLimit = ref<number>(props.settings.dailySugarLimit);
-const dailyProteinTarget = ref<number>(props.settings.dailyProteinTarget);
+const dailyCalorieLimit = ref<number>(props.settings.maxDailyCalories);
+const dailySugarLimit = ref<number>(props.settings.maxDailySugar);
+const dailyProteinTarget = ref<number>(props.settings.maxDailyProtein);
 const tolerance = ref<number>(props.settings.tolerance);
-const cheatDays = ref<number>(props.settings.cheatDays);
 const weekStartDay = ref<number>(props.settings.weekStartDay);
 
 const isModified = computed(() => {
   return (
-    dailyCalorieLimit.value !== props.settings.dailyCalorieLimit ||
-    dailySugarLimit.value !== props.settings.dailySugarLimit ||
-    dailyProteinTarget.value !== props.settings.dailyProteinTarget ||
+    dailyCalorieLimit.value !== props.settings.maxDailyCalories ||
+    dailySugarLimit.value !== props.settings.maxDailySugar ||
+    dailyProteinTarget.value !== props.settings.maxDailyProtein ||
     tolerance.value !== props.settings.tolerance ||
-    cheatDays.value !== props.settings.cheatDays ||
     weekStartDay.value !== props.settings.weekStartDay
   );
 });
 
 const reset = () => {
-  dailyCalorieLimit.value = props.settings.dailyCalorieLimit;
-  dailySugarLimit.value = props.settings.dailySugarLimit;
-  dailyProteinTarget.value = props.settings.dailyProteinTarget;
+  dailyCalorieLimit.value = props.settings.maxDailyCalories;
+  dailySugarLimit.value = props.settings.maxDailySugar;
+  dailyProteinTarget.value = props.settings.maxDailyProtein;
   tolerance.value = props.settings.tolerance;
-  cheatDays.value = props.settings.cheatDays;
   weekStartDay.value = props.settings.weekStartDay;
 };
 
@@ -106,11 +93,16 @@ watchEffect(() => reset());
 
 const save = () => {
   const updatedSettings: Settings = {
-    dailyCalorieLimit: dailyCalorieLimit.value,
-    dailySugarLimit: dailySugarLimit.value,
-    dailyProteinTarget: dailyProteinTarget.value,
+    minDailyCalories: dailyCalorieLimit.value,
+    maxDailyCalories: dailyCalorieLimit.value,
+    minDailyProtein: dailyProteinTarget.value,
+    maxDailyProtein: dailyProteinTarget.value,
+    minDailyCarbs: 0, // Carbs are not currently editable, so we set them to 0
+    maxDailyCarbs: 0,
+    minDailyFat: 0, // Fat is not currently editable, so we set it to 0
+    maxDailyFat: 0,
+    maxDailySugar: dailySugarLimit.value,
     tolerance: tolerance.value,
-    cheatDays: cheatDays.value,
     weekStartDay: weekStartDay.value as WeekDay,
   };
   emit('save', updatedSettings);

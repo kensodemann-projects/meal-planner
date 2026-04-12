@@ -4,11 +4,16 @@ import { describe, expect, it, vi } from 'vitest';
 import { buildWeeklyData } from '../build-weekly-data';
 
 const makeSettings = (weekStartDay: 0 | 1 = 0): Settings => ({
-  dailyCalorieLimit: 2000,
-  dailySugarLimit: 50,
-  dailyProteinTarget: 150,
+  minDailyCalories: 2000,
+  maxDailyCalories: 2500,
+  minDailyProtein: 50,
+  maxDailyProtein: 150,
+  minDailyCarbs: 100,
+  maxDailyCarbs: 300,
+  minDailyFat: 20,
+  maxDailyFat: 70,
+  maxDailySugar: 50,
   tolerance: 10,
-  cheatDays: 1,
   weekStartDay,
 });
 

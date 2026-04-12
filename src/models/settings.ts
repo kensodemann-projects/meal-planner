@@ -7,19 +7,22 @@ export type WeekDay = 0 | 1 | 2 | 3 | 4 | 5 | 6;
  * User settings for meal planning and nutritional goals
  */
 export interface Settings {
-  /** Daily calorie target in kcal */
-  dailyCalorieLimit: number;
-  /** Daily sugar limit in grams */
-  dailySugarLimit: number;
-  /** Daily protein target in grams */
-  dailyProteinTarget: number;
+  minDailyCalories: number;
+  maxDailyCalories: number;
+  minDailyProtein: number;
+  maxDailyProtein: number;
+  minDailyCarbs: number;
+  maxDailyCarbs: number;
+  minDailyFat: number;
+  maxDailyFat: number;
+  maxDailySugar: number;
   /**
-   * Acceptable percentage deviation from nutritional targets before the day counts as a cheat day.
-   * Must be between 0 and 100 (inclusive). Validation is performed at runtime when updating settings.
+   * Acceptable percentage deviation above a maximum or below a minimum for calorie and nutrient goals.
+   * This is used to determine when to show warnings about exceeding limits or not meeting targets.
+   * Expected to be between 0 and 100 (inclusive). This interface does not enforce runtime validation;
+   * callers such as UI forms are responsible for providing a value in that range.
    */
   tolerance: number;
-  /** Number of cheat days allowed per week */
-  cheatDays: number;
   /** First day of the week (0 = Sunday, 1 = Monday, etc.) */
   weekStartDay: WeekDay;
 }

@@ -4,12 +4,17 @@ import { computed } from 'vue';
 import { useDocument, useFirestore } from 'vuefire';
 
 const DEFAULT_SETTINGS: Settings = {
-  dailyCalorieLimit: 2000,
-  dailySugarLimit: 50,
-  dailyProteinTarget: 75,
+  minDailyCalories: 1950,
+  maxDailyCalories: 2150,
+  minDailyProtein: 140,
+  maxDailyProtein: 160,
+  minDailyCarbs: 210,
+  maxDailyCarbs: 235,
+  minDailyFat: 60,
+  maxDailyFat: 75,
+  maxDailySugar: 38,
   tolerance: 10,
-  cheatDays: 1,
-  weekStartDay: 0, // Sunday
+  weekStartDay: 0,
 };
 
 export const useSettingsData = () => {
