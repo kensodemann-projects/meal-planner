@@ -49,6 +49,35 @@ describe('SettingsEditor', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
+  describe('Minimum Daily Calories Input', () => {
+    it('renders', () => {
+      wrapper = mountComponent();
+      const caloriesInput = wrapper.findComponent(
+        '[data-testid="min-daily-calorie-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(caloriesInput.exists()).toBe(true);
+      expect(caloriesInput.props('label')).toBe('Minimum Daily Calories (kcal)');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsRequired(wrapper, 'min-daily-calorie-input');
+    });
+
+    it('must be positive', async () => {
+      wrapper = mountComponent();
+      await numberInputMustBePositive(wrapper, 'min-daily-calorie-input');
+    });
+
+    it('is initialized based on the settings', () => {
+      wrapper = mountComponent();
+      const caloriesInput = wrapper.findComponent(
+        '[data-testid="min-daily-calorie-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(caloriesInput.props('modelValue')).toBe(1500);
+    });
+  });
+
   describe('Maximum Daily Calories Input', () => {
     it('renders', () => {
       wrapper = mountComponent();
@@ -229,6 +258,9 @@ describe('SettingsEditor', () => {
       wrapper = mountComponent();
 
       // Modify multiple fields
+      const minCaloriesInput = wrapper.findComponent(
+        '[data-testid="min-daily-calorie-input"]',
+      ) as VueWrapper<components.VNumberInput>;
       const caloriesInput = wrapper.findComponent(
         '[data-testid="max-daily-calorie-input"]',
       ) as VueWrapper<components.VNumberInput>;
@@ -245,6 +277,7 @@ describe('SettingsEditor', () => {
         '[data-testid="week-start-day-input"]',
       ) as VueWrapper<components.VAutocomplete>;
 
+      await minCaloriesInput.setValue(1200);
       await caloriesInput.setValue(2100);
       await sugarInput.setValue(55);
       await proteinInput.setValue(80);
@@ -254,6 +287,7 @@ describe('SettingsEditor', () => {
       const resetButton = wrapper.find('[data-testid="reset-button"]');
       await resetButton.trigger('click');
 
+      expect(minCaloriesInput.props('modelValue')).toBe(1500);
       expect(caloriesInput.props('modelValue')).toBe(1875);
       expect(sugarInput.props('modelValue')).toBe(45);
       expect(proteinInput.props('modelValue')).toBe(65);
@@ -309,6 +343,9 @@ describe('SettingsEditor', () => {
       wrapper = mountComponent();
 
       // Modify multiple fields
+      const minCaloriesInput = wrapper.findComponent(
+        '[data-testid="min-daily-calorie-input"]',
+      ) as VueWrapper<components.VNumberInput>;
       const caloriesInput = wrapper.findComponent(
         '[data-testid="max-daily-calorie-input"]',
       ) as VueWrapper<components.VNumberInput>;
@@ -325,6 +362,7 @@ describe('SettingsEditor', () => {
         '[data-testid="week-start-day-input"]',
       ) as VueWrapper<components.VAutocomplete>;
 
+      await minCaloriesInput.setValue(1800);
       await caloriesInput.setValue(2100);
       await sugarInput.setValue(55);
       await proteinInput.setValue(80);
@@ -339,7 +377,7 @@ describe('SettingsEditor', () => {
       expect(wrapper.emitted('save')?.length).toBe(1);
       expect(wrapper.emitted('save')?.[0]).toEqual([
         {
-          minDailyCalories: 2100,
+          minDailyCalories: 1800,
           maxDailyCalories: 2100,
           minDailyProtein: 80,
           maxDailyProtein: 80,
@@ -404,6 +442,11 @@ describe('SettingsEditor', () => {
 
       // Verify all fields were reset to new prop values
       expect(caloriesInput.props('modelValue')).toBe(2200);
+
+      const minCaloriesInput = wrapper.findComponent(
+        '[data-testid="min-daily-calorie-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(minCaloriesInput.props('modelValue')).toBe(1850);
 
       const sugarInput = wrapper.findComponent(
         '[data-testid="max-daily-sugar-input"]',

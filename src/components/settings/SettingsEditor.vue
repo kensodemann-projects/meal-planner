@@ -2,7 +2,15 @@
   <v-form v-model="valid">
     <v-container fluid>
       <v-row density="compact">
-        <v-col cols="12">
+        <v-col cols="12" md="6">
+          <v-number-input
+            label="Minimum Daily Calories (kcal)"
+            v-model="minDailyCalories"
+            :rules="[validationRules.required, validationRules.positive]"
+            data-testid="min-daily-calorie-input"
+          ></v-number-input>
+        </v-col>
+        <v-col cols="12" md="6">
           <v-number-input
             label="Maximum Daily Calories (kcal)"
             v-model="maxDailyCalories"
@@ -87,6 +95,7 @@ const daysOfTheWeek = [
 
 // Reactive properties to control the editor
 const valid = ref(false);
+const minDailyCalories = ref<number>(props.settings.minDailyCalories);
 const maxDailyCalories = ref<number>(props.settings.maxDailyCalories);
 const maxDailyProtein = ref<number>(props.settings.maxDailyProtein);
 const maxDailySugar = ref<number>(props.settings.maxDailySugar);
@@ -95,6 +104,7 @@ const weekStartDay = ref<number>(props.settings.weekStartDay);
 
 const isModified = computed(() => {
   return (
+    minDailyCalories.value !== props.settings.minDailyCalories ||
     maxDailyCalories.value !== props.settings.maxDailyCalories ||
     maxDailySugar.value !== props.settings.maxDailySugar ||
     maxDailyProtein.value !== props.settings.maxDailyProtein ||
@@ -104,6 +114,7 @@ const isModified = computed(() => {
 });
 
 const reset = () => {
+  minDailyCalories.value = props.settings.minDailyCalories;
   maxDailyCalories.value = props.settings.maxDailyCalories;
   maxDailySugar.value = props.settings.maxDailySugar;
   maxDailyProtein.value = props.settings.maxDailyProtein;
@@ -115,7 +126,7 @@ watchEffect(() => reset());
 
 const save = () => {
   const updatedSettings: Settings = {
-    minDailyCalories: maxDailyCalories.value,
+    minDailyCalories: minDailyCalories.value,
     maxDailyCalories: maxDailyCalories.value,
     minDailyProtein: maxDailyProtein.value,
     maxDailyProtein: maxDailyProtein.value,
