@@ -18,9 +18,15 @@ const vuetify = createVuetify({
 const mountComponent = (
   props: { settings: Settings } = {
     settings: {
-      dailyCalorieLimit: 1875,
-      dailySugarLimit: 45,
-      dailyProteinTarget: 65,
+      minDailyCalories: 1500,
+      maxDailyCalories: 1875,
+      minDailyProtein: 50,
+      maxDailyProtein: 65,
+      minDailyFat: 50,
+      maxDailyFat: 70,
+      minDailyCarbs: 200,
+      maxDailyCarbs: 250,
+      maxDailySugar: 45,
       tolerance: 8,
       weekStartDay: 2,
     },
@@ -333,9 +339,15 @@ describe('SettingsEditor', () => {
       expect(wrapper.emitted('save')?.length).toBe(1);
       expect(wrapper.emitted('save')?.[0]).toEqual([
         {
-          dailyCalorieLimit: 2100,
-          dailySugarLimit: 55,
-          dailyProteinTarget: 80,
+          minDailyCalories: 2100,
+          maxDailyCalories: 2100,
+          minDailyProtein: 80,
+          maxDailyProtein: 80,
+          minDailyFat: 0,
+          maxDailyFat: 0,
+          minDailyCarbs: 0,
+          maxDailyCarbs: 0,
+          maxDailySugar: 55,
           tolerance: 12,
           weekStartDay: 1,
         },
@@ -347,9 +359,15 @@ describe('SettingsEditor', () => {
     it('resets form when settings prop changes', async () => {
       wrapper = mountComponent({
         settings: {
-          dailyCalorieLimit: 1800,
-          dailySugarLimit: 40,
-          dailyProteinTarget: 60,
+          minDailyCalories: 1500,
+          maxDailyCalories: 1800,
+          minDailyProtein: 50,
+          maxDailyProtein: 60,
+          minDailyFat: 50,
+          maxDailyFat: 70,
+          minDailyCarbs: 200,
+          maxDailyCarbs: 250,
+          maxDailySugar: 40,
           tolerance: 5,
           weekStartDay: 1,
         },
@@ -369,9 +387,15 @@ describe('SettingsEditor', () => {
       // Update props - watchEffect should reset the form
       await wrapper.setProps({
         settings: {
-          dailyCalorieLimit: 2200,
-          dailySugarLimit: 50,
-          dailyProteinTarget: 70,
+          minDailyCalories: 1850,
+          maxDailyCalories: 2200,
+          minDailyProtein: 55,
+          maxDailyProtein: 70,
+          minDailyFat: 50,
+          maxDailyFat: 70,
+          minDailyCarbs: 200,
+          maxDailyCarbs: 250,
+          maxDailySugar: 50,
           tolerance: 10,
           weekStartDay: 0,
         },
@@ -405,9 +429,15 @@ describe('SettingsEditor', () => {
     it('resets isModified state when props change', async () => {
       wrapper = mountComponent({
         settings: {
-          dailyCalorieLimit: 1800,
-          dailySugarLimit: 40,
-          dailyProteinTarget: 60,
+          minDailyCalories: 1500,
+          maxDailyCalories: 1800,
+          maxDailySugar: 40,
+          minDailyProtein: 50,
+          maxDailyProtein: 60,
+          minDailyFat: 50,
+          maxDailyFat: 70,
+          minDailyCarbs: 200,
+          maxDailyCarbs: 250,
           tolerance: 5,
           weekStartDay: 1,
         },
@@ -431,9 +461,15 @@ describe('SettingsEditor', () => {
       // Update props - should reset and disable save button
       await wrapper.setProps({
         settings: {
-          dailyCalorieLimit: 2200,
-          dailySugarLimit: 50,
-          dailyProteinTarget: 70,
+          minDailyCalories: 1850,
+          maxDailyCalories: 2200,
+          maxDailySugar: 50,
+          minDailyProtein: 55,
+          maxDailyProtein: 70,
+          minDailyFat: 50,
+          maxDailyFat: 70,
+          minDailyCarbs: 200,
+          maxDailyCarbs: 250,
           tolerance: 10,
           weekStartDay: 0,
         },

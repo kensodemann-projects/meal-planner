@@ -13,8 +13,8 @@ export interface Settings {
   maxDailyProtein: number;
   minDailyCarbs: number;
   maxDailyCarbs: number;
-  minDailyFats: number;
-  maxDailyFats: number;
+  minDailyFat: number;
+  maxDailyFat: number;
   maxDailySugar: number;
   /**
    * Acceptable percentage deviation above a maximum or below a minimum for calorie and nutrient goals.

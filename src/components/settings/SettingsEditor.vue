@@ -65,26 +65,26 @@ const daysOfTheWeek = [
 
 // Reactive properties to control the editor
 const valid = ref(false);
-const dailyCalorieLimit = ref<number>(props.settings.dailyCalorieLimit);
-const dailySugarLimit = ref<number>(props.settings.dailySugarLimit);
-const dailyProteinTarget = ref<number>(props.settings.dailyProteinTarget);
+const dailyCalorieLimit = ref<number>(props.settings.maxDailyCalories);
+const dailySugarLimit = ref<number>(props.settings.maxDailySugar);
+const dailyProteinTarget = ref<number>(props.settings.maxDailyProtein);
 const tolerance = ref<number>(props.settings.tolerance);
 const weekStartDay = ref<number>(props.settings.weekStartDay);
 
 const isModified = computed(() => {
   return (
-    dailyCalorieLimit.value !== props.settings.dailyCalorieLimit ||
-    dailySugarLimit.value !== props.settings.dailySugarLimit ||
-    dailyProteinTarget.value !== props.settings.dailyProteinTarget ||
+    dailyCalorieLimit.value !== props.settings.maxDailyCalories ||
+    dailySugarLimit.value !== props.settings.maxDailySugar ||
+    dailyProteinTarget.value !== props.settings.maxDailyProtein ||
     tolerance.value !== props.settings.tolerance ||
     weekStartDay.value !== props.settings.weekStartDay
   );
 });
 
 const reset = () => {
-  dailyCalorieLimit.value = props.settings.dailyCalorieLimit;
-  dailySugarLimit.value = props.settings.dailySugarLimit;
-  dailyProteinTarget.value = props.settings.dailyProteinTarget;
+  dailyCalorieLimit.value = props.settings.maxDailyCalories;
+  dailySugarLimit.value = props.settings.maxDailySugar;
+  dailyProteinTarget.value = props.settings.maxDailyProtein;
   tolerance.value = props.settings.tolerance;
   weekStartDay.value = props.settings.weekStartDay;
 };
@@ -93,9 +93,15 @@ watchEffect(() => reset());
 
 const save = () => {
   const updatedSettings: Settings = {
-    dailyCalorieLimit: dailyCalorieLimit.value,
-    dailySugarLimit: dailySugarLimit.value,
-    dailyProteinTarget: dailyProteinTarget.value,
+    minDailyCalories: dailyCalorieLimit.value,
+    maxDailyCalories: dailyCalorieLimit.value,
+    minDailyProtein: dailyProteinTarget.value,
+    maxDailyProtein: dailyProteinTarget.value,
+    minDailyCarbs: 0, // Carbs are not currently editable, so we set them to 0
+    maxDailyCarbs: 0,
+    minDailyFat: 0, // Fat is not currently editable, so we set it to 0
+    maxDailyFat: 0,
+    maxDailySugar: dailySugarLimit.value,
     tolerance: tolerance.value,
     weekStartDay: weekStartDay.value as WeekDay,
   };

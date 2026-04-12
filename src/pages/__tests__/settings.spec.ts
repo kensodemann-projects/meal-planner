@@ -47,9 +47,15 @@ describe('SettingsPage', () => {
     const settingsEditor = wrapper.findComponent({ name: 'SettingsEditor' });
     expect(settingsEditor.exists()).toBe(true);
     expect(settingsEditor.props('settings')).toEqual({
-      dailyCalorieLimit: 2500,
-      dailySugarLimit: 35,
-      dailyProteinTarget: 85,
+      minDailyCalories: 1500,
+      maxDailyCalories: 2500,
+      minDailyProtein: 85,
+      maxDailyProtein: 150,
+      minDailyCarbs: 130,
+      maxDailyCarbs: 300,
+      minDailyFat: 20,
+      maxDailyFat: 70,
+      maxDailySugar: 35,
       tolerance: 15,
       weekStartDay: 1,
     });
@@ -61,9 +67,15 @@ describe('SettingsPage', () => {
     const { updateSettings } = useSettingsData();
 
     const updatedSettings = {
-      dailyCalorieLimit: 2100,
-      dailySugarLimit: 45,
-      dailyProteinTarget: 90,
+      minDailyCalories: 1950,
+      maxDailyCalories: 2150,
+      minDailyProtein: 140,
+      maxDailyProtein: 160,
+      minDailyCarbs: 210,
+      maxDailyCarbs: 235,
+      minDailyFat: 60,
+      maxDailyFat: 75,
+      maxDailySugar: 38,
       tolerance: 12,
       weekStartDay: 0,
     };
