@@ -129,4 +129,82 @@ describe('Validation Rules', () => {
       expect(validationRules.zeroOrGreater(Number.MIN_VALUE)).toBe(true);
     });
   });
+
+  describe('mustBeGreaterThan', () => {
+    it('returns true if value is null or undefined', () => {
+      expect(validationRules.mustBeGreaterThan(10)(undefined)).toBe(true);
+      expect(validationRules.mustBeGreaterThan(10)(null)).toBe(true);
+    });
+
+    it('returns true if min is null or undefined', () => {
+      expect(validationRules.mustBeGreaterThan(null)(5)).toBe(true);
+      expect(validationRules.mustBeGreaterThan(undefined)(5)).toBe(true);
+    });
+
+    it('returns true for values strictly greater than min', () => {
+      expect(validationRules.mustBeGreaterThan(10)(11)).toBe(true);
+      expect(validationRules.mustBeGreaterThan(10)(100)).toBe(true);
+      expect(validationRules.mustBeGreaterThan(10)(10.001)).toBe(true);
+      expect(validationRules.mustBeGreaterThan(0)(1)).toBe(true);
+    });
+
+    it('returns the default error for values at or below min', () => {
+      expect(validationRules.mustBeGreaterThan(10)(10)).toBe('Must be greater than 10');
+      expect(validationRules.mustBeGreaterThan(10)(9)).toBe('Must be greater than 10');
+      expect(validationRules.mustBeGreaterThan(10)(-5)).toBe('Must be greater than 10');
+      expect(validationRules.mustBeGreaterThan(0)(0)).toBe('Must be greater than 0');
+    });
+
+    it('returns the custom message for values at or below min', () => {
+      expect(validationRules.mustBeGreaterThan(10, 'Too low')(10)).toBe('Too low');
+      expect(validationRules.mustBeGreaterThan(10, 'Too low')(5)).toBe('Too low');
+    });
+
+    it('returns the default NaN error for NaN', () => {
+      expect(validationRules.mustBeGreaterThan(10)(NaN)).toBe('Must be a valid number greater than 10');
+    });
+
+    it('returns the custom message for NaN', () => {
+      expect(validationRules.mustBeGreaterThan(10, 'Bad value')(NaN)).toBe('Bad value');
+    });
+  });
+
+  describe('mustBeLessThan', () => {
+    it('returns true if value is null or undefined', () => {
+      expect(validationRules.mustBeLessThan(10)(undefined)).toBe(true);
+      expect(validationRules.mustBeLessThan(10)(null)).toBe(true);
+    });
+
+    it('returns true if max is null or undefined', () => {
+      expect(validationRules.mustBeLessThan(null)(5)).toBe(true);
+      expect(validationRules.mustBeLessThan(undefined)(5)).toBe(true);
+    });
+
+    it('returns true for values strictly less than max', () => {
+      expect(validationRules.mustBeLessThan(10)(9)).toBe(true);
+      expect(validationRules.mustBeLessThan(10)(0)).toBe(true);
+      expect(validationRules.mustBeLessThan(10)(9.999)).toBe(true);
+      expect(validationRules.mustBeLessThan(0)(-1)).toBe(true);
+    });
+
+    it('returns the default error for values at or above max', () => {
+      expect(validationRules.mustBeLessThan(10)(10)).toBe('Must be less than 10');
+      expect(validationRules.mustBeLessThan(10)(11)).toBe('Must be less than 10');
+      expect(validationRules.mustBeLessThan(10)(100)).toBe('Must be less than 10');
+      expect(validationRules.mustBeLessThan(0)(0)).toBe('Must be less than 0');
+    });
+
+    it('returns the custom message for values at or above max', () => {
+      expect(validationRules.mustBeLessThan(10, 'Too high')(10)).toBe('Too high');
+      expect(validationRules.mustBeLessThan(10, 'Too high')(15)).toBe('Too high');
+    });
+
+    it('returns the default NaN error for NaN', () => {
+      expect(validationRules.mustBeLessThan(10)(NaN)).toBe('Must be a valid number less than 10');
+    });
+
+    it('returns the custom message for NaN', () => {
+      expect(validationRules.mustBeLessThan(10, 'Bad value')(NaN)).toBe('Bad value');
+    });
+  });
 });
