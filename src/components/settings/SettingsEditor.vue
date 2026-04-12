@@ -20,7 +20,15 @@
         </v-col>
       </v-row>
       <v-row density="compact">
-        <v-col cols="12">
+        <v-col cols="12" md="6">
+          <v-number-input
+            label="Minimum Daily Protein (grams)"
+            v-model="minDailyProtein"
+            :rules="[validationRules.required, validationRules.positive]"
+            data-testid="min-daily-protein-input"
+          ></v-number-input>
+        </v-col>
+        <v-col cols="12" md="6">
           <v-number-input
             label="Maximum Daily Protein (grams)"
             v-model="maxDailyProtein"
@@ -97,6 +105,7 @@ const daysOfTheWeek = [
 const valid = ref(false);
 const minDailyCalories = ref<number>(props.settings.minDailyCalories);
 const maxDailyCalories = ref<number>(props.settings.maxDailyCalories);
+const minDailyProtein = ref<number>(props.settings.minDailyProtein);
 const maxDailyProtein = ref<number>(props.settings.maxDailyProtein);
 const maxDailySugar = ref<number>(props.settings.maxDailySugar);
 const tolerance = ref<number>(props.settings.tolerance);
@@ -106,8 +115,9 @@ const isModified = computed(() => {
   return (
     minDailyCalories.value !== props.settings.minDailyCalories ||
     maxDailyCalories.value !== props.settings.maxDailyCalories ||
-    maxDailySugar.value !== props.settings.maxDailySugar ||
+    minDailyProtein.value !== props.settings.minDailyProtein ||
     maxDailyProtein.value !== props.settings.maxDailyProtein ||
+    maxDailySugar.value !== props.settings.maxDailySugar ||
     tolerance.value !== props.settings.tolerance ||
     weekStartDay.value !== props.settings.weekStartDay
   );
@@ -116,8 +126,9 @@ const isModified = computed(() => {
 const reset = () => {
   minDailyCalories.value = props.settings.minDailyCalories;
   maxDailyCalories.value = props.settings.maxDailyCalories;
-  maxDailySugar.value = props.settings.maxDailySugar;
+  minDailyProtein.value = props.settings.minDailyProtein;
   maxDailyProtein.value = props.settings.maxDailyProtein;
+  maxDailySugar.value = props.settings.maxDailySugar;
   tolerance.value = props.settings.tolerance;
   weekStartDay.value = props.settings.weekStartDay;
 };
@@ -128,7 +139,7 @@ const save = () => {
   const updatedSettings: Settings = {
     minDailyCalories: minDailyCalories.value,
     maxDailyCalories: maxDailyCalories.value,
-    minDailyProtein: maxDailyProtein.value,
+    minDailyProtein: minDailyProtein.value,
     maxDailyProtein: maxDailyProtein.value,
     minDailyCarbs: 0, // Carbs are not currently editable, so we set them to 0
     maxDailyCarbs: 0,
