@@ -235,6 +235,29 @@ describe('Dashboard Page', () => {
   });
 
   describe('detail stats', () => {
+    describe('when there is no meal plan for today', () => {
+      it('does not call dailyMealPlanNutrients', async () => {
+        wrapper = mountPage();
+        await flushPromises();
+        expect(dailyMealPlanNutrients).not.toHaveBeenCalled();
+      });
+
+      it('displays zero for all detail stats', async () => {
+        wrapper = mountPage();
+        await flushPromises();
+        const cards = wrapper
+          .findAllComponents(DetailStatCard)
+          .filter((c) =>
+            ['Protein (g)', 'Sugar (g)', 'Total Carbs (g)', 'Sodium (mg)', 'Fat (g)', 'Calories'].includes(
+              c.props('label') as string,
+            ),
+          );
+        for (const card of cards) {
+          expect(card.props('value')).toBe(0);
+        }
+      });
+    });
+
     describe('when today has a meal plan', () => {
       beforeEach(() => {
         const { getMealPlanForDate } = useMealPlansData();
@@ -340,6 +363,28 @@ describe('Dashboard Page', () => {
   });
 
   describe('meal cards', () => {
+    describe('when there is no meal plan for today', () => {
+      beforeEach(() => {
+        const { getMealPlanForDate } = useMealPlansData();
+        (getMealPlanForDate as Mock).mockResolvedValue(null);
+      });
+
+      it('does not call mealNutrients', async () => {
+        wrapper = mountPage();
+        await flushPromises();
+        expect(mealNutrients).not.toHaveBeenCalled();
+      });
+
+      it('displays N/A for all meal types', async () => {
+        wrapper = mountPage();
+        await flushPromises();
+        for (const label of ['Breakfast', 'Lunch', 'Dinner', 'Snack']) {
+          const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === label);
+          expect(card?.props('value')).toBe('N/A');
+        }
+      });
+    });
+
     describe('when today has a meal plan with all meal types', () => {
       beforeEach(() => {
         const { getMealPlanForDate } = useMealPlansData();

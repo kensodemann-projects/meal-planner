@@ -16,7 +16,7 @@
           :icon="meal.icon"
           :label="meal.label"
           :value="meal.value"
-          @click="router.push({ path: 'dashboard/recipes', query: { mealType: meal.label.toLowerCase() } })"
+          @click="router.push({ path: 'dashboard/recipes', query: { mealType: meal.type.toLowerCase() } })"
         />
       </v-col>
     </v-row>
@@ -87,10 +87,15 @@ const getMealCalories = (mealType: MealType): number | string => {
 };
 
 const meals = computed(() => [
-  { icon: 'mdi-coffee-outline', label: 'Breakfast', value: getMealCalories('Breakfast') },
-  { icon: 'mdi-food-outline', label: 'Lunch', value: getMealCalories('Lunch') },
-  { icon: 'mdi-food-turkey', label: 'Dinner', value: getMealCalories('Dinner') },
-  { icon: 'mdi-peanut-outline', label: 'Snack', value: getMealCalories('Snack') },
+  {
+    icon: 'mdi-coffee-outline',
+    label: 'Breakfast',
+    type: 'Breakfast' as MealType,
+    value: getMealCalories('Breakfast'),
+  },
+  { icon: 'mdi-food-outline', label: 'Lunch', type: 'Lunch' as MealType, value: getMealCalories('Lunch') },
+  { icon: 'mdi-food-turkey', label: 'Dinner', type: 'Dinner' as MealType, value: getMealCalories('Dinner') },
+  { icon: 'mdi-peanut-outline', label: 'Snack', type: 'Snack' as MealType, value: getMealCalories('Snack') },
 ]);
 
 const loadData = async (currentSettings: typeof settings.value) => {
