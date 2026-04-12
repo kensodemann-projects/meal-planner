@@ -1,22 +1,22 @@
 <template>
   <v-form v-model="valid">
     <v-number-input
-      label="Daily Calorie Limit (kcal)"
-      v-model="dailyCalorieLimit"
+      label="Maximum Daily Calories (kcal)"
+      v-model="maxDailyCalories"
       :rules="[validationRules.required, validationRules.positive]"
-      data-testid="daily-calorie-limit-input"
+      data-testid="max-daily-calorie-input"
     ></v-number-input>
     <v-number-input
-      label="Daily Sugar Limit (grams)"
-      v-model="dailySugarLimit"
+      label="Maximum Daily Protein (grams)"
+      v-model="maxDailyProtein"
       :rules="[validationRules.required, validationRules.positive]"
-      data-testid="daily-sugar-limit-input"
+      data-testid="max-daily-protein-input"
     ></v-number-input>
     <v-number-input
-      label="Daily Protein Target (grams)"
-      v-model="dailyProteinTarget"
+      label="Maximum Daily Sugar (grams)"
+      v-model="maxDailySugar"
       :rules="[validationRules.required, validationRules.positive]"
-      data-testid="daily-protein-target-input"
+      data-testid="max-daily-sugar-input"
     ></v-number-input>
     <v-number-input
       label="Tolerance (%)"
@@ -65,26 +65,26 @@ const daysOfTheWeek = [
 
 // Reactive properties to control the editor
 const valid = ref(false);
-const dailyCalorieLimit = ref<number>(props.settings.maxDailyCalories);
-const dailySugarLimit = ref<number>(props.settings.maxDailySugar);
-const dailyProteinTarget = ref<number>(props.settings.maxDailyProtein);
+const maxDailyCalories = ref<number>(props.settings.maxDailyCalories);
+const maxDailyProtein = ref<number>(props.settings.maxDailyProtein);
+const maxDailySugar = ref<number>(props.settings.maxDailySugar);
 const tolerance = ref<number>(props.settings.tolerance);
 const weekStartDay = ref<number>(props.settings.weekStartDay);
 
 const isModified = computed(() => {
   return (
-    dailyCalorieLimit.value !== props.settings.maxDailyCalories ||
-    dailySugarLimit.value !== props.settings.maxDailySugar ||
-    dailyProteinTarget.value !== props.settings.maxDailyProtein ||
+    maxDailyCalories.value !== props.settings.maxDailyCalories ||
+    maxDailySugar.value !== props.settings.maxDailySugar ||
+    maxDailyProtein.value !== props.settings.maxDailyProtein ||
     tolerance.value !== props.settings.tolerance ||
     weekStartDay.value !== props.settings.weekStartDay
   );
 });
 
 const reset = () => {
-  dailyCalorieLimit.value = props.settings.maxDailyCalories;
-  dailySugarLimit.value = props.settings.maxDailySugar;
-  dailyProteinTarget.value = props.settings.maxDailyProtein;
+  maxDailyCalories.value = props.settings.maxDailyCalories;
+  maxDailySugar.value = props.settings.maxDailySugar;
+  maxDailyProtein.value = props.settings.maxDailyProtein;
   tolerance.value = props.settings.tolerance;
   weekStartDay.value = props.settings.weekStartDay;
 };
@@ -93,15 +93,15 @@ watchEffect(() => reset());
 
 const save = () => {
   const updatedSettings: Settings = {
-    minDailyCalories: dailyCalorieLimit.value,
-    maxDailyCalories: dailyCalorieLimit.value,
-    minDailyProtein: dailyProteinTarget.value,
-    maxDailyProtein: dailyProteinTarget.value,
+    minDailyCalories: maxDailyCalories.value,
+    maxDailyCalories: maxDailyCalories.value,
+    minDailyProtein: maxDailyProtein.value,
+    maxDailyProtein: maxDailyProtein.value,
     minDailyCarbs: 0, // Carbs are not currently editable, so we set them to 0
     maxDailyCarbs: 0,
     minDailyFat: 0, // Fat is not currently editable, so we set it to 0
     maxDailyFat: 0,
-    maxDailySugar: dailySugarLimit.value,
+    maxDailySugar: maxDailySugar.value,
     tolerance: tolerance.value,
     weekStartDay: weekStartDay.value as WeekDay,
   };

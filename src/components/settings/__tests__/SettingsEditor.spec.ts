@@ -49,90 +49,90 @@ describe('SettingsEditor', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  describe('Daily Calorie Limit Input', () => {
+  describe('Maximum Daily Calories Input', () => {
     it('renders', () => {
       wrapper = mountComponent();
       const caloriesInput = wrapper.findComponent(
-        '[data-testid="daily-calorie-limit-input"]',
+        '[data-testid="max-daily-calorie-input"]',
       ) as VueWrapper<components.VNumberInput>;
       expect(caloriesInput.exists()).toBe(true);
-      expect(caloriesInput.props('label')).toBe('Daily Calorie Limit (kcal)');
+      expect(caloriesInput.props('label')).toBe('Maximum Daily Calories (kcal)');
     });
 
     it('is required', async () => {
       wrapper = mountComponent();
-      await numberInputIsRequired(wrapper, 'daily-calorie-limit-input');
+      await numberInputIsRequired(wrapper, 'max-daily-calorie-input');
     });
 
     it('must be positive', async () => {
       wrapper = mountComponent();
-      await numberInputMustBePositive(wrapper, 'daily-calorie-limit-input');
+      await numberInputMustBePositive(wrapper, 'max-daily-calorie-input');
     });
 
     it('is initialized based on the settings', () => {
       wrapper = mountComponent();
       const caloriesInput = wrapper.findComponent(
-        '[data-testid="daily-calorie-limit-input"]',
+        '[data-testid="max-daily-calorie-input"]',
       ) as VueWrapper<components.VNumberInput>;
       expect(caloriesInput.props('modelValue')).toBe(1875);
     });
   });
 
-  describe('Daily Sugar Limit Input', () => {
+  describe('Maximum Daily Protein Input', () => {
     it('renders', () => {
       wrapper = mountComponent();
-      const caloriesInput = wrapper.findComponent(
-        '[data-testid="daily-sugar-limit-input"]',
+      const proteinInput = wrapper.findComponent(
+        '[data-testid="max-daily-protein-input"]',
       ) as VueWrapper<components.VNumberInput>;
-      expect(caloriesInput.exists()).toBe(true);
-      expect(caloriesInput.props('label')).toBe('Daily Sugar Limit (grams)');
+      expect(proteinInput.exists()).toBe(true);
+      expect(proteinInput.props('label')).toBe('Maximum Daily Protein (grams)');
     });
 
     it('is required', async () => {
       wrapper = mountComponent();
-      await numberInputIsRequired(wrapper, 'daily-sugar-limit-input');
+      await numberInputIsRequired(wrapper, 'max-daily-protein-input');
     });
 
     it('must be positive', async () => {
       wrapper = mountComponent();
-      await numberInputMustBePositive(wrapper, 'daily-sugar-limit-input');
+      await numberInputMustBePositive(wrapper, 'max-daily-protein-input');
     });
 
     it('is initialized based on the settings', () => {
       wrapper = mountComponent();
-      const caloriesInput = wrapper.findComponent(
-        '[data-testid="daily-sugar-limit-input"]',
+      const proteinInput = wrapper.findComponent(
+        '[data-testid="max-daily-protein-input"]',
       ) as VueWrapper<components.VNumberInput>;
-      expect(caloriesInput.props('modelValue')).toBe(45);
+      expect(proteinInput.props('modelValue')).toBe(65);
     });
   });
 
-  describe('Daily Protein Target Input', () => {
+  describe('Maximum Daily Sugar Input', () => {
     it('renders', () => {
       wrapper = mountComponent();
-      const caloriesInput = wrapper.findComponent(
-        '[data-testid="daily-protein-target-input"]',
+      const sugarInput = wrapper.findComponent(
+        '[data-testid="max-daily-sugar-input"]',
       ) as VueWrapper<components.VNumberInput>;
-      expect(caloriesInput.exists()).toBe(true);
-      expect(caloriesInput.props('label')).toBe('Daily Protein Target (grams)');
+      expect(sugarInput.exists()).toBe(true);
+      expect(sugarInput.props('label')).toBe('Maximum Daily Sugar (grams)');
     });
 
     it('is required', async () => {
       wrapper = mountComponent();
-      await numberInputIsRequired(wrapper, 'daily-protein-target-input');
+      await numberInputIsRequired(wrapper, 'max-daily-sugar-input');
     });
 
     it('must be positive', async () => {
       wrapper = mountComponent();
-      await numberInputMustBePositive(wrapper, 'daily-protein-target-input');
+      await numberInputMustBePositive(wrapper, 'max-daily-sugar-input');
     });
 
     it('is initialized based on the settings', () => {
       wrapper = mountComponent();
-      const caloriesInput = wrapper.findComponent(
-        '[data-testid="daily-protein-target-input"]',
+      const sugarInput = wrapper.findComponent(
+        '[data-testid="max-daily-sugar-input"]',
       ) as VueWrapper<components.VNumberInput>;
-      expect(caloriesInput.props('modelValue')).toBe(65);
+      expect(sugarInput.props('modelValue')).toBe(45);
     });
   });
 
@@ -230,13 +230,13 @@ describe('SettingsEditor', () => {
 
       // Modify multiple fields
       const caloriesInput = wrapper.findComponent(
-        '[data-testid="daily-calorie-limit-input"]',
+        '[data-testid="max-daily-calorie-input"]',
       ) as VueWrapper<components.VNumberInput>;
       const sugarInput = wrapper.findComponent(
-        '[data-testid="daily-sugar-limit-input"]',
+        '[data-testid="max-daily-sugar-input"]',
       ) as VueWrapper<components.VNumberInput>;
       const proteinInput = wrapper.findComponent(
-        '[data-testid="daily-protein-target-input"]',
+        '[data-testid="max-daily-protein-input"]',
       ) as VueWrapper<components.VNumberInput>;
       const toleranceInput = wrapper.findComponent(
         '[data-testid="tolerance-input"]',
@@ -266,7 +266,7 @@ describe('SettingsEditor', () => {
 
       const saveButton = wrapper.find('[data-testid="save-button"]');
       const caloriesInput = wrapper.findComponent(
-        '[data-testid="daily-calorie-limit-input"]',
+        '[data-testid="max-daily-calorie-input"]',
       ) as VueWrapper<components.VNumberInput>;
       await caloriesInput.setValue(2100);
       await flushPromises();
@@ -295,7 +295,7 @@ describe('SettingsEditor', () => {
     it('is enabled when form is valid and modified', async () => {
       wrapper = mountComponent();
       const caloriesInput = wrapper.findComponent(
-        '[data-testid="daily-calorie-limit-input"]',
+        '[data-testid="max-daily-calorie-input"]',
       ) as VueWrapper<components.VNumberInput>;
 
       await caloriesInput.setValue(2000);
@@ -310,13 +310,13 @@ describe('SettingsEditor', () => {
 
       // Modify multiple fields
       const caloriesInput = wrapper.findComponent(
-        '[data-testid="daily-calorie-limit-input"]',
+        '[data-testid="max-daily-calorie-input"]',
       ) as VueWrapper<components.VNumberInput>;
       const sugarInput = wrapper.findComponent(
-        '[data-testid="daily-sugar-limit-input"]',
+        '[data-testid="max-daily-sugar-input"]',
       ) as VueWrapper<components.VNumberInput>;
       const proteinInput = wrapper.findComponent(
-        '[data-testid="daily-protein-target-input"]',
+        '[data-testid="max-daily-protein-input"]',
       ) as VueWrapper<components.VNumberInput>;
       const toleranceInput = wrapper.findComponent(
         '[data-testid="tolerance-input"]',
@@ -375,7 +375,7 @@ describe('SettingsEditor', () => {
 
       // Verify initial values
       const caloriesInput = wrapper.findComponent(
-        '[data-testid="daily-calorie-limit-input"]',
+        '[data-testid="max-daily-calorie-input"]',
       ) as VueWrapper<components.VNumberInput>;
       expect(caloriesInput.props('modelValue')).toBe(1800);
 
@@ -406,12 +406,12 @@ describe('SettingsEditor', () => {
       expect(caloriesInput.props('modelValue')).toBe(2200);
 
       const sugarInput = wrapper.findComponent(
-        '[data-testid="daily-sugar-limit-input"]',
+        '[data-testid="max-daily-sugar-input"]',
       ) as VueWrapper<components.VNumberInput>;
       expect(sugarInput.props('modelValue')).toBe(50);
 
       const proteinInput = wrapper.findComponent(
-        '[data-testid="daily-protein-target-input"]',
+        '[data-testid="max-daily-protein-input"]',
       ) as VueWrapper<components.VNumberInput>;
       expect(proteinInput.props('modelValue')).toBe(70);
 
@@ -450,7 +450,7 @@ describe('SettingsEditor', () => {
 
       // Modify the form
       const caloriesInput = wrapper.findComponent(
-        '[data-testid="daily-calorie-limit-input"]',
+        '[data-testid="max-daily-calorie-input"]',
       ) as VueWrapper<components.VNumberInput>;
       await caloriesInput.setValue(2000);
       await flushPromises();
