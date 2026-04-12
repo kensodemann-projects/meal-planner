@@ -269,7 +269,6 @@ describe('Planning', () => {
           dailySugarLimit: 35,
           dailyProteinTarget: 85,
           tolerance: 15,
-          cheatDays: 2,
           weekStartDay: 5,
         });
         (fridaySettings as any).promise = { value: Promise.resolve(fridaySettings.value) };

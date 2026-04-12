@@ -8,7 +8,6 @@ const makeSettings = (weekStartDay: 0 | 1 = 0): Settings => ({
   dailySugarLimit: 50,
   dailyProteinTarget: 150,
   tolerance: 10,
-  cheatDays: 1,
   weekStartDay,
 });
 

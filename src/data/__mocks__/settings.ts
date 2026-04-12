@@ -16,7 +16,6 @@ const settings = ref<Settings>({
   dailySugarLimit: 35,
   dailyProteinTarget: 85,
   tolerance: 15,
-  cheatDays: 2,
   weekStartDay: 1,
 });
 (settings as any).promise = { value: Promise.resolve(settings.value) };

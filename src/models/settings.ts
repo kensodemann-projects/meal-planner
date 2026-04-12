@@ -18,8 +18,6 @@ export interface Settings {
    * Must be between 0 and 100 (inclusive). Validation is performed at runtime when updating settings.
    */
   tolerance: number;
-  /** Number of cheat days allowed per week */
-  cheatDays: number;
   /** First day of the week (0 = Sunday, 1 = Monday, etc.) */
   weekStartDay: WeekDay;
 }

@@ -8,7 +8,6 @@ const DEFAULT_SETTINGS: Settings = {
   dailySugarLimit: 50,
   dailyProteinTarget: 75,
   tolerance: 10,
-  cheatDays: 1,
   weekStartDay: 0, // Sunday
 };
 

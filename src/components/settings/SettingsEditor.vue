@@ -28,16 +28,6 @@
       ]"
       data-testid="tolerance-input"
     ></v-number-input>
-    <v-number-input
-      label="Cheat Days per Week"
-      v-model="cheatDays"
-      :rules="[
-        validationRules.required,
-        validationRules.zeroOrGreater,
-        (value) => value <= 7 || 'Cheat days must be 7 or fewer',
-      ]"
-      data-testid="cheat-days-input"
-    ></v-number-input>
     <v-autocomplete
       label="Week Start Day"
       v-model="weekStartDay"
@@ -79,7 +69,6 @@ const dailyCalorieLimit = ref<number>(props.settings.dailyCalorieLimit);
 const dailySugarLimit = ref<number>(props.settings.dailySugarLimit);
 const dailyProteinTarget = ref<number>(props.settings.dailyProteinTarget);
 const tolerance = ref<number>(props.settings.tolerance);
-const cheatDays = ref<number>(props.settings.cheatDays);
 const weekStartDay = ref<number>(props.settings.weekStartDay);
 
 const isModified = computed(() => {
@@ -88,7 +77,6 @@ const isModified = computed(() => {
     dailySugarLimit.value !== props.settings.dailySugarLimit ||
     dailyProteinTarget.value !== props.settings.dailyProteinTarget ||
     tolerance.value !== props.settings.tolerance ||
-    cheatDays.value !== props.settings.cheatDays ||
     weekStartDay.value !== props.settings.weekStartDay
   );
 });
@@ -98,7 +86,6 @@ const reset = () => {
   dailySugarLimit.value = props.settings.dailySugarLimit;
   dailyProteinTarget.value = props.settings.dailyProteinTarget;
   tolerance.value = props.settings.tolerance;
-  cheatDays.value = props.settings.cheatDays;
   weekStartDay.value = props.settings.weekStartDay;
 };
 
@@ -110,7 +97,6 @@ const save = () => {
     dailySugarLimit: dailySugarLimit.value,
     dailyProteinTarget: dailyProteinTarget.value,
     tolerance: tolerance.value,
-    cheatDays: cheatDays.value,
     weekStartDay: weekStartDay.value as WeekDay,
   };
   emit('save', updatedSettings);

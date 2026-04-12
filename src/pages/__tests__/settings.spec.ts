@@ -51,7 +51,6 @@ describe('SettingsPage', () => {
       dailySugarLimit: 35,
       dailyProteinTarget: 85,
       tolerance: 15,
-      cheatDays: 2,
       weekStartDay: 1,
     });
   });
@@ -66,7 +65,6 @@ describe('SettingsPage', () => {
       dailySugarLimit: 45,
       dailyProteinTarget: 90,
       tolerance: 12,
-      cheatDays: 1,
       weekStartDay: 0,
     };
 
