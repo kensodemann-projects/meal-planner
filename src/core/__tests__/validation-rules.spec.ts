@@ -176,8 +176,8 @@ describe('Validation Rules', () => {
     });
 
     it('returns true if max is null or undefined', () => {
-      expect(validationRules.mustBeLessThan(null as unknown as number)(5)).toBe(true);
-      expect(validationRules.mustBeLessThan(undefined as unknown as number)(5)).toBe(true);
+      expect(validationRules.mustBeLessThan(null)(5)).toBe(true);
+      expect(validationRules.mustBeLessThan(undefined)(5)).toBe(true);
     });
 
     it('returns true for values strictly less than max', () => {
