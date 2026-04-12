@@ -431,6 +431,90 @@ describe('SettingsEditor', () => {
     });
   });
 
+  describe('isModified', () => {
+    it('is true when minDailyCalories changes', async () => {
+      wrapper = mountComponent();
+      const saveButton = wrapper.find('[data-testid="save-button"]');
+      expect(saveButton.attributes('disabled')).toBeDefined();
+      const input = wrapper.findComponent(
+        '[data-testid="min-daily-calorie-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      await input.setValue(1200);
+      await flushPromises();
+      expect(saveButton.attributes('disabled')).toBeUndefined();
+    });
+
+    it('is true when maxDailyCalories changes', async () => {
+      wrapper = mountComponent();
+      const saveButton = wrapper.find('[data-testid="save-button"]');
+      expect(saveButton.attributes('disabled')).toBeDefined();
+      const input = wrapper.findComponent(
+        '[data-testid="max-daily-calorie-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      await input.setValue(2000);
+      await flushPromises();
+      expect(saveButton.attributes('disabled')).toBeUndefined();
+    });
+
+    it('is true when minDailyProtein changes', async () => {
+      wrapper = mountComponent();
+      const saveButton = wrapper.find('[data-testid="save-button"]');
+      expect(saveButton.attributes('disabled')).toBeDefined();
+      const input = wrapper.findComponent(
+        '[data-testid="min-daily-protein-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      await input.setValue(40);
+      await flushPromises();
+      expect(saveButton.attributes('disabled')).toBeUndefined();
+    });
+
+    it('is true when maxDailyProtein changes', async () => {
+      wrapper = mountComponent();
+      const saveButton = wrapper.find('[data-testid="save-button"]');
+      expect(saveButton.attributes('disabled')).toBeDefined();
+      const input = wrapper.findComponent(
+        '[data-testid="max-daily-protein-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      await input.setValue(80);
+      await flushPromises();
+      expect(saveButton.attributes('disabled')).toBeUndefined();
+    });
+
+    it('is true when maxDailySugar changes', async () => {
+      wrapper = mountComponent();
+      const saveButton = wrapper.find('[data-testid="save-button"]');
+      expect(saveButton.attributes('disabled')).toBeDefined();
+      const input = wrapper.findComponent(
+        '[data-testid="max-daily-sugar-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      await input.setValue(60);
+      await flushPromises();
+      expect(saveButton.attributes('disabled')).toBeUndefined();
+    });
+
+    it('is true when tolerance changes', async () => {
+      wrapper = mountComponent();
+      const saveButton = wrapper.find('[data-testid="save-button"]');
+      expect(saveButton.attributes('disabled')).toBeDefined();
+      const input = wrapper.findComponent('[data-testid="tolerance-input"]') as VueWrapper<components.VNumberInput>;
+      await input.setValue(15);
+      await flushPromises();
+      expect(saveButton.attributes('disabled')).toBeUndefined();
+    });
+
+    it('is true when weekStartDay changes', async () => {
+      wrapper = mountComponent();
+      const saveButton = wrapper.find('[data-testid="save-button"]');
+      expect(saveButton.attributes('disabled')).toBeDefined();
+      const input = wrapper.findComponent(
+        '[data-testid="week-start-day-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      await input.setValue(0);
+      await flushPromises();
+      expect(saveButton.attributes('disabled')).toBeUndefined();
+    });
+  });
+
   describe('watchEffect (Props Update)', () => {
     it('resets form when settings prop changes', async () => {
       wrapper = mountComponent({
