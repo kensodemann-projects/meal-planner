@@ -9,16 +9,16 @@ export const rangeStatus = (
   if (
     value === null ||
     value === undefined ||
-    isNaN(value) ||
+    Number.isNaN(value) ||
     min === null ||
     min === undefined ||
-    isNaN(min) ||
+    Number.isNaN(min) ||
     max === null ||
     max === undefined ||
-    isNaN(max) ||
+    Number.isNaN(max) ||
     tolerance === null ||
     tolerance === undefined ||
-    isNaN(tolerance)
+    Number.isNaN(tolerance)
   ) {
     return 'red';
   }
@@ -40,13 +40,13 @@ export const maxOnlyStatus = (
   if (
     value === null ||
     value === undefined ||
-    isNaN(value) ||
+    Number.isNaN(value) ||
     max === null ||
     max === undefined ||
-    isNaN(max) ||
+    Number.isNaN(max) ||
     tolerance === null ||
     tolerance === undefined ||
-    isNaN(tolerance)
+    Number.isNaN(tolerance)
   ) {
     return 'red';
   }
