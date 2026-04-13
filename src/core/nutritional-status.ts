@@ -23,7 +23,7 @@ export const rangeStatus = (
     return 'red';
   }
 
-  const allowedDeviation = ((max + min!) / 2) * (Math.max(tolerance, 0) / 100);
+  const allowedDeviation = ((max + min) / 2) * (Math.max(tolerance, 0) / 100);
   if (value >= min && value <= max) {
     return 'green';
   } else if (value >= min - allowedDeviation && value <= max + allowedDeviation) {
