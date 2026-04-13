@@ -19,12 +19,12 @@ describe('Nutritional Status', () => {
       expect(rangeStatus(35, 40, 60, 10)).toBe('yellow');
     });
 
-    it('is "red" if the value is above the max value outside of tolerance', () => {
+    it('is "red" if the value is below the min value outside of tolerance', () => {
       expect(rangeStatus(34.9, 40, 60, 10)).toBe('red');
       expect(rangeStatus(0, 40, 60, 10)).toBe('red');
     });
 
-    it('is "red" if the value is below the min value outside of tolerance', () => {
+    it('is "red" if the value is above the max value outside of tolerance', () => {
       expect(rangeStatus(65.1, 40, 60, 10)).toBe('red');
       expect(rangeStatus(1000, 40, 60, 10)).toBe('red');
     });
