@@ -1,9 +1,9 @@
 import { mount } from '@vue/test-utils';
 import { afterEach, describe, expect, it } from 'vitest';
 import NutritionalStatusMarker from '../NutritionalStatusMarker.vue';
+import type { NutritionalStatus } from '@/core/nutritional-status';
 
-const mountComponent = (status: 'green' | 'yellow' | 'red' | null | undefined) =>
-  mount(NutritionalStatusMarker, { props: { status } });
+const mountComponent = (status: NutritionalStatus | null) => mount(NutritionalStatusMarker, { props: { status } });
 
 describe('Nutritional Status Marker', () => {
   let wrapper: ReturnType<typeof mountComponent> | undefined;
@@ -41,13 +41,6 @@ describe('Nutritional Status Marker', () => {
 
   it('displays nothing when status is null', () => {
     wrapper = mountComponent(null);
-    expect(wrapper.text()).not.toContain('🟢');
-    expect(wrapper.text()).not.toContain('🟡');
-    expect(wrapper.text()).not.toContain('🔴');
-  });
-
-  it('displays nothing when status is undefined', () => {
-    wrapper = mountComponent(undefined);
     expect(wrapper.text()).not.toContain('🟢');
     expect(wrapper.text()).not.toContain('🟡');
     expect(wrapper.text()).not.toContain('🔴');
