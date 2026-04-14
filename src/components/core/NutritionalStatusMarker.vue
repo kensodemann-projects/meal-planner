@@ -10,7 +10,7 @@
 import { type NutritionalStatus } from '@/core/nutritional-status';
 
 defineProps<{
-  status: NutritionalStatus | null | undefined;
+  status?: NutritionalStatus | null;
 }>();
 </script>
 
