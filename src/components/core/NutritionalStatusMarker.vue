@@ -28,5 +28,3 @@ defineProps<{
   status?: NutritionalStatus | null;
 }>();
 </script>
-
-<style scoped></style>
