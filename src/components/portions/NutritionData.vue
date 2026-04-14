@@ -17,8 +17,9 @@
 
 <script setup lang="ts">
 import type { Nutrition } from '@/models/nutrition';
+import type { Settings } from '@/models/settings';
 
-defineProps<{ value: Nutrition }>();
+defineProps<{ value: Nutrition; settings?: Settings }>();
 </script>
 
 <style scoped></style>
