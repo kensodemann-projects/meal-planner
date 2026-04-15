@@ -1,5 +1,6 @@
 import { TEST_PORTION, TEST_RECIPE } from '@/data/__tests__/test-data';
 import type { Nutrition } from '@/models/nutrition';
+import type { Settings } from '@/models/settings';
 import { mount } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
@@ -11,7 +12,22 @@ const vuetify = createVuetify({
   components,
   directives,
 });
-const mountComponent = (props: { value: Nutrition } = { value: TEST_PORTION }) =>
+
+const BASE_SETTINGS: Settings = {
+  minDailyCalories: 1800,
+  maxDailyCalories: 2200,
+  minDailyProtein: 50,
+  maxDailyProtein: 100,
+  minDailyCarbs: 200,
+  maxDailyCarbs: 300,
+  minDailyFat: 40,
+  maxDailyFat: 80,
+  maxDailySugar: 50,
+  tolerance: 10,
+  weekStartDay: 0,
+};
+
+const mountComponent = (props: { value: Nutrition; settings?: Settings } = { value: TEST_PORTION }) =>
   mount(NutritionData, { props, global: { plugins: [vuetify] } });
 
 describe('NutritionData', () => {
@@ -48,5 +64,46 @@ describe('NutritionData', () => {
     expect(wrapper.text()).toContain(`Total Carbs: ${TEST_RECIPE.carbs}g`);
     expect(wrapper.text()).toContain(`Fat: ${TEST_RECIPE.fat}g`);
     expect(wrapper.text()).toContain(`Protein: ${TEST_RECIPE.protein}g`);
+  });
+
+  describe('NutritionalStatusMarker for sugar', () => {
+    it('is not displayed when settings are not provided', () => {
+      wrapper = mountComponent({ value: TEST_PORTION });
+      expect(wrapper.text()).not.toContain('🟢');
+      expect(wrapper.text()).not.toContain('🟡');
+      expect(wrapper.text()).not.toContain('🔴');
+    });
+
+    it('displays the green indicator when sugar is at or below the max', () => {
+      // TEST_PORTION.sugar = 3, maxDailySugar = 3 → green
+      wrapper = mountComponent({ value: TEST_PORTION, settings: { ...BASE_SETTINGS, maxDailySugar: 3 } });
+      expect(wrapper.text()).toContain('🟢');
+      expect(wrapper.text()).not.toContain('🟡');
+      expect(wrapper.text()).not.toContain('🔴');
+    });
+
+    it('displays the yellow indicator when sugar is above max but within tolerance', () => {
+      // TEST_PORTION.sugar = 3, maxDailySugar = 2, tolerance = 60
+      // allowedDeviation = 2 * 0.60 = 1.2 → yellow threshold = 3.2 → 3 <= 3.2 → yellow
+      wrapper = mountComponent({
+        value: TEST_PORTION,
+        settings: { ...BASE_SETTINGS, maxDailySugar: 2, tolerance: 60 },
+      });
+      expect(wrapper.text()).toContain('🟡');
+      expect(wrapper.text()).not.toContain('🟢');
+      expect(wrapper.text()).not.toContain('🔴');
+    });
+
+    it('displays the red indicator when sugar is above max and beyond tolerance', () => {
+      // TEST_PORTION.sugar = 3, maxDailySugar = 2, tolerance = 10
+      // allowedDeviation = 2 * 0.10 = 0.2 → yellow threshold = 2.2 → 3 > 2.2 → red
+      wrapper = mountComponent({
+        value: TEST_PORTION,
+        settings: { ...BASE_SETTINGS, maxDailySugar: 2, tolerance: 10 },
+      });
+      expect(wrapper.text()).toContain('🔴');
+      expect(wrapper.text()).not.toContain('🟢');
+      expect(wrapper.text()).not.toContain('🟡');
+    });
   });
 });
