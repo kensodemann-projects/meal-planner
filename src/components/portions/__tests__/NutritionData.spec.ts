@@ -83,6 +83,22 @@ describe('NutritionData', () => {
       highYellowPortion: { ...TEST_PORTION, protein: 101 },
       highRedPortion: { ...TEST_PORTION, protein: 108 },
     },
+    {
+      statistic: 'carbs',
+      greenPortion: { ...TEST_PORTION, carbs: 290 },
+      lowYellowPortion: { ...TEST_PORTION, carbs: 175 },
+      lowRedPortion: { ...TEST_PORTION, carbs: 174 },
+      highYellowPortion: { ...TEST_PORTION, carbs: 325 },
+      highRedPortion: { ...TEST_PORTION, carbs: 326 },
+    },
+    {
+      statistic: 'fat',
+      greenPortion: { ...TEST_PORTION, fat: 45 },
+      lowYellowPortion: { ...TEST_PORTION, fat: 34 },
+      lowRedPortion: { ...TEST_PORTION, fat: 33 },
+      highYellowPortion: { ...TEST_PORTION, fat: 86 },
+      highRedPortion: { ...TEST_PORTION, fat: 87 },
+    },
   ])(
     'NutritionalStatusMarker for $statistic',
     ({ statistic, greenPortion, lowRedPortion, lowYellowPortion, highYellowPortion, highRedPortion }) => {
