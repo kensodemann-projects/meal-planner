@@ -66,20 +66,72 @@ describe('NutritionData', () => {
     expect(wrapper.text()).toContain(`Protein: ${TEST_RECIPE.protein}g`);
   });
 
+  describe('NutritionalStatusMarker for calories', () => {
+    it('is not displayed when settings are not provided', () => {
+      wrapper = mountComponent({ value: TEST_PORTION });
+      const cell = wrapper.find('[data-testid="calories"]');
+      expect(cell.text()).not.toContain('🟢');
+      expect(cell.text()).not.toContain('🟡');
+      expect(cell.text()).not.toContain('🔴');
+    });
+
+    it('displays the green indicator when the value is range', () => {
+      wrapper = mountComponent({ value: { ...TEST_PORTION, calories: 1900 }, settings: BASE_SETTINGS });
+      const cell = wrapper.find('[data-testid="calories"]');
+      expect(cell.text()).toContain('🟢');
+      expect(cell.text()).not.toContain('🟡');
+      expect(cell.text()).not.toContain('🔴');
+    });
+
+    it('displays the yellow indicator when the value is below min but within tolerance', () => {
+      wrapper = mountComponent({ value: { ...TEST_PORTION, calories: 1799 }, settings: BASE_SETTINGS });
+      const cell = wrapper.find('[data-testid="calories"]');
+      expect(cell.text()).toContain('🟡');
+      expect(cell.text()).not.toContain('🟢');
+      expect(cell.text()).not.toContain('🔴');
+    });
+
+    it('displays the red indicator when the value is below min and beyond tolerance', () => {
+      wrapper = mountComponent({ value: { ...TEST_PORTION, calories: 1599 }, settings: BASE_SETTINGS });
+      const cell = wrapper.find('[data-testid="calories"]');
+      expect(cell.text()).toContain('🔴');
+      expect(cell.text()).not.toContain('🟢');
+      expect(cell.text()).not.toContain('🟡');
+    });
+
+    it('displays the yellow indicator when the value is above max but within tolerance', () => {
+      wrapper = mountComponent({ value: { ...TEST_PORTION, calories: 2201 }, settings: BASE_SETTINGS });
+      const cell = wrapper.find('[data-testid="calories"]');
+      expect(cell.text()).toContain('🟡');
+      expect(cell.text()).not.toContain('🟢');
+      expect(cell.text()).not.toContain('🔴');
+    });
+
+    it('displays the red indicator when the value is above max and beyond tolerance', () => {
+      wrapper = mountComponent({ value: { ...TEST_PORTION, calories: 2401 }, settings: BASE_SETTINGS });
+      const cell = wrapper.find('[data-testid="calories"]');
+      expect(cell.text()).toContain('🔴');
+      expect(cell.text()).not.toContain('🟢');
+      expect(cell.text()).not.toContain('🟡');
+    });
+  });
+
   describe('NutritionalStatusMarker for sugar', () => {
     it('is not displayed when settings are not provided', () => {
       wrapper = mountComponent({ value: TEST_PORTION });
-      expect(wrapper.text()).not.toContain('🟢');
-      expect(wrapper.text()).not.toContain('🟡');
-      expect(wrapper.text()).not.toContain('🔴');
+      const cell = wrapper.find('[data-testid="sugar"]');
+      expect(cell.text()).not.toContain('🟢');
+      expect(cell.text()).not.toContain('🟡');
+      expect(cell.text()).not.toContain('🔴');
     });
 
     it('displays the green indicator when sugar is at or below the max', () => {
       // TEST_PORTION.sugar = 3, maxDailySugar = 3 → green
       wrapper = mountComponent({ value: TEST_PORTION, settings: { ...BASE_SETTINGS, maxDailySugar: 3 } });
-      expect(wrapper.text()).toContain('🟢');
-      expect(wrapper.text()).not.toContain('🟡');
-      expect(wrapper.text()).not.toContain('🔴');
+      const cell = wrapper.find('[data-testid="sugar"]');
+      expect(cell.text()).toContain('🟢');
+      expect(cell.text()).not.toContain('🟡');
+      expect(cell.text()).not.toContain('🔴');
     });
 
     it('displays the yellow indicator when sugar is above max but within tolerance', () => {
@@ -89,9 +141,10 @@ describe('NutritionData', () => {
         value: TEST_PORTION,
         settings: { ...BASE_SETTINGS, maxDailySugar: 2, tolerance: 60 },
       });
-      expect(wrapper.text()).toContain('🟡');
-      expect(wrapper.text()).not.toContain('🟢');
-      expect(wrapper.text()).not.toContain('🔴');
+      const cell = wrapper.find('[data-testid="sugar"]');
+      expect(cell.text()).toContain('🟡');
+      expect(cell.text()).not.toContain('🟢');
+      expect(cell.text()).not.toContain('🔴');
     });
 
     it('displays the red indicator when sugar is above max and beyond tolerance', () => {
@@ -101,9 +154,10 @@ describe('NutritionData', () => {
         value: TEST_PORTION,
         settings: { ...BASE_SETTINGS, maxDailySugar: 2, tolerance: 10 },
       });
-      expect(wrapper.text()).toContain('🔴');
-      expect(wrapper.text()).not.toContain('🟢');
-      expect(wrapper.text()).not.toContain('🟡');
+      const cell = wrapper.find('[data-testid="sugar"]');
+      expect(cell.text()).toContain('🔴');
+      expect(cell.text()).not.toContain('🟢');
+      expect(cell.text()).not.toContain('🟡');
     });
   });
 });
