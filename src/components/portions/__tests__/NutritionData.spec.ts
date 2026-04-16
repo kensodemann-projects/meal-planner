@@ -66,55 +66,67 @@ describe('NutritionData', () => {
     expect(wrapper.text()).toContain(`Protein: ${TEST_RECIPE.protein}g`);
   });
 
-  describe('NutritionalStatusMarker for calories', () => {
-    it('is not displayed when settings are not provided', () => {
-      wrapper = mountComponent({ value: TEST_PORTION });
-      const cell = wrapper.find('[data-testid="calories"]');
-      expect(cell.text()).not.toContain('🟢');
-      expect(cell.text()).not.toContain('🟡');
-      expect(cell.text()).not.toContain('🔴');
-    });
+  describe.each([
+    {
+      statistic: 'calories',
+      greenPortion: { ...TEST_PORTION, calories: 1900 },
+      lowRedPortion: { ...TEST_PORTION, calories: 1599 },
+      lowYellowPortion: { ...TEST_PORTION, calories: 1799 },
+      highYellowPortion: { ...TEST_PORTION, calories: 2201 },
+      highRedPortion: { ...TEST_PORTION, calories: 2401 },
+    },
+  ])(
+    'NutritionalStatusMarker for $statistic',
+    ({ statistic, greenPortion, lowRedPortion, lowYellowPortion, highYellowPortion, highRedPortion }) => {
+      it('is not displayed when settings are not provided', () => {
+        wrapper = mountComponent({ value: TEST_PORTION });
+        const cell = wrapper.find(`[data-testid="${statistic}"]`);
+        expect(cell.text()).not.toContain('🟢');
+        expect(cell.text()).not.toContain('🟡');
+        expect(cell.text()).not.toContain('🔴');
+      });
 
-    it('displays the green indicator when the value is range', () => {
-      wrapper = mountComponent({ value: { ...TEST_PORTION, calories: 1900 }, settings: BASE_SETTINGS });
-      const cell = wrapper.find('[data-testid="calories"]');
-      expect(cell.text()).toContain('🟢');
-      expect(cell.text()).not.toContain('🟡');
-      expect(cell.text()).not.toContain('🔴');
-    });
+      it('displays the green indicator when the value is in range', () => {
+        wrapper = mountComponent({ value: greenPortion, settings: BASE_SETTINGS });
+        const cell = wrapper.find(`[data-testid="${statistic}"]`);
+        expect(cell.text()).toContain('🟢');
+        expect(cell.text()).not.toContain('🟡');
+        expect(cell.text()).not.toContain('🔴');
+      });
 
-    it('displays the yellow indicator when the value is below min but within tolerance', () => {
-      wrapper = mountComponent({ value: { ...TEST_PORTION, calories: 1799 }, settings: BASE_SETTINGS });
-      const cell = wrapper.find('[data-testid="calories"]');
-      expect(cell.text()).toContain('🟡');
-      expect(cell.text()).not.toContain('🟢');
-      expect(cell.text()).not.toContain('🔴');
-    });
+      it('displays the yellow indicator when the value is below min but within tolerance', () => {
+        wrapper = mountComponent({ value: lowYellowPortion, settings: BASE_SETTINGS });
+        const cell = wrapper.find(`[data-testid="${statistic}"]`);
+        expect(cell.text()).toContain('🟡');
+        expect(cell.text()).not.toContain('🟢');
+        expect(cell.text()).not.toContain('🔴');
+      });
 
-    it('displays the red indicator when the value is below min and beyond tolerance', () => {
-      wrapper = mountComponent({ value: { ...TEST_PORTION, calories: 1599 }, settings: BASE_SETTINGS });
-      const cell = wrapper.find('[data-testid="calories"]');
-      expect(cell.text()).toContain('🔴');
-      expect(cell.text()).not.toContain('🟢');
-      expect(cell.text()).not.toContain('🟡');
-    });
+      it('displays the red indicator when the value is below min and beyond tolerance', () => {
+        wrapper = mountComponent({ value: lowRedPortion, settings: BASE_SETTINGS });
+        const cell = wrapper.find(`[data-testid="${statistic}"]`);
+        expect(cell.text()).toContain('🔴');
+        expect(cell.text()).not.toContain('🟢');
+        expect(cell.text()).not.toContain('🟡');
+      });
 
-    it('displays the yellow indicator when the value is above max but within tolerance', () => {
-      wrapper = mountComponent({ value: { ...TEST_PORTION, calories: 2201 }, settings: BASE_SETTINGS });
-      const cell = wrapper.find('[data-testid="calories"]');
-      expect(cell.text()).toContain('🟡');
-      expect(cell.text()).not.toContain('🟢');
-      expect(cell.text()).not.toContain('🔴');
-    });
+      it('displays the yellow indicator when the value is above max but within tolerance', () => {
+        wrapper = mountComponent({ value: highYellowPortion, settings: BASE_SETTINGS });
+        const cell = wrapper.find(`[data-testid="${statistic}"]`);
+        expect(cell.text()).toContain('🟡');
+        expect(cell.text()).not.toContain('🟢');
+        expect(cell.text()).not.toContain('🔴');
+      });
 
-    it('displays the red indicator when the value is above max and beyond tolerance', () => {
-      wrapper = mountComponent({ value: { ...TEST_PORTION, calories: 2401 }, settings: BASE_SETTINGS });
-      const cell = wrapper.find('[data-testid="calories"]');
-      expect(cell.text()).toContain('🔴');
-      expect(cell.text()).not.toContain('🟢');
-      expect(cell.text()).not.toContain('🟡');
-    });
-  });
+      it('displays the red indicator when the value is above max and beyond tolerance', () => {
+        wrapper = mountComponent({ value: highRedPortion, settings: BASE_SETTINGS });
+        const cell = wrapper.find(`[data-testid="${statistic}"]`);
+        expect(cell.text()).toContain('🔴');
+        expect(cell.text()).not.toContain('🟢');
+        expect(cell.text()).not.toContain('🟡');
+      });
+    },
+  );
 
   describe('NutritionalStatusMarker for sugar', () => {
     it('is not displayed when settings are not provided', () => {
