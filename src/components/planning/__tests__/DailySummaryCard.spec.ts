@@ -1,12 +1,15 @@
 import { TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
+import { useSettingsData } from '@/data/settings';
 import type { MealPlan } from '@/models/meal-plan';
 import { mount } from '@vue/test-utils';
+import { intlFormat, parseISO } from 'date-fns';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import DailySummaryCard from '../DailySummaryCard.vue';
-import { intlFormat, parseISO } from 'date-fns';
+
+vi.mock('@/data/settings');
 
 const vuetify = createVuetify({ components, directives });
 
@@ -35,6 +38,11 @@ describe('Daily Summary Card', () => {
     wrapper = mountComponent();
     const title = wrapper.findComponent(components.VCardTitle);
     expect(title.text()).toBe(expectedTitle);
+  });
+
+  it('gets the settings', () => {
+    wrapper = mountComponent();
+    expect(useSettingsData).toHaveBeenCalled();
   });
 
   describe('interactions', () => {
@@ -94,6 +102,7 @@ describe('Daily Summary Card', () => {
 
       it('displays total nutrition information', () => {
         wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: TEST_MEAL_PLAN });
+        const { settings } = useSettingsData();
         const nutritionData = wrapper.findComponent({ name: 'NutritionData' });
         expect(nutritionData.exists()).toBe(true);
         expect(nutritionData.props('value')).toEqual({
@@ -104,6 +113,7 @@ describe('Daily Summary Card', () => {
           carbs: 145,
           sugar: 56,
         });
+        expect(nutritionData.props('settings')).toEqual(settings.value);
       });
     });
 
@@ -118,6 +128,7 @@ describe('Daily Summary Card', () => {
 
       it('displays total nutrition information', () => {
         wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: PARTIAL_MEAL_PLAN });
+        const { settings } = useSettingsData();
         const nutritionData = wrapper.findComponent({ name: 'NutritionData' });
         expect(nutritionData.exists()).toBe(true);
         expect(nutritionData.props('value')).toEqual({
@@ -128,6 +139,7 @@ describe('Daily Summary Card', () => {
           carbs: 86,
           sugar: 26,
         });
+        expect(nutritionData.props('settings')).toEqual(settings.value);
       });
     });
 

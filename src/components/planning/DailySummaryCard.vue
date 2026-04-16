@@ -11,22 +11,25 @@
     <v-card-title>{{ intlFormat(date, { dateStyle: 'full' }) }}</v-card-title>
     <v-card-subtitle>Meals: {{ meals }}</v-card-subtitle>
     <v-card-text>
-      <NutritionData v-if="nutrition" :value="nutrition" />
+      <NutritionData v-if="nutrition" :value="nutrition" :settings="settings" />
     </v-card-text>
   </v-card>
 </template>
 
 <script setup lang="ts">
+import { dailyMealPlanNutrients } from '@/core/nutritional-calculations';
+import { useSettingsData } from '@/data/settings';
 import type { MealPlan } from '@/models/meal-plan';
 import type { Nutrition } from '@/models/nutrition';
 import { intlFormat } from 'date-fns';
 import { computed } from 'vue';
-import { dailyMealPlanNutrients } from '@/core/nutritional-calculations';
 
 const props = defineProps<{
   date: Date;
   mealPlan?: MealPlan;
 }>();
+
+const { settings } = useSettingsData();
 
 const buildMealSummary = (mealPlan: MealPlan): string => {
   let summary = '';
