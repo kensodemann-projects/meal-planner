@@ -40,7 +40,6 @@ declare module 'vue' {
     SecondaryButton: typeof import('./components/core/buttons/SecondaryButton.vue')['default']
     SettingsEditor: typeof import('./components/settings/SettingsEditor.vue')['default']
     SortableListEditor: typeof import('./components/core/SortableListEditor.vue')['default']
-    StatusMarker: typeof import('./components/core/StatusMarker.vue')['default']
     StepEditorRow: typeof import('./components/recipes/StepEditorRow.vue')['default']
     ViewPageActionButtons: typeof import('./components/core/ViewPageActionButtons.vue')['default']
     WeeklySummaryCard: typeof import('./components/planning/WeeklySummaryCard.vue')['default']
