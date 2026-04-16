@@ -6,7 +6,10 @@
           <NutritionalStatusMarker v-if="settings" :status="caloriesStatus" />
           <span class="font-weight-black">Calories:</span> {{ value.calories }}
         </div>
-        <div data-testid="protein"><span class="font-weight-black">Protein:</span> {{ value.protein }}g</div>
+        <div data-testid="protein">
+          <NutritionalStatusMarker v-if="settings" :status="proteinStatus" />
+          <span class="font-weight-black">Protein:</span> {{ value.protein }}g
+        </div>
         <div data-testid="carbs"><span class="font-weight-black">Total Carbs:</span> {{ value.carbs }}g</div>
       </v-col>
       <v-col cols="12" md="6">
@@ -34,6 +37,15 @@ const caloriesStatus = computed(() =>
     props.value.calories,
     props.settings?.minDailyCalories,
     props.settings?.maxDailyCalories,
+    props.settings?.tolerance,
+  ),
+);
+
+const proteinStatus = computed(() =>
+  rangeStatus(
+    props.value.protein,
+    props.settings?.minDailyProtein,
+    props.settings?.maxDailyProtein,
     props.settings?.tolerance,
   ),
 );
