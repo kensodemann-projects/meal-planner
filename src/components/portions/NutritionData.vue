@@ -36,42 +36,25 @@ import { computed } from 'vue';
 import { maxOnlyStatus, rangeStatus } from '@/core/nutritional-status';
 import type { Settings } from '@/models/settings';
 
-const props = defineProps<{ value: Nutrition; settings?: Settings }>();
+const { value, settings } = defineProps<{ value: Nutrition; settings?: Settings }>();
 
 const caloriesStatus = computed(() =>
-  rangeStatus(
-    props.value.calories,
-    props.settings?.minDailyCalories,
-    props.settings?.maxDailyCalories,
-    props.settings?.tolerance,
-  ),
+  rangeStatus(value.calories, settings?.minDailyCalories, settings?.maxDailyCalories, settings?.tolerance),
 );
 
 const proteinStatus = computed(() =>
-  rangeStatus(
-    props.value.protein,
-    props.settings?.minDailyProtein,
-    props.settings?.maxDailyProtein,
-    props.settings?.tolerance,
-  ),
+  rangeStatus(value.protein, settings?.minDailyProtein, settings?.maxDailyProtein, settings?.tolerance),
 );
 
 const carbsStatus = computed(() =>
-  rangeStatus(
-    props.value.carbs,
-    props.settings?.minDailyCarbs,
-    props.settings?.maxDailyCarbs,
-    props.settings?.tolerance,
-  ),
+  rangeStatus(value.carbs, settings?.minDailyCarbs, settings?.maxDailyCarbs, settings?.tolerance),
 );
 
 const fatStatus = computed(() =>
-  rangeStatus(props.value.fat, props.settings?.minDailyFat, props.settings?.maxDailyFat, props.settings?.tolerance),
+  rangeStatus(value.fat, settings?.minDailyFat, settings?.maxDailyFat, settings?.tolerance),
 );
 
-const sugarStatus = computed(() =>
-  maxOnlyStatus(props.value.sugar, props.settings?.maxDailySugar, props.settings?.tolerance),
-);
+const sugarStatus = computed(() => maxOnlyStatus(value.sugar, settings?.maxDailySugar, settings?.tolerance));
 </script>
 
 <style scoped></style>
