@@ -1,5 +1,5 @@
 <template>
-  <span class="nutritional-status-marker">
+  <span>
     <span v-if="status === 'green'" role="img" aria-label="Green nutritional status" title="Green nutritional status"
       >🟢</span
     >
