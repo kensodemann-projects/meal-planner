@@ -12,6 +12,7 @@ import week from '../week.vue';
 
 vi.mock('vue-router');
 vi.mock('@/data/meal-plans');
+vi.mock('@/data/settings');
 
 const vuetify = createVuetify({
   components,

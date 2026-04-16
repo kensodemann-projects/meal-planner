@@ -36,7 +36,7 @@ import { computed } from 'vue';
 import { maxOnlyStatus, rangeStatus } from '@/core/nutritional-status';
 import type { Settings } from '@/models/settings';
 
-const { value, settings } = defineProps<{ value: Nutrition; settings?: Settings }>();
+const { value, settings } = defineProps<{ value: Nutrition; settings?: Settings | null }>();
 
 const caloriesStatus = computed(() =>
   rangeStatus(value.calories, settings?.minDailyCalories, settings?.maxDailyCalories, settings?.tolerance),
@@ -57,4 +57,8 @@ const fatStatus = computed(() =>
 const sugarStatus = computed(() => maxOnlyStatus(value.sugar, settings?.maxDailySugar, settings?.tolerance));
 </script>
 
-<style scoped></style>
+<style scoped>
+.nutritional-status-marker {
+  margin-right: 0.25rem;
+}
+</style>
