@@ -1,11 +1,11 @@
-export type NutritionalStatus = 'green' | 'yellow' | 'red';
+export type NutritionalStatus = 'low-danger' | 'low-warn' | 'in-zone' | 'high-warn' | 'high-danger';
 
 export const rangeStatus = (
   value: number | null | undefined,
   min: number | null | undefined,
   max: number | null | undefined,
   tolerance: number | null | undefined,
-): NutritionalStatus => {
+): NutritionalStatus | null => {
   if (
     value === null ||
     value === undefined ||
@@ -20,23 +20,25 @@ export const rangeStatus = (
     tolerance === undefined ||
     Number.isNaN(tolerance)
   ) {
-    return 'red';
+    return null;
   }
 
   const allowedDeviation = ((max + min) / 2) * (Math.max(tolerance, 0) / 100);
   if (value >= min && value <= max) {
-    return 'green';
-  } else if (value >= min - allowedDeviation && value <= max + allowedDeviation) {
-    return 'yellow';
+    return 'in-zone';
+  } else if (value < min && value >= min - allowedDeviation) {
+    return 'low-warn';
+  } else if (value > max && value <= max + allowedDeviation) {
+    return 'high-warn';
   }
-  return 'red';
+  return value < min ? 'low-danger' : 'high-danger';
 };
 
 export const maxOnlyStatus = (
   value: number | null | undefined,
   max: number | null | undefined,
   tolerance: number | null | undefined,
-): NutritionalStatus => {
+): NutritionalStatus | null => {
   if (
     value === null ||
     value === undefined ||
@@ -48,14 +50,14 @@ export const maxOnlyStatus = (
     tolerance === undefined ||
     Number.isNaN(tolerance)
   ) {
-    return 'red';
+    return null;
   }
 
   const allowedDeviation = max * (Math.max(tolerance, 0) / 100);
   if (value <= max) {
-    return 'green';
+    return 'in-zone';
   } else if (value <= max + allowedDeviation) {
-    return 'yellow';
+    return 'high-warn';
   }
-  return 'red';
+  return 'high-danger';
 };
