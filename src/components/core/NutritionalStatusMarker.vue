@@ -1,22 +1,10 @@
 <template>
   <span>
-    <span v-if="status === 'in-zone'" role="img" aria-label="Green nutritional status" title="Green nutritional status"
-      >🟢</span
-    >
-    <span
-      v-if="status === 'high-warn' || status === 'low-warn'"
-      role="img"
-      aria-label="Yellow nutritional status"
-      title="Yellow nutritional status"
-      >🟡</span
-    >
-    <span
-      v-if="status === 'high-danger' || status === 'low-danger'"
-      role="img"
-      aria-label="Red nutritional status"
-      title="Red nutritional status"
-      >🔴</span
-    >
+    <v-icon v-if="status === 'in-zone'" icon="mdi-circle" color="success" />
+    <v-icon v-if="status === 'low-warn'" icon="mdi-arrow-down-bold" color="warning" />
+    <v-icon v-if="status === 'low-danger'" icon="mdi-arrow-down-bold" color="error" />
+    <v-icon v-if="status === 'high-warn'" icon="mdi-arrow-up-bold" color="warning" />
+    <v-icon v-if="status === 'high-danger'" icon="mdi-arrow-up-bold" color="error" />
   </span>
 </template>
 
