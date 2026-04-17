@@ -105,49 +105,52 @@ describe('NutritionData', () => {
       it('is not displayed when settings are not provided', () => {
         wrapper = mountComponent({ value: TEST_PORTION });
         const cell = wrapper.find(`[data-testid="${statistic}"]`);
-        expect(cell.text()).not.toContain('🟢');
-        expect(cell.text()).not.toContain('🟡');
-        expect(cell.text()).not.toContain('🔴');
+        expect(cell.html()).not.toContain('mdi-circle');
+        expect(cell.html()).not.toContain('mdi-arrow');
       });
 
-      it('displays the green indicator when the value is in range', () => {
+      it('displays the success circle icon when the value is in range', () => {
         wrapper = mountComponent({ value: greenPortion, settings: BASE_SETTINGS });
         const cell = wrapper.find(`[data-testid="${statistic}"]`);
-        expect(cell.text()).toContain('🟢');
-        expect(cell.text()).not.toContain('🟡');
-        expect(cell.text()).not.toContain('🔴');
+        expect(cell.html()).toContain('mdi-circle');
+        expect(cell.html()).toContain('text-success');
+        expect(cell.html()).not.toContain('mdi-arrow');
       });
 
-      it('displays the yellow indicator when the value is below min but within tolerance', () => {
+      it('displays the warning down arrow when the value is below min but within tolerance', () => {
         wrapper = mountComponent({ value: lowYellowPortion, settings: BASE_SETTINGS });
         const cell = wrapper.find(`[data-testid="${statistic}"]`);
-        expect(cell.text()).toContain('🟡');
-        expect(cell.text()).not.toContain('🟢');
-        expect(cell.text()).not.toContain('🔴');
+        expect(cell.html()).toContain('mdi-arrow-down-bold');
+        expect(cell.html()).toContain('text-warning');
+        expect(cell.html()).not.toContain('mdi-circle');
+        expect(cell.html()).not.toContain('text-error');
       });
 
-      it('displays the red indicator when the value is below min and beyond tolerance', () => {
+      it('displays the error down arrow when the value is below min and beyond tolerance', () => {
         wrapper = mountComponent({ value: lowRedPortion, settings: BASE_SETTINGS });
         const cell = wrapper.find(`[data-testid="${statistic}"]`);
-        expect(cell.text()).toContain('🔴');
-        expect(cell.text()).not.toContain('🟢');
-        expect(cell.text()).not.toContain('🟡');
+        expect(cell.html()).toContain('mdi-arrow-down-bold');
+        expect(cell.html()).toContain('text-error');
+        expect(cell.html()).not.toContain('mdi-circle');
+        expect(cell.html()).not.toContain('text-warning');
       });
 
-      it('displays the yellow indicator when the value is above max but within tolerance', () => {
+      it('displays the warning up arrow when the value is above max but within tolerance', () => {
         wrapper = mountComponent({ value: highYellowPortion, settings: BASE_SETTINGS });
         const cell = wrapper.find(`[data-testid="${statistic}"]`);
-        expect(cell.text()).toContain('🟡');
-        expect(cell.text()).not.toContain('🟢');
-        expect(cell.text()).not.toContain('🔴');
+        expect(cell.html()).toContain('mdi-arrow-up-bold');
+        expect(cell.html()).toContain('text-warning');
+        expect(cell.html()).not.toContain('mdi-circle');
+        expect(cell.html()).not.toContain('text-error');
       });
 
-      it('displays the red indicator when the value is above max and beyond tolerance', () => {
+      it('displays the error up arrow when the value is above max and beyond tolerance', () => {
         wrapper = mountComponent({ value: highRedPortion, settings: BASE_SETTINGS });
         const cell = wrapper.find(`[data-testid="${statistic}"]`);
-        expect(cell.text()).toContain('🔴');
-        expect(cell.text()).not.toContain('🟢');
-        expect(cell.text()).not.toContain('🟡');
+        expect(cell.html()).toContain('mdi-arrow-up-bold');
+        expect(cell.html()).toContain('text-error');
+        expect(cell.html()).not.toContain('mdi-circle');
+        expect(cell.html()).not.toContain('text-warning');
       });
     },
   );
@@ -156,21 +159,20 @@ describe('NutritionData', () => {
     it('is not displayed when settings are not provided', () => {
       wrapper = mountComponent({ value: TEST_PORTION });
       const cell = wrapper.find('[data-testid="sugar"]');
-      expect(cell.text()).not.toContain('🟢');
-      expect(cell.text()).not.toContain('🟡');
-      expect(cell.text()).not.toContain('🔴');
+      expect(cell.html()).not.toContain('mdi-circle');
+      expect(cell.html()).not.toContain('mdi-arrow');
     });
 
-    it('displays the green indicator when sugar is at or below the max', () => {
+    it('displays the success circle icon when sugar is at or below the max', () => {
       // TEST_PORTION.sugar = 3, maxDailySugar = 3 → green
       wrapper = mountComponent({ value: TEST_PORTION, settings: { ...BASE_SETTINGS, maxDailySugar: 3 } });
       const cell = wrapper.find('[data-testid="sugar"]');
-      expect(cell.text()).toContain('🟢');
-      expect(cell.text()).not.toContain('🟡');
-      expect(cell.text()).not.toContain('🔴');
+      expect(cell.html()).toContain('mdi-circle');
+      expect(cell.html()).toContain('text-success');
+      expect(cell.html()).not.toContain('mdi-arrow');
     });
 
-    it('displays the yellow indicator when sugar is above max but within tolerance', () => {
+    it('displays the warning up arrow when sugar is above max but within tolerance', () => {
       // TEST_PORTION.sugar = 3, maxDailySugar = 2, tolerance = 60
       // allowedDeviation = 2 * 0.60 = 1.2 → yellow threshold = 3.2 → 3 <= 3.2 → yellow
       wrapper = mountComponent({
@@ -178,12 +180,13 @@ describe('NutritionData', () => {
         settings: { ...BASE_SETTINGS, maxDailySugar: 2, tolerance: 60 },
       });
       const cell = wrapper.find('[data-testid="sugar"]');
-      expect(cell.text()).toContain('🟡');
-      expect(cell.text()).not.toContain('🟢');
-      expect(cell.text()).not.toContain('🔴');
+      expect(cell.html()).toContain('mdi-arrow-up-bold');
+      expect(cell.html()).toContain('text-warning');
+      expect(cell.html()).not.toContain('mdi-circle');
+      expect(cell.html()).not.toContain('text-error');
     });
 
-    it('displays the red indicator when sugar is above max and beyond tolerance', () => {
+    it('displays the error up arrow when sugar is above max and beyond tolerance', () => {
       // TEST_PORTION.sugar = 3, maxDailySugar = 2, tolerance = 10
       // allowedDeviation = 2 * 0.10 = 0.2 → yellow threshold = 2.2 → 3 > 2.2 → red
       wrapper = mountComponent({
@@ -191,9 +194,10 @@ describe('NutritionData', () => {
         settings: { ...BASE_SETTINGS, maxDailySugar: 2, tolerance: 10 },
       });
       const cell = wrapper.find('[data-testid="sugar"]');
-      expect(cell.text()).toContain('🔴');
-      expect(cell.text()).not.toContain('🟢');
-      expect(cell.text()).not.toContain('🟡');
+      expect(cell.html()).toContain('mdi-arrow-up-bold');
+      expect(cell.html()).toContain('text-error');
+      expect(cell.html()).not.toContain('mdi-circle');
+      expect(cell.html()).not.toContain('text-warning');
     });
   });
 });
