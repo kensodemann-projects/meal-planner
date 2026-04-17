@@ -14,26 +14,40 @@ describe('Nutritional Status Marker', () => {
   });
 
   it('renders', () => {
-    wrapper = mountComponent('green');
+    wrapper = mountComponent('in-zone');
     expect(wrapper.exists()).toBe(true);
   });
 
-  it('displays the green indicator when status is green', () => {
-    wrapper = mountComponent('green');
+  it('displays the green indicator when status is in-zone', () => {
+    wrapper = mountComponent('in-zone');
     expect(wrapper.text()).toContain('🟢');
     expect(wrapper.text()).not.toContain('🟡');
     expect(wrapper.text()).not.toContain('🔴');
   });
 
-  it('displays the yellow indicator when status is yellow', () => {
-    wrapper = mountComponent('yellow');
+  it('displays the yellow indicator when status is low-warn', () => {
+    wrapper = mountComponent('low-warn');
     expect(wrapper.text()).toContain('🟡');
     expect(wrapper.text()).not.toContain('🟢');
     expect(wrapper.text()).not.toContain('🔴');
   });
 
-  it('displays the red indicator when status is red', () => {
-    wrapper = mountComponent('red');
+  it('displays the red indicator when status is low-danger', () => {
+    wrapper = mountComponent('low-danger');
+    expect(wrapper.text()).toContain('🔴');
+    expect(wrapper.text()).not.toContain('🟢');
+    expect(wrapper.text()).not.toContain('🟡');
+  });
+
+  it('displays the yellow indicator when status is high-warn', () => {
+    wrapper = mountComponent('high-warn');
+    expect(wrapper.text()).toContain('🟡');
+    expect(wrapper.text()).not.toContain('🟢');
+    expect(wrapper.text()).not.toContain('🔴');
+  });
+
+  it('displays the red indicator when status is high-danger', () => {
+    wrapper = mountComponent('low-danger');
     expect(wrapper.text()).toContain('🔴');
     expect(wrapper.text()).not.toContain('🟢');
     expect(wrapper.text()).not.toContain('🟡');

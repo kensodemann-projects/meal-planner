@@ -1,12 +1,20 @@
 <template>
   <span>
-    <span v-if="status === 'green'" role="img" aria-label="Green nutritional status" title="Green nutritional status"
+    <span v-if="status === 'in-zone'" role="img" aria-label="Green nutritional status" title="Green nutritional status"
       >🟢</span
     >
-    <span v-if="status === 'yellow'" role="img" aria-label="Yellow nutritional status" title="Yellow nutritional status"
+    <span
+      v-if="status === 'high-warn' || status === 'low-warn'"
+      role="img"
+      aria-label="Yellow nutritional status"
+      title="Yellow nutritional status"
       >🟡</span
     >
-    <span v-if="status === 'red'" role="img" aria-label="Red nutritional status" title="Red nutritional status"
+    <span
+      v-if="status === 'high-danger' || status === 'low-danger'"
+      role="img"
+      aria-label="Red nutritional status"
+      title="Red nutritional status"
       >🔴</span
     >
   </span>
