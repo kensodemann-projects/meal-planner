@@ -203,6 +203,8 @@ const DEFAULT_SETTINGS: Settings = {
   maxDailyCarbs: 235,
   minDailyFat: 60,
   maxDailyFat: 75,
+  minDailySodium: 1500,
+  maxDailySodium: 2300,
   maxDailySugar: 38,
   tolerance: 10,
   weekStartDay: 0,
