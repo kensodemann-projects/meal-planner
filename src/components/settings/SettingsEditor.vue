@@ -41,16 +41,7 @@
         min-test-id="min-daily-sodium-input"
         max-test-id="max-daily-sodium-input"
       />
-      <v-row density="compact">
-        <v-col cols="12">
-          <v-number-input
-            label="Maximum Daily Sugar (grams)"
-            v-model="maxDailySugar"
-            :rules="[validationRules.required, validationRules.positive]"
-            data-testid="max-daily-sugar-input"
-          ></v-number-input>
-        </v-col>
-      </v-row>
+      <NutrientMaxRow nutrient="Sugar" unit="grams" v-model:max="maxDailySugar" max-test-id="max-daily-sugar-input" />
       <v-row density="compact">
         <v-col cols="12">
           <v-number-input
