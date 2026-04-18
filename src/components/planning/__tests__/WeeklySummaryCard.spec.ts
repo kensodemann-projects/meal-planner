@@ -16,6 +16,9 @@ const TEST_WEEK: WeeklyData = {
   averageCalories: 2000,
   averageProtein: 100,
   averageCarbs: 250,
+  averageFat: 70,
+  averageSugar: 30,
+  averageSodium: 2000,
 };
 
 const mountComponent = (props: { title: string; week: WeeklyData } = { title: 'This Week', week: TEST_WEEK }) =>
