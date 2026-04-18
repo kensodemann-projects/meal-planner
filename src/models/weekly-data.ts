@@ -6,6 +6,6 @@ export interface WeeklyData {
   averageProtein: number;
   averageCarbs: number;
   averageFat: number;
-  overageSugar: number;
-  overageSodium: number;
+  averageSugar: number;
+  averageSodium: number;
 }
