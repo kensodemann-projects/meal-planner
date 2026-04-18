@@ -29,7 +29,7 @@ const BASE_SETTINGS: Settings = {
   weekStartDay: 0,
 };
 
-const mountComponent = (props: { value: Nutrition; settings?: Settings } = { value: TEST_PORTION }) =>
+const mountComponent = (props: { value: Nutrition; prefix?: string; settings?: Settings } = { value: TEST_PORTION }) =>
   mount(NutritionData, { props, global: { plugins: [vuetify] } });
 
 describe('NutritionData', () => {
@@ -71,6 +71,7 @@ describe('NutritionData', () => {
   describe.each([
     {
       statistic: 'calories',
+      label: 'Calories',
       greenPortion: { ...TEST_PORTION, calories: 1900 },
       lowYellowPortion: { ...TEST_PORTION, calories: 1799 },
       lowRedPortion: { ...TEST_PORTION, calories: 1599 },
@@ -79,6 +80,7 @@ describe('NutritionData', () => {
     },
     {
       statistic: 'protein',
+      label: 'Protein',
       greenPortion: { ...TEST_PORTION, protein: 80 },
       lowYellowPortion: { ...TEST_PORTION, protein: 43 },
       lowRedPortion: { ...TEST_PORTION, protein: 42 },
@@ -87,6 +89,7 @@ describe('NutritionData', () => {
     },
     {
       statistic: 'carbs',
+      label: 'Total Carbs',
       greenPortion: { ...TEST_PORTION, carbs: 290 },
       lowYellowPortion: { ...TEST_PORTION, carbs: 175 },
       lowRedPortion: { ...TEST_PORTION, carbs: 174 },
@@ -95,6 +98,7 @@ describe('NutritionData', () => {
     },
     {
       statistic: 'fat',
+      label: 'Fat',
       greenPortion: { ...TEST_PORTION, fat: 45 },
       lowYellowPortion: { ...TEST_PORTION, fat: 34 },
       lowRedPortion: { ...TEST_PORTION, fat: 33 },
@@ -103,6 +107,7 @@ describe('NutritionData', () => {
     },
     {
       statistic: 'sodium',
+      label: 'Sodium',
       greenPortion: { ...TEST_PORTION, sodium: 1900 },
       lowYellowPortion: { ...TEST_PORTION, sodium: 1799 },
       lowRedPortion: { ...TEST_PORTION, sodium: 1599 },
@@ -111,7 +116,19 @@ describe('NutritionData', () => {
     },
   ])(
     'NutritionalStatusMarker for $statistic',
-    ({ statistic, greenPortion, lowRedPortion, lowYellowPortion, highYellowPortion, highRedPortion }) => {
+    ({ statistic, label, greenPortion, lowRedPortion, lowYellowPortion, highYellowPortion, highRedPortion }) => {
+      it(`is labeled with "Sugar:" if there is no prefix`, () => {
+        wrapper = mountComponent({ value: TEST_PORTION });
+        const cell = wrapper.find(`[data-testid="${statistic}"]`);
+        expect(cell.text()).toMatch(new RegExp(`^${label}:`));
+      });
+
+      it(`is labeled with "Average ${label}:" if there is prefix of "Average"`, () => {
+        wrapper = mountComponent({ value: TEST_PORTION, prefix: 'Average' });
+        const cell = wrapper.find(`[data-testid="${statistic}"]`);
+        expect(cell.text()).toMatch(new RegExp(`^Average ${label}:`));
+      });
+
       it('is not displayed when settings are not provided', () => {
         wrapper = mountComponent({ value: TEST_PORTION });
         const cell = wrapper.find(`[data-testid="${statistic}"]`);
@@ -166,6 +183,18 @@ describe('NutritionData', () => {
   );
 
   describe('NutritionalStatusMarker for sugar', () => {
+    it('is labeled with "Sugar:" if there is no prefix', () => {
+      wrapper = mountComponent({ value: TEST_PORTION });
+      const cell = wrapper.find('[data-testid="sugar"]');
+      expect(cell.text()).toMatch(/^Sugar:/);
+    });
+
+    it('is labeled with "Average Sugar:" if there is prefix of "Average"', () => {
+      wrapper = mountComponent({ value: TEST_PORTION, prefix: 'Average' });
+      const cell = wrapper.find('[data-testid="sugar"]');
+      expect(cell.text()).toMatch(/^Average Sugar:/);
+    });
+
     it('is not displayed when settings are not provided', () => {
       wrapper = mountComponent({ value: TEST_PORTION });
       const cell = wrapper.find('[data-testid="sugar"]');
