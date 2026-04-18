@@ -1,142 +1,46 @@
 <template>
   <v-form v-model="valid">
     <v-container fluid>
-      <v-row density="compact">
-        <v-col cols="12" md="6">
-          <v-number-input
-            label="Minimum Daily Calories (kcal)"
-            v-model="minDailyCalories"
-            :rules="[
-              validationRules.required,
-              validationRules.positive,
-              validationRules.mustBeLessThan(maxDailyCalories, 'Minimum calories must be less than maximum calories'),
-            ]"
-            data-testid="min-daily-calorie-input"
-          ></v-number-input>
-        </v-col>
-        <v-col cols="12" md="6">
-          <v-number-input
-            label="Maximum Daily Calories (kcal)"
-            v-model="maxDailyCalories"
-            :rules="[
-              validationRules.required,
-              validationRules.positive,
-              validationRules.mustBeGreaterThan(
-                minDailyCalories,
-                'Maximum calories must be greater than minimum calories',
-              ),
-            ]"
-            data-testid="max-daily-calorie-input"
-          ></v-number-input>
-        </v-col>
-      </v-row>
-      <v-row density="compact">
-        <v-col cols="12" md="6">
-          <v-number-input
-            label="Minimum Daily Protein (grams)"
-            v-model="minDailyProtein"
-            :rules="[
-              validationRules.required,
-              validationRules.positive,
-              validationRules.mustBeLessThan(maxDailyProtein, 'Minimum protein must be less than maximum protein'),
-            ]"
-            data-testid="min-daily-protein-input"
-          ></v-number-input>
-        </v-col>
-        <v-col cols="12" md="6">
-          <v-number-input
-            label="Maximum Daily Protein (grams)"
-            v-model="maxDailyProtein"
-            :rules="[
-              validationRules.required,
-              validationRules.positive,
-              validationRules.mustBeGreaterThan(
-                minDailyProtein,
-                'Maximum protein must be greater than minimum protein',
-              ),
-            ]"
-            data-testid="max-daily-protein-input"
-          ></v-number-input>
-        </v-col>
-      </v-row>
-      <v-row density="compact">
-        <v-col cols="12" md="6">
-          <v-number-input
-            label="Minimum Daily Fat (grams)"
-            v-model="minDailyFat"
-            :rules="[
-              validationRules.required,
-              validationRules.positive,
-              validationRules.mustBeLessThan(maxDailyFat, 'Minimum fat must be less than maximum fat'),
-            ]"
-            data-testid="min-daily-fat-input"
-          ></v-number-input>
-        </v-col>
-        <v-col cols="12" md="6">
-          <v-number-input
-            label="Maximum Daily Fat (grams)"
-            v-model="maxDailyFat"
-            :rules="[
-              validationRules.required,
-              validationRules.positive,
-              validationRules.mustBeGreaterThan(minDailyFat, 'Maximum fat must be greater than minimum fat'),
-            ]"
-            data-testid="max-daily-fat-input"
-          ></v-number-input>
-        </v-col>
-      </v-row>
-      <v-row density="compact">
-        <v-col cols="12" md="6">
-          <v-number-input
-            label="Minimum Daily Carbs (grams)"
-            v-model="minDailyCarbs"
-            :rules="[
-              validationRules.required,
-              validationRules.positive,
-              validationRules.mustBeLessThan(maxDailyCarbs, 'Minimum carbs must be less than maximum carbs'),
-            ]"
-            data-testid="min-daily-carbs-input"
-          ></v-number-input>
-        </v-col>
-        <v-col cols="12" md="6">
-          <v-number-input
-            label="Maximum Daily Carbs (grams)"
-            v-model="maxDailyCarbs"
-            :rules="[
-              validationRules.required,
-              validationRules.positive,
-              validationRules.mustBeGreaterThan(minDailyCarbs, 'Maximum carbs must be greater than minimum carbs'),
-            ]"
-            data-testid="max-daily-carbs-input"
-          ></v-number-input>
-        </v-col>
-      </v-row>
-      <v-row density="compact">
-        <v-col cols="12" md="6">
-          <v-number-input
-            label="Minimum Daily Sodium (mg)"
-            v-model="minDailySodium"
-            :rules="[
-              validationRules.required,
-              validationRules.positive,
-              validationRules.mustBeLessThan(maxDailySodium, 'Minimum sodium must be less than maximum sodium'),
-            ]"
-            data-testid="min-daily-sodium-input"
-          ></v-number-input>
-        </v-col>
-        <v-col cols="12" md="6">
-          <v-number-input
-            label="Maximum Daily Sodium (mg)"
-            v-model="maxDailySodium"
-            :rules="[
-              validationRules.required,
-              validationRules.positive,
-              validationRules.mustBeGreaterThan(minDailySodium, 'Maximum sodium must be greater than minimum sodium'),
-            ]"
-            data-testid="max-daily-sodium-input"
-          ></v-number-input>
-        </v-col>
-      </v-row>
+      <NutrientRangeRow
+        nutrient="Calories"
+        unit="kcal"
+        v-model:min="minDailyCalories"
+        v-model:max="maxDailyCalories"
+        min-test-id="min-daily-calorie-input"
+        max-test-id="max-daily-calorie-input"
+      />
+      <NutrientRangeRow
+        nutrient="Protein"
+        unit="grams"
+        v-model:min="minDailyProtein"
+        v-model:max="maxDailyProtein"
+        min-test-id="min-daily-protein-input"
+        max-test-id="max-daily-protein-input"
+      />
+      <NutrientRangeRow
+        nutrient="Fat"
+        unit="grams"
+        v-model:min="minDailyFat"
+        v-model:max="maxDailyFat"
+        min-test-id="min-daily-fat-input"
+        max-test-id="max-daily-fat-input"
+      />
+      <NutrientRangeRow
+        nutrient="Carbs"
+        unit="grams"
+        v-model:min="minDailyCarbs"
+        v-model:max="maxDailyCarbs"
+        min-test-id="min-daily-carbs-input"
+        max-test-id="max-daily-carbs-input"
+      />
+      <NutrientRangeRow
+        nutrient="Sodium"
+        unit="mg"
+        v-model:min="minDailySodium"
+        v-model:max="maxDailySodium"
+        min-test-id="min-daily-sodium-input"
+        max-test-id="max-daily-sodium-input"
+      />
       <v-row density="compact">
         <v-col cols="12">
           <v-number-input
