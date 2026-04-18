@@ -43,6 +43,6 @@ defineProps<{
   maxTestId: string;
 }>();
 
-const min = defineModel<number>('min', { required: true });
-const max = defineModel<number>('max', { required: true });
+const min = defineModel<number | null>('min');
+const max = defineModel<number | null>('max');
 </script>
