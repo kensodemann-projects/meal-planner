@@ -6,7 +6,7 @@
 
   <v-container fluid>
     <v-row density="compact">
-      <v-col cols="12" md="6">
+      <v-col cols="12" lg="6">
         <WeeklySummaryCard
           v-if="thisWeek"
           title="This Week"
@@ -14,7 +14,7 @@
           @click="router.push({ path: 'planning/week', query: { dt: dateToISO(thisWeek.startDate) } })"
         />
       </v-col>
-      <v-col cols="12" md="6">
+      <v-col cols="12" lg="6">
         <WeeklySummaryCard
           v-if="nextWeek"
           title="Next Week (Planning)"

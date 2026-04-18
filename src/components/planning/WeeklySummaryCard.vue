@@ -14,15 +14,7 @@
       <div>
         Days with Meals: <strong>{{ week.daysWithMeals }}</strong>
       </div>
-      <div>
-        Average Calories: <strong>{{ week.averageCalories }}</strong>
-      </div>
-      <div>
-        Average Protein: <strong>{{ week.averageProtein }}g</strong>
-      </div>
-      <div>
-        Average Carbs: <strong>{{ week.averageCarbs }}g</strong>
-      </div>
+      <NutritionData :value="nutrition" prefix="Average" />
     </v-card-text>
   </v-card>
 </template>
@@ -41,5 +33,15 @@ defineEmits<{
   (event: 'click'): void;
 }>();
 
-const dateRange = computed(() => `${format(props.week.startDate, 'M/d/yyyy')} - ${format(props.week.endDate, 'M/d/yyyy')}`);
+const dateRange = computed(
+  () => `${format(props.week.startDate, 'M/d/yyyy')} - ${format(props.week.endDate, 'M/d/yyyy')}`,
+);
+const nutrition = computed(() => ({
+  calories: props.week.averageCalories,
+  protein: props.week.averageProtein,
+  carbs: props.week.averageCarbs,
+  fat: 0, //props.week.averageFat,
+  sodium: 0, //props.week.averageFat,
+  sugar: 0, //props.week.averageFat,
+}));
 </script>
