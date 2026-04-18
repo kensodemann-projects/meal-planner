@@ -26,6 +26,8 @@ const mountComponent = (
       maxDailyFat: 70,
       minDailyCarbs: 200,
       maxDailyCarbs: 250,
+      minDailySodium: 1500,
+      maxDailySodium: 2300,
       maxDailySugar: 45,
       tolerance: 8,
       weekStartDay: 2,
@@ -417,6 +419,98 @@ describe('SettingsEditor', () => {
     });
   });
 
+  describe('Minimum Daily Sodium Input', () => {
+    it('renders', () => {
+      wrapper = mountComponent();
+      const sodiumInput = wrapper.findComponent(
+        '[data-testid="min-daily-sodium-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(sodiumInput.exists()).toBe(true);
+      expect(sodiumInput.props('label')).toBe('Minimum Daily Sodium (mg)');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsRequired(wrapper, 'min-daily-sodium-input');
+    });
+
+    it('must be positive', async () => {
+      wrapper = mountComponent();
+      await numberInputMustBePositive(wrapper, 'min-daily-sodium-input');
+    });
+
+    it('must be less than maximum sodium', async () => {
+      wrapper = mountComponent();
+      const sodiumInput = wrapper.findComponent(
+        '[data-testid="min-daily-sodium-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const input = sodiumInput.find('input');
+
+      expect(sodiumInput.text()).not.toContain('Minimum sodium must be less than maximum sodium');
+      await input.trigger('focus');
+      await input.setValue(2300);
+      await input.trigger('blur');
+      expect(sodiumInput.text()).toContain('Minimum sodium must be less than maximum sodium');
+      await input.setValue(1500);
+      await input.trigger('blur');
+      expect(sodiumInput.text()).not.toContain('Minimum sodium must be less than maximum sodium');
+    });
+
+    it('is initialized based on the settings', () => {
+      wrapper = mountComponent();
+      const sodiumInput = wrapper.findComponent(
+        '[data-testid="min-daily-sodium-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(sodiumInput.props('modelValue')).toBe(1500);
+    });
+  });
+
+  describe('Maximum Daily Sodium Input', () => {
+    it('renders', () => {
+      wrapper = mountComponent();
+      const sodiumInput = wrapper.findComponent(
+        '[data-testid="max-daily-sodium-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(sodiumInput.exists()).toBe(true);
+      expect(sodiumInput.props('label')).toBe('Maximum Daily Sodium (mg)');
+    });
+
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await numberInputIsRequired(wrapper, 'max-daily-sodium-input');
+    });
+
+    it('must be positive', async () => {
+      wrapper = mountComponent();
+      await numberInputMustBePositive(wrapper, 'max-daily-sodium-input');
+    });
+
+    it('must be greater than minimum sodium', async () => {
+      wrapper = mountComponent();
+      const sodiumInput = wrapper.findComponent(
+        '[data-testid="max-daily-sodium-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const input = sodiumInput.find('input');
+
+      expect(sodiumInput.text()).not.toContain('Maximum sodium must be greater than minimum sodium');
+      await input.trigger('focus');
+      await input.setValue(1500);
+      await input.trigger('blur');
+      expect(sodiumInput.text()).toContain('Maximum sodium must be greater than minimum sodium');
+      await input.setValue(2300);
+      await input.trigger('blur');
+      expect(sodiumInput.text()).not.toContain('Maximum sodium must be greater than minimum sodium');
+    });
+
+    it('is initialized based on the settings', () => {
+      wrapper = mountComponent();
+      const sodiumInput = wrapper.findComponent(
+        '[data-testid="max-daily-sodium-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(sodiumInput.props('modelValue')).toBe(2300);
+    });
+  });
+
   describe('Maximum Daily Sugar Input', () => {
     it('renders', () => {
       wrapper = mountComponent();
@@ -566,6 +660,12 @@ describe('SettingsEditor', () => {
       const carbsInput = wrapper.findComponent(
         '[data-testid="max-daily-carbs-input"]',
       ) as VueWrapper<components.VNumberInput>;
+      const minSodiumInput = wrapper.findComponent(
+        '[data-testid="min-daily-sodium-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const sodiumInput = wrapper.findComponent(
+        '[data-testid="max-daily-sodium-input"]',
+      ) as VueWrapper<components.VNumberInput>;
       const toleranceInput = wrapper.findComponent(
         '[data-testid="tolerance-input"]',
       ) as VueWrapper<components.VNumberInput>;
@@ -582,6 +682,8 @@ describe('SettingsEditor', () => {
       await fatInput.setValue(90);
       await minCarbsInput.setValue(150);
       await carbsInput.setValue(300);
+      await minSodiumInput.setValue(1200);
+      await sodiumInput.setValue(2600);
       await toleranceInput.setValue(12);
       await weekStartDayInput.setValue(1);
 
@@ -597,6 +699,8 @@ describe('SettingsEditor', () => {
       expect(fatInput.props('modelValue')).toBe(70);
       expect(minCarbsInput.props('modelValue')).toBe(200);
       expect(carbsInput.props('modelValue')).toBe(250);
+      expect(minSodiumInput.props('modelValue')).toBe(1500);
+      expect(sodiumInput.props('modelValue')).toBe(2300);
       expect(toleranceInput.props('modelValue')).toBe(8);
       expect(weekStartDayInput.props('modelValue')).toBe(2);
     });
@@ -676,6 +780,12 @@ describe('SettingsEditor', () => {
       const carbsInput = wrapper.findComponent(
         '[data-testid="max-daily-carbs-input"]',
       ) as VueWrapper<components.VNumberInput>;
+      const minSodiumInput = wrapper.findComponent(
+        '[data-testid="min-daily-sodium-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      const sodiumInput = wrapper.findComponent(
+        '[data-testid="max-daily-sodium-input"]',
+      ) as VueWrapper<components.VNumberInput>;
       const toleranceInput = wrapper.findComponent(
         '[data-testid="tolerance-input"]',
       ) as VueWrapper<components.VNumberInput>;
@@ -692,6 +802,8 @@ describe('SettingsEditor', () => {
       await fatInput.setValue(75);
       await minCarbsInput.setValue(160);
       await carbsInput.setValue(280);
+      await minSodiumInput.setValue(1200);
+      await sodiumInput.setValue(2500);
       await toleranceInput.setValue(12);
       await weekStartDayInput.setValue(1);
       await flushPromises();
@@ -711,6 +823,8 @@ describe('SettingsEditor', () => {
           maxDailyFat: 75,
           minDailyCarbs: 160,
           maxDailyCarbs: 280,
+          minDailySodium: 1200,
+          maxDailySodium: 2500,
           maxDailySugar: 55,
           tolerance: 12,
           weekStartDay: 1,
@@ -824,6 +938,30 @@ describe('SettingsEditor', () => {
       expect(saveButton.attributes('disabled')).toBeUndefined();
     });
 
+    it('is true when minDailySodium changes', async () => {
+      wrapper = mountComponent();
+      const saveButton = wrapper.find('[data-testid="save-button"]');
+      expect(saveButton.attributes('disabled')).toBeDefined();
+      const input = wrapper.findComponent(
+        '[data-testid="min-daily-sodium-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      await input.setValue(1200);
+      await flushPromises();
+      expect(saveButton.attributes('disabled')).toBeUndefined();
+    });
+
+    it('is true when maxDailySodium changes', async () => {
+      wrapper = mountComponent();
+      const saveButton = wrapper.find('[data-testid="save-button"]');
+      expect(saveButton.attributes('disabled')).toBeDefined();
+      const input = wrapper.findComponent(
+        '[data-testid="max-daily-sodium-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      await input.setValue(2600);
+      await flushPromises();
+      expect(saveButton.attributes('disabled')).toBeUndefined();
+    });
+
     it('is true when tolerance changes', async () => {
       wrapper = mountComponent();
       const saveButton = wrapper.find('[data-testid="save-button"]');
@@ -859,6 +997,8 @@ describe('SettingsEditor', () => {
           maxDailyFat: 70,
           minDailyCarbs: 200,
           maxDailyCarbs: 250,
+          minDailySodium: 1500,
+          maxDailySodium: 2300,
           maxDailySugar: 40,
           tolerance: 5,
           weekStartDay: 1,
@@ -887,6 +1027,8 @@ describe('SettingsEditor', () => {
           maxDailyFat: 80,
           minDailyCarbs: 220,
           maxDailyCarbs: 275,
+          minDailySodium: 1800,
+          maxDailySodium: 2500,
           maxDailySugar: 50,
           tolerance: 10,
           weekStartDay: 0,
@@ -937,6 +1079,16 @@ describe('SettingsEditor', () => {
       ) as VueWrapper<components.VNumberInput>;
       expect(carbsInput.props('modelValue')).toBe(275);
 
+      const minSodiumInput = wrapper.findComponent(
+        '[data-testid="min-daily-sodium-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(minSodiumInput.props('modelValue')).toBe(1800);
+
+      const sodiumInput = wrapper.findComponent(
+        '[data-testid="max-daily-sodium-input"]',
+      ) as VueWrapper<components.VNumberInput>;
+      expect(sodiumInput.props('modelValue')).toBe(2500);
+
       const toleranceInput = wrapper.findComponent(
         '[data-testid="tolerance-input"]',
       ) as VueWrapper<components.VNumberInput>;
@@ -960,6 +1112,8 @@ describe('SettingsEditor', () => {
           maxDailyFat: 70,
           minDailyCarbs: 200,
           maxDailyCarbs: 250,
+          minDailySodium: 1500,
+          maxDailySodium: 2300,
           tolerance: 5,
           weekStartDay: 1,
         },
@@ -992,6 +1146,8 @@ describe('SettingsEditor', () => {
           maxDailyFat: 70,
           minDailyCarbs: 200,
           maxDailyCarbs: 250,
+          minDailySodium: 1800,
+          maxDailySodium: 2500,
           tolerance: 10,
           weekStartDay: 0,
         },

@@ -112,6 +112,32 @@
         </v-col>
       </v-row>
       <v-row density="compact">
+        <v-col cols="12" md="6">
+          <v-number-input
+            label="Minimum Daily Sodium (mg)"
+            v-model="minDailySodium"
+            :rules="[
+              validationRules.required,
+              validationRules.positive,
+              validationRules.mustBeLessThan(maxDailySodium, 'Minimum sodium must be less than maximum sodium'),
+            ]"
+            data-testid="min-daily-sodium-input"
+          ></v-number-input>
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-number-input
+            label="Maximum Daily Sodium (mg)"
+            v-model="maxDailySodium"
+            :rules="[
+              validationRules.required,
+              validationRules.positive,
+              validationRules.mustBeGreaterThan(minDailySodium, 'Maximum sodium must be greater than minimum sodium'),
+            ]"
+            data-testid="max-daily-sodium-input"
+          ></v-number-input>
+        </v-col>
+      </v-row>
+      <v-row density="compact">
         <v-col cols="12">
           <v-number-input
             label="Maximum Daily Sugar (grams)"
@@ -185,6 +211,8 @@ const minDailyFat = ref<number>(props.settings.minDailyFat);
 const maxDailyFat = ref<number>(props.settings.maxDailyFat);
 const minDailyCarbs = ref<number>(props.settings.minDailyCarbs);
 const maxDailyCarbs = ref<number>(props.settings.maxDailyCarbs);
+const minDailySodium = ref<number>(props.settings.minDailySodium);
+const maxDailySodium = ref<number>(props.settings.maxDailySodium);
 const maxDailySugar = ref<number>(props.settings.maxDailySugar);
 const tolerance = ref<number>(props.settings.tolerance);
 const weekStartDay = ref<number>(props.settings.weekStartDay);
@@ -199,6 +227,8 @@ const isModified = computed(() => {
     maxDailyFat.value !== props.settings.maxDailyFat ||
     minDailyCarbs.value !== props.settings.minDailyCarbs ||
     maxDailyCarbs.value !== props.settings.maxDailyCarbs ||
+    minDailySodium.value !== props.settings.minDailySodium ||
+    maxDailySodium.value !== props.settings.maxDailySodium ||
     maxDailySugar.value !== props.settings.maxDailySugar ||
     tolerance.value !== props.settings.tolerance ||
     weekStartDay.value !== props.settings.weekStartDay
@@ -214,6 +244,8 @@ const reset = () => {
   maxDailyFat.value = props.settings.maxDailyFat;
   minDailyCarbs.value = props.settings.minDailyCarbs;
   maxDailyCarbs.value = props.settings.maxDailyCarbs;
+  minDailySodium.value = props.settings.minDailySodium;
+  maxDailySodium.value = props.settings.maxDailySodium;
   maxDailySugar.value = props.settings.maxDailySugar;
   tolerance.value = props.settings.tolerance;
   weekStartDay.value = props.settings.weekStartDay;
@@ -231,6 +263,8 @@ const save = () => {
     maxDailyCarbs: maxDailyCarbs.value,
     minDailyFat: minDailyFat.value,
     maxDailyFat: maxDailyFat.value,
+    minDailySodium: minDailySodium.value,
+    maxDailySodium: maxDailySodium.value,
     maxDailySugar: maxDailySugar.value,
     tolerance: tolerance.value,
     weekStartDay: weekStartDay.value as WeekDay,
