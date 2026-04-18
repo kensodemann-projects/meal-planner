@@ -22,6 +22,8 @@ const BASE_SETTINGS: Settings = {
   maxDailyCarbs: 300,
   minDailyFat: 40,
   maxDailyFat: 80,
+  minDailySodium: 1800,
+  maxDailySodium: 2200,
   maxDailySugar: 50,
   tolerance: 10,
   weekStartDay: 0,
@@ -98,6 +100,14 @@ describe('NutritionData', () => {
       lowRedPortion: { ...TEST_PORTION, fat: 33 },
       highYellowPortion: { ...TEST_PORTION, fat: 86 },
       highRedPortion: { ...TEST_PORTION, fat: 87 },
+    },
+    {
+      statistic: 'sodium',
+      greenPortion: { ...TEST_PORTION, sodium: 1900 },
+      lowYellowPortion: { ...TEST_PORTION, sodium: 1799 },
+      lowRedPortion: { ...TEST_PORTION, sodium: 1599 },
+      highYellowPortion: { ...TEST_PORTION, sodium: 2201 },
+      highRedPortion: { ...TEST_PORTION, sodium: 2401 },
     },
   ])(
     'NutritionalStatusMarker for $statistic',

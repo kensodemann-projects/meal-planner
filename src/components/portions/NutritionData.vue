@@ -16,7 +16,10 @@
         </div>
       </v-col>
       <v-col cols="12" md="6">
-        <div data-testid="sodium"><span class="font-weight-black">Sodium:</span> {{ value.sodium }}mg</div>
+        <div data-testid="sodium">
+          <NutritionalStatusMarker v-if="settings" class="status-marker" :status="sodiumStatus" />
+          <span class="font-weight-black">Sodium:</span> {{ value.sodium }}mg
+        </div>
         <div data-testid="fat">
           <NutritionalStatusMarker v-if="settings" class="status-marker" :status="fatStatus" />
           <span class="font-weight-black">Fat:</span> {{ value.fat }}g
@@ -52,6 +55,10 @@ const carbsStatus = computed(() =>
 
 const fatStatus = computed(() =>
   rangeStatus(value.fat, settings?.minDailyFat, settings?.maxDailyFat, settings?.tolerance),
+);
+
+const sodiumStatus = computed(() =>
+  rangeStatus(value.sodium, settings?.minDailySodium, settings?.maxDailySodium, settings?.tolerance),
 );
 
 const sugarStatus = computed(() => maxOnlyStatus(value.sugar, settings?.maxDailySugar, settings?.tolerance));
