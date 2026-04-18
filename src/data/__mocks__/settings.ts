@@ -20,6 +20,8 @@ const settings = ref<Settings>({
   maxDailyCarbs: 300,
   minDailyFat: 20,
   maxDailyFat: 70,
+  minDailySodium: 1550,
+  maxDailySodium: 2340,
   maxDailySugar: 35,
   tolerance: 15,
   weekStartDay: 1,
