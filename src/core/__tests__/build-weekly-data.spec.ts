@@ -2,6 +2,7 @@ import type { MealPlan } from '@/models/meal-plan';
 import type { Settings } from '@/models/settings';
 import { describe, expect, it, vi } from 'vitest';
 import { buildWeeklyData } from '../build-weekly-data';
+import type { Nutrition } from '@/models/nutrition';
 
 const makeSettings = (weekStartDay: 0 | 1 = 0): Settings => ({
   minDailyCalories: 2000,
@@ -19,9 +20,7 @@ const makeSettings = (weekStartDay: 0 | 1 = 0): Settings => ({
   weekStartDay,
 });
 
-type ItemNutrition = { calories: number; protein: number; carbs: number };
-
-const makeMealPlan = (id: string, meals: ItemNutrition[][]): MealPlan => ({
+const makeMealPlan = (id: string, meals: Nutrition[][]): MealPlan => ({
   id,
   date: '2025-12-25',
   meals: meals.map((items, mealIndex) => ({
@@ -32,7 +31,7 @@ const makeMealPlan = (id: string, meals: ItemNutrition[][]): MealPlan => ({
       name: 'Test Food',
       recipeId: 'test-recipe',
       servings: 1,
-      nutrition: { ...nutrition, fat: 0, sugar: 0, sodium: 0 },
+      nutrition,
     })),
   })),
 });
@@ -77,8 +76,8 @@ describe('buildWeeklyData', () => {
 
   it('returns the number of days that have meals', async () => {
     const mealPlans = [
-      makeMealPlan('mp-1', [[{ calories: 500, protein: 30, carbs: 60 }]]),
-      makeMealPlan('mp-2', [[{ calories: 600, protein: 40, carbs: 70 }]]),
+      makeMealPlan('mp-1', [[{ calories: 500, protein: 30, carbs: 60, fat: 10, sodium: 700, sugar: 20 }]]),
+      makeMealPlan('mp-2', [[{ calories: 600, protein: 40, carbs: 70, fat: 20, sodium: 1700, sugar: 35 }]]),
       makeMealPlan('mp-3', []),
     ];
     const getMealPlansForPeriod = vi.fn().mockResolvedValue(mealPlans);
@@ -88,11 +87,14 @@ describe('buildWeeklyData', () => {
 
   it('calculates average calories, protein, and carbs over days with meals', async () => {
     const mealPlans = [
-      makeMealPlan('mp-1', [[{ calories: 300, protein: 20, carbs: 40 }], [{ calories: 200, protein: 11, carbs: 22 }]]),
+      makeMealPlan('mp-1', [
+        [{ calories: 300, protein: 20, carbs: 40, fat: 5, sodium: 300, sugar: 23 }],
+        [{ calories: 200, protein: 11, carbs: 22, fat: 4, sodium: 500, sugar: 12 }],
+      ]),
       makeMealPlan('mp-2', [
         [
-          { calories: 400, protein: 25, carbs: 35 },
-          { calories: 201, protein: 16, carbs: 36 },
+          { calories: 400, protein: 25, carbs: 35, fat: 9, sodium: 800, sugar: 15 },
+          { calories: 201, protein: 16, carbs: 36, fat: 12, sodium: 900, sugar: 18 },
         ],
       ]),
     ];
@@ -102,14 +104,17 @@ describe('buildWeeklyData', () => {
     expect(result.averageCalories).toBe(Math.round((500 + 601) / 2));
     expect(result.averageProtein).toBe(Math.round((31 + 41) / 2));
     expect(result.averageCarbs).toBe(Math.round((62 + 71) / 2));
+    expect(result.averageFat).toBe(Math.round((9 + 21) / 2));
+    expect(result.averageSodium).toBe(Math.round((800 + 1700) / 2));
+    expect(result.averageSugar).toBe(Math.round((35 + 33) / 2));
   });
 
   it('rounds averages to the nearest integer', async () => {
     // 3 days summing to values that produce non-integer averages
     const mealPlans = [
-      makeMealPlan('mp-1', [[{ calories: 100, protein: 10, carbs: 20 }]]),
-      makeMealPlan('mp-2', [[{ calories: 200, protein: 20, carbs: 30 }]]),
-      makeMealPlan('mp-3', [[{ calories: 300, protein: 30, carbs: 40 }]]),
+      makeMealPlan('mp-1', [[{ calories: 100, protein: 10, carbs: 20, fat: 5, sodium: 500, sugar: 10 }]]),
+      makeMealPlan('mp-2', [[{ calories: 200, protein: 20, carbs: 30, fat: 10, sodium: 1000, sugar: 20 }]]),
+      makeMealPlan('mp-3', [[{ calories: 300, protein: 30, carbs: 40, fat: 15, sodium: 1500, sugar: 30 }]]),
     ];
     const getMealPlansForPeriod = vi.fn().mockResolvedValue(mealPlans);
     const result = await buildWeeklyData(START_DATE, makeSettings(), getMealPlansForPeriod);
@@ -124,5 +129,8 @@ describe('buildWeeklyData', () => {
     expect(result.averageCalories).toBe(0);
     expect(result.averageProtein).toBe(0);
     expect(result.averageCarbs).toBe(0);
+    expect(result.averageFat).toBe(0);
+    expect(result.averageSodium).toBe(0);
+    expect(result.averageSugar).toBe(0);
   });
 });
