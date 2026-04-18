@@ -12,6 +12,8 @@ const makeSettings = (weekStartDay: 0 | 1 = 0): Settings => ({
   maxDailyCarbs: 300,
   minDailyFat: 20,
   maxDailyFat: 70,
+  minDailySodium: 1500,
+  maxDailySodium: 2300,
   maxDailySugar: 50,
   tolerance: 10,
   weekStartDay,
