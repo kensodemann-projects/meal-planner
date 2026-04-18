@@ -85,7 +85,7 @@ describe('buildWeeklyData', () => {
     expect(result.daysWithMeals).toBe(2);
   });
 
-  it('calculates average calories, protein, and carbs over days with meals', async () => {
+  it('calculates average nutritional data over days with meals', async () => {
     const mealPlans = [
       makeMealPlan('mp-1', [
         [{ calories: 300, protein: 20, carbs: 40, fat: 5, sodium: 300, sugar: 23 }],
@@ -121,6 +121,9 @@ describe('buildWeeklyData', () => {
     expect(Number.isInteger(result.averageCalories)).toBe(true);
     expect(Number.isInteger(result.averageProtein)).toBe(true);
     expect(Number.isInteger(result.averageCarbs)).toBe(true);
+    expect(Number.isInteger(result.averageFat)).toBe(true);
+    expect(Number.isInteger(result.averageSodium)).toBe(true);
+    expect(Number.isInteger(result.averageSugar)).toBe(true);
   });
 
   it('returns zero averages when there are no days with meals', async () => {
