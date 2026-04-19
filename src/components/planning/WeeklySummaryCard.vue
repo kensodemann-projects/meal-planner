@@ -14,7 +14,7 @@
       <div>
         Days with Meals: <strong>{{ week.daysWithMeals }}</strong>
       </div>
-      <NutritionData :value="nutrition" prefix="Average" />
+      <NutritionData :value="nutrition" prefix="Average" :settings="settings" />
     </v-card-text>
   </v-card>
 </template>
@@ -23,10 +23,12 @@
 import type { WeeklyData } from '@/models/weekly-data';
 import { computed } from 'vue';
 import { format } from 'date-fns';
+import type { Settings } from '@/models/settings';
 
 const props = defineProps<{
   title: string;
   week: WeeklyData;
+  settings?: Settings | null;
 }>();
 
 defineEmits<{
@@ -40,8 +42,8 @@ const nutrition = computed(() => ({
   calories: props.week.averageCalories,
   protein: props.week.averageProtein,
   carbs: props.week.averageCarbs,
-  fat: 0, //props.week.averageFat,
-  sodium: 0, //props.week.averageFat,
-  sugar: 0, //props.week.averageFat,
+  fat: props.week.averageFat,
+  sodium: props.week.averageSodium,
+  sugar: props.week.averageSugar,
 }));
 </script>

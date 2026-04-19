@@ -53,7 +53,7 @@ describe('NutritionData', () => {
     expect(wrapper.text()).toContain(`Calories: ${TEST_PORTION.calories}`);
     expect(wrapper.text()).toContain(`Sodium: ${TEST_PORTION.sodium}mg`);
     expect(wrapper.text()).toContain(`Sugar: ${TEST_PORTION.sugar}g`);
-    expect(wrapper.text()).toContain(`Total Carbs: ${TEST_PORTION.carbs}g`);
+    expect(wrapper.text()).toContain(`Carbs: ${TEST_PORTION.carbs}g`);
     expect(wrapper.text()).toContain(`Fat: ${TEST_PORTION.fat}g`);
     expect(wrapper.text()).toContain(`Protein: ${TEST_PORTION.protein}g`);
   });
@@ -63,7 +63,7 @@ describe('NutritionData', () => {
     expect(wrapper.text()).toContain(`Calories: ${TEST_RECIPE.calories}`);
     expect(wrapper.text()).toContain(`Sodium: ${TEST_RECIPE.sodium}mg`);
     expect(wrapper.text()).toContain(`Sugar: ${TEST_RECIPE.sugar}g`);
-    expect(wrapper.text()).toContain(`Total Carbs: ${TEST_RECIPE.carbs}g`);
+    expect(wrapper.text()).toContain(`Carbs: ${TEST_RECIPE.carbs}g`);
     expect(wrapper.text()).toContain(`Fat: ${TEST_RECIPE.fat}g`);
     expect(wrapper.text()).toContain(`Protein: ${TEST_RECIPE.protein}g`);
   });
@@ -89,7 +89,7 @@ describe('NutritionData', () => {
     },
     {
       statistic: 'carbs',
-      label: 'Total Carbs',
+      label: 'Carbs',
       greenPortion: { ...TEST_PORTION, carbs: 290 },
       lowYellowPortion: { ...TEST_PORTION, carbs: 175 },
       lowRedPortion: { ...TEST_PORTION, carbs: 174 },

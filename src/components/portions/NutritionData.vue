@@ -12,7 +12,7 @@
         </div>
         <div data-testid="carbs">
           <NutritionalStatusMarker v-if="settings" class="status-marker" :status="carbsStatus" />
-          <span class="font-weight-black">{{ prefix }} Total Carbs:</span> {{ value.carbs }}g
+          <span class="font-weight-black">{{ prefix }} Carbs:</span> {{ value.carbs }}g
         </div>
       </v-col>
       <v-col cols="12" sm="6">

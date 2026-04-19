@@ -72,7 +72,7 @@ const detailStats = computed(() => {
   return [
     { icon: 'mdi-food-steak', label: 'Protein (g)', value: nutrition.protein },
     { icon: 'mdi-candy-outline', label: 'Sugar (g)', value: nutrition.sugar },
-    { icon: 'mdi-baguette', label: 'Total Carbs (g)', value: nutrition.carbs },
+    { icon: 'mdi-baguette', label: 'Carbs (g)', value: nutrition.carbs },
     { icon: 'mdi-shaker-outline', label: 'Sodium (mg)', value: nutrition.sodium },
     { icon: 'mdi-french-fries', label: 'Fat (g)', value: nutrition.fat },
     { icon: 'mdi-fire', label: 'Calories', value: nutrition.calories },

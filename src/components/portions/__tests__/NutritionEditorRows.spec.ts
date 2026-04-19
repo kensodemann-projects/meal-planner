@@ -123,7 +123,7 @@ describe('NutritionEditorRows', () => {
       wrapper = mountComponent({});
       const carbsInput = wrapper.findComponent('[data-testid="carbs-input"]') as VueWrapper<components.VNumberInput>;
       expect(carbsInput.exists()).toBe(true);
-      expect(carbsInput.props('label')).toBe('Total Carbs (g)');
+      expect(carbsInput.props('label')).toBe('Carbs (g)');
     });
 
     it('is required', async () => {

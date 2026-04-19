@@ -248,7 +248,7 @@ describe('Dashboard Page', () => {
         const cards = wrapper
           .findAllComponents(DetailStatCard)
           .filter((c) =>
-            ['Protein (g)', 'Sugar (g)', 'Total Carbs (g)', 'Sodium (mg)', 'Fat (g)', 'Calories'].includes(
+            ['Protein (g)', 'Sugar (g)', 'Carbs (g)', 'Sodium (mg)', 'Fat (g)', 'Calories'].includes(
               c.props('label') as string,
             ),
           );
@@ -311,7 +311,7 @@ describe('Dashboard Page', () => {
         });
         wrapper = mountPage();
         await flushPromises();
-        const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Total Carbs (g)');
+        const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Carbs (g)');
         expect(card?.props('value')).toBe(210);
       });
 
