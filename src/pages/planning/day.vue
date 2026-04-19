@@ -214,35 +214,26 @@ const mealRefs: Record<string, typeof breakfast> = {
   Snack: snack,
 };
 
+const buildMeals = (): Meal[] =>
+  [breakfast.value.item, lunch.value.item, dinner.value.item, snack.value.item].filter(
+    (m): m is Meal => m !== undefined && m.items.length > 0,
+  );
+
 const nutrition = computed(
   (): Nutrition =>
     dailyMealPlanNutrients({
       ...mealPlan,
-      meals: [breakfast.value.item, lunch.value.item, dinner.value.item, snack.value.item].filter(
-        (m): m is Meal => m !== undefined && m.items.length > 0,
-      ),
+      meals: buildMeals(),
     }),
 );
 
-const rebuildMealPlan = (): void => {
-  const meals: Meal[] = [];
-  if (breakfast.value.item?.items.length) meals.push(breakfast.value.item);
-  if (lunch.value.item?.items.length) meals.push(lunch.value.item);
-  if (dinner.value.item?.items.length) meals.push(dinner.value.item);
-  if (snack.value.item?.items.length) meals.push(snack.value.item);
-  mealPlan = {
-    ...mealPlan,
-    meals,
-  };
-};
-
 const saveDayPlan = async () => {
-  rebuildMealPlan();
+  const meals = buildMeals();
   if (mealPlan.id) {
     const { id, ...planFields } = mealPlan;
-    await updateMealPlan(id, { ...planFields });
+    await updateMealPlan(id, { ...planFields, meals });
   } else {
-    mealPlan.id = await addMealPlan({ ...mealPlan });
+    mealPlan.id = await addMealPlan({ ...mealPlan, meals });
   }
 };
 

@@ -24,28 +24,21 @@
 
   <v-divider class="my-4"></v-divider>
 
-  <v-container fluid>
-    <v-row density="compact">
-      <v-col cols="12" md="6">
-        <WeeklySummaryCard
-          v-if="thisWeek"
-          title="This Week"
-          :week="thisWeek"
-          :settings="settings"
-          @click="router.push({ path: 'planning/week', query: { dt: dateToISO(thisWeek.startDate) } })"
-        />
-      </v-col>
-      <v-col cols="12" md="6">
-        <WeeklySummaryCard
-          v-if="nextWeek"
-          title="Next Week (Planning)"
-          :week="nextWeek"
-          :settings="settings"
-          @click="router.push({ path: 'planning/week', query: { dt: dateToISO(nextWeek.startDate) } })"
-        />
-      </v-col>
-    </v-row>
-  </v-container>
+  <WeeklySummaryCard
+    v-if="thisWeek"
+    class="mb-4"
+    title="This Week"
+    :week="thisWeek"
+    :settings="settings"
+    @click="router.push({ path: 'planning/week', query: { dt: dateToISO(thisWeek.startDate) } })"
+  />
+  <WeeklySummaryCard
+    v-if="nextWeek"
+    title="Next Week (Planning)"
+    :week="nextWeek"
+    :settings="settings"
+    @click="router.push({ path: 'planning/week', query: { dt: dateToISO(nextWeek.startDate) } })"
+  />
 </template>
 
 <script lang="ts" setup>
