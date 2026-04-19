@@ -1,10 +1,7 @@
 <template>
   <v-card>
     <template #append>
-      <NutritionalStatusMarker
-        v-if="status != null"
-        :status="status"
-      />
+      <NutritionalStatusMarker v-if="status" :status="status" />
     </template>
     <v-card-text>
       <div class="d-flex flex-column align-center ga-2">
@@ -23,7 +20,7 @@ import type { NutritionalStatus } from '@/core/nutritional-status';
 defineProps<{
   icon: string;
   label: string;
-  status?: NutritionalStatus;
+  status?: NutritionalStatus | null;
   value: number | string;
 }>();
 </script>
