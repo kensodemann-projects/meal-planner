@@ -1,5 +1,4 @@
 import { TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
-import { useSettingsData } from '@/data/settings';
 import type { MealPlan } from '@/models/meal-plan';
 import { mount } from '@vue/test-utils';
 import { intlFormat, parseISO } from 'date-fns';
@@ -8,15 +7,30 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import DailySummaryCard from '../DailySummaryCard.vue';
-
-vi.mock('@/data/settings');
+import type { Settings } from '@/models/settings';
 
 const vuetify = createVuetify({ components, directives });
 
 const TEST_MEAL_PLAN = TEST_MEAL_PLANS[0];
+const TEST_SETTINGS: Settings = {
+  minDailyCalories: 1950,
+  maxDailyCalories: 2150,
+  minDailyProtein: 140,
+  maxDailyProtein: 160,
+  minDailyCarbs: 210,
+  maxDailyCarbs: 235,
+  minDailyFat: 60,
+  maxDailyFat: 75,
+  minDailySodium: 1500,
+  maxDailySodium: 2300,
+  maxDailySugar: 38,
+  tolerance: 10,
+  weekStartDay: 0,
+};
 
-const mountComponent = (props: { date: Date; mealPlan?: MealPlan } = { date: parseISO('2026-04-02') }) =>
-  mount(DailySummaryCard, { props, global: { plugins: [vuetify] } });
+const mountComponent = (
+  props: { date: Date; settings?: Settings; mealPlan?: MealPlan } = { date: parseISO('2026-04-02') },
+) => mount(DailySummaryCard, { props, global: { plugins: [vuetify] } });
 
 describe('Daily Summary Card', () => {
   let wrapper: ReturnType<typeof mountComponent>;
@@ -38,11 +52,6 @@ describe('Daily Summary Card', () => {
     wrapper = mountComponent();
     const title = wrapper.findComponent(components.VCardTitle);
     expect(title.text()).toBe(expectedTitle);
-  });
-
-  it('gets the settings', () => {
-    wrapper = mountComponent();
-    expect(useSettingsData).toHaveBeenCalled();
   });
 
   describe('interactions', () => {
@@ -101,8 +110,7 @@ describe('Daily Summary Card', () => {
       });
 
       it('displays total nutrition information', () => {
-        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: TEST_MEAL_PLAN });
-        const { settings } = useSettingsData();
+        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: TEST_MEAL_PLAN, settings: TEST_SETTINGS });
         const nutritionData = wrapper.findComponent({ name: 'NutritionData' });
         expect(nutritionData.exists()).toBe(true);
         expect(nutritionData.props('value')).toEqual({
@@ -113,7 +121,7 @@ describe('Daily Summary Card', () => {
           carbs: 145,
           sugar: 56,
         });
-        expect(nutritionData.props('settings')).toEqual(settings.value);
+        expect(nutritionData.props('settings')).toEqual(TEST_SETTINGS);
       });
     });
 
@@ -127,8 +135,11 @@ describe('Daily Summary Card', () => {
       });
 
       it('displays total nutrition information', () => {
-        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: PARTIAL_MEAL_PLAN });
-        const { settings } = useSettingsData();
+        wrapper = mountComponent({
+          date: parseISO('2026-04-02'),
+          mealPlan: PARTIAL_MEAL_PLAN,
+          settings: TEST_SETTINGS,
+        });
         const nutritionData = wrapper.findComponent({ name: 'NutritionData' });
         expect(nutritionData.exists()).toBe(true);
         expect(nutritionData.props('value')).toEqual({
@@ -139,7 +150,7 @@ describe('Daily Summary Card', () => {
           carbs: 86,
           sugar: 26,
         });
-        expect(nutritionData.props('settings')).toEqual(settings.value);
+        expect(nutritionData.props('settings')).toEqual(TEST_SETTINGS);
       });
     });
 

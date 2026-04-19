@@ -18,18 +18,17 @@
 
 <script setup lang="ts">
 import { dailyMealPlanNutrients } from '@/core/nutritional-calculations';
-import { useSettingsData } from '@/data/settings';
 import type { MealPlan } from '@/models/meal-plan';
 import type { Nutrition } from '@/models/nutrition';
+import type { Settings } from '@/models/settings';
 import { intlFormat } from 'date-fns';
 import { computed } from 'vue';
 
 const props = defineProps<{
   date: Date;
   mealPlan?: MealPlan;
+  settings?: Settings | null;
 }>();
-
-const { settings } = useSettingsData();
 
 const buildMealSummary = (mealPlan: MealPlan): string => {
   let summary = '';
