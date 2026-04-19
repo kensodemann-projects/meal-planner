@@ -108,6 +108,15 @@
       @close="closeMealEditor('Snack')"
     />
   </div>
+
+  <div>
+    <h2>Summary</h2>
+    <v-divider class="mb-8"></v-divider>
+  </div>
+  <div class="mb-8">
+    <NutritionData :value="nutrition" :settings="settings" data-testid="nutrition-summary" />
+  </div>
+
   <div class="d-flex justify-end mt-4" data-testid="day-footer">
     <CloseButton @click="closeDayPlan" />
   </div>
@@ -127,19 +136,22 @@ import type { Meal, MealType } from '@/models/meal';
 import { useMealPlansData } from '@/data/meal-plans';
 import type { MealPlan } from '@/models/meal-plan';
 import { intlFormat, parseISO } from 'date-fns';
-import { ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import type { EditableItem } from '@/models/editable-item';
+import { useSettingsData } from '@/data/settings';
+import type { Nutrition } from '@/models/nutrition';
+import { dailyMealPlanNutrients } from '@/core/nutritional-calculations';
 
 const route = useRoute();
 const dateParam = route.query.dt as string;
 const currDate = parseISO(dateParam);
 
 const { addMealPlan, getMealPlanForDate, updateMealPlan } = useMealPlansData();
-const mealPlan = ref<MealPlan>({
+let mealPlan: MealPlan = {
   date: dateParam,
   meals: [],
-});
+};
 const breakfast = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 const lunch = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 const dinner = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
@@ -149,6 +161,7 @@ const showConfirmDialog = ref(false);
 const mealToDelete = ref<MealType | null>(null);
 
 const router = useRouter();
+const { settings } = useSettingsData();
 
 const addBreakfastButtonClicked = () => {
   breakfast.value = {
@@ -201,17 +214,26 @@ const mealRefs: Record<string, typeof breakfast> = {
   Snack: snack,
 };
 
+const buildMeals = (): Meal[] =>
+  [breakfast.value.item, lunch.value.item, dinner.value.item, snack.value.item].filter(
+    (m): m is Meal => m !== undefined && m.items.length > 0,
+  );
+
+const nutrition = computed(
+  (): Nutrition =>
+    dailyMealPlanNutrients({
+      ...mealPlan,
+      meals: buildMeals(),
+    }),
+);
+
 const saveDayPlan = async () => {
-  const meals: Meal[] = [];
-  if (breakfast.value.item?.items.length) meals.push(breakfast.value.item);
-  if (lunch.value.item?.items.length) meals.push(lunch.value.item);
-  if (dinner.value.item?.items.length) meals.push(dinner.value.item);
-  if (snack.value.item?.items.length) meals.push(snack.value.item);
-  if (mealPlan.value.id) {
-    const { id, ...planFields } = mealPlan.value;
+  const meals = buildMeals();
+  if (mealPlan.id) {
+    const { id, ...planFields } = mealPlan;
     await updateMealPlan(id, { ...planFields, meals });
   } else {
-    mealPlan.value.id = await addMealPlan({ ...mealPlan.value, meals });
+    mealPlan.id = await addMealPlan({ ...mealPlan, meals });
   }
 };
 
@@ -253,14 +275,14 @@ const doDelete = async () => {
 
 const closeDayPlan = () => router.back();
 
-getMealPlanForDate(dateParam).then((plan) => {
-  mealPlan.value = plan || {
+onMounted(async () => {
+  mealPlan = (await getMealPlanForDate(dateParam)) || {
     date: dateParam,
     meals: [],
   };
-  breakfast.value.item = mealPlan.value.meals.find((meal) => meal.type === 'Breakfast');
-  lunch.value.item = mealPlan.value.meals.find((meal) => meal.type === 'Lunch');
-  dinner.value.item = mealPlan.value.meals.find((meal) => meal.type === 'Dinner');
-  snack.value.item = mealPlan.value.meals.find((meal) => meal.type === 'Snack');
+  breakfast.value.item = mealPlan.meals.find((meal) => meal.type === 'Breakfast');
+  lunch.value.item = mealPlan.meals.find((meal) => meal.type === 'Lunch');
+  dinner.value.item = mealPlan.meals.find((meal) => meal.type === 'Dinner');
+  snack.value.item = mealPlan.meals.find((meal) => meal.type === 'Snack');
 });
 </script>

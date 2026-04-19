@@ -2,6 +2,7 @@ import ConfirmDialog from '@/components/core/ConfirmDialog.vue';
 import { TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
 import { useMealPlansData } from '@/data/meal-plans';
 import type { Meal, MealItem, MealType } from '@/models/meal';
+import type { Nutrition } from '@/models/nutrition';
 import type { MealPlan } from '@/models/meal-plan';
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
@@ -10,6 +11,7 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import day from '../day.vue';
+import { useSettingsData } from '@/data/settings';
 
 vi.mock('vue-router');
 vi.mock('@/data/meal-plans');
@@ -99,22 +101,66 @@ describe('day', () => {
     expect(getMealPlanForDate).toHaveBeenCalledExactlyOnceWith('2026-02-18');
   });
 
-  it('contains a section for each type of meal', async () => {
+  it('gets the settings', async () => {
     wrapper = await renderPage();
-    const headers = wrapper.findAll('h2').map((h) => h.text());
-    expect(headers).toEqual(['Breakfast', 'Lunch', 'Dinner', 'Snacks']);
+    expect(useSettingsData).toHaveBeenCalledExactlyOnceWith();
   });
 
-  it.each([
-    { case: 'full meal plan', plan: FULL_MEAL_PLAN },
-    { case: 'empty meal plan', plan: EMPTY_MEAL_PLAN },
-    { case: 'new meal plan', plan: null },
-  ])('does not display any meal editors for $case', async ({ plan }: { plan: MealPlan | null }) => {
-    const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
-    getMealPlanForDate.mockResolvedValueOnce(plan);
+  it('contains a section for each type of meal and a summary section', async () => {
     wrapper = await renderPage();
-    const editors = wrapper.findAllComponents({ name: 'MealEditor' });
-    expect(editors.length).toBe(0);
+    const headers = wrapper.findAll('h2').map((h) => h.text());
+    expect(headers).toEqual(['Breakfast', 'Lunch', 'Dinner', 'Snacks', 'Summary']);
+  });
+
+  describe.each([
+    {
+      case: 'full meal plan',
+      plan: FULL_MEAL_PLAN,
+      expectedNutrition: { calories: 1530, sodium: 1125, fat: 58, protein: 110, carbs: 145, sugar: 56 },
+    },
+    {
+      case: 'empty meal plan',
+      plan: EMPTY_MEAL_PLAN,
+      expectedNutrition: { calories: 0, sodium: 0, fat: 0, protein: 0, carbs: 0, sugar: 0 },
+    },
+    {
+      case: 'new meal plan',
+      plan: null,
+      expectedNutrition: { calories: 0, sodium: 0, fat: 0, protein: 0, carbs: 0, sugar: 0 },
+    },
+  ])('$case', ({ plan, expectedNutrition }: { plan: MealPlan | null; expectedNutrition: Nutrition }) => {
+    it('does not display any meal editors', async () => {
+      const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+      getMealPlanForDate.mockResolvedValueOnce(plan);
+      wrapper = await renderPage();
+      const editors = wrapper.findAllComponents({ name: 'MealEditor' });
+      expect(editors.length).toBe(0);
+    });
+
+    it('displays the correct nutritional totals in the summary', async () => {
+      const getMealPlanForDate = useMealPlansData().getMealPlanForDate as Mock;
+      getMealPlanForDate.mockResolvedValueOnce(plan);
+      wrapper = await renderPage();
+      const nutritionData = wrapper.findComponent('[data-testid="nutrition-summary"]') as VueWrapper<any>;
+      expect(nutritionData.exists()).toBe(true);
+      expect(nutritionData.props('value')).toEqual(expectedNutrition);
+    });
+  });
+
+  it('displays a nutritional summary', async () => {
+    const settings = useSettingsData().settings.value;
+    wrapper = await renderPage();
+    const nutritionData = wrapper.findComponent('[data-testid="nutrition-summary"]') as VueWrapper<any>;
+    expect(nutritionData.exists()).toBe(true);
+    expect(nutritionData.props('value')).toEqual({
+      calories: 0,
+      sodium: 0,
+      fat: 0,
+      protein: 0,
+      carbs: 0,
+      sugar: 0,
+    });
+    expect(nutritionData.props('settings')).toEqual(settings);
   });
 
   describe.each(MEAL_TYPE_CONFIGS)('meal $label', ({ label, type, addButtonTestId, viewTestId, mealIndex }) => {
