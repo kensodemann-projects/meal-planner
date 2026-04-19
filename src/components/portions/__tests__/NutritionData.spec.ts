@@ -117,7 +117,7 @@ describe('NutritionData', () => {
   ])(
     'NutritionalStatusMarker for $statistic',
     ({ statistic, label, greenPortion, lowRedPortion, lowYellowPortion, highYellowPortion, highRedPortion }) => {
-      it(`is labeled with "Sugar:" if there is no prefix`, () => {
+      it(`is labeled with "${label}:" if there is no prefix`, () => {
         wrapper = mountComponent({ value: TEST_PORTION });
         const cell = wrapper.find(`[data-testid="${statistic}"]`);
         expect(cell.text()).toMatch(new RegExp(`^${label}:`));
