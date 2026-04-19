@@ -272,7 +272,8 @@ describe('Dashboard Page', () => {
         await flushPromises();
         for (const label of ['Protein (g)', 'Carbs (g)', 'Sodium (mg)', 'Fat (g)', 'Calories']) {
           const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === label);
-          expect(card?.props('status')).toBe('low-danger');
+          if (!card) throw new Error(`Could not find DetailStatCard with label "${label}"`);
+          expect(card.props('status')).toBe('low-danger');
         }
       });
 
