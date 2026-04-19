@@ -4,7 +4,12 @@
   <v-container fluid>
     <v-row density="compact">
       <v-col v-for="detailStat in detailStats" :key="detailStat.label" cols="12" sm="6" md="4">
-        <DetailStatCard :icon="detailStat.icon" :label="detailStat.label" :value="detailStat.value" />
+        <DetailStatCard
+          :icon="detailStat.icon"
+          :label="detailStat.label"
+          :status="detailStat.status"
+          :value="detailStat.value"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -45,6 +50,7 @@
 import { buildWeeklyData } from '@/core/build-weekly-data';
 import { dateToISO } from '@/core/dates';
 import { dailyMealPlanNutrients, mealNutrients, zeroNutrition } from '@/core/nutritional-calculations';
+import { maxOnlyStatus, rangeStatus } from '@/core/nutritional-status';
 import { useMealPlansData } from '@/data/meal-plans';
 import { useSettingsData } from '@/data/settings';
 import type { MealType } from '@/models/meal';
@@ -65,12 +71,67 @@ const mealPlanForToday = ref<MealPlan | null>();
 const detailStats = computed(() => {
   const nutrition = mealPlanForToday.value ? dailyMealPlanNutrients(mealPlanForToday.value) : zeroNutrition;
   return [
-    { icon: 'mdi-food-steak', label: 'Protein (g)', value: nutrition.protein },
-    { icon: 'mdi-candy-outline', label: 'Sugar (g)', value: nutrition.sugar },
-    { icon: 'mdi-baguette', label: 'Carbs (g)', value: nutrition.carbs },
-    { icon: 'mdi-shaker-outline', label: 'Sodium (mg)', value: nutrition.sodium },
-    { icon: 'mdi-french-fries', label: 'Fat (g)', value: nutrition.fat },
-    { icon: 'mdi-fire', label: 'Calories', value: nutrition.calories },
+    {
+      icon: 'mdi-food-steak',
+      label: 'Protein (g)',
+      value: nutrition.protein,
+      status: rangeStatus(
+        nutrition.protein,
+        settings.value?.minDailyProtein,
+        settings.value?.maxDailyProtein,
+        settings.value?.tolerance,
+      ),
+    },
+    {
+      icon: 'mdi-candy-outline',
+      label: 'Sugar (g)',
+      value: nutrition.sugar,
+      status: maxOnlyStatus(nutrition.sugar, settings.value?.maxDailySugar, settings.value?.tolerance),
+    },
+    {
+      icon: 'mdi-baguette',
+      label: 'Carbs (g)',
+      value: nutrition.carbs,
+      status: rangeStatus(
+        nutrition.carbs,
+        settings.value?.minDailyCarbs,
+        settings.value?.maxDailyCarbs,
+        settings.value?.tolerance,
+      ),
+    },
+    {
+      icon: 'mdi-shaker-outline',
+      label: 'Sodium (mg)',
+      value: nutrition.sodium,
+      status: rangeStatus(
+        nutrition.sodium,
+        settings.value?.minDailySodium,
+        settings.value?.maxDailySodium,
+        settings.value?.tolerance,
+      ),
+    },
+    {
+      icon: 'mdi-french-fries',
+      label: 'Fat (g)',
+      value: nutrition.fat,
+      status: rangeStatus(
+        nutrition.fat,
+        settings.value?.minDailyFat,
+        settings.value?.maxDailyFat,
+        settings.value?.tolerance,
+      ),
+    },
+    {
+      icon: 'mdi-fire',
+      label: 'Calories',
+      value: nutrition.calories,
+      status: rangeStatus(
+        nutrition.calories,
+        settings.value?.minDailyCalories,
+        settings.value?.maxDailyCalories,
+        settings.value?.tolerance,
+      ),
+    },
   ];
 });
 

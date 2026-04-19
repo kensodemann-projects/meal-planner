@@ -266,6 +266,22 @@ describe('Dashboard Page', () => {
           expect(card.props('value')).toBe(0);
         }
       });
+
+      it("displays 'low-danger' status for range-based nutrients when there is no meal plan", async () => {
+        wrapper = mountPage();
+        await flushPromises();
+        for (const label of ['Protein (g)', 'Carbs (g)', 'Sodium (mg)', 'Fat (g)', 'Calories']) {
+          const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === label);
+          expect(card?.props('status')).toBe('low-danger');
+        }
+      });
+
+      it("displays 'in-zone' status for sugar when there is no meal plan", async () => {
+        wrapper = mountPage();
+        await flushPromises();
+        const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Sugar (g)');
+        expect(card?.props('status')).toBe('in-zone');
+      });
     });
 
     describe('when today has a meal plan', () => {
@@ -368,6 +384,173 @@ describe('Dashboard Page', () => {
         await flushPromises();
         const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Calories');
         expect(card?.props('value')).toBe(1750);
+      });
+
+      describe('status', () => {
+        it("passes 'in-zone' status to the protein card when protein is in range", async () => {
+          (dailyMealPlanNutrients as Mock).mockReturnValue({
+            calories: 0,
+            protein: 100,
+            fat: 0,
+            carbs: 0,
+            sugar: 0,
+            sodium: 0,
+          });
+          wrapper = mountPage();
+          await flushPromises();
+          const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Protein (g)');
+          expect(card?.props('status')).toBe('in-zone');
+        });
+
+        it("passes 'low-danger' status to the protein card when protein is critically low", async () => {
+          (dailyMealPlanNutrients as Mock).mockReturnValue({
+            calories: 0,
+            protein: 50,
+            fat: 0,
+            carbs: 0,
+            sugar: 0,
+            sodium: 0,
+          });
+          wrapper = mountPage();
+          await flushPromises();
+          const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Protein (g)');
+          expect(card?.props('status')).toBe('low-danger');
+        });
+
+        it("passes 'in-zone' status to the sugar card when sugar is at or below the max", async () => {
+          (dailyMealPlanNutrients as Mock).mockReturnValue({
+            calories: 0,
+            protein: 0,
+            fat: 0,
+            carbs: 0,
+            sugar: 30,
+            sodium: 0,
+          });
+          wrapper = mountPage();
+          await flushPromises();
+          const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Sugar (g)');
+          expect(card?.props('status')).toBe('in-zone');
+        });
+
+        it("passes 'high-danger' status to the sugar card when sugar exceeds the max plus tolerance", async () => {
+          (dailyMealPlanNutrients as Mock).mockReturnValue({
+            calories: 0,
+            protein: 0,
+            fat: 0,
+            carbs: 0,
+            sugar: 45,
+            sodium: 0,
+          });
+          wrapper = mountPage();
+          await flushPromises();
+          const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Sugar (g)');
+          expect(card?.props('status')).toBe('high-danger');
+        });
+
+        it("passes 'in-zone' status to the carbs card when carbs are in range", async () => {
+          (dailyMealPlanNutrients as Mock).mockReturnValue({
+            calories: 0,
+            protein: 0,
+            fat: 0,
+            carbs: 200,
+            sugar: 0,
+            sodium: 0,
+          });
+          wrapper = mountPage();
+          await flushPromises();
+          const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Carbs (g)');
+          expect(card?.props('status')).toBe('in-zone');
+        });
+
+        it("passes 'low-warn' status to the carbs card when carbs are slightly below the minimum", async () => {
+          (dailyMealPlanNutrients as Mock).mockReturnValue({
+            calories: 0,
+            protein: 0,
+            fat: 0,
+            carbs: 105,
+            sugar: 0,
+            sodium: 0,
+          });
+          wrapper = mountPage();
+          await flushPromises();
+          const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Carbs (g)');
+          expect(card?.props('status')).toBe('low-warn');
+        });
+
+        it("passes 'high-warn' status to the sodium card when sodium is slightly above the maximum", async () => {
+          (dailyMealPlanNutrients as Mock).mockReturnValue({
+            calories: 0,
+            protein: 0,
+            fat: 0,
+            carbs: 0,
+            sugar: 0,
+            sodium: 2500,
+          });
+          wrapper = mountPage();
+          await flushPromises();
+          const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Sodium (mg)');
+          expect(card?.props('status')).toBe('high-warn');
+        });
+
+        it("passes 'in-zone' status to the fat card when fat is in range", async () => {
+          (dailyMealPlanNutrients as Mock).mockReturnValue({
+            calories: 0,
+            protein: 0,
+            fat: 50,
+            carbs: 0,
+            sugar: 0,
+            sodium: 0,
+          });
+          wrapper = mountPage();
+          await flushPromises();
+          const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Fat (g)');
+          expect(card?.props('status')).toBe('in-zone');
+        });
+
+        it("passes 'high-danger' status to the fat card when fat is critically high", async () => {
+          (dailyMealPlanNutrients as Mock).mockReturnValue({
+            calories: 0,
+            protein: 0,
+            fat: 100,
+            carbs: 0,
+            sugar: 0,
+            sodium: 0,
+          });
+          wrapper = mountPage();
+          await flushPromises();
+          const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Fat (g)');
+          expect(card?.props('status')).toBe('high-danger');
+        });
+
+        it("passes 'in-zone' status to the calories card when calories are in range", async () => {
+          (dailyMealPlanNutrients as Mock).mockReturnValue({
+            calories: 1800,
+            protein: 0,
+            fat: 0,
+            carbs: 0,
+            sugar: 0,
+            sodium: 0,
+          });
+          wrapper = mountPage();
+          await flushPromises();
+          const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Calories');
+          expect(card?.props('status')).toBe('in-zone');
+        });
+
+        it("passes 'high-warn' status to the calories card when calories are slightly above the maximum", async () => {
+          (dailyMealPlanNutrients as Mock).mockReturnValue({
+            calories: 2600,
+            protein: 0,
+            fat: 0,
+            carbs: 0,
+            sugar: 0,
+            sodium: 0,
+          });
+          wrapper = mountPage();
+          await flushPromises();
+          const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Calories');
+          expect(card?.props('status')).toBe('high-warn');
+        });
       });
     });
   });
