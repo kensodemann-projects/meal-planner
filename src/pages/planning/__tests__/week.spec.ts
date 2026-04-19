@@ -9,6 +9,7 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import week from '../week.vue';
+import { useSettingsData } from '@/data/settings';
 
 vi.mock('vue-router');
 vi.mock('@/data/meal-plans');
@@ -65,6 +66,11 @@ describe('week', () => {
     wrapper = await renderPage();
     const { getMealPlansForPeriod } = useMealPlansData();
     expect(getMealPlansForPeriod).toHaveBeenCalledExactlyOnceWith('2025-12-29', '2026-01-04');
+  });
+
+  it('gets the settings', async () => {
+    wrapper = await renderPage();
+    expect(useSettingsData).toHaveBeenCalledExactlyOnceWith();
   });
 
   describe('when displaying meal plans for the week', () => {
