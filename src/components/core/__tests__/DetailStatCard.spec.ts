@@ -57,7 +57,9 @@ describe('Detail Stat Card', () => {
 
   it('displays a NutritionalStatusMarker when status is set', () => {
     wrapper = mountComponent({ icon: 'mdi-fire', label: 'Calories', value: '320 kcal', status: 'high-warn' });
-    expect(wrapper.findComponent(NutritionalStatusMarker).exists()).toBe(true);
+    const marker = wrapper.findComponent(NutritionalStatusMarker);
+    expect(marker.exists()).toBe(true);
+    expect(marker.props('status')).toBe('high-warn');
   });
 
   it('does not display a NutritionalStatusMarker when status is not set', () => {
