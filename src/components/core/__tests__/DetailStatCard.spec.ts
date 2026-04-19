@@ -3,7 +3,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
+import type { NutritionalStatus } from '@/core/nutritional-status';
 import DetailStatCard from '../DetailStatCard.vue';
+import NutritionalStatusMarker from '../NutritionalStatusMarker.vue';
 
 const vuetify = createVuetify({
   components,
@@ -13,6 +15,7 @@ const vuetify = createVuetify({
 type DetailStatCardProps = {
   icon: string;
   label: string;
+  status?: NutritionalStatus;
   value: number | string;
 };
 
@@ -50,5 +53,17 @@ describe('Detail Stat Card', () => {
     wrapper = mountComponent({ icon: 'mdi-counter', label: 'Servings', value: 4 });
     expect(wrapper.text()).toContain('Servings:');
     expect(wrapper.text()).toContain('4');
+  });
+
+  it('displays a NutritionalStatusMarker when status is set', () => {
+    wrapper = mountComponent({ icon: 'mdi-fire', label: 'Calories', value: '320 kcal', status: 'high-warn' });
+    const marker = wrapper.findComponent(NutritionalStatusMarker);
+    expect(marker.exists()).toBe(true);
+    expect(marker.props('status')).toBe('high-warn');
+  });
+
+  it('does not display a NutritionalStatusMarker when status is not set', () => {
+    wrapper = mountComponent();
+    expect(wrapper.findComponent(NutritionalStatusMarker).exists()).toBe(false);
   });
 });
