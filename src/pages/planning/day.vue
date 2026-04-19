@@ -141,6 +141,7 @@ import { useRoute, useRouter } from 'vue-router';
 import type { EditableItem } from '@/models/editable-item';
 import { useSettingsData } from '@/data/settings';
 import type { Nutrition } from '@/models/nutrition';
+import { dailyMealPlanNutrients } from '@/core/nutritional-calculations';
 
 const route = useRoute();
 const dateParam = route.query.dt as string;
@@ -214,14 +215,13 @@ const mealRefs: Record<string, typeof breakfast> = {
 };
 
 const nutrition = computed(
-  (): Nutrition => ({
-    calories: 0,
-    carbs: 0,
-    fat: 0,
-    protein: 0,
-    sugar: 0,
-    sodium: 0,
-  }),
+  (): Nutrition =>
+    dailyMealPlanNutrients({
+      ...mealPlan,
+      meals: [breakfast.value.item, lunch.value.item, dinner.value.item, snack.value.item].filter(
+        (m): m is Meal => m !== undefined && m.items.length > 0,
+      ),
+    }),
 );
 
 const rebuildMealPlan = (): void => {
