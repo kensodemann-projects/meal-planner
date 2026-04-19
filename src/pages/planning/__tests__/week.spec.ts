@@ -9,6 +9,7 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import week from '../week.vue';
+import { useSettingsData } from '@/data/settings';
 
 vi.mock('vue-router');
 vi.mock('@/data/meal-plans');
@@ -67,6 +68,11 @@ describe('week', () => {
     expect(getMealPlansForPeriod).toHaveBeenCalledExactlyOnceWith('2025-12-29', '2026-01-04');
   });
 
+  it('gets the settings', async () => {
+    wrapper = await renderPage();
+    expect(useSettingsData).toHaveBeenCalledExactlyOnceWith();
+  });
+
   describe('when displaying meal plans for the week', () => {
     const weekDates = [
       '2025-12-29',
@@ -80,6 +86,7 @@ describe('week', () => {
 
     it('renders a DailySummaryCard for each day in order when all days have a meal plan', async () => {
       const weekPlans = [...TEST_MEAL_PLANS.filter((p) => p.date >= '2025-12-29'), TEST_MEAL_PLAN];
+      const { settings } = useSettingsData();
       (useMealPlansData().getMealPlansForPeriod as Mock).mockResolvedValue(weekPlans);
       wrapper = await renderPage();
 
@@ -88,6 +95,7 @@ describe('week', () => {
       weekDates.forEach((date, i) => {
         expect(format(cards[i]!.props('date'), 'yyyy-MM-dd')).toBe(date);
         expect(cards[i]!.props('mealPlan')).toEqual(weekPlans[i]);
+        expect(cards[i]!.props('settings')).toEqual(settings.value);
       });
     });
 
