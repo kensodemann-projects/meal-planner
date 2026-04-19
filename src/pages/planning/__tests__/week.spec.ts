@@ -86,6 +86,7 @@ describe('week', () => {
 
     it('renders a DailySummaryCard for each day in order when all days have a meal plan', async () => {
       const weekPlans = [...TEST_MEAL_PLANS.filter((p) => p.date >= '2025-12-29'), TEST_MEAL_PLAN];
+      const { settings } = useSettingsData();
       (useMealPlansData().getMealPlansForPeriod as Mock).mockResolvedValue(weekPlans);
       wrapper = await renderPage();
 
@@ -94,6 +95,7 @@ describe('week', () => {
       weekDates.forEach((date, i) => {
         expect(format(cards[i]!.props('date'), 'yyyy-MM-dd')).toBe(date);
         expect(cards[i]!.props('mealPlan')).toEqual(weekPlans[i]);
+        expect(cards[i]!.props('settings')).toEqual(settings.value);
       });
     });
 
