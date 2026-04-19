@@ -136,7 +136,7 @@ import type { Meal, MealType } from '@/models/meal';
 import { useMealPlansData } from '@/data/meal-plans';
 import type { MealPlan } from '@/models/meal-plan';
 import { intlFormat, parseISO } from 'date-fns';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import type { EditableItem } from '@/models/editable-item';
 import { useSettingsData } from '@/data/settings';
@@ -284,8 +284,8 @@ const doDelete = async () => {
 
 const closeDayPlan = () => router.back();
 
-getMealPlanForDate(dateParam).then((plan) => {
-  mealPlan = plan || {
+onMounted(async () => {
+  mealPlan = (await getMealPlanForDate(dateParam)) || {
     date: dateParam,
     meals: [],
   };
