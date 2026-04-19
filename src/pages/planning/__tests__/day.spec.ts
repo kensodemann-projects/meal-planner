@@ -123,21 +123,21 @@ describe('day', () => {
     expect(editors.length).toBe(0);
   });
 
-  // it('displays a nutritional summary', async () => {
-  //   const settings = useSettingsData().settings.value;
-  //   wrapper = await renderPage();
-  //   const nutritionData = wrapper.findComponent({ name: 'NutritionData' });
-  //   expect(nutritionData.exists()).toBe(true);
-  //   expect(nutritionData.props('value')).toEqual({
-  //     calories: 0,
-  //     sodium: 0,
-  //     fat: 0,
-  //     protein: 0,
-  //     carbs: 0,
-  //     sugar: 0,
-  //   });
-  //   expect(nutritionData.props('settings')).toEqual(settings);
-  // });
+  it('displays a nutritional summary', async () => {
+    const settings = useSettingsData().settings.value;
+    wrapper = await renderPage();
+    const nutritionData = wrapper.findComponent({ name: 'NutritionData' });
+    expect(nutritionData.exists()).toBe(true);
+    expect(nutritionData.props('value')).toEqual({
+      calories: 0,
+      sodium: 0,
+      fat: 0,
+      protein: 0,
+      carbs: 0,
+      sugar: 0,
+    });
+    expect(nutritionData.props('settings')).toEqual(settings);
+  });
 
   describe.each(MEAL_TYPE_CONFIGS)('meal $label', ({ label, type, addButtonTestId, viewTestId, mealIndex }) => {
     describe('on a day without a meal plan', () => {

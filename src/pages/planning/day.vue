@@ -113,6 +113,9 @@
     <h2>Summary</h2>
     <v-divider class="mb-8"></v-divider>
   </div>
+  <div class="mb-8">
+    <NutritionData :value="nutrition" :settings="settings" data-testid="nutrition-summary" />
+  </div>
 
   <div class="d-flex justify-end mt-4" data-testid="day-footer">
     <CloseButton @click="closeDayPlan" />
@@ -133,10 +136,11 @@ import type { Meal, MealType } from '@/models/meal';
 import { useMealPlansData } from '@/data/meal-plans';
 import type { MealPlan } from '@/models/meal-plan';
 import { intlFormat, parseISO } from 'date-fns';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import type { EditableItem } from '@/models/editable-item';
 import { useSettingsData } from '@/data/settings';
+import type { Nutrition } from '@/models/nutrition';
 
 const route = useRoute();
 const dateParam = route.query.dt as string;
@@ -156,7 +160,7 @@ const showConfirmDialog = ref(false);
 const mealToDelete = ref<MealType | null>(null);
 
 const router = useRouter();
-useSettingsData();
+const { settings } = useSettingsData();
 
 const addBreakfastButtonClicked = () => {
   breakfast.value = {
@@ -208,6 +212,17 @@ const mealRefs: Record<string, typeof breakfast> = {
   Dinner: dinner,
   Snack: snack,
 };
+
+const nutrition = computed(
+  (): Nutrition => ({
+    calories: 0,
+    carbs: 0,
+    fat: 0,
+    protein: 0,
+    sugar: 0,
+    sodium: 0,
+  }),
+);
 
 const saveDayPlan = async () => {
   const meals: Meal[] = [];
