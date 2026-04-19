@@ -39,7 +39,12 @@ import { computed } from 'vue';
 import { maxOnlyStatus, rangeStatus } from '@/core/nutritional-status';
 import type { Settings } from '@/models/settings';
 
-const { value, settings } = defineProps<{ value: Nutrition; prefix?: string; settings?: Settings | null }>();
+const { value, prefix, settings } = withDefaults(
+  defineProps<{ value: Nutrition; prefix?: string; settings?: Settings | null }>(),
+  {
+    prefix: '',
+  },
+);
 
 const caloriesStatus = computed(() =>
   rangeStatus(value.calories, settings?.minDailyCalories, settings?.maxDailyCalories, settings?.tolerance),
