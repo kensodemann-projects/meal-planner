@@ -108,6 +108,12 @@
       @close="closeMealEditor('Snack')"
     />
   </div>
+
+  <div>
+    <h2>Summary</h2>
+    <v-divider class="mb-8"></v-divider>
+  </div>
+
   <div class="d-flex justify-end mt-4" data-testid="day-footer">
     <CloseButton @click="closeDayPlan" />
   </div>
@@ -130,6 +136,7 @@ import { intlFormat, parseISO } from 'date-fns';
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import type { EditableItem } from '@/models/editable-item';
+import { useSettingsData } from '@/data/settings';
 
 const route = useRoute();
 const dateParam = route.query.dt as string;
@@ -149,6 +156,7 @@ const showConfirmDialog = ref(false);
 const mealToDelete = ref<MealType | null>(null);
 
 const router = useRouter();
+useSettingsData();
 
 const addBreakfastButtonClicked = () => {
   breakfast.value = {
