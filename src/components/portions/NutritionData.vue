@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row density="compact">
-      <v-col cols="12" md="6">
+      <v-col cols="12" sm="6">
         <div data-testid="calories">
           <NutritionalStatusMarker v-if="settings" class="status-marker" :status="caloriesStatus" />
           <span class="font-weight-black">{{ prefix }} Calories:</span> {{ value.calories }}
@@ -15,7 +15,7 @@
           <span class="font-weight-black">{{ prefix }} Total Carbs:</span> {{ value.carbs }}g
         </div>
       </v-col>
-      <v-col cols="12" md="6">
+      <v-col cols="12" sm="6">
         <div data-testid="sodium">
           <NutritionalStatusMarker v-if="settings" class="status-marker" :status="sodiumStatus" />
           <span class="font-weight-black">{{ prefix }} Sodium:</span> {{ value.sodium }}mg
