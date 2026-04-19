@@ -101,6 +101,16 @@ describe('Dashboard Page', () => {
       expect(weekCards.length).toBe(2);
     });
 
+    it('passes the settings to the cards', async () => {
+      wrapper = mountPage();
+      await flushPromises();
+      const weekCards = wrapper.findAllComponents(WeeklySummaryCard);
+      const settings = useSettingsData().settings.value;
+      for (const card of weekCards) {
+        expect(card.props('settings')).toBe(settings);
+      }
+    });
+
     describe('this week', () => {
       it('is the first card', async () => {
         wrapper = mountPage();

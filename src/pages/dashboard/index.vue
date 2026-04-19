@@ -31,6 +31,7 @@
           v-if="thisWeek"
           title="This Week"
           :week="thisWeek"
+          :settings="settings"
           @click="router.push({ path: 'planning/week', query: { dt: dateToISO(thisWeek.startDate) } })"
         />
       </v-col>
@@ -39,6 +40,7 @@
           v-if="nextWeek"
           title="Next Week (Planning)"
           :week="nextWeek"
+          :settings="settings"
           @click="router.push({ path: 'planning/week', query: { dt: dateToISO(nextWeek.startDate) } })"
         />
       </v-col>

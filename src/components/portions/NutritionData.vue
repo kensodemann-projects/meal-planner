@@ -4,29 +4,29 @@
       <v-col cols="12" sm="6">
         <div data-testid="calories">
           <NutritionalStatusMarker v-if="settings" class="status-marker" :status="caloriesStatus" />
-          <span class="font-weight-black">{{ prefix }} Calories:</span> {{ value.calories }}
+          <span class="font-weight-black">{{ prefix || '' }} Calories:</span> {{ value.calories }}
         </div>
         <div data-testid="protein">
           <NutritionalStatusMarker v-if="settings" class="status-marker" :status="proteinStatus" />
-          <span class="font-weight-black">{{ prefix }} Protein:</span> {{ value.protein }}g
+          <span class="font-weight-black">{{ prefix || '' }} Protein:</span> {{ value.protein }}g
         </div>
         <div data-testid="carbs">
           <NutritionalStatusMarker v-if="settings" class="status-marker" :status="carbsStatus" />
-          <span class="font-weight-black">{{ prefix }} Carbs:</span> {{ value.carbs }}g
+          <span class="font-weight-black">{{ prefix || '' }} Carbs:</span> {{ value.carbs }}g
         </div>
       </v-col>
       <v-col cols="12" sm="6">
         <div data-testid="sodium">
           <NutritionalStatusMarker v-if="settings" class="status-marker" :status="sodiumStatus" />
-          <span class="font-weight-black">{{ prefix }} Sodium:</span> {{ value.sodium }}mg
+          <span class="font-weight-black">{{ prefix || '' }} Sodium:</span> {{ value.sodium }}mg
         </div>
         <div data-testid="fat">
           <NutritionalStatusMarker v-if="settings" class="status-marker" :status="fatStatus" />
-          <span class="font-weight-black">{{ prefix }} Fat:</span> {{ value.fat }}g
+          <span class="font-weight-black">{{ prefix || '' }} Fat:</span> {{ value.fat }}g
         </div>
         <div data-testid="sugar">
           <NutritionalStatusMarker v-if="settings" class="status-marker" :status="sugarStatus" />
-          <span class="font-weight-black">{{ prefix }} Sugar:</span> {{ value.sugar }}g
+          <span class="font-weight-black">{{ prefix || '' }} Sugar:</span> {{ value.sugar }}g
         </div>
       </v-col>
     </v-row>
@@ -39,12 +39,7 @@ import { computed } from 'vue';
 import { maxOnlyStatus, rangeStatus } from '@/core/nutritional-status';
 import type { Settings } from '@/models/settings';
 
-const { value, prefix, settings } = withDefaults(
-  defineProps<{ value: Nutrition; prefix?: string; settings?: Settings | null }>(),
-  {
-    prefix: '',
-  },
-);
+const { value, settings } = defineProps<{ value: Nutrition; prefix?: string; settings?: Settings | null }>();
 
 const caloriesStatus = computed(() =>
   rangeStatus(value.calories, settings?.minDailyCalories, settings?.maxDailyCalories, settings?.tolerance),
