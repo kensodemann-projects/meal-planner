@@ -101,6 +101,16 @@ describe('Dashboard Page', () => {
       expect(weekCards.length).toBe(2);
     });
 
+    it('passes the settings to the cards', async () => {
+      wrapper = mountPage();
+      await flushPromises();
+      const weekCards = wrapper.findAllComponents(WeeklySummaryCard);
+      const settings = useSettingsData().settings.value;
+      for (const card of weekCards) {
+        expect(card.props('settings')).toBe(settings);
+      }
+    });
+
     describe('this week', () => {
       it('is the first card', async () => {
         wrapper = mountPage();
@@ -248,7 +258,7 @@ describe('Dashboard Page', () => {
         const cards = wrapper
           .findAllComponents(DetailStatCard)
           .filter((c) =>
-            ['Protein (g)', 'Sugar (g)', 'Total Carbs (g)', 'Sodium (mg)', 'Fat (g)', 'Calories'].includes(
+            ['Protein (g)', 'Sugar (g)', 'Carbs (g)', 'Sodium (mg)', 'Fat (g)', 'Calories'].includes(
               c.props('label') as string,
             ),
           );
@@ -311,7 +321,7 @@ describe('Dashboard Page', () => {
         });
         wrapper = mountPage();
         await flushPromises();
-        const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Total Carbs (g)');
+        const card = wrapper.findAllComponents(DetailStatCard).find((c) => c.props('label') === 'Carbs (g)');
         expect(card?.props('value')).toBe(210);
       });
 

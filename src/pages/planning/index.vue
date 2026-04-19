@@ -4,40 +4,34 @@
   <h2>Current Weeks</h2>
   <v-divider class="my-4"></v-divider>
 
-  <v-container fluid>
-    <v-row density="compact">
-      <v-col cols="12" md="6">
-        <WeeklySummaryCard
-          v-if="thisWeek"
-          title="This Week"
-          :week="thisWeek"
-          @click="router.push({ path: 'planning/week', query: { dt: dateToISO(thisWeek.startDate) } })"
-        />
-      </v-col>
-      <v-col cols="12" md="6">
-        <WeeklySummaryCard
-          v-if="nextWeek"
-          title="Next Week (Planning)"
-          :week="nextWeek"
-          @click="router.push({ path: 'planning/week', query: { dt: dateToISO(nextWeek.startDate) } })"
-        />
-      </v-col>
-    </v-row>
-  </v-container>
+  <WeeklySummaryCard
+    class="mb-4"
+    v-if="thisWeek"
+    title="This Week"
+    :week="thisWeek"
+    :settings="settings"
+    @click="router.push({ path: 'planning/week', query: { dt: dateToISO(thisWeek.startDate) } })"
+  />
+  <WeeklySummaryCard
+    class="mb-4"
+    v-if="nextWeek"
+    title="Next Week (Planning)"
+    :week="nextWeek"
+    :settings="settings"
+    @click="router.push({ path: 'planning/week', query: { dt: dateToISO(nextWeek.startDate) } })"
+  />
 
   <h2>Recent Weeks</h2>
   <v-divider class="my-4"></v-divider>
-  <v-container fluid>
-    <v-row density="compact">
-      <v-col cols="12" md="6" v-for="week in previousWeeks" :key="week.startDate.getTime()">
-        <WeeklySummaryCard
-          :title="`Weeks Ago: ${differenceInWeeks(thisWeek?.startDate || new Date(), week.startDate)}`"
-          :week="week"
-          @click="router.push({ path: 'planning/week', query: { dt: dateToISO(week.startDate) } })"
-        />
-      </v-col>
-    </v-row>
-  </v-container>
+  <WeeklySummaryCard
+    class="mb-4"
+    v-for="week in previousWeeks"
+    :key="week.startDate.getTime()"
+    :title="`Weeks Ago: ${differenceInWeeks(thisWeek?.startDate || new Date(), week.startDate)}`"
+    :week="week"
+    :settings="settings"
+    @click="router.push({ path: 'planning/week', query: { dt: dateToISO(week.startDate) } })"
+  />
 </template>
 
 <script lang="ts" setup>

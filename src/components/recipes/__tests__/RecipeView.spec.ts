@@ -157,7 +157,7 @@ describe('RecipeView', () => {
       expect(text).toContain(`Calories: ${TEST_RECIPE.calories}`);
       expect(text).toContain(`Sodium: ${TEST_RECIPE.sodium}mg`);
       expect(text).toContain(`Sugar: ${TEST_RECIPE.sugar}g`);
-      expect(text).toContain(`Total Carbs: ${TEST_RECIPE.carbs}g`);
+      expect(text).toContain(`Carbs: ${TEST_RECIPE.carbs}g`);
       expect(text).toContain(`Fat: ${TEST_RECIPE.fat}g`);
       expect(text).toContain(`Protein: ${TEST_RECIPE.protein}g`);
     });

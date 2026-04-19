@@ -1,4 +1,5 @@
 import type { WeeklyData } from '@/models/weekly-data';
+import type { Settings } from '@/models/settings';
 import { mount } from '@vue/test-utils';
 import { format } from 'date-fns';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -21,8 +22,25 @@ const TEST_WEEK: WeeklyData = {
   averageSodium: 2000,
 };
 
-const mountComponent = (props: { title: string; week: WeeklyData } = { title: 'This Week', week: TEST_WEEK }) =>
-  mount(WeeklySummaryCard, { props, global: { plugins: [vuetify] } });
+const TEST_SETTINGS: Settings = {
+  minDailyCalories: 1800,
+  maxDailyCalories: 2200,
+  minDailyProtein: 50,
+  maxDailyProtein: 120,
+  minDailyCarbs: 200,
+  maxDailyCarbs: 300,
+  minDailyFat: 40,
+  maxDailyFat: 90,
+  minDailySodium: 1800,
+  maxDailySodium: 2200,
+  maxDailySugar: 50,
+  tolerance: 10,
+  weekStartDay: 0,
+};
+
+const mountComponent = (
+  props: { title: string; week: WeeklyData; settings?: Settings } = { title: 'This Week', week: TEST_WEEK },
+) => mount(WeeklySummaryCard, { props, global: { plugins: [vuetify] } });
 
 describe('Weekly Summary Card', () => {
   let wrapper: ReturnType<typeof mountComponent>;
@@ -75,6 +93,35 @@ describe('Weekly Summary Card', () => {
     it('displays average carbs with g suffix', () => {
       const text = wrapper.findComponent(components.VCardText);
       expect(text.text()).toContain('Average Carbs: 250g');
+    });
+
+    it('displays all average nutrient labels and values', () => {
+      expect(wrapper.find('[data-testid="calories"]').text()).toContain('Average Calories: 2000');
+      expect(wrapper.find('[data-testid="protein"]').text()).toContain('Average Protein: 100g');
+      expect(wrapper.find('[data-testid="carbs"]').text()).toContain('Average Carbs: 250g');
+      expect(wrapper.find('[data-testid="fat"]').text()).toContain('Average Fat: 70g');
+      expect(wrapper.find('[data-testid="sodium"]').text()).toContain('Average Sodium: 2000mg');
+      expect(wrapper.find('[data-testid="sugar"]').text()).toContain('Average Sugar: 30g');
+    });
+
+    it('displays status markers when settings are provided', () => {
+      wrapper = mountComponent({
+        title: 'This Week',
+        week: {
+          ...TEST_WEEK,
+          averageCalories: 2000,
+          averageCarbs: 400,
+        },
+        settings: TEST_SETTINGS,
+      });
+
+      const caloriesCell = wrapper.find('[data-testid="calories"]');
+      expect(caloriesCell.html()).toContain('mdi-circle');
+      expect(caloriesCell.html()).toContain('text-success');
+
+      const carbsCell = wrapper.find('[data-testid="carbs"]');
+      expect(carbsCell.html()).toContain('mdi-arrow-up-bold');
+      expect(carbsCell.html()).toContain('text-error');
     });
   });
 

@@ -32,7 +32,7 @@
   <v-row>
     <v-col cols="12" md="4">
       <v-number-input
-        label="Total Carbs (g)"
+        label="Carbs (g)"
         v-model="carbs"
         :precision="null"
         :rules="[validationRules.required]"
