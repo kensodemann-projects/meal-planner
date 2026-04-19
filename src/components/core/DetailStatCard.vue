@@ -1,6 +1,11 @@
 <template>
   <v-card>
-    <template v-if="status" v-slot:append> <NutritionalStatusMarker :status="status" /> </template>
+    <template #append>
+      <NutritionalStatusMarker
+        v-if="status != null"
+        :status="status"
+      />
+    </template>
     <v-card-text>
       <div class="d-flex flex-column align-center ga-2">
         <v-icon size="large">{{ icon }}</v-icon>
