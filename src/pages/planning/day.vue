@@ -147,10 +147,10 @@ const dateParam = route.query.dt as string;
 const currDate = parseISO(dateParam);
 
 const { addMealPlan, getMealPlanForDate, updateMealPlan } = useMealPlansData();
-const mealPlan = ref<MealPlan>({
+let mealPlan: MealPlan = {
   date: dateParam,
   meals: [],
-});
+};
 const breakfast = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 const lunch = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
 const dinner = ref<EditableItem<Meal | undefined>>({ isEditing: false, item: undefined });
@@ -230,19 +230,19 @@ const rebuildMealPlan = (): void => {
   if (lunch.value.item?.items.length) meals.push(lunch.value.item);
   if (dinner.value.item?.items.length) meals.push(dinner.value.item);
   if (snack.value.item?.items.length) meals.push(snack.value.item);
-  mealPlan.value = {
-    ...mealPlan.value,
+  mealPlan = {
+    ...mealPlan,
     meals,
   };
 };
 
 const saveDayPlan = async () => {
   rebuildMealPlan();
-  if (mealPlan.value.id) {
-    const { id, ...planFields } = mealPlan.value;
+  if (mealPlan.id) {
+    const { id, ...planFields } = mealPlan;
     await updateMealPlan(id, { ...planFields });
   } else {
-    mealPlan.value.id = await addMealPlan({ ...mealPlan.value });
+    mealPlan.id = await addMealPlan({ ...mealPlan });
   }
 };
 
@@ -285,13 +285,13 @@ const doDelete = async () => {
 const closeDayPlan = () => router.back();
 
 getMealPlanForDate(dateParam).then((plan) => {
-  mealPlan.value = plan || {
+  mealPlan = plan || {
     date: dateParam,
     meals: [],
   };
-  breakfast.value.item = mealPlan.value.meals.find((meal) => meal.type === 'Breakfast');
-  lunch.value.item = mealPlan.value.meals.find((meal) => meal.type === 'Lunch');
-  dinner.value.item = mealPlan.value.meals.find((meal) => meal.type === 'Dinner');
-  snack.value.item = mealPlan.value.meals.find((meal) => meal.type === 'Snack');
+  breakfast.value.item = mealPlan.meals.find((meal) => meal.type === 'Breakfast');
+  lunch.value.item = mealPlan.meals.find((meal) => meal.type === 'Lunch');
+  dinner.value.item = mealPlan.meals.find((meal) => meal.type === 'Dinner');
+  snack.value.item = mealPlan.meals.find((meal) => meal.type === 'Snack');
 });
 </script>
