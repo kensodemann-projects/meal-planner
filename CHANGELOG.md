@@ -1,5 +1,22 @@
 # meal-planner
 
+## 1.0.0
+
+### Major Changes
+
+- release the first production version
+
+### Minor Changes
+
+- 99e85b5: add a color coded indicator to each nutritional stat at the daily level
+- 0c47ad7: remove cheat days and modify the settings to use a target range for targeting nutritional stats, with sugar still only including a max value
+
+### Patch Changes
+
+- 8df5b4e: abstract the dateToISO function, which was defined in several other modules
+- f32d1ce: update dependencies
+- be7e41f: hook the dashboard up to live data
+
 ## 0.6.0
 
 ### Minor Changes

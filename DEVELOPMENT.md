@@ -29,10 +29,12 @@ This application uses [pnpm](https://pnpm.io/) with [changesets](https://pnpm.io
 
 Once enough has been done to justify releasing, then from the fully merged `main` branch:
 
+1. Create a branch. Ex: `git checkout -b release`
 1. `pnpm bump`
 1. Review and commit using a message such as "release vX.Y.Z"
+1. Do a pull request, review, merge.
+1. Back on main make sure local is up to date, `git pull`
 1. `git tag -a vX.Y.Z -m "release vX.Y.Z" as natively supported`
-1. `git push`
 1. `git push --tags`
 1. `pnpm release`
 
