@@ -18,6 +18,7 @@ import { useSettingsData } from '@/data/settings';
 import { useMealPlansData } from '@/data/meal-plans';
 import { TEST_MEAL_PLAN } from '@/data/__tests__/test-data';
 import type { MealPlan } from '@/models/meal-plan';
+import type { Settings } from '@/models/settings';
 
 vi.mock('@/data/settings');
 vi.mock('vue-router');
@@ -29,6 +30,21 @@ const vuetify = createVuetify({
   directives,
 });
 const mountPage = () => mount(DashboardPage, { global: { plugins: [vuetify] } });
+const STATUS_TEST_SETTINGS: Settings = {
+  minDailyCalories: 1500,
+  maxDailyCalories: 2500,
+  minDailyProtein: 85,
+  maxDailyProtein: 150,
+  minDailyCarbs: 130,
+  maxDailyCarbs: 300,
+  minDailyFat: 20,
+  maxDailyFat: 70,
+  minDailySodium: 1550,
+  maxDailySodium: 2340,
+  maxDailySugar: 35,
+  tolerance: 15,
+  weekStartDay: 1,
+};
 
 describe('Dashboard Page', () => {
   let wrapper: ReturnType<typeof mountPage>;
@@ -245,6 +261,12 @@ describe('Dashboard Page', () => {
   });
 
   describe('detail stats', () => {
+    beforeEach(() => {
+      const { settings } = useSettingsData();
+      if (!settings.value) throw new Error('Expected settings to be loaded in dashboard tests');
+      Object.assign(settings.value, STATUS_TEST_SETTINGS);
+    });
+
     describe('when there is no meal plan for today', () => {
       it('does not call dailyMealPlanNutrients', async () => {
         wrapper = mountPage();
