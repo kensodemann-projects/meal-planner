@@ -747,6 +747,12 @@ describe('Recipe Editor', () => {
         expect(saveButton.attributes('disabled')).toBeDefined();
       });
 
+      it('begins disabled for a recipe with a null description', () => {
+        const nullDescWrapper = mountComponent({ recipe: { ...BEER_CHEESE, description: null } });
+        const saveButton = nullDescWrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
+        expect(saveButton.attributes('disabled')).toBeDefined();
+      });
+
       it('is enabled if the name value is changed', async () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
         const inputs = getInputs(wrapper);

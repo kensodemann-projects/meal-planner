@@ -189,7 +189,7 @@ const isModified = computed((): boolean => {
   return (
     listChanged.value ||
     props.recipe.name !== name.value ||
-    props.recipe.description !== description.value ||
+    (props.recipe.description || '') !== description.value ||
     props.recipe.category !== category.value ||
     props.recipe.cuisine !== cuisine.value ||
     props.recipe.difficulty !== difficulty.value ||
