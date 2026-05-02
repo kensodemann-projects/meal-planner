@@ -761,6 +761,96 @@ describe('Recipe Editor', () => {
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
 
+      it('is enabled if the category value is changed', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const inputs = getInputs(wrapper);
+        await inputs.name.setValue(BEER_CHEESE.name);
+        (wrapper.vm as any).category = 'Dessert';
+        await wrapper.vm.$nextTick();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if the cuisine value is changed', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const inputs = getInputs(wrapper);
+        await inputs.name.setValue(BEER_CHEESE.name);
+        (wrapper.vm as any).cuisine = 'Italian';
+        await wrapper.vm.$nextTick();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if the difficulty value is changed', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const inputs = getInputs(wrapper);
+        await inputs.name.setValue(BEER_CHEESE.name);
+        (wrapper.vm as any).difficulty = 'Easy';
+        await wrapper.vm.$nextTick();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if the servings value is changed', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const inputs = getInputs(wrapper);
+        await inputs.servings.setValue('8');
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if the prep time value is changed', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const inputs = getInputs(wrapper);
+        await inputs.prepTimeMinutes.setValue('20');
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if the cook time value is changed', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const inputs = getInputs(wrapper);
+        await inputs.cookTimeMinutes.setValue('45');
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if the calories value is changed', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const nutritionInputs = getNutritionInputs(wrapper);
+        await nutritionInputs.calories.setValue('500');
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if the sodium value is changed', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const nutritionInputs = getNutritionInputs(wrapper);
+        await nutritionInputs.sodium.setValue('900');
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if the sugar value is changed', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const nutritionInputs = getNutritionInputs(wrapper);
+        await nutritionInputs.sugar.setValue('10');
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if the carbs value is changed', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const nutritionInputs = getNutritionInputs(wrapper);
+        await nutritionInputs.carbs.setValue('30');
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if the fat value is changed', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const nutritionInputs = getNutritionInputs(wrapper);
+        await nutritionInputs.fat.setValue('35');
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if the protein value is changed', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const nutritionInputs = getNutritionInputs(wrapper);
+        await nutritionInputs.protein.setValue('20');
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
       it('is enabled if an ingredient is changed', async () => {
         const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
