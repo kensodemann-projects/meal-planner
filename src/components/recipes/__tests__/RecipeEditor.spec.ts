@@ -747,10 +747,17 @@ describe('Recipe Editor', () => {
         expect(saveButton.attributes('disabled')).toBeDefined();
       });
 
-      it('is enabled if a value is changed', async () => {
+      it('is enabled if the name value is changed', async () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
         const inputs = getInputs(wrapper);
         await inputs.name.setValue('Apple Pie');
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if the description value is changed', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const inputs = getInputs(wrapper);
+        await inputs.description.setValue('Fudge covered pickles with apples in a pie crust');
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
 
