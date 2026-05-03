@@ -87,34 +87,29 @@ const showConfirmDelete = shallowRef(false);
 const unitsInput = shallowRef<VNumberInput | null>(null);
 const uomSearch = shallowRef('');
 
-const customUomMatcher = (value: string, search: string, item?: InternalItem<UnitOfMeasure>) => {
+const uomMatches = (search: string, item: UnitOfMeasure): boolean => {
   const normalizedSearch = search && search.toLowerCase().replace(/\s+/g, '').replace(/-/g, '');
   return (
-    item?.raw.name.toLowerCase().startsWith(normalizedSearch) ||
-    item?.raw.id.toLowerCase() === normalizedSearch ||
-    item?.raw.name.toLowerCase().replace(/\s+/g, '') === normalizedSearch
+    item.name.toLowerCase().startsWith(normalizedSearch) ||
+    item.id.toLowerCase() === normalizedSearch ||
+    item.name.toLowerCase().replace(/\s+/g, '') === normalizedSearch
   );
 };
 
-function findUomSuggestion(search: string): UnitOfMeasure | null {
-  if (!search) return null;
-  const lowerSearch = search.toLowerCase();
-  const normalizedSearch = lowerSearch.replace(/\s+/g, '').replace(/-/g, '');
-  return (
-    unitsOfMeasure.find(
-      (u) =>
-        u.name.toLowerCase().startsWith(lowerSearch) ||
-        u.id.toLowerCase() === normalizedSearch ||
-        u.name.toLowerCase().replace(/\s+/g, '') === normalizedSearch,
-    ) ?? null
-  );
-}
+const customUomMatcher = (value: string, search: string, item?: InternalItem<UnitOfMeasure>) => {
+  return !!item && uomMatches(search, item.raw);
+};
 
-function onUomTab() {
+const findUomSuggestion = (search: string): UnitOfMeasure | null => {
+  if (!search) return null;
+  return unitsOfMeasure.find((u) => uomMatches(search, u)) ?? null;
+};
+
+const onUomTab = () => {
   const unitOfMeasure = findUomSuggestion(uomSearch.value);
   if (!unitOfMeasure) return;
   emit('changed', { ...props.ingredient, unitOfMeasure });
-}
+};
 
 const units = computed({
   get: () => props.ingredient.units,
