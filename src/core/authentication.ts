@@ -16,16 +16,19 @@ export const useAuthentication = () => {
     return !!(await getCurrentUser());
   };
 
-  const login = async (email: string, password: string): Promise<UserCredential | null> => {
-    return auth && (await signInWithEmailAndPassword(auth, email, password));
+  const login = async (email: string, password: string): Promise<UserCredential> => {
+    if (!auth) throw new Error('Failed to instantiate Firebase Auth');
+    return signInWithEmailAndPassword(auth, email, password);
   };
 
-  const logout = async (): Promise<void | null> => {
-    return auth && (await signOut(auth));
+  const logout = async (): Promise<void> => {
+    if (!auth) throw new Error('Failed to instantiate Firebase Auth');
+    return signOut(auth);
   };
 
-  const sendPasswordReset = async (email: string): Promise<void | null> => {
-    return auth && (await sendPasswordResetEmail(auth, email));
+  const sendPasswordReset = async (email: string): Promise<void> => {
+    if (!auth) throw new Error('Failed to instantiate Firebase Auth');
+    return sendPasswordResetEmail(auth, email);
   };
 
   return { isAuthenticated, login, logout, sendPasswordReset, user };
