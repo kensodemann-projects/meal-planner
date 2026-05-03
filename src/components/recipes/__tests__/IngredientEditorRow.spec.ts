@@ -7,7 +7,6 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import IngredientEditorRow from '../IngredientEditorRow.vue';
-
 const vuetify = createVuetify({
   components,
   directives,
@@ -120,6 +119,86 @@ describe('Ingredient Editor Row', () => {
       const emitted = wrapper.emitted('add-next');
       expect(emitted).toBeTruthy();
       expect(emitted?.length).toBe(1);
+    });
+  });
+
+  describe('unit of measure inline typeahead', () => {
+    it('sets inline suggestion when partial match exists', async () => {
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
+      const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
+      autocomplete.vm.$emit('update:search', 'Te');
+      await flushPromises();
+      expect((wrapper.vm as any).uomInlineSuggestion?.name).toBe('Teaspoon');
+    });
+
+    it('clears inline suggestion when search becomes empty', async () => {
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
+      const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
+      autocomplete.vm.$emit('update:search', 'Te');
+      await flushPromises();
+      autocomplete.vm.$emit('update:search', '');
+      await flushPromises();
+      expect((wrapper.vm as any).uomInlineSuggestion).toBeNull();
+    });
+
+    it('does not set inline suggestion when no match exists', async () => {
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
+      const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
+      autocomplete.vm.$emit('update:search', 'xyz');
+      await flushPromises();
+      expect((wrapper.vm as any).uomInlineSuggestion).toBeNull();
+    });
+
+    it('does not set inline suggestion when the full name is already typed', async () => {
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
+      const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
+      autocomplete.vm.$emit('update:search', 'Teaspoon');
+      await flushPromises();
+      expect((wrapper.vm as any).uomInlineSuggestion).toBeNull();
+    });
+
+    it('match is case-insensitive', async () => {
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
+      const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
+      autocomplete.vm.$emit('update:search', 'te');
+      await flushPromises();
+      expect((wrapper.vm as any).uomInlineSuggestion?.name).toBe('Teaspoon');
+    });
+
+    it('auto-fills the input with the full match name', async () => {
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
+      const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
+      autocomplete.vm.$emit('update:search', 'Te');
+      await flushPromises();
+      const input = autocomplete.find('input');
+      expect(input.element.value).toBe('Teaspoon');
+    });
+
+    it('emits changed with the matched unit of measure when Tab is pressed', async () => {
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
+      const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
+      autocomplete.vm.$emit('update:search', 'Te');
+      await flushPromises();
+      await autocomplete.trigger('keydown', { key: 'Tab' });
+      const emitted = wrapper.emitted('changed');
+      expect(emitted?.length).toBe(1);
+      expect((emitted![0]![0] as RecipeIngredient).unitOfMeasure).toEqual(findUnitOfMeasure('tsp'));
+    });
+
+    it('clears the inline suggestion after Tab is pressed', async () => {
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
+      const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
+      autocomplete.vm.$emit('update:search', 'Te');
+      await flushPromises();
+      await autocomplete.trigger('keydown', { key: 'Tab' });
+      expect((wrapper.vm as any).uomInlineSuggestion).toBeNull();
+    });
+
+    it('does not emit changed when Tab is pressed with no active suggestion', async () => {
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
+      const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
+      await autocomplete.trigger('keydown', { key: 'Tab' });
+      expect(wrapper.emitted('changed')).toBeUndefined();
     });
   });
 
