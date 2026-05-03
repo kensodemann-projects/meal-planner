@@ -88,18 +88,14 @@ const uomSearch = shallowRef('');
 const uomInlineSuggestion = shallowRef<UnitOfMeasure | null>(null);
 
 function findUomSuggestion(search: string): UnitOfMeasure | null {
-  const lowerSearch =
-    search === 'T'
-      ? 'tbsp'
-      : search === 't'
-        ? 'tsp'
-        : search.toLowerCase().replace(/\s+/g, '').replace(/-/g, '').trim();
+  const lowerSearch = search.toLowerCase();
+  const normalizedSearch = lowerSearch.replace(/\s+/g, '').replace(/-/g, '');
   return (
     unitsOfMeasure.find(
       (u) =>
-        u.name.toLowerCase().startsWith(search.toLowerCase()) ||
-        u.id.toLowerCase() === lowerSearch ||
-        u.name.toLowerCase().replace(/\s+/g, '') === lowerSearch,
+        u.name.toLowerCase().startsWith(lowerSearch) ||
+        u.id.toLowerCase() === normalizedSearch ||
+        u.name.toLowerCase().replace(/\s+/g, '') === normalizedSearch,
     ) ?? null
   );
 }
@@ -109,11 +105,12 @@ watch(uomSearch, (search) => {
     uomInlineSuggestion.value = null;
     return;
   }
-  if (uomInlineSuggestion.value && search === uomInlineSuggestion.value.name) {
+  const lowerSearch = search.toLowerCase();
+  if (uomInlineSuggestion.value && lowerSearch === uomInlineSuggestion.value.name.toLowerCase()) {
     return;
   }
   const match = findUomSuggestion(search);
-  if (match && match.name.toLowerCase() !== search.toLowerCase()) {
+  if (match && match.name.toLowerCase() !== lowerSearch) {
     uomInlineSuggestion.value = match;
     const originalLength = search.length;
     uomSearch.value = match.name;
