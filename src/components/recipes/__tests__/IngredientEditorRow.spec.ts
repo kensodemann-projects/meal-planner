@@ -123,17 +123,6 @@ describe('Ingredient Editor Row', () => {
   });
 
   describe('unit of measure inline typeahead', () => {
-    it('sets inline suggestion when partial match exists', async () => {
-      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
-      const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
-      const input = autocomplete.find('input');
-
-      await input.setValue('Te');
-      await flushPromises();
-
-      expect((input.element as HTMLInputElement).value).toBe('Teaspoon');
-    });
-
     it('clears inline suggestion when search becomes empty', async () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
@@ -169,24 +158,6 @@ describe('Ingredient Editor Row', () => {
       expect((input.element as HTMLInputElement).value).toBe('Teaspoon');
     });
 
-    it('match is case-insensitive', async () => {
-      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
-      const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
-      const input = autocomplete.find('input');
-      await input.setValue('te');
-      await flushPromises();
-      expect((input.element as HTMLInputElement).value).toBe('Teaspoon');
-    });
-
-    it('auto-fills the input with the full match name', async () => {
-      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
-      const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
-      const input = autocomplete.find('input');
-      await input.setValue('Te');
-      await flushPromises();
-      expect(input.element.value).toBe('Teaspoon');
-    });
-
     it('emits changed with the matched unit of measure when Tab is pressed', async () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
@@ -199,14 +170,28 @@ describe('Ingredient Editor Row', () => {
       expect((emitted![0]![0] as RecipeIngredient).unitOfMeasure).toEqual(findUnitOfMeasure('tsp'));
     });
 
-    it('clears the inline suggestion after Tab is pressed', async () => {
+    it('emits changed with the matched unit when the full name is typed and Tab is pressed', async () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
       const input = autocomplete.find('input');
-      await input.setValue('Te');
+      await input.setValue('Teaspoon');
       await flushPromises();
       await autocomplete.trigger('keydown', { key: 'Tab' });
-      expect((wrapper.vm as any).uomInlineSuggestion).toBeNull();
+      const emitted = wrapper.emitted('changed');
+      expect(emitted?.length).toBe(1);
+      expect((emitted![0]![0] as RecipeIngredient).unitOfMeasure).toEqual(findUnitOfMeasure('tsp'));
+    });
+
+    it('emits changed with the matched unit when an abbreviation is typed and Tab is pressed', async () => {
+      wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
+      const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
+      const input = autocomplete.find('input');
+      await input.setValue('tsp');
+      await flushPromises();
+      await autocomplete.trigger('keydown', { key: 'Tab' });
+      const emitted = wrapper.emitted('changed');
+      expect(emitted?.length).toBe(1);
+      expect((emitted![0]![0] as RecipeIngredient).unitOfMeasure).toEqual(findUnitOfMeasure('tsp'));
     });
 
     it('does not emit changed when Tab is pressed with no active suggestion', async () => {
