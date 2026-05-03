@@ -2,10 +2,15 @@ import { unitsOfMeasure } from '@/data/units-of-measure';
 import { type UnitOfMeasure } from '@/models/unit-of-measure';
 
 /**
- * Finds a unit of measure by a search string.
+ * Finds a unit of measure by a search string. This function is most useful for parsing input that could come
+ * from various external data sources that do not use `UnitOfMeasure.id` values, such as user input or data
+ * from APIs. It performs a case-insensitive search and ignores spaces and hyphens when matching against a
+ * unit's `id` or normalized `name`.
  *
- * @param match - Unit name/abbreviation
- * @returns The matching UnitOfMeasure, or 'item' as a fallback if no match is found
+ * Since it also searches by `id`, it can be used when the input is expected to be a `UnitOfMeasure.id`.
+ *
+ * @param match - Unit name or abbreviation
+ * @returns The matching UnitOfMeasure, or the `item` unit as a fallback if no match is found
  *
  * @example
  * findUnitOfMeasure('tsp') // Returns teaspoon unit

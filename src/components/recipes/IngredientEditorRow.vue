@@ -14,14 +14,18 @@
     </div>
     <div class="ingredient-editor-row__unit-of-measure">
       <v-autocomplete
+        ref="uomAutocomplete"
         density="compact"
         hide-details
         :items="unitsOfMeasure"
         :rules="[validationRules.required]"
+        :custom-filter="customUomMatcher"
         item-title="name"
         item-value="id"
         v-model="unitOfMeasureId"
+        v-model:search="uomSearch"
         data-testid="unit-of-measure-input"
+        @keydown.tab="onUomTab"
       ></v-autocomplete>
     </div>
     <div class="ingredient-editor-row__name">
@@ -65,7 +69,9 @@ import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import { validationRules } from '@/core/validation-rules';
 import { unitsOfMeasure } from '@/data/units-of-measure';
 import type { RecipeIngredient } from '@/models/recipe';
+import type { UnitOfMeasure } from '@/models/unit-of-measure';
 import { computed, onMounted, shallowRef } from 'vue';
+import type { InternalItem } from 'vuetify';
 import type { VNumberInput } from 'vuetify/components';
 
 const props = defineProps<{
@@ -79,6 +85,31 @@ const emit = defineEmits<{
 
 const showConfirmDelete = shallowRef(false);
 const unitsInput = shallowRef<VNumberInput | null>(null);
+const uomSearch = shallowRef('');
+
+const uomMatches = (search: string, item: UnitOfMeasure): boolean => {
+  const normalizedSearch = search && search.toLowerCase().replace(/\s+/g, '').replace(/-/g, '');
+  return (
+    item.name.toLowerCase().startsWith(normalizedSearch) ||
+    item.id.toLowerCase() === normalizedSearch ||
+    item.name.toLowerCase().replace(/\s+/g, '') === normalizedSearch
+  );
+};
+
+const customUomMatcher = (value: string, search: string, item?: InternalItem<UnitOfMeasure>) => {
+  return !!item && uomMatches(search, item.raw);
+};
+
+const findUomSuggestion = (search: string): UnitOfMeasure | null => {
+  if (!search) return null;
+  return unitsOfMeasure.find((u) => uomMatches(search, u)) ?? null;
+};
+
+const onUomTab = () => {
+  const unitOfMeasure = findUomSuggestion(uomSearch.value);
+  if (!unitOfMeasure) return;
+  emit('changed', { ...props.ingredient, unitOfMeasure });
+};
 
 const units = computed({
   get: () => props.ingredient.units,
@@ -91,7 +122,8 @@ const units = computed({
 
 const unitOfMeasureId = computed({
   get: () => props.ingredient.unitOfMeasure?.id,
-  set: (id: string) => {
+  set: (id: string | null) => {
+    if (id == null) return;
     const unitOfMeasure = findUnitOfMeasure(id);
     emit('changed', {
       ...props.ingredient,
