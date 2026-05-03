@@ -22,8 +22,8 @@
         item-title="name"
         item-value="id"
         v-model="unitOfMeasureId"
+        v-model:search="uomSearch"
         data-testid="unit-of-measure-input"
-        @update:search="onUomSearchUpdate"
         @keydown.tab="onUomTab"
       ></v-autocomplete>
     </div>
@@ -69,7 +69,7 @@ import { validationRules } from '@/core/validation-rules';
 import { unitsOfMeasure } from '@/data/units-of-measure';
 import type { RecipeIngredient } from '@/models/recipe';
 import type { UnitOfMeasure } from '@/models/unit-of-measure';
-import { computed, nextTick, onMounted, shallowRef } from 'vue';
+import { computed, nextTick, onMounted, shallowRef, watch } from 'vue';
 import type { VAutocomplete, VNumberInput } from 'vuetify/components';
 
 const props = defineProps<{
@@ -84,31 +84,53 @@ const emit = defineEmits<{
 const showConfirmDelete = shallowRef(false);
 const unitsInput = shallowRef<VNumberInput | null>(null);
 const uomAutocomplete = shallowRef<InstanceType<typeof VAutocomplete> | null>(null);
+const uomSearch = shallowRef('');
 const uomInlineSuggestion = shallowRef<UnitOfMeasure | null>(null);
 
-function onUomSearchUpdate(search: string) {
+function findUomSuggestion(search: string): UnitOfMeasure | null {
+  const lowerSearch =
+    search === 'T'
+      ? 'tbsp'
+      : search === 't'
+        ? 'tsp'
+        : search.toLowerCase().replace(/\s+/g, '').replace(/-/g, '').trim();
+  return (
+    unitsOfMeasure.find(
+      (u) =>
+        u.name.toLowerCase().startsWith(search.toLowerCase()) ||
+        u.id.toLowerCase() === lowerSearch ||
+        u.name.toLowerCase().replace(/\s+/g, '') === lowerSearch,
+    ) ?? null
+  );
+}
+
+watch(uomSearch, (search) => {
   if (!search) {
     uomInlineSuggestion.value = null;
     return;
   }
-  const match = unitsOfMeasure.find((u) => u.name.toLowerCase().startsWith(search.toLowerCase()));
+  if (uomInlineSuggestion.value && search === uomInlineSuggestion.value.name) {
+    return;
+  }
+  const match = findUomSuggestion(search);
   if (match && match.name.toLowerCase() !== search.toLowerCase()) {
     uomInlineSuggestion.value = match;
+    const originalLength = search.length;
+    uomSearch.value = match.name;
     nextTick(() => {
       const input = uomAutocomplete.value?.$el?.querySelector('input') as HTMLInputElement | null;
       if (input) {
-        input.value = match.name;
-        input.setSelectionRange(search.length, match.name.length);
+        input.setSelectionRange(originalLength, match.name.length);
       }
     });
   } else {
     uomInlineSuggestion.value = null;
   }
-}
+});
 
 function onUomTab() {
   if (!uomInlineSuggestion.value) return;
-  const unitOfMeasure = findUnitOfMeasure(uomInlineSuggestion.value.id);
+  const unitOfMeasure = uomInlineSuggestion.value;
   emit('changed', { ...props.ingredient, unitOfMeasure });
   uomInlineSuggestion.value = null;
 }
@@ -124,7 +146,8 @@ const units = computed({
 
 const unitOfMeasureId = computed({
   get: () => props.ingredient.unitOfMeasure?.id,
-  set: (id: string) => {
+  set: (id: string | null) => {
+    if (id == null) return;
     const unitOfMeasure = findUnitOfMeasure(id);
     emit('changed', {
       ...props.ingredient,

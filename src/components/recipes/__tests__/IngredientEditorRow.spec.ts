@@ -172,7 +172,8 @@ describe('Ingredient Editor Row', () => {
     it('match is case-insensitive', async () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
-      autocomplete.vm.$emit('update:search', 'te');
+      const input = autocomplete.find('input');
+      await input.setValue('te');
       await flushPromises();
       expect((wrapper.vm as any).uomInlineSuggestion?.name).toBe('Teaspoon');
     });
@@ -180,16 +181,17 @@ describe('Ingredient Editor Row', () => {
     it('auto-fills the input with the full match name', async () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
-      autocomplete.vm.$emit('update:search', 'Te');
-      await flushPromises();
       const input = autocomplete.find('input');
+      await input.setValue('Te');
+      await flushPromises();
       expect(input.element.value).toBe('Teaspoon');
     });
 
     it('emits changed with the matched unit of measure when Tab is pressed', async () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
-      autocomplete.vm.$emit('update:search', 'Te');
+      const input = autocomplete.find('input');
+      await input.setValue('Te');
       await flushPromises();
       await autocomplete.trigger('keydown', { key: 'Tab' });
       const emitted = wrapper.emitted('changed');
@@ -200,7 +202,8 @@ describe('Ingredient Editor Row', () => {
     it('clears the inline suggestion after Tab is pressed', async () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
-      autocomplete.vm.$emit('update:search', 'Te');
+      const input = autocomplete.find('input');
+      await input.setValue('Te');
       await flushPromises();
       await autocomplete.trigger('keydown', { key: 'Tab' });
       expect((wrapper.vm as any).uomInlineSuggestion).toBeNull();
