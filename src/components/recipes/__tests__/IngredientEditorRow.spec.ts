@@ -175,7 +175,7 @@ describe('Ingredient Editor Row', () => {
       const input = autocomplete.find('input');
       await input.setValue('te');
       await flushPromises();
-      expect((wrapper.vm as any).uomInlineSuggestion?.name).toBe('Teaspoon');
+      expect((input.element as HTMLInputElement).value).toBe('Teaspoon');
     });
 
     it('auto-fills the input with the full match name', async () => {

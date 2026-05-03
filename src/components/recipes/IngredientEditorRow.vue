@@ -106,6 +106,7 @@ watch(uomSearch, (search) => {
     return;
   }
   const lowerSearch = search.toLowerCase();
+  // Skip if the search is already the full suggestion name (set programmatically above)
   if (uomInlineSuggestion.value && lowerSearch === uomInlineSuggestion.value.name.toLowerCase()) {
     return;
   }
