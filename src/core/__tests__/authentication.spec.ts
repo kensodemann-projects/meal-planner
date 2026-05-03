@@ -36,11 +36,16 @@ describe('use authentication', () => {
       expect(result).toEqual(mockUserCredential);
     });
 
-    it('resolves null on failed login', async () => {
-      (signInWithEmailAndPassword as Mock).mockResolvedValue(null);
+    it('throws if Firebase Auth is undefined', async () => {
+      (useFirebaseAuth as Mock).mockReturnValue(undefined);
       const { login } = useAuthentication();
-      const result = await login('test@test.com', 'wrongpassword');
-      expect(result).toBeNull();
+      await expect(login('test@test.com', 'password')).rejects.toThrow('Failed to instantiate Firebase Auth');
+    });
+
+    it('propagates the exception on failed login', async () => {
+      (signInWithEmailAndPassword as Mock).mockRejectedValue(new Error('auth/invalid-credential'));
+      const { login } = useAuthentication();
+      await expect(login('test@test.com', 'wrongpassword')).rejects.toThrow('auth/invalid-credential');
     });
   });
 
@@ -53,6 +58,12 @@ describe('use authentication', () => {
       const { logout } = useAuthentication();
       await logout();
       expect(signOut).toHaveBeenCalledExactlyOnceWith(auth);
+    });
+
+    it('throws if Firebase Auth is undefined', async () => {
+      (useFirebaseAuth as Mock).mockReturnValue(undefined);
+      const { logout } = useAuthentication();
+      await expect(logout()).rejects.toThrow('Failed to instantiate Firebase Auth');
     });
   });
 
@@ -79,6 +90,12 @@ describe('use authentication', () => {
       const { sendPasswordReset } = useAuthentication();
       await sendPasswordReset('test@testy.com');
       expect(sendPasswordResetEmail).toHaveBeenCalledExactlyOnceWith(auth, 'test@testy.com');
+    });
+
+    it('throws if Firebase Auth is undefined', async () => {
+      (useFirebaseAuth as Mock).mockReturnValue(undefined);
+      const { sendPasswordReset } = useAuthentication();
+      await expect(sendPasswordReset('test@testy.com')).rejects.toThrow('Failed to instantiate Firebase Auth');
     });
   });
 });
