@@ -126,35 +126,47 @@ describe('Ingredient Editor Row', () => {
     it('sets inline suggestion when partial match exists', async () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
-      autocomplete.vm.$emit('update:search', 'Te');
+      const input = autocomplete.find('input');
+
+      await input.setValue('Te');
       await flushPromises();
-      expect((wrapper.vm as any).uomInlineSuggestion?.name).toBe('Teaspoon');
+
+      expect((input.element as HTMLInputElement).value).toBe('Teaspoon');
     });
 
     it('clears inline suggestion when search becomes empty', async () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
-      autocomplete.vm.$emit('update:search', 'Te');
+      const input = autocomplete.find('input');
+
+      await input.setValue('Te');
       await flushPromises();
-      autocomplete.vm.$emit('update:search', '');
+      await input.setValue('');
       await flushPromises();
-      expect((wrapper.vm as any).uomInlineSuggestion).toBeNull();
+
+      expect((input.element as HTMLInputElement).value).toBe('');
     });
 
     it('does not set inline suggestion when no match exists', async () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
-      autocomplete.vm.$emit('update:search', 'xyz');
+      const input = autocomplete.find('input');
+
+      await input.setValue('xyz');
       await flushPromises();
-      expect((wrapper.vm as any).uomInlineSuggestion).toBeNull();
+
+      expect((input.element as HTMLInputElement).value).toBe('xyz');
     });
 
     it('does not set inline suggestion when the full name is already typed', async () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
-      autocomplete.vm.$emit('update:search', 'Teaspoon');
+      const input = autocomplete.find('input');
+
+      await input.setValue('Teaspoon');
       await flushPromises();
-      expect((wrapper.vm as any).uomInlineSuggestion).toBeNull();
+
+      expect((input.element as HTMLInputElement).value).toBe('Teaspoon');
     });
 
     it('match is case-insensitive', async () => {
