@@ -37,8 +37,9 @@
       :disabled="hasInvalidItems"
       @click="addItem"
       :data-testid="`add-${testIdPrefix}-button`"
-      >{{ addPrompt }}</v-btn
     >
+      {{ addPrompt }}
+    </v-btn>
   </div>
 </template>
 
