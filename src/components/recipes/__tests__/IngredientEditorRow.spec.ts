@@ -110,11 +110,11 @@ describe('Ingredient Editor Row', () => {
       expect((emitted![0]![0] as RecipeIngredient).name).toBe('silver bells');
     });
 
-    it('emits add-next when Ctrl+Enter is pressed', async () => {
+    it('emits add-next when Enter is pressed', async () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const textField = wrapper.findComponent('[data-testid="ingredient-name-input"]');
 
-      await textField.trigger('keydown.ctrl.enter');
+      await textField.trigger('keydown.enter');
 
       const emitted = wrapper.emitted('add-next');
       expect(emitted).toBeTruthy();

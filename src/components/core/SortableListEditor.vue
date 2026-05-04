@@ -3,14 +3,6 @@
     <h2>
       <div class="d-flex justify-space-between">
         <div>{{ title }}</div>
-        <v-btn
-          density="compact"
-          variant="text"
-          icon="mdi-plus"
-          :disabled="hasInvalidItems"
-          @click="addItem"
-          :data-testid="`add-${testIdPrefix}-button`"
-        ></v-btn>
       </div>
     </h2>
     <v-divider class="mb-4"></v-divider>
@@ -39,6 +31,15 @@
         </div>
       </template>
     </draggable>
+    <v-btn
+      density="compact"
+      variant="text"
+      :disabled="hasInvalidItems"
+      @click="addItem"
+      :data-testid="`add-${testIdPrefix}-button`"
+    >
+      {{ addPrompt }}
+    </v-btn>
   </div>
 </template>
 
@@ -52,11 +53,13 @@ const props = withDefaults(
     title: string;
     validateItem: (item: Partial<T>) => item is T;
     createItem: () => Partial<T>;
+    addPrompt?: string;
     sortable?: boolean;
     testIdPrefix?: string;
     listClass?: string;
   }>(),
   {
+    addPrompt: 'Add',
     sortable: true,
     testIdPrefix: 'item',
     listClass: 'editable-list',

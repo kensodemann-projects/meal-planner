@@ -36,7 +36,7 @@
         :rules="[validationRules.required]"
         v-model="ingredientName"
         data-testid="ingredient-name-input"
-        @keydown.ctrl.enter="$emit('add-next')"
+        @keydown.enter.exact="$emit('add-next')"
       ></v-text-field>
     </div>
     <div class="ingredient-editor-row__delete">

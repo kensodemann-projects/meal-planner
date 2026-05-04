@@ -92,6 +92,7 @@
       :validate-item="isValidIngredient"
       :create-item="createIngredient"
       @list-modified="listChanged = true"
+      add-prompt="Add Ingredient"
       test-id-prefix="ingredient"
       list-class="ingredient-list editable-list"
     >
@@ -106,6 +107,7 @@
       :validate-item="isValidStep"
       :create-item="createStep"
       @list-modified="listChanged = true"
+      add-prompt="Add Step"
       test-id-prefix="step"
       list-class="step-list editable-list"
     >

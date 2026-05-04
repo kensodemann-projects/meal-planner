@@ -55,11 +55,11 @@ describe('StepEditorRow', () => {
       expect((emitted![0]![0] as RecipeStep).instruction).toBe('Dump the stuff in the thing and mix');
     });
 
-    it('emits add-next when Ctrl+Enter is pressed', async () => {
+    it('emits add-next when Enter is pressed', async () => {
       wrapper = mountComponent({ step: TEST_STEPS[1]! });
       const input = wrapper.findComponent('[data-testid="instruction-input"]');
 
-      await input.trigger('keydown.ctrl.enter');
+      await input.trigger('keydown.enter');
 
       const emitted = wrapper.emitted('add-next');
       expect(emitted).toBeTruthy();

@@ -8,7 +8,7 @@
         :rules="[validationRules.required]"
         v-model="instruction"
         data-testid="instruction-input"
-        @keydown.ctrl.enter="$emit('add-next')"
+        @keydown.enter.exact="$emit('add-next')"
         ref="instructionInput"
       ></v-text-field>
     </div>
