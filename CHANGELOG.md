@@ -1,5 +1,15 @@
 # meal-planner
 
+## 1.0.1
+
+### Patch Changes
+
+- 032ce27: Improve the unit of measure selection so the top matching item is chosen.
+- Improve the consistency of error handling in the code.
+- Improve the UX workflow when adding ingredients or steps to a recipe.
+- 36644df: Ensure the description triggers enabling the save buton.
+- 603e30b: Remove dead code.
+
 ## 1.0.0
 
 ### Major Changes
