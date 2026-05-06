@@ -35,15 +35,13 @@
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-autocomplete
+          <TextAutocomplete
             label="Cuisine"
             v-model="cuisine"
-            v-model:search="cuisineSearch"
             :items="cuisines"
             :rules="[validationRules.required]"
             data-testid="cuisine-input"
-            @keydown.tab="selectFirstCuisine"
-          ></v-autocomplete>
+          />
         </v-col>
       </v-row>
 
@@ -58,15 +56,13 @@
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-autocomplete
+          <TextAutocomplete
             label="Difficulty"
             v-model="difficulty"
-            v-model:search="difficultySearch"
             :items="recipeDifficulties"
             :rules="[validationRules.required]"
             data-testid="difficulty-input"
-            @keydown.tab="selectFirstDifficulty"
-          ></v-autocomplete>
+          />
         </v-col>
       </v-row>
 
@@ -154,9 +150,7 @@ const name = shallowRef<string>(props.recipe?.name || '');
 const description = shallowRef<string>(props.recipe?.description || '');
 const category = shallowRef<RecipeCategory | undefined>(props.recipe?.category);
 const cuisine = shallowRef<Cuisine | undefined>(props.recipe?.cuisine);
-const cuisineSearch = shallowRef<string>('');
 const difficulty = shallowRef<RecipeDifficulty | undefined>(props.recipe?.difficulty);
-const difficultySearch = shallowRef<string>('');
 const servings = shallowRef<number | undefined>(props.recipe?.servings);
 const prepTimeMinutes = shallowRef<number | undefined>(props.recipe?.prepTimeMinutes);
 const cookTimeMinutes = shallowRef<number | undefined>(props.recipe?.cookTimeMinutes);
@@ -173,16 +167,6 @@ const steps = ref<Partial<RecipeStep>[]>(props.recipe ? [...props.recipe.steps] 
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 const listChanged = shallowRef(false);
-
-const selectFirstCuisine = () => {
-  if (!cuisineSearch.value) return;
-  cuisine.value = cuisines.find((c) => c.toLowerCase().includes(cuisineSearch.value.toLowerCase()));
-};
-
-const selectFirstDifficulty = () => {
-  if (!difficultySearch.value) return;
-  difficulty.value = recipeDifficulties.find((d) => d.toLowerCase().includes(difficultySearch.value.toLowerCase()));
-};
 
 const createIngredient = (): Partial<RecipeIngredient> => ({
   id: globalThis.crypto.randomUUID(),
