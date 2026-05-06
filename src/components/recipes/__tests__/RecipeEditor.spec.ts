@@ -213,6 +213,51 @@ describe('Recipe Editor', () => {
       wrapper = mountComponent();
       await autocompleteIsRequired(wrapper, 'cuisine-input');
     });
+
+    describe('tab key behavior', () => {
+      it('selects the first matching cuisine when the search text matches', async () => {
+        wrapper = mountComponent();
+        const cuisineInput = wrapper.findComponent(
+          '[data-testid="cuisine-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = cuisineInput.find('input');
+        await input.setValue('nc');
+        await input.trigger('keydown.tab');
+        expect(cuisineInput.props('modelValue')).toBe('French');
+      });
+
+      it('selects the first matching cuisine when the search text matches multiple items', async () => {
+        wrapper = mountComponent();
+        const cuisineInput = wrapper.findComponent(
+          '[data-testid="cuisine-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = cuisineInput.find('input');
+        await input.setValue('n');
+        await input.trigger('keydown.tab');
+        expect(cuisineInput.props('modelValue')).toBe('American');
+      });
+
+      it('does not change the cuisine when the search text is empty', async () => {
+        wrapper = mountComponent();
+        const cuisineInput = wrapper.findComponent(
+          '[data-testid="cuisine-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = cuisineInput.find('input');
+        await input.trigger('keydown.tab');
+        expect(cuisineInput.props('modelValue')).toBeNull();
+      });
+
+      it('does not change the cuisine when the search text does not match any cuisine', async () => {
+        wrapper = mountComponent();
+        const cuisineInput = wrapper.findComponent(
+          '[data-testid="cuisine-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = cuisineInput.find('input');
+        await input.setValue('zzz');
+        await input.trigger('keydown.tab');
+        expect(cuisineInput.props('modelValue')).toBeNull();
+      });
+    });
   });
 
   describe('difficulty', () => {
