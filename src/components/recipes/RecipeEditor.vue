@@ -25,15 +25,13 @@
 
       <v-row>
         <v-col cols="12" md="6">
-          <v-autocomplete
+          <TextAutocomplete
             label="Category"
             v-model="category"
-            v-model:search="categorySearch"
             :items="recipeCategories"
             :rules="[validationRules.required]"
             data-testid="category-input"
-            @keydown.tab="selectFirstCategory"
-          ></v-autocomplete>
+          />
         </v-col>
 
         <v-col cols="12" md="6">
@@ -155,7 +153,6 @@ const valid = shallowRef(false);
 const name = shallowRef<string>(props.recipe?.name || '');
 const description = shallowRef<string>(props.recipe?.description || '');
 const category = shallowRef<RecipeCategory | undefined>(props.recipe?.category);
-const categorySearch = shallowRef<string>('');
 const cuisine = shallowRef<Cuisine | undefined>(props.recipe?.cuisine);
 const cuisineSearch = shallowRef<string>('');
 const difficulty = shallowRef<RecipeDifficulty | undefined>(props.recipe?.difficulty);
@@ -176,11 +173,6 @@ const steps = ref<Partial<RecipeStep>[]>(props.recipe ? [...props.recipe.steps] 
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 const listChanged = shallowRef(false);
-
-const selectFirstCategory = () => {
-  if (!categorySearch.value) return;
-  category.value = recipeCategories.find((c) => c.toLowerCase().includes(categorySearch.value.toLowerCase()));
-};
 
 const selectFirstCuisine = () => {
   if (!cuisineSearch.value) return;

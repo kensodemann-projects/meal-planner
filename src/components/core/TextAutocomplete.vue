@@ -18,13 +18,13 @@ const props = defineProps<{
   items: string[];
   rules: ((value: any) => boolean | string)[];
 }>();
-const modelValue = defineModel<string>('');
+const modelValue = defineModel<string | null>();
 
 const search = ref('');
 
 const selectFirstItem = () => {
-  if (search.value && props.items.length > 0) {
-    modelValue.value = props.items[0];
-  }
+  modelValue.value = search.value
+    ? props.items.find((item) => item.toLowerCase().includes(search.value.toLowerCase())) || null
+    : null;
 };
 </script>
