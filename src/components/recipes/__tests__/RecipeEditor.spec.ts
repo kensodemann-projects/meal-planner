@@ -274,6 +274,51 @@ describe('Recipe Editor', () => {
       wrapper = mountComponent();
       await autocompleteIsRequired(wrapper, 'difficulty-input');
     });
+
+    describe('tab key behavior', () => {
+      it('selects the first matching difficulty when the search text matches', async () => {
+        wrapper = mountComponent();
+        const difficultyInput = wrapper.findComponent(
+          '[data-testid="difficulty-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = difficultyInput.find('input');
+        await input.setValue('mal');
+        await input.trigger('keydown.tab');
+        expect(difficultyInput.props('modelValue')).toBe('Normal');
+      });
+
+      it('selects the first matching difficulty when the search text matches multiple items', async () => {
+        wrapper = mountComponent();
+        const difficultyInput = wrapper.findComponent(
+          '[data-testid="difficulty-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = difficultyInput.find('input');
+        await input.setValue('a');
+        await input.trigger('keydown.tab');
+        expect(difficultyInput.props('modelValue')).toBe('Easy');
+      });
+
+      it('does not change the difficulty when the search text is empty', async () => {
+        wrapper = mountComponent();
+        const difficultyInput = wrapper.findComponent(
+          '[data-testid="difficulty-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = difficultyInput.find('input');
+        await input.trigger('keydown.tab');
+        expect(difficultyInput.props('modelValue')).toBeNull();
+      });
+
+      it('does not change the difficulty when the search text does not match any difficulty', async () => {
+        wrapper = mountComponent();
+        const difficultyInput = wrapper.findComponent(
+          '[data-testid="difficulty-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = difficultyInput.find('input');
+        await input.setValue('zzz');
+        await input.trigger('keydown.tab');
+        expect(difficultyInput.props('modelValue')).toBeNull();
+      });
+    });
   });
 
   describe('servings', () => {

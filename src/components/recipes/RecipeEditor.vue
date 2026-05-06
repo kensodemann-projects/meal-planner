@@ -63,9 +63,11 @@
           <v-autocomplete
             label="Difficulty"
             v-model="difficulty"
+            v-model:search="difficultySearch"
             :items="recipeDifficulties"
             :rules="[validationRules.required]"
             data-testid="difficulty-input"
+            @keydown.tab="selectFirstDifficulty"
           ></v-autocomplete>
         </v-col>
       </v-row>
@@ -157,6 +159,7 @@ const categorySearch = shallowRef<string>('');
 const cuisine = shallowRef<Cuisine | undefined>(props.recipe?.cuisine);
 const cuisineSearch = shallowRef<string>('');
 const difficulty = shallowRef<RecipeDifficulty | undefined>(props.recipe?.difficulty);
+const difficultySearch = shallowRef<string>('');
 const servings = shallowRef<number | undefined>(props.recipe?.servings);
 const prepTimeMinutes = shallowRef<number | undefined>(props.recipe?.prepTimeMinutes);
 const cookTimeMinutes = shallowRef<number | undefined>(props.recipe?.cookTimeMinutes);
@@ -182,6 +185,11 @@ const selectFirstCategory = () => {
 const selectFirstCuisine = () => {
   if (!cuisineSearch.value) return;
   cuisine.value = cuisines.find((c) => c.toLowerCase().includes(cuisineSearch.value.toLowerCase()));
+};
+
+const selectFirstDifficulty = () => {
+  if (!difficultySearch.value) return;
+  difficulty.value = recipeDifficulties.find((d) => d.toLowerCase().includes(difficultySearch.value.toLowerCase()));
 };
 
 const createIngredient = (): Partial<RecipeIngredient> => ({
