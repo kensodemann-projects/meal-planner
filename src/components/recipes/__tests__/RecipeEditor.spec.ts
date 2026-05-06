@@ -151,6 +151,52 @@ describe('Recipe Editor', () => {
       wrapper = mountComponent();
       await autocompleteIsRequired(wrapper, 'category-input');
     });
+
+    describe('tab key behavior', () => {
+      it('selects the first matching category when the search text matches', async () => {
+        wrapper = mountComponent();
+        const categoryInput = wrapper.findComponent(
+          '[data-testid="category-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = categoryInput.find('input');
+        await input.setValue('bre');
+        await input.trigger('keydown.tab');
+        expect(categoryInput.props('modelValue')).toBe('Breakfast');
+      });
+
+      it('selects the first matching category when the search text matches multiple items', async () => {
+        wrapper = mountComponent();
+        const categoryInput = wrapper.findComponent(
+          '[data-testid="category-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = categoryInput.find('input');
+        await input.setValue('sa');
+        await input.trigger('keydown.tab');
+        // 'Salad', 'Sauce' match 'sa'; first match is 'Salad'
+        expect(categoryInput.props('modelValue')).toBe('Salad');
+      });
+
+      it('does not change the category when the search text is empty', async () => {
+        wrapper = mountComponent();
+        const categoryInput = wrapper.findComponent(
+          '[data-testid="category-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = categoryInput.find('input');
+        await input.trigger('keydown.tab');
+        expect(categoryInput.props('modelValue')).toBeNull();
+      });
+
+      it('does not change the category when the search text does not match any category', async () => {
+        wrapper = mountComponent();
+        const categoryInput = wrapper.findComponent(
+          '[data-testid="category-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = categoryInput.find('input');
+        await input.setValue('zzz');
+        await input.trigger('keydown.tab');
+        expect(categoryInput.props('modelValue')).toBeNull();
+      });
+    });
   });
 
   describe('cuisine', () => {
