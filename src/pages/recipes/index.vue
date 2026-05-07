@@ -111,7 +111,6 @@ const calorieFilterId = shallowRef<number | null>();
 const calorieFilterSearch = shallowRef<string>('');
 
 const selectFirstMatchingCalorieRange = () => {
-  console.log('Selecting calorie range for search term:', calorieFilterSearch.value);
   if (!calorieFilterSearch.value) return;
   const matchingRange = calorieRanges.find((range) =>
     range.label.toLowerCase().includes(calorieFilterSearch.value.toLowerCase()),
