@@ -39,11 +39,13 @@
           <v-autocomplete
             label="Calorie Range"
             v-model="calorieFilterId"
+            v-model:search="calorieFilterSearch"
             :items="calorieRanges"
             item-title="label"
             item-value="id"
             data-testid="filter-calorie-range"
             clearable
+            @keydown.tab="selectFirstMatchingCalorieRange"
           ></v-autocomplete>
         </v-col>
       </v-row>
@@ -89,7 +91,7 @@ import { cuisines } from '@/data/cuisines';
 import { recipeCategories } from '@/data/recipe-categories';
 import { useRecipesData } from '@/data/recipes';
 import type { Cuisine, Recipe, RecipeCategory } from '@/models/recipe';
-import { computed, ref } from 'vue';
+import { computed, shallowRef } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -102,10 +104,20 @@ const calorieRanges = [
   { id: 4, label: '1001+', min: 1001, max: Infinity },
 ];
 
-const searchKeywords = ref('');
-const categoryFilter = ref<RecipeCategory>();
-const cuisineFilter = ref<Cuisine>();
-const calorieFilterId = ref<number>();
+const searchKeywords = shallowRef('');
+const categoryFilter = shallowRef<RecipeCategory>();
+const cuisineFilter = shallowRef<Cuisine>();
+const calorieFilterId = shallowRef<number | null>();
+const calorieFilterSearch = shallowRef<string>('');
+
+const selectFirstMatchingCalorieRange = () => {
+  console.log('Selecting calorie range for search term:', calorieFilterSearch.value);
+  if (!calorieFilterSearch.value) return;
+  const matchingRange = calorieRanges.find((range) =>
+    range.label.toLowerCase().includes(calorieFilterSearch.value.toLowerCase()),
+  );
+  calorieFilterId.value = matchingRange ? matchingRange.id : null;
+};
 
 const filteredRecipes = computed<Recipe[]>(() => {
   const selectedCalorieRange = calorieRanges.find((range) => range.id === calorieFilterId.value);
