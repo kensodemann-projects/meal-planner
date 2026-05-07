@@ -16,23 +16,23 @@
 
       <v-row density="compact">
         <v-col cols="12" md="4">
-          <v-autocomplete
+          <TextAutocomplete
             label="Category"
             v-model="categoryFilter"
             :items="recipeCategories"
             clearable
             data-testid="filter-category"
-          ></v-autocomplete>
+          />
         </v-col>
 
         <v-col cols="12" md="4">
-          <v-autocomplete
+          <TextAutocomplete
             label="Cuisine"
             v-model="cuisineFilter"
             :items="cuisines"
             data-testid="filter-cuisine"
             clearable
-          ></v-autocomplete>
+          />
         </v-col>
 
         <v-col cols="12" md="4">

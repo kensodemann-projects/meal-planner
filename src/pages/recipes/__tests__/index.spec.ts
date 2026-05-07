@@ -132,6 +132,22 @@ describe('Recipes List Page', () => {
           maxCalories: undefined,
         });
       });
+
+      it('selects the first matching category on Tab', async () => {
+        const categoryFilter = wrapper.findComponent('[data-testid="filter-category"]');
+        const { recipeMatches } = useRecipesData();
+        const input = categoryFilter.find('input');
+        (recipeMatches as Mock).mockClear();
+        await input.setValue('ap');
+        await input.trigger('keydown.tab');
+        expect(recipeMatches).toHaveBeenCalledWith(expect.any(Object), {
+          keywords: '',
+          category: 'Appetizer',
+          cuisine: undefined,
+          minCalories: undefined,
+          maxCalories: undefined,
+        });
+      });
     });
 
     describe('cuisine filter', () => {
@@ -146,6 +162,22 @@ describe('Recipes List Page', () => {
         (recipeMatches as Mock).mockClear();
         await cuisineFilter.setValue('Italian');
         expect(recipeMatches).toHaveBeenCalledTimes(TEST_RECIPES.length);
+        expect(recipeMatches).toHaveBeenCalledWith(expect.any(Object), {
+          keywords: '',
+          category: undefined,
+          cuisine: 'Italian',
+          minCalories: undefined,
+          maxCalories: undefined,
+        });
+      });
+
+      it('selects the first matching cuisine on Tab', async () => {
+        const cuisineFilter = wrapper.findComponent('[data-testid="filter-cuisine"]');
+        const { recipeMatches } = useRecipesData();
+        const input = cuisineFilter.find('input');
+        (recipeMatches as Mock).mockClear();
+        await input.setValue('it');
+        await input.trigger('keydown.tab');
         expect(recipeMatches).toHaveBeenCalledWith(expect.any(Object), {
           keywords: '',
           category: undefined,

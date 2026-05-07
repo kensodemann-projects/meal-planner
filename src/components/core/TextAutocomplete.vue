@@ -16,7 +16,7 @@ import { ref } from 'vue';
 const props = defineProps<{
   label: string;
   items: string[];
-  rules: ((value: any) => boolean | string)[];
+  rules?: ((value: any) => boolean | string)[];
 }>();
 const modelValue = defineModel<string | null>();
 
