@@ -100,6 +100,53 @@ describe('Meal Item Editor Rows', () => {
         expect((wrapper.vm as any).recipeId).toBe(TEST_MEAL_ITEM.recipeId);
       });
     });
+
+    describe('tab key behavior', () => {
+      it('selects the first matching recipe when the search text matches', async () => {
+        wrapper = mountComponent({ modelValue: {}, items: TEST_RECIPES });
+        const recipeInput = wrapper.findComponent(
+          '[data-testid="recipe-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = recipeInput.find('input');
+        await input.setValue('oats');
+        await input.trigger('keydown.tab');
+        // 'oats' only matches 'Overnight Oats' (id: '4')
+        expect(recipeInput.props('modelValue')).toBe('4');
+      });
+
+      it('selects the first matching recipe when the search text matches multiple items', async () => {
+        wrapper = mountComponent({ modelValue: {}, items: TEST_RECIPES });
+        const recipeInput = wrapper.findComponent(
+          '[data-testid="recipe-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = recipeInput.find('input');
+        await input.setValue('classic');
+        await input.trigger('keydown.tab');
+        // 'Classic Spaghetti Carbonara' and 'Classic Fudgy Brownies' match; first is id '1'
+        expect(recipeInput.props('modelValue')).toBe('1');
+      });
+
+      it('does not select any recipe when the search text is empty', async () => {
+        wrapper = mountComponent({ modelValue: {}, items: TEST_RECIPES });
+        const recipeInput = wrapper.findComponent(
+          '[data-testid="recipe-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = recipeInput.find('input');
+        await input.trigger('keydown.tab');
+        expect(recipeInput.props('modelValue')).toBe('');
+      });
+
+      it('does not select any recipe when the search text does not match any recipe', async () => {
+        wrapper = mountComponent({ modelValue: {}, items: TEST_RECIPES });
+        const recipeInput = wrapper.findComponent(
+          '[data-testid="recipe-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = recipeInput.find('input');
+        await input.setValue('zzz');
+        await input.trigger('keydown.tab');
+        expect(recipeInput.props('modelValue')).toBe('');
+      });
+    });
   });
 
   describe('servings', () => {
