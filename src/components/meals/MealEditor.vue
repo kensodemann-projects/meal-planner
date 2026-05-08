@@ -48,7 +48,11 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer />
-      <CloseButton class="mr-4" @click="$emit('close')" />
+      <CloseButton
+        class="mr-4"
+        :disabled="!!recipeMealItem || recipeMealItems.some((item) => item.isEditing)"
+        @click="$emit('close')"
+      />
     </v-card-actions>
   </v-card>
 
