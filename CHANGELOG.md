@@ -1,5 +1,12 @@
 # meal-planner
 
+## 1.0.2
+
+### Patch Changes
+
+- 4515140: Improve the editing experience by selecting the top autocomplete value on tab.
+- 9fb38a6: update dependencies
+
 ## 1.0.1
 
 ### Patch Changes
