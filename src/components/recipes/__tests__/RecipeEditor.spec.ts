@@ -151,6 +151,52 @@ describe('Recipe Editor', () => {
       wrapper = mountComponent();
       await autocompleteIsRequired(wrapper, 'category-input');
     });
+
+    describe('tab key behavior', () => {
+      it('selects the first matching category when the search text matches', async () => {
+        wrapper = mountComponent();
+        const categoryInput = wrapper.findComponent(
+          '[data-testid="category-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = categoryInput.find('input');
+        await input.setValue('bre');
+        await input.trigger('keydown.tab');
+        expect(categoryInput.props('modelValue')).toBe('Breakfast');
+      });
+
+      it('selects the first matching category when the search text matches multiple items', async () => {
+        wrapper = mountComponent();
+        const categoryInput = wrapper.findComponent(
+          '[data-testid="category-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = categoryInput.find('input');
+        await input.setValue('sa');
+        await input.trigger('keydown.tab');
+        // 'Salad', 'Sauce' match 'sa'; first match is 'Salad'
+        expect(categoryInput.props('modelValue')).toBe('Salad');
+      });
+
+      it('does not select any category when the search text is empty', async () => {
+        wrapper = mountComponent();
+        const categoryInput = wrapper.findComponent(
+          '[data-testid="category-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = categoryInput.find('input');
+        await input.trigger('keydown.tab');
+        expect(categoryInput.props('modelValue')).toBeNull();
+      });
+
+      it('does not select any category when the search text does not match any category', async () => {
+        wrapper = mountComponent();
+        const categoryInput = wrapper.findComponent(
+          '[data-testid="category-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = categoryInput.find('input');
+        await input.setValue('zzz');
+        await input.trigger('keydown.tab');
+        expect(categoryInput.props('modelValue')).toBeNull();
+      });
+    });
   });
 
   describe('cuisine', () => {
@@ -167,6 +213,51 @@ describe('Recipe Editor', () => {
       wrapper = mountComponent();
       await autocompleteIsRequired(wrapper, 'cuisine-input');
     });
+
+    describe('tab key behavior', () => {
+      it('selects the first matching cuisine when the search text matches', async () => {
+        wrapper = mountComponent();
+        const cuisineInput = wrapper.findComponent(
+          '[data-testid="cuisine-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = cuisineInput.find('input');
+        await input.setValue('nc');
+        await input.trigger('keydown.tab');
+        expect(cuisineInput.props('modelValue')).toBe('French');
+      });
+
+      it('selects the first matching cuisine when the search text matches multiple items', async () => {
+        wrapper = mountComponent();
+        const cuisineInput = wrapper.findComponent(
+          '[data-testid="cuisine-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = cuisineInput.find('input');
+        await input.setValue('n');
+        await input.trigger('keydown.tab');
+        expect(cuisineInput.props('modelValue')).toBe('American');
+      });
+
+      it('does select any the cuisine when the search text is empty', async () => {
+        wrapper = mountComponent();
+        const cuisineInput = wrapper.findComponent(
+          '[data-testid="cuisine-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = cuisineInput.find('input');
+        await input.trigger('keydown.tab');
+        expect(cuisineInput.props('modelValue')).toBeNull();
+      });
+
+      it('does not select any cuisine when the search text does not match any cuisine', async () => {
+        wrapper = mountComponent();
+        const cuisineInput = wrapper.findComponent(
+          '[data-testid="cuisine-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = cuisineInput.find('input');
+        await input.setValue('zzz');
+        await input.trigger('keydown.tab');
+        expect(cuisineInput.props('modelValue')).toBeNull();
+      });
+    });
   });
 
   describe('difficulty', () => {
@@ -182,6 +273,51 @@ describe('Recipe Editor', () => {
     it('is required', async () => {
       wrapper = mountComponent();
       await autocompleteIsRequired(wrapper, 'difficulty-input');
+    });
+
+    describe('tab key behavior', () => {
+      it('selects the first matching difficulty when the search text matches', async () => {
+        wrapper = mountComponent();
+        const difficultyInput = wrapper.findComponent(
+          '[data-testid="difficulty-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = difficultyInput.find('input');
+        await input.setValue('mal');
+        await input.trigger('keydown.tab');
+        expect(difficultyInput.props('modelValue')).toBe('Normal');
+      });
+
+      it('selects the first matching difficulty when the search text matches multiple items', async () => {
+        wrapper = mountComponent();
+        const difficultyInput = wrapper.findComponent(
+          '[data-testid="difficulty-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = difficultyInput.find('input');
+        await input.setValue('a');
+        await input.trigger('keydown.tab');
+        expect(difficultyInput.props('modelValue')).toBe('Easy');
+      });
+
+      it('does not select any difficulty when the search text is empty', async () => {
+        wrapper = mountComponent();
+        const difficultyInput = wrapper.findComponent(
+          '[data-testid="difficulty-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = difficultyInput.find('input');
+        await input.trigger('keydown.tab');
+        expect(difficultyInput.props('modelValue')).toBeNull();
+      });
+
+      it('does not select any difficulty when the search text does not match any difficulty', async () => {
+        wrapper = mountComponent();
+        const difficultyInput = wrapper.findComponent(
+          '[data-testid="difficulty-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = difficultyInput.find('input');
+        await input.setValue('zzz');
+        await input.trigger('keydown.tab');
+        expect(difficultyInput.props('modelValue')).toBeNull();
+      });
     });
   });
 

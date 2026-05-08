@@ -61,9 +61,11 @@
           <v-autocomplete
             label="Week Start Day"
             v-model="weekStartDay"
+            v-model:search="weekStartDaySearch"
             :items="daysOfTheWeek"
             :rules="[validationRules.required]"
             data-testid="week-start-day-input"
+            @keydown.tab="selectFirstMatchingDay"
           ></v-autocomplete>
         </v-col>
       </v-row>
@@ -81,7 +83,7 @@
 <script setup lang="ts">
 import { validationRules } from '@/core/validation-rules';
 import type { Settings, WeekDay } from '@/models/settings';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, shallowRef, watchEffect } from 'vue';
 
 const props = defineProps<{ settings: Settings }>();
 const emit = defineEmits<{ (event: 'save', payload: Settings): void }>();
@@ -97,20 +99,30 @@ const daysOfTheWeek = [
 ];
 
 // Reactive properties to control the editor
-const valid = ref(false);
-const minDailyCalories = ref<number>(props.settings.minDailyCalories);
-const maxDailyCalories = ref<number>(props.settings.maxDailyCalories);
-const minDailyProtein = ref<number>(props.settings.minDailyProtein);
-const maxDailyProtein = ref<number>(props.settings.maxDailyProtein);
-const minDailyFat = ref<number>(props.settings.minDailyFat);
-const maxDailyFat = ref<number>(props.settings.maxDailyFat);
-const minDailyCarbs = ref<number>(props.settings.minDailyCarbs);
-const maxDailyCarbs = ref<number>(props.settings.maxDailyCarbs);
-const minDailySodium = ref<number>(props.settings.minDailySodium);
-const maxDailySodium = ref<number>(props.settings.maxDailySodium);
-const maxDailySugar = ref<number>(props.settings.maxDailySugar);
-const tolerance = ref<number>(props.settings.tolerance);
-const weekStartDay = ref<number>(props.settings.weekStartDay);
+const valid = shallowRef(false);
+const minDailyCalories = shallowRef<number>(props.settings.minDailyCalories);
+const maxDailyCalories = shallowRef<number>(props.settings.maxDailyCalories);
+const minDailyProtein = shallowRef<number>(props.settings.minDailyProtein);
+const maxDailyProtein = shallowRef<number>(props.settings.maxDailyProtein);
+const minDailyFat = shallowRef<number>(props.settings.minDailyFat);
+const maxDailyFat = shallowRef<number>(props.settings.maxDailyFat);
+const minDailyCarbs = shallowRef<number>(props.settings.minDailyCarbs);
+const maxDailyCarbs = shallowRef<number>(props.settings.maxDailyCarbs);
+const minDailySodium = shallowRef<number>(props.settings.minDailySodium);
+const maxDailySodium = shallowRef<number>(props.settings.maxDailySodium);
+const maxDailySugar = shallowRef<number>(props.settings.maxDailySugar);
+const tolerance = shallowRef<number>(props.settings.tolerance);
+const weekStartDay = shallowRef<number | null>(props.settings.weekStartDay);
+const weekStartDaySearch = shallowRef<string>('');
+
+const selectFirstMatchingDay = () => {
+  if (!weekStartDaySearch.value) {
+    weekStartDay.value = null;
+    return;
+  }
+  const match = daysOfTheWeek.find((day) => day.title.toLowerCase().includes(weekStartDaySearch.value.toLowerCase()));
+  weekStartDay.value = match?.value ?? null;
+};
 
 const isModified = computed(() => {
   return (

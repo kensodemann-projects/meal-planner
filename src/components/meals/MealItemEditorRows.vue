@@ -5,11 +5,13 @@
         <v-autocomplete
           label="Select Recipe"
           v-model="recipeId"
+          v-model:search="recipeSearch"
           :items="items"
           item-title="name"
           item-value="id"
           :rules="[validationRules.required]"
           data-testid="recipe-input"
+          @keydown.tab="selectFirstMatchingRecipe"
         ></v-autocomplete>
       </v-col>
       <v-col cols="12" md="6">
@@ -32,12 +34,22 @@ import { validationRules } from '@/core/validation-rules';
 import type { MealItem } from '@/models/meal';
 import type { Nutrition } from '@/models/nutrition';
 import type { Recipe } from '@/models/recipe';
-import { computed } from 'vue';
+import { computed, shallowRef } from 'vue';
 
 const props = defineProps<{
   items: Recipe[];
 }>();
 const mealItem = defineModel<Partial<MealItem>>();
+const recipeSearch = shallowRef<string>('');
+
+const selectFirstMatchingRecipe = () => {
+  if (!recipeSearch.value) {
+    recipeId.value = '';
+    return;
+  }
+  const match = props.items.find((item) => item.name.toLowerCase().includes(recipeSearch.value.toLowerCase()));
+  recipeId.value = match?.id || '';
+};
 
 const getNutritionFromRecipe = (id: string): Nutrition | undefined => {
   const item = props.items.find((v) => v.id === id);

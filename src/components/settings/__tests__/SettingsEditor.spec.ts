@@ -620,6 +620,53 @@ describe('SettingsEditor', () => {
       ) as VueWrapper<components.VAutocomplete>;
       expect(weekStartDayInput.props('modelValue')).toBe(2);
     });
+
+    describe('tab key behavior', () => {
+      it('selects the first matching day when the search text matches', async () => {
+        wrapper = mountComponent();
+        const weekStartDayInput = wrapper.findComponent(
+          '[data-testid="week-start-day-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = weekStartDayInput.find('input');
+        await input.setValue('sun');
+        await input.trigger('keydown.tab');
+        // 'sun' only matches 'Sunday' (value: 0)
+        expect(weekStartDayInput.props('modelValue')).toBe(0);
+      });
+
+      it('selects the first matching day when the search text matches multiple items', async () => {
+        wrapper = mountComponent();
+        const weekStartDayInput = wrapper.findComponent(
+          '[data-testid="week-start-day-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = weekStartDayInput.find('input');
+        await input.setValue('tu');
+        await input.trigger('keydown.tab');
+        // 'Tuesday' and 'Saturday' both match 'tu'; first is 'Tuesday' (value: 2)
+        expect(weekStartDayInput.props('modelValue')).toBe(2);
+      });
+
+      it('does not select any day when the search text is empty', async () => {
+        wrapper = mountComponent();
+        const weekStartDayInput = wrapper.findComponent(
+          '[data-testid="week-start-day-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = weekStartDayInput.find('input');
+        await input.trigger('keydown.tab');
+        expect(weekStartDayInput.props('modelValue')).toBeNull();
+      });
+
+      it('does not select any day when the search text does not match any day', async () => {
+        wrapper = mountComponent();
+        const weekStartDayInput = wrapper.findComponent(
+          '[data-testid="week-start-day-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = weekStartDayInput.find('input');
+        await input.setValue('zzz');
+        await input.trigger('keydown.tab');
+        expect(weekStartDayInput.props('modelValue')).toBeNull();
+      });
+    });
   });
 
   describe('Reset Button', () => {

@@ -25,23 +25,23 @@
 
       <v-row>
         <v-col cols="12" md="6">
-          <v-autocomplete
+          <TextAutocomplete
             label="Category"
             v-model="category"
             :items="recipeCategories"
             :rules="[validationRules.required]"
             data-testid="category-input"
-          ></v-autocomplete>
+          />
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-autocomplete
+          <TextAutocomplete
             label="Cuisine"
             v-model="cuisine"
             :items="cuisines"
             :rules="[validationRules.required]"
             data-testid="cuisine-input"
-          ></v-autocomplete>
+          />
         </v-col>
       </v-row>
 
@@ -56,13 +56,13 @@
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-autocomplete
+          <TextAutocomplete
             label="Difficulty"
             v-model="difficulty"
             :items="recipeDifficulties"
             :rules="[validationRules.required]"
             data-testid="difficulty-input"
-          ></v-autocomplete>
+          />
         </v-col>
       </v-row>
 
@@ -139,21 +139,21 @@ import { recipeCategories } from '@/data/recipe-categories';
 import { recipeDifficulties } from '@/data/recipe-difficulties';
 import type { Nutrition } from '@/models/nutrition';
 import type { Cuisine, Recipe, RecipeCategory, RecipeDifficulty, RecipeIngredient, RecipeStep } from '@/models/recipe';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, shallowRef } from 'vue';
 import type { VTextField } from 'vuetify/components';
 
 const emit = defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'cancel'): void }>();
 const props = defineProps<{ recipe?: Recipe }>();
 
-const valid = ref(false);
-const name = ref<string>(props.recipe?.name || '');
-const description = ref<string>(props.recipe?.description || '');
-const category = ref<RecipeCategory | undefined>(props.recipe?.category);
-const cuisine = ref<Cuisine | undefined>(props.recipe?.cuisine);
-const difficulty = ref<RecipeDifficulty | undefined>(props.recipe?.difficulty);
-const servings = ref<number | undefined>(props.recipe?.servings);
-const prepTimeMinutes = ref<number | undefined>(props.recipe?.prepTimeMinutes);
-const cookTimeMinutes = ref<number | undefined>(props.recipe?.cookTimeMinutes);
+const valid = shallowRef(false);
+const name = shallowRef<string>(props.recipe?.name || '');
+const description = shallowRef<string>(props.recipe?.description || '');
+const category = shallowRef<RecipeCategory | null>(props.recipe?.category ?? null);
+const cuisine = shallowRef<Cuisine | null>(props.recipe?.cuisine ?? null);
+const difficulty = shallowRef<RecipeDifficulty | null>(props.recipe?.difficulty ?? null);
+const servings = shallowRef<number | undefined>(props.recipe?.servings);
+const prepTimeMinutes = shallowRef<number | undefined>(props.recipe?.prepTimeMinutes);
+const cookTimeMinutes = shallowRef<number | undefined>(props.recipe?.cookTimeMinutes);
 const nutrition = ref<Partial<Nutrition>>({
   calories: props.recipe?.calories,
   sodium: props.recipe?.sodium || 0,
@@ -166,7 +166,7 @@ const ingredients = ref<Partial<RecipeIngredient>[]>(props.recipe ? [...props.re
 const steps = ref<Partial<RecipeStep>[]>(props.recipe ? [...props.recipe.steps] : []);
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
-const listChanged = ref(false);
+const listChanged = shallowRef(false);
 
 const createIngredient = (): Partial<RecipeIngredient> => ({
   id: globalThis.crypto.randomUUID(),

@@ -1,7 +1,7 @@
 import { TEST_RECIPES } from '@/data/__tests__/test-data';
 import { useRecipesData } from '@/data/recipes';
 import type { Recipe } from '@/models/recipe';
-import { mount } from '@vue/test-utils';
+import { mount, type VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { useRouter } from 'vue-router';
 import { createVuetify } from 'vuetify';
@@ -132,6 +132,48 @@ describe('Recipes List Page', () => {
           maxCalories: undefined,
         });
       });
+
+      describe('tab key behavior', () => {
+        it('selects the first matching category when the search text matches', async () => {
+          const categoryInput = wrapper.findComponent(
+            '[data-testid="filter-category"]',
+          ) as VueWrapper<components.VAutocomplete>;
+          const input = categoryInput.find('input');
+          await input.setValue('bev');
+          await input.trigger('keydown.tab');
+          expect(categoryInput.props('modelValue')).toBe('Beverage');
+        });
+
+        it('selects the first matching category when the search text matches multiple items', async () => {
+          const categoryInput = wrapper.findComponent(
+            '[data-testid="filter-category"]',
+          ) as VueWrapper<components.VAutocomplete>;
+          const input = categoryInput.find('input');
+          await input.setValue('bre');
+          await input.trigger('keydown.tab');
+          // 'Breakfast' and 'Bread' both match 'bre'; first is 'Breakfast'
+          expect(categoryInput.props('modelValue')).toBe('Breakfast');
+        });
+
+        it('does not change the category when the search text is empty', async () => {
+          const categoryInput = wrapper.findComponent(
+            '[data-testid="filter-category"]',
+          ) as VueWrapper<components.VAutocomplete>;
+          const input = categoryInput.find('input');
+          await input.trigger('keydown.tab');
+          expect(categoryInput.props('modelValue')).toBeNull();
+        });
+
+        it('does not change the category when the search text does not match any category', async () => {
+          const categoryInput = wrapper.findComponent(
+            '[data-testid="filter-category"]',
+          ) as VueWrapper<components.VAutocomplete>;
+          const input = categoryInput.find('input');
+          await input.setValue('zzz');
+          await input.trigger('keydown.tab');
+          expect(categoryInput.props('modelValue')).toBeNull();
+        });
+      });
     });
 
     describe('cuisine filter', () => {
@@ -152,6 +194,48 @@ describe('Recipes List Page', () => {
           cuisine: 'Italian',
           minCalories: undefined,
           maxCalories: undefined,
+        });
+      });
+
+      describe('tab key behavior', () => {
+        it('selects the first matching cuisine when the search text matches', async () => {
+          const cuisineInput = wrapper.findComponent(
+            '[data-testid="filter-cuisine"]',
+          ) as VueWrapper<components.VAutocomplete>;
+          const input = cuisineInput.find('input');
+          await input.setValue('nc');
+          await input.trigger('keydown.tab');
+          expect(cuisineInput.props('modelValue')).toBe('French');
+        });
+
+        it('selects the first matching cuisine when the search text matches multiple items', async () => {
+          const cuisineInput = wrapper.findComponent(
+            '[data-testid="filter-cuisine"]',
+          ) as VueWrapper<components.VAutocomplete>;
+          const input = cuisineInput.find('input');
+          await input.setValue('n');
+          await input.trigger('keydown.tab');
+          // 'American', 'Chinese', 'Indian', 'Japanese', etc. all match 'n'; first is 'American'
+          expect(cuisineInput.props('modelValue')).toBe('American');
+        });
+
+        it('does not change the cuisine when the search text is empty', async () => {
+          const cuisineInput = wrapper.findComponent(
+            '[data-testid="filter-cuisine"]',
+          ) as VueWrapper<components.VAutocomplete>;
+          const input = cuisineInput.find('input');
+          await input.trigger('keydown.tab');
+          expect(cuisineInput.props('modelValue')).toBeNull();
+        });
+
+        it('does not change the cuisine when the search text does not match any cuisine', async () => {
+          const cuisineInput = wrapper.findComponent(
+            '[data-testid="filter-cuisine"]',
+          ) as VueWrapper<components.VAutocomplete>;
+          const input = cuisineInput.find('input');
+          await input.setValue('zzz');
+          await input.trigger('keydown.tab');
+          expect(cuisineInput.props('modelValue')).toBeNull();
         });
       });
     });
@@ -194,6 +278,49 @@ describe('Recipes List Page', () => {
           cuisine: undefined,
           minCalories: undefined,
           maxCalories: undefined,
+        });
+      });
+
+      describe('tab key behavior', () => {
+        it('selects the first matching calorie range when the search text matches', async () => {
+          const calorieInput = wrapper.findComponent(
+            '[data-testid="filter-calorie-range"]',
+          ) as VueWrapper<components.VAutocomplete>;
+          const input = calorieInput.find('input');
+          await input.setValue('751');
+          await input.trigger('keydown.tab');
+          // '751' only matches '751-1000' (id: 3)
+          expect(calorieInput.props('modelValue')).toBe(3);
+        });
+
+        it('selects the first matching calorie range when the search text matches multiple items', async () => {
+          const calorieInput = wrapper.findComponent(
+            '[data-testid="filter-calorie-range"]',
+          ) as VueWrapper<components.VAutocomplete>;
+          const input = calorieInput.find('input');
+          await input.setValue('5');
+          await input.trigger('keydown.tab');
+          // '5' matches '0-500' (id: 1) and '501-750' (id: 2); first is '0-500'
+          expect(calorieInput.props('modelValue')).toBe(1);
+        });
+
+        it('does not change the calorie range when the search text is empty', async () => {
+          const calorieInput = wrapper.findComponent(
+            '[data-testid="filter-calorie-range"]',
+          ) as VueWrapper<components.VAutocomplete>;
+          const input = calorieInput.find('input');
+          await input.trigger('keydown.tab');
+          expect(calorieInput.props('modelValue')).toBeNull();
+        });
+
+        it('does not change the calorie range when the search text does not match any calorie range', async () => {
+          const calorieInput = wrapper.findComponent(
+            '[data-testid="filter-calorie-range"]',
+          ) as VueWrapper<components.VAutocomplete>;
+          const input = calorieInput.find('input');
+          await input.setValue('zzz');
+          await input.trigger('keydown.tab');
+          expect(calorieInput.props('modelValue')).toBeNull();
         });
       });
     });
