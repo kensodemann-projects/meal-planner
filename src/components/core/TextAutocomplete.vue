@@ -18,7 +18,7 @@ const props = defineProps<{
   items: string[];
   rules?: ((value: any) => boolean | string)[];
 }>();
-const modelValue = defineModel<string | null>();
+const modelValue = defineModel<string | null | undefined>();
 
 const search = ref('');
 
