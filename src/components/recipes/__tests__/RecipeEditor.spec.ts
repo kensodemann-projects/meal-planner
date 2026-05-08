@@ -176,7 +176,7 @@ describe('Recipe Editor', () => {
         expect(categoryInput.props('modelValue')).toBe('Salad');
       });
 
-      it('does not change the category when the search text is empty', async () => {
+      it('does not select any category when the search text is empty', async () => {
         wrapper = mountComponent();
         const categoryInput = wrapper.findComponent(
           '[data-testid="category-input"]',
@@ -186,7 +186,7 @@ describe('Recipe Editor', () => {
         expect(categoryInput.props('modelValue')).toBeNull();
       });
 
-      it('does not change the category when the search text does not match any category', async () => {
+      it('does not select any category when the search text does not match any category', async () => {
         wrapper = mountComponent();
         const categoryInput = wrapper.findComponent(
           '[data-testid="category-input"]',
@@ -237,7 +237,7 @@ describe('Recipe Editor', () => {
         expect(cuisineInput.props('modelValue')).toBe('American');
       });
 
-      it('does not change the cuisine when the search text is empty', async () => {
+      it('does select any the cuisine when the search text is empty', async () => {
         wrapper = mountComponent();
         const cuisineInput = wrapper.findComponent(
           '[data-testid="cuisine-input"]',
@@ -247,7 +247,7 @@ describe('Recipe Editor', () => {
         expect(cuisineInput.props('modelValue')).toBeNull();
       });
 
-      it('does not change the cuisine when the search text does not match any cuisine', async () => {
+      it('does not select any cuisine when the search text does not match any cuisine', async () => {
         wrapper = mountComponent();
         const cuisineInput = wrapper.findComponent(
           '[data-testid="cuisine-input"]',
@@ -298,7 +298,7 @@ describe('Recipe Editor', () => {
         expect(difficultyInput.props('modelValue')).toBe('Easy');
       });
 
-      it('does not change the difficulty when the search text is empty', async () => {
+      it('does not select any difficulty when the search text is empty', async () => {
         wrapper = mountComponent();
         const difficultyInput = wrapper.findComponent(
           '[data-testid="difficulty-input"]',
@@ -308,7 +308,7 @@ describe('Recipe Editor', () => {
         expect(difficultyInput.props('modelValue')).toBeNull();
       });
 
-      it('does not change the difficulty when the search text does not match any difficulty', async () => {
+      it('does not select any difficulty when the search text does not match any difficulty', async () => {
         wrapper = mountComponent();
         const difficultyInput = wrapper.findComponent(
           '[data-testid="difficulty-input"]',
