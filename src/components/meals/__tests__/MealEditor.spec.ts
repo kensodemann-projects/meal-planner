@@ -356,6 +356,89 @@ describe('Meal Editor', () => {
     });
   });
 
+  describe('close button', () => {
+    it('is enabled by default', () => {
+      wrapper = mountComponent({ meal: emptyMeal });
+      const closeButton = wrapper.findComponent('[data-testid="close-button"]');
+      expect(closeButton.attributes('disabled')).toBeUndefined();
+    });
+
+    describe('when the add recipe editor is open', () => {
+      it('is disabled', async () => {
+        wrapper = mountComponent({ meal: emptyMeal });
+        const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
+        await addRecipeButton.trigger('click');
+        const closeButton = wrapper.findComponent('[data-testid="close-button"]');
+        expect(closeButton.attributes('disabled')).toBeDefined();
+      });
+
+      it('is re-enabled when the editor is cancelled', async () => {
+        wrapper = mountComponent({ meal: emptyMeal });
+        const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
+        await addRecipeButton.trigger('click');
+        const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+        await mealItemEditors[0]!.vm.$emit('cancel');
+        await wrapper.vm.$nextTick();
+        const closeButton = wrapper.findComponent('[data-testid="close-button"]');
+        expect(closeButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is re-enabled when the editor saves', async () => {
+        wrapper = mountComponent({ meal: emptyMeal });
+        const addRecipeButton = wrapper.findComponent('[data-testid="add-recipe-button"]');
+        await addRecipeButton.trigger('click');
+        const mealItemEditors = wrapper.findAllComponents({ name: 'MealItemEditorCard' });
+        await mealItemEditors[0]!.vm.$emit('save', recipeMealItem);
+        await wrapper.vm.$nextTick();
+        const closeButton = wrapper.findComponent('[data-testid="close-button"]');
+        expect(closeButton.attributes('disabled')).toBeUndefined();
+      });
+    });
+
+    describe('when an existing recipe item is being edited', () => {
+      let panel: VueWrapper<components.VExpansionPanel>;
+
+      beforeEach(async () => {
+        wrapper = mountComponent({ meal: TEST_MEAL });
+        const recipePanels = wrapper.findComponent('[data-testid="recipe-panels"]');
+        const panels = recipePanels.findAllComponents(components.VExpansionPanel);
+        panel = panels[0]!;
+        const header = panel.findComponent(components.VExpansionPanelTitle);
+        await header.trigger('click');
+        await wrapper.vm.$nextTick();
+      });
+
+      it('is disabled', async () => {
+        const modifyButton = panel.findComponent('[data-testid="modify-button"]');
+        await modifyButton.trigger('click');
+        const closeButton = wrapper.findComponent('[data-testid="close-button"]');
+        expect(closeButton.attributes('disabled')).toBeDefined();
+      });
+
+      it('is re-enabled when editing is cancelled', async () => {
+        const modifyButton = panel.findComponent('[data-testid="modify-button"]');
+        await modifyButton.trigger('click');
+        const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
+        await mealItemEditor.vm.$emit('cancel');
+        await wrapper.vm.$nextTick();
+        const closeButton = wrapper.findComponent('[data-testid="close-button"]');
+        expect(closeButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is re-enabled when editing is saved', async () => {
+        const modifyButton = panel.findComponent('[data-testid="modify-button"]');
+        await modifyButton.trigger('click');
+        const mealItemEditor = panel.findComponent({ name: 'MealItemEditorCard' });
+        const originalItem = TEST_MEAL.items.find((item) => item.recipeId);
+        if (!originalItem) throw new Error('TEST_MEAL should contain at least one recipe item');
+        await mealItemEditor.vm.$emit('save', { ...originalItem, name: 'Updated Recipe' });
+        await wrapper.vm.$nextTick();
+        const closeButton = wrapper.findComponent('[data-testid="close-button"]');
+        expect(closeButton.attributes('disabled')).toBeUndefined();
+      });
+    });
+  });
+
   describe('Total Nutrition Display', () => {
     describe('when adding a new meal', () => {
       beforeEach(() => (wrapper = mountComponent({ meal: emptyMeal })));
