@@ -120,7 +120,7 @@
       <h2>Nutritional Information Per Serving</h2>
       <SecondaryButton
         @click="calculateNutritionInformation"
-        :disabled="false"
+        :disabled="disableNutritionButton"
         :loading="nutritionInfoLoading"
         data-testid="calculate-nutrition-button"
         >Calculate Nutrition</SecondaryButton
@@ -245,6 +245,13 @@ const save = () => {
     ...(props.recipe ? { ...recipe, id: props.recipe.id } : recipe),
   });
 };
+
+const disableNutritionButton = computed(() => {
+  return (
+    !servings.value || servings.value <= 0 || name.value.trim() === '' || ingredients.value.length === 0
+    // steps.value.length === 0
+  );
+});
 
 const calculateNutritionInformation = async () => {
   nutritionInfoLoading.value = true;
