@@ -126,7 +126,10 @@
     <v-container fluid>
       <v-row class="pa-4" justify="end">
         <CancelButton class="mr-4" @click="$emit('cancel')" />
-        <SaveButton :disabled="!(valid && isModified)" @click="save" />
+        <SaveButton class="mr-4" :disabled="!(valid && isModified)" @click="save" />
+        <SecondaryButton @click="generateNutritionInformation" :disabled="false" :loading="nutritionInfoLoading"
+          >Generate Nutrition Information</SecondaryButton
+        >
       </v-row>
     </v-container>
   </v-form>
@@ -164,6 +167,7 @@ const nutrition = ref<Partial<Nutrition>>({
 });
 const ingredients = ref<Partial<RecipeIngredient>[]>(props.recipe ? [...props.recipe.ingredients] : []);
 const steps = ref<Partial<RecipeStep>[]>(props.recipe ? [...props.recipe.steps] : []);
+const nutritionInfoLoading = shallowRef(false);
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 const listChanged = shallowRef(false);
@@ -229,6 +233,14 @@ const save = () => {
   emit('save', {
     ...(props.recipe ? { ...recipe, id: props.recipe.id } : recipe),
   });
+};
+
+const generateNutritionInformation = () => {
+  // Placeholder for future implementation
+  nutritionInfoLoading.value = true;
+  setTimeout(() => {
+    nutritionInfoLoading.value = false;
+  }, 3000);
 };
 
 onMounted(() => nameInput.value?.focus());
