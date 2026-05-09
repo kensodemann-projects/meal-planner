@@ -277,7 +277,10 @@ const save = () => {
 
 const disableNutritionButton = computed(() => {
   return (
-    !servings.value || servings.value <= 0 || name.value.trim() === '' || ingredients.value.length === 0
+    !servings.value
+    || servings.value <= 0
+    || name.value.trim() === ''
+    || !ingredients.value.some(isValidIngredient)
     // steps.value.length === 0
   );
 });
