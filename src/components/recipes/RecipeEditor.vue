@@ -144,13 +144,29 @@
     color="success"
     location="bottom center"
     prepend-icon="$success"
-    text="Your changes have been saved."
+    text="Nutrition information calculated successfully."
     timeout="3000"
     title="Success"
     contained
     :model-value="showSuccessSnackbar"
     data-testid="calculate-nutrition-success-snackbar"
   />
+
+  <v-snackbar
+    color="error"
+    location="bottom center"
+    prepend-icon="$error"
+    text="An error occurred while calculating nutrition information."
+    timeout="-1"
+    title="Error"
+    contained
+    :model-value="showErrorSnackbar"
+    data-testid="calculate-nutrition-error-snackbar"
+  >
+    <template v-slot:actions>
+      <v-btn variant="text" color="white" @click="showErrorSnackbar = false"> Close </v-btn>
+    </template>
+  </v-snackbar>
 </template>
 
 <script setup lang="ts">
@@ -190,7 +206,7 @@ const ingredients = ref<Partial<RecipeIngredient>[]>(props.recipe ? [...props.re
 const steps = ref<Partial<RecipeStep>[]>(props.recipe ? [...props.recipe.steps] : []);
 const nutritionInfoLoading = shallowRef(false);
 const showSuccessSnackbar = shallowRef(false);
-// const showErrorSnackbar = shallowRef(false);
+const showErrorSnackbar = shallowRef(false);
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 const listChanged = shallowRef(false);
@@ -274,6 +290,7 @@ const calculateNutritionInformation = async () => {
     nutrition.value = await generateNutritionData(recipe);
     showSuccessSnackbar.value = true;
   } catch {
+    showErrorSnackbar.value = true;
   } finally {
     nutritionInfoLoading.value = false;
   }
