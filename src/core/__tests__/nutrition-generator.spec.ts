@@ -17,6 +17,7 @@ vi.mock('../firebase-app', () => ({
 }));
 
 import type { Recipe } from '@/models/recipe';
+import { getGenerativeModel } from 'firebase/ai';
 import { useNutritionGenerator } from '../nutrition-generator';
 import { findUnitOfMeasure } from '../find-unit-of-measure';
 
@@ -84,6 +85,21 @@ describe('use nutrition generator', () => {
       expect(prompt).toContain(String(mockRecipe.servings));
     });
 
+    it('includes ingredient names in the prompt', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => JSON.stringify(mockNutrition) },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await generateNutritionData(mockRecipe);
+      const prompt = mockGenerateContent.mock.calls[0]![0] as string;
+      expect(prompt).toContain(mockRecipe.ingredients[0]!.name);
+    });
+
+    it('initializes the Gemini model lazily inside the composable', () => {
+      useNutritionGenerator();
+      expect(getGenerativeModel).toHaveBeenCalledOnce();
+    });
+
     it('returns the parsed nutrition when the response is plain JSON', async () => {
       mockGenerateContent.mockResolvedValue({
         response: { text: () => JSON.stringify(mockNutrition) },
@@ -123,6 +139,14 @@ describe('use nutrition generator', () => {
       mockGenerateContent.mockRejectedValue(new Error('Network error'));
       const { generateNutritionData } = useNutritionGenerator();
       await expect(generateNutritionData(mockRecipe)).rejects.toThrow('Network error');
+    });
+
+    it('throws when the AI returns malformed JSON', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => 'this is not valid JSON {{ bad }}' },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow(SyntaxError);
     });
   });
 });
