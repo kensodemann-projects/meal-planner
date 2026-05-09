@@ -148,7 +148,7 @@
     timeout="3000"
     title="Success"
     contained
-    :model-value="showSuccessSnackbar"
+    v-model="showSuccessSnackbar"
     data-testid="calculate-nutrition-success-snackbar"
   />
 
@@ -160,7 +160,7 @@
     timeout="-1"
     title="Error"
     contained
-    :model-value="showErrorSnackbar"
+    v-model="showErrorSnackbar"
     data-testid="calculate-nutrition-error-snackbar"
   >
     <template v-slot:actions>
