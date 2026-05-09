@@ -127,8 +127,12 @@
       <v-row class="pa-4" justify="end">
         <CancelButton class="mr-4" @click="$emit('cancel')" />
         <SaveButton class="mr-4" :disabled="!(valid && isModified)" @click="save" />
-        <SecondaryButton @click="generateNutritionInformation" :disabled="false" :loading="nutritionInfoLoading"
-          >Generate Nutrition Information</SecondaryButton
+        <SecondaryButton
+          @click="calculateNutritionInformation"
+          :disabled="false"
+          :loading="nutritionInfoLoading"
+          data-testid="calculate-nutrition-button"
+          >Calculate Nutrition</SecondaryButton
         >
       </v-row>
     </v-container>
@@ -235,7 +239,7 @@ const save = () => {
   });
 };
 
-const generateNutritionInformation = () => {
+const calculateNutritionInformation = () => {
   // Placeholder for future implementation
   nutritionInfoLoading.value = true;
   setTimeout(() => {
