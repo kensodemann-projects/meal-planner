@@ -116,7 +116,16 @@
       </template>
     </SortableListEditor>
 
-    <h2>Nutritional Information Per Serving</h2>
+    <div class="d-flex justify-space-between align-center">
+      <h2>Nutritional Information Per Serving</h2>
+      <SecondaryButton
+        @click="calculateNutritionInformation"
+        :disabled="false"
+        :loading="nutritionInfoLoading"
+        data-testid="calculate-nutrition-button"
+        >Calculate Nutrition</SecondaryButton
+      >
+    </div>
     <v-divider class="mb-4"></v-divider>
 
     <v-container fluid>
@@ -127,13 +136,6 @@
       <v-row class="pa-4" justify="end">
         <CancelButton class="mr-4" @click="$emit('cancel')" />
         <SaveButton class="mr-4" :disabled="!(valid && isModified)" @click="save" />
-        <SecondaryButton
-          @click="calculateNutritionInformation"
-          :disabled="false"
-          :loading="nutritionInfoLoading"
-          data-testid="calculate-nutrition-button"
-          >Calculate Nutrition</SecondaryButton
-        >
       </v-row>
     </v-container>
   </v-form>
@@ -248,7 +250,7 @@ const calculateNutritionInformation = async () => {
   nutritionInfoLoading.value = true;
   const recipe = createRecipeFromForm();
   try {
-    await generateNutritionData(recipe);
+    nutrition.value = await generateNutritionData(recipe);
   } catch {
   } finally {
     nutritionInfoLoading.value = false;
