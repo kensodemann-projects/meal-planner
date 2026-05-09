@@ -1,5 +1,11 @@
 # meal-planner
 
+## 1.1.0
+
+### Minor Changes
+
+- 6f1fa44: Use AI to enhance the nutrition estimation for recipes.
+
 ## 1.0.2
 
 ### Patch Changes
