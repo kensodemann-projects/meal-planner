@@ -1,3 +1,4 @@
+import type { Recipe } from '@/models/recipe';
 import { vi } from 'vitest';
 
 const generateNutritionData = vi.fn().mockResolvedValue({
@@ -10,7 +11,7 @@ const generateNutritionData = vi.fn().mockResolvedValue({
 });
 
 export const useNutritionGenerator: () => {
-  generateNutritionData: () => Promise<{
+  generateNutritionData: (recipe: Recipe) => Promise<{
     calories: number;
     sodium: number;
     sugar: number;

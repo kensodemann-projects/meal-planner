@@ -1132,7 +1132,7 @@ describe('Recipe Editor', () => {
       await inputs.name.setValue('Test Recipe');
       await inputs.servings.setValue('4');
 
-      const addIngredientButton = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+      const addIngredientButton = wrapper.find('[data-testid="add-ingredient-button"]');
       await addIngredientButton.trigger('click');
       await flushPromises();
 
