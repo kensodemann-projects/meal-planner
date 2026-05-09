@@ -2,4 +2,4 @@
 'meal-planner': minor
 ---
 
-Add the nutrition estimator for recipes.
+Use AI to enhance the nutrition estimation for recipes.

@@ -1,9 +1,7 @@
 <template>
   <div>
     <h2>
-      <div class="d-flex justify-space-between">
-        <div>{{ title }}</div>
-      </div>
+      {{ title }}
     </h2>
     <v-divider class="mb-4"></v-divider>
 

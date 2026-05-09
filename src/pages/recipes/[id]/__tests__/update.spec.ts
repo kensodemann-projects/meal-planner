@@ -11,6 +11,7 @@ import update from '../update.vue';
 
 vi.mock('vue-router');
 vi.mock('@/data/recipes');
+vi.mock('@/core/nutrition-generator');
 
 const vuetify = createVuetify({
   components,

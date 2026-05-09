@@ -116,7 +116,17 @@
       </template>
     </SortableListEditor>
 
-    <h2>Nutritional Information Per Serving</h2>
+    <div class="d-flex justify-space-between align-center">
+      <h2>Nutritional Information Per Serving</h2>
+      <SecondaryButton
+        @click="calculateNutritionInformation"
+        :disabled="disableNutritionButton"
+        :loading="nutritionInfoLoading"
+        data-testid="calculate-nutrition-button"
+      >
+        Calculate Nutrition
+      </SecondaryButton>
+    </div>
     <v-divider class="mb-4"></v-divider>
 
     <v-container fluid>
@@ -126,13 +136,42 @@
     <v-container fluid>
       <v-row class="pa-4" justify="end">
         <CancelButton class="mr-4" @click="$emit('cancel')" />
-        <SaveButton :disabled="!(valid && isModified)" @click="save" />
+        <SaveButton class="mr-4" :disabled="!(valid && isModified)" @click="save" />
       </v-row>
     </v-container>
   </v-form>
+
+  <v-snackbar
+    color="success"
+    location="bottom center"
+    prepend-icon="$success"
+    text="Nutrition information calculated successfully."
+    timeout="3000"
+    title="Success"
+    contained
+    v-model="showSuccessSnackbar"
+    data-testid="calculate-nutrition-success-snackbar"
+  />
+
+  <v-snackbar
+    color="error"
+    location="bottom center"
+    prepend-icon="$error"
+    text="An error occurred while calculating nutrition information."
+    timeout="-1"
+    title="Error"
+    contained
+    v-model="showErrorSnackbar"
+    data-testid="calculate-nutrition-error-snackbar"
+  >
+    <template v-slot:actions>
+      <v-btn variant="text" color="white" @click="showErrorSnackbar = false"> Close </v-btn>
+    </template>
+  </v-snackbar>
 </template>
 
 <script setup lang="ts">
+import { useNutritionGenerator } from '@/core/nutrition-generator';
 import { validationRules } from '@/core/validation-rules';
 import { cuisines } from '@/data/cuisines';
 import { recipeCategories } from '@/data/recipe-categories';
@@ -144,6 +183,8 @@ import type { VTextField } from 'vuetify/components';
 
 const emit = defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'cancel'): void }>();
 const props = defineProps<{ recipe?: Recipe }>();
+
+const { generateNutritionData } = useNutritionGenerator();
 
 const valid = shallowRef(false);
 const name = shallowRef<string>(props.recipe?.name || '');
@@ -164,6 +205,9 @@ const nutrition = ref<Partial<Nutrition>>({
 });
 const ingredients = ref<Partial<RecipeIngredient>[]>(props.recipe ? [...props.recipe.ingredients] : []);
 const steps = ref<Partial<RecipeStep>[]>(props.recipe ? [...props.recipe.steps] : []);
+const nutritionInfoLoading = shallowRef(false);
+const showSuccessSnackbar = shallowRef(false);
+const showErrorSnackbar = shallowRef(false);
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 const listChanged = shallowRef(false);
@@ -207,28 +251,50 @@ const isModified = computed((): boolean => {
   );
 });
 
+const createRecipeFromForm = (): Recipe => ({
+  name: name.value.trim(),
+  description: description.value.trim() || null,
+  category: category.value!,
+  cuisine: cuisine.value!,
+  difficulty: difficulty.value!,
+  servings: servings.value!,
+  prepTimeMinutes: prepTimeMinutes.value!,
+  cookTimeMinutes: cookTimeMinutes.value!,
+  calories: nutrition.value.calories!,
+  sodium: nutrition.value.sodium!,
+  sugar: nutrition.value.sugar!,
+  carbs: nutrition.value.carbs!,
+  fat: nutrition.value.fat!,
+  protein: nutrition.value.protein!,
+  ingredients: ingredients.value.filter(isValidIngredient),
+  steps: steps.value.filter(isValidStep),
+});
+
 const save = () => {
-  const recipe = {
-    name: name.value.trim(),
-    description: description.value.trim() || null,
-    category: category.value!,
-    cuisine: cuisine.value!,
-    difficulty: difficulty.value!,
-    servings: servings.value!,
-    prepTimeMinutes: prepTimeMinutes.value!,
-    cookTimeMinutes: cookTimeMinutes.value!,
-    calories: nutrition.value.calories!,
-    sodium: nutrition.value.sodium!,
-    sugar: nutrition.value.sugar!,
-    carbs: nutrition.value.carbs!,
-    fat: nutrition.value.fat!,
-    protein: nutrition.value.protein!,
-    ingredients: ingredients.value.filter(isValidIngredient),
-    steps: steps.value.filter(isValidStep),
-  };
+  const recipe = createRecipeFromForm();
   emit('save', {
     ...(props.recipe ? { ...recipe, id: props.recipe.id } : recipe),
   });
+};
+
+const disableNutritionButton = computed(() => {
+  return (
+    !servings.value || servings.value <= 0 || name.value.trim() === '' || !ingredients.value.some(isValidIngredient)
+    // steps.value.length === 0
+  );
+});
+
+const calculateNutritionInformation = async () => {
+  nutritionInfoLoading.value = true;
+  const recipe = createRecipeFromForm();
+  try {
+    nutrition.value = await generateNutritionData(recipe);
+    showSuccessSnackbar.value = true;
+  } catch {
+    showErrorSnackbar.value = true;
+  } finally {
+    nutritionInfoLoading.value = false;
+  }
 };
 
 onMounted(() => nameInput.value?.focus());
