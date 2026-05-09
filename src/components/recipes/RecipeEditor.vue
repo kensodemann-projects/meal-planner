@@ -123,7 +123,9 @@
         :disabled="disableNutritionButton"
         :loading="nutritionInfoLoading"
         data-testid="calculate-nutrition-button"
-      >Calculate Nutrition</SecondaryButton>
+      >
+        Calculate Nutrition
+      </SecondaryButton>
     </div>
     <v-divider class="mb-4"></v-divider>
 
@@ -277,10 +279,7 @@ const save = () => {
 
 const disableNutritionButton = computed(() => {
   return (
-    !servings.value
-    || servings.value <= 0
-    || name.value.trim() === ''
-    || !ingredients.value.some(isValidIngredient)
+    !servings.value || servings.value <= 0 || name.value.trim() === '' || !ingredients.value.some(isValidIngredient)
     // steps.value.length === 0
   );
 });
