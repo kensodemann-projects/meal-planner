@@ -215,25 +215,27 @@ const isModified = computed((): boolean => {
   );
 });
 
+const createRecipeFromForm = (): Recipe => ({
+  name: name.value.trim(),
+  description: description.value.trim() || null,
+  category: category.value!,
+  cuisine: cuisine.value!,
+  difficulty: difficulty.value!,
+  servings: servings.value!,
+  prepTimeMinutes: prepTimeMinutes.value!,
+  cookTimeMinutes: cookTimeMinutes.value!,
+  calories: nutrition.value.calories!,
+  sodium: nutrition.value.sodium!,
+  sugar: nutrition.value.sugar!,
+  carbs: nutrition.value.carbs!,
+  fat: nutrition.value.fat!,
+  protein: nutrition.value.protein!,
+  ingredients: ingredients.value.filter(isValidIngredient),
+  steps: steps.value.filter(isValidStep),
+});
+
 const save = () => {
-  const recipe = {
-    name: name.value.trim(),
-    description: description.value.trim() || null,
-    category: category.value!,
-    cuisine: cuisine.value!,
-    difficulty: difficulty.value!,
-    servings: servings.value!,
-    prepTimeMinutes: prepTimeMinutes.value!,
-    cookTimeMinutes: cookTimeMinutes.value!,
-    calories: nutrition.value.calories!,
-    sodium: nutrition.value.sodium!,
-    sugar: nutrition.value.sugar!,
-    carbs: nutrition.value.carbs!,
-    fat: nutrition.value.fat!,
-    protein: nutrition.value.protein!,
-    ingredients: ingredients.value.filter(isValidIngredient),
-    steps: steps.value.filter(isValidStep),
-  };
+  const recipe = createRecipeFromForm();
   emit('save', {
     ...(props.recipe ? { ...recipe, id: props.recipe.id } : recipe),
   });
