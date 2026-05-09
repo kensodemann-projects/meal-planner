@@ -139,6 +139,18 @@
       </v-row>
     </v-container>
   </v-form>
+
+  <v-snackbar
+    color="success"
+    location="bottom center"
+    prepend-icon="$success"
+    text="Your changes have been saved."
+    timeout="3000"
+    title="Success"
+    contained
+    :model-value="showSuccessSnackbar"
+    data-testid="calculate-nutrition-success-snackbar"
+  />
 </template>
 
 <script setup lang="ts">
@@ -177,6 +189,8 @@ const nutrition = ref<Partial<Nutrition>>({
 const ingredients = ref<Partial<RecipeIngredient>[]>(props.recipe ? [...props.recipe.ingredients] : []);
 const steps = ref<Partial<RecipeStep>[]>(props.recipe ? [...props.recipe.steps] : []);
 const nutritionInfoLoading = shallowRef(false);
+const showSuccessSnackbar = shallowRef(false);
+// const showErrorSnackbar = shallowRef(false);
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 const listChanged = shallowRef(false);
@@ -258,6 +272,7 @@ const calculateNutritionInformation = async () => {
   const recipe = createRecipeFromForm();
   try {
     nutrition.value = await generateNutritionData(recipe);
+    showSuccessSnackbar.value = true;
   } catch {
   } finally {
     nutritionInfoLoading.value = false;
