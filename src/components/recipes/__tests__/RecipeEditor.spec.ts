@@ -1,7 +1,11 @@
 import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
+import { useNutritionGenerator } from '@/core/nutrition-generator';
 import type { Recipe } from '@/models/recipe';
-import { mount, VueWrapper } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+
+vi.mock('@/core/nutrition-generator');
+
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -1073,6 +1077,151 @@ describe('Recipe Editor', () => {
           expect(ingredient.name).toBe(BEER_CHEESE.ingredients[index]!.name);
           expect(ingredient.units).toBe(BEER_CHEESE.ingredients[index]!.units);
           expect(ingredient.unitOfMeasure).toEqual(BEER_CHEESE.ingredients[index]!.unitOfMeasure);
+        });
+      });
+    });
+  });
+
+  describe('calculate nutrition button', () => {
+    const addValidIngredient = async (w: ReturnType<typeof mountComponent>) => {
+      const addButton = w.find('[data-testid="add-ingredient-button"]');
+      await addButton.trigger('click');
+      const ingredientRows = w.find('[data-testid="ingredient-list-grid"]').findAllComponents(IngredientEditorRow);
+      await ingredientRows[0]?.vm.$emit('changed', {
+        id: 'test-ingredient-id',
+        units: 1,
+        unitOfMeasure: findUnitOfMeasure('cup'),
+        name: 'Test Ingredient',
+      });
+    };
+
+    const setupValidState = async (w: ReturnType<typeof mountComponent>) => {
+      const inputs = getInputs(w);
+      await inputs.name.setValue('Test Recipe');
+      await inputs.servings.setValue('4');
+      await addValidIngredient(w);
+    };
+
+    it('renders', () => {
+      wrapper = mountComponent();
+      const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+      expect(button.exists()).toBe(true);
+    });
+
+    it('is disabled when name is missing', async () => {
+      wrapper = mountComponent();
+      const inputs = getInputs(wrapper);
+      await inputs.servings.setValue('4');
+      await addValidIngredient(wrapper);
+      const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+      expect(button.attributes('disabled')).toBeDefined();
+    });
+
+    it('is disabled when there are no valid ingredients', async () => {
+      wrapper = mountComponent();
+      const inputs = getInputs(wrapper);
+      await inputs.name.setValue('Test Recipe');
+      await inputs.servings.setValue('4');
+      const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+      expect(button.attributes('disabled')).toBeDefined();
+    });
+
+    it('is disabled when servings is missing', async () => {
+      wrapper = mountComponent();
+      const inputs = getInputs(wrapper);
+      await inputs.name.setValue('Test Recipe');
+      await addValidIngredient(wrapper);
+      const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+      expect(button.attributes('disabled')).toBeDefined();
+    });
+
+    it('is enabled when name, valid ingredients, and servings are all present', async () => {
+      wrapper = mountComponent();
+      await setupValidState(wrapper);
+      const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+      expect(button.attributes('disabled')).toBeUndefined();
+    });
+
+    describe('on click', () => {
+      it('shows a loading state while the calculation is in progress', async () => {
+        const { generateNutritionData } = useNutritionGenerator();
+        let resolveCalculation!: (value: unknown) => void;
+        (generateNutritionData as Mock).mockReturnValue(new Promise((resolve) => (resolveCalculation = resolve)));
+        wrapper = mountComponent();
+        await setupValidState(wrapper);
+        const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+        await button.trigger('click');
+        const vBtn = button.findComponent(components.VBtn);
+        expect(vBtn.props('loading')).toBe(true);
+        resolveCalculation({ calories: 300, sodium: 400, sugar: 5, carbs: 20, fat: 10, protein: 15 });
+        await flushPromises();
+        expect(vBtn.props('loading')).toBe(false);
+      });
+
+      describe('on success', () => {
+        const nutritionResult = { calories: 350, sodium: 500, sugar: 8, carbs: 25, fat: 12, protein: 18 };
+
+        beforeEach(() => {
+          const { generateNutritionData } = useNutritionGenerator();
+          (generateNutritionData as Mock).mockResolvedValue(nutritionResult);
+        });
+
+        it('populates nutritional values with the returned data', async () => {
+          wrapper = mountComponent();
+          await setupValidState(wrapper);
+          const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+          await button.trigger('click');
+          await flushPromises();
+          const nutritionInputs = getNutritionInputs(wrapper);
+          expect(nutritionInputs.calories.element.value).toBe(nutritionResult.calories.toString());
+          expect(nutritionInputs.sodium.element.value).toBe(nutritionResult.sodium.toString());
+          expect(nutritionInputs.sugar.element.value).toBe(nutritionResult.sugar.toString());
+          expect(nutritionInputs.carbs.element.value).toBe(nutritionResult.carbs.toString());
+          expect(nutritionInputs.fat.element.value).toBe(nutritionResult.fat.toString());
+          expect(nutritionInputs.protein.element.value).toBe(nutritionResult.protein.toString());
+        });
+
+        it('shows a success toast', async () => {
+          wrapper = mountComponent();
+          await setupValidState(wrapper);
+          const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+          await button.trigger('click');
+          await flushPromises();
+          const successSnackbar = wrapper.findComponent('[data-testid="calculate-nutrition-success-snackbar"]');
+          expect(successSnackbar.exists()).toBe(true);
+          expect(successSnackbar.props('modelValue')).toBe(true);
+        });
+      });
+
+      describe('on error', () => {
+        beforeEach(() => {
+          const { generateNutritionData } = useNutritionGenerator();
+          (generateNutritionData as Mock).mockRejectedValue(new Error('AI service unavailable'));
+        });
+
+        it('shows an error toast', async () => {
+          wrapper = mountComponent();
+          await setupValidState(wrapper);
+          const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+          await button.trigger('click');
+          await flushPromises();
+          const errorSnackbar = wrapper.findComponent('[data-testid="calculate-nutrition-error-snackbar"]');
+          expect(errorSnackbar.exists()).toBe(true);
+          expect(errorSnackbar.props('modelValue')).toBe(true);
+        });
+
+        it('does not modify nutritional values', async () => {
+          wrapper = mountComponent({ recipe: BEER_CHEESE });
+          const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+          await button.trigger('click');
+          await flushPromises();
+          const nutritionInputs = getNutritionInputs(wrapper);
+          expect(nutritionInputs.calories.element.value).toBe(BEER_CHEESE.calories.toString());
+          expect(nutritionInputs.sodium.element.value).toBe(BEER_CHEESE.sodium.toString());
+          expect(nutritionInputs.sugar.element.value).toBe(BEER_CHEESE.sugar.toString());
+          expect(nutritionInputs.carbs.element.value).toBe(BEER_CHEESE.carbs.toString());
+          expect(nutritionInputs.fat.element.value).toBe(BEER_CHEESE.fat.toString());
+          expect(nutritionInputs.protein.element.value).toBe(BEER_CHEESE.protein.toString());
         });
       });
     });

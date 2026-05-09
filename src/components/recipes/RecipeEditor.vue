@@ -140,6 +140,7 @@
 </template>
 
 <script setup lang="ts">
+import { useNutritionGenerator } from '@/core/nutrition-generator';
 import { validationRules } from '@/core/validation-rules';
 import { cuisines } from '@/data/cuisines';
 import { recipeCategories } from '@/data/recipe-categories';
@@ -151,6 +152,8 @@ import type { VTextField } from 'vuetify/components';
 
 const emit = defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'cancel'): void }>();
 const props = defineProps<{ recipe?: Recipe }>();
+
+const { generateNutritionData } = useNutritionGenerator();
 
 const valid = shallowRef(false);
 const name = shallowRef<string>(props.recipe?.name || '');
@@ -241,12 +244,15 @@ const save = () => {
   });
 };
 
-const calculateNutritionInformation = () => {
-  // Placeholder for future implementation
+const calculateNutritionInformation = async () => {
   nutritionInfoLoading.value = true;
-  setTimeout(() => {
+  const recipe = createRecipeFromForm();
+  try {
+    await generateNutritionData(recipe);
+  } catch {
+  } finally {
     nutritionInfoLoading.value = false;
-  }, 3000);
+  }
 };
 
 onMounted(() => nameInput.value?.focus());
