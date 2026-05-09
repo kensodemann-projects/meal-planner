@@ -1187,9 +1187,11 @@ describe('Recipe Editor', () => {
           const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
           await button.trigger('click');
           await flushPromises();
-          const successSnackbar = wrapper.findComponent('[data-testid="calculate-nutrition-success-snackbar"]');
-          expect(successSnackbar.exists()).toBe(true);
-          expect(successSnackbar.props('modelValue')).toBe(true);
+          const successSnackbar = wrapper
+            .findAllComponents(components.VSnackbar)
+            .find((s) => s.props('color') === 'success');
+          expect(successSnackbar).toBeDefined();
+          expect(successSnackbar!.props('modelValue')).toBe(true);
         });
       });
 
@@ -1205,9 +1207,11 @@ describe('Recipe Editor', () => {
           const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
           await button.trigger('click');
           await flushPromises();
-          const errorSnackbar = wrapper.findComponent('[data-testid="calculate-nutrition-error-snackbar"]');
-          expect(errorSnackbar.exists()).toBe(true);
-          expect(errorSnackbar.props('modelValue')).toBe(true);
+          const errorSnackbar = wrapper
+            .findAllComponents(components.VSnackbar)
+            .find((s) => s.props('color') === 'error');
+          expect(errorSnackbar).toBeDefined();
+          expect(errorSnackbar!.props('modelValue')).toBe(true);
         });
 
         it('does not modify nutritional values', async () => {
