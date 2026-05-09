@@ -123,8 +123,7 @@
         :disabled="disableNutritionButton"
         :loading="nutritionInfoLoading"
         data-testid="calculate-nutrition-button"
-        >Calculate Nutrition</SecondaryButton
-      >
+      >Calculate Nutrition</SecondaryButton>
     </div>
     <v-divider class="mb-4"></v-divider>
 
