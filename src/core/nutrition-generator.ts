@@ -31,12 +31,11 @@ const { aiBackend } = useFirebaseApp();
 const model = getGenerativeModel(aiBackend, { model: 'gemini-2.5-flash', systemInstruction });
 const captureJson = /^\s*`{3}json\s*(\{.*\})\s*`{3}\s*$/s;
 
-const generate = async (recipe: Recipe): Promise<Nutrition> => {
+const generateNutritionData = async (recipe: Recipe): Promise<Nutrition> => {
   const userPrompt = `I am making ${recipe.servings} servings of ${recipe.name}. Here are the ingredients: ${JSON.stringify(recipe.ingredients)}. Here are the steps to prepare: ${JSON.stringify(recipe.steps)}. What is the nutritional breakdown per serving?`;
   const result = await model.generateContent(userPrompt);
-  const response = result.response;
-  const text = response.text();
+  const text = result.response.text();
   return JSON.parse(text.replace(captureJson, '$1')) as Nutrition;
 };
 
-export const useNutritionGenerator = () => ({ generate });
+export const useNutritionGenerator = () => ({ generateNutritionData });

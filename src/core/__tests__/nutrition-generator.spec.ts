@@ -18,6 +18,7 @@ vi.mock('../firebase-app', () => ({
 
 import type { Recipe } from '@/models/recipe';
 import { useNutritionGenerator } from '../nutrition-generator';
+import { findUnitOfMeasure } from '../find-unit-of-measure';
 
 const mockRecipe: Recipe = {
   id: 'recipe-1',
@@ -35,7 +36,7 @@ const mockRecipe: Recipe = {
   protein: 0,
   carbs: 0,
   sugar: 0,
-  ingredients: [{ id: 'ing-1', units: 4, unitOfMeasure: 'item', name: 'chicken breasts' }],
+  ingredients: [{ id: 'ing-1', units: 4, unitOfMeasure: findUnitOfMeasure('item'), name: 'chicken breasts' }],
   steps: [{ id: 'step-1', instruction: 'Grill chicken for 20 minutes' }],
 };
 
@@ -53,13 +54,13 @@ describe('use nutrition generator', () => {
     vi.clearAllMocks();
   });
 
-  describe('generate', () => {
+  describe('generate nutrition data', () => {
     it('calls the AI model to generate content', async () => {
       mockGenerateContent.mockResolvedValue({
         response: { text: () => JSON.stringify(mockNutrition) },
       });
-      const { generate } = useNutritionGenerator();
-      await generate(mockRecipe);
+      const { generateNutritionData } = useNutritionGenerator();
+      await generateNutritionData(mockRecipe);
       expect(mockGenerateContent).toHaveBeenCalledOnce();
     });
 
@@ -67,8 +68,8 @@ describe('use nutrition generator', () => {
       mockGenerateContent.mockResolvedValue({
         response: { text: () => JSON.stringify(mockNutrition) },
       });
-      const { generate } = useNutritionGenerator();
-      await generate(mockRecipe);
+      const { generateNutritionData } = useNutritionGenerator();
+      await generateNutritionData(mockRecipe);
       const prompt = mockGenerateContent.mock.calls[0]![0] as string;
       expect(prompt).toContain(mockRecipe.name);
     });
@@ -77,8 +78,8 @@ describe('use nutrition generator', () => {
       mockGenerateContent.mockResolvedValue({
         response: { text: () => JSON.stringify(mockNutrition) },
       });
-      const { generate } = useNutritionGenerator();
-      await generate(mockRecipe);
+      const { generateNutritionData } = useNutritionGenerator();
+      await generateNutritionData(mockRecipe);
       const prompt = mockGenerateContent.mock.calls[0]![0] as string;
       expect(prompt).toContain(String(mockRecipe.servings));
     });
@@ -87,8 +88,8 @@ describe('use nutrition generator', () => {
       mockGenerateContent.mockResolvedValue({
         response: { text: () => JSON.stringify(mockNutrition) },
       });
-      const { generate } = useNutritionGenerator();
-      const result = await generate(mockRecipe);
+      const { generateNutritionData } = useNutritionGenerator();
+      const result = await generateNutritionData(mockRecipe);
       expect(result).toEqual(mockNutrition);
     });
 
@@ -97,8 +98,8 @@ describe('use nutrition generator', () => {
       mockGenerateContent.mockResolvedValue({
         response: { text: () => markdownResponse },
       });
-      const { generate } = useNutritionGenerator();
-      const result = await generate(mockRecipe);
+      const { generateNutritionData } = useNutritionGenerator();
+      const result = await generateNutritionData(mockRecipe);
       expect(result).toEqual(mockNutrition);
     });
 
@@ -107,21 +108,21 @@ describe('use nutrition generator', () => {
       mockGenerateContent.mockResolvedValue({
         response: { text: () => markdownResponse },
       });
-      const { generate } = useNutritionGenerator();
-      const result = await generate(mockRecipe);
+      const { generateNutritionData } = useNutritionGenerator();
+      const result = await generateNutritionData(mockRecipe);
       expect(result).toEqual(mockNutrition);
     });
 
     it('throws when the AI backend fails', async () => {
       mockGenerateContent.mockRejectedValue(new Error('AI service unavailable'));
-      const { generate } = useNutritionGenerator();
-      await expect(generate(mockRecipe)).rejects.toThrow('AI service unavailable');
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow('AI service unavailable');
     });
 
     it('propagates network errors', async () => {
       mockGenerateContent.mockRejectedValue(new Error('Network error'));
-      const { generate } = useNutritionGenerator();
-      await expect(generate(mockRecipe)).rejects.toThrow('Network error');
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow('Network error');
     });
   });
 });
