@@ -1126,6 +1126,20 @@ describe('Recipe Editor', () => {
       expect(button.attributes('disabled')).toBeDefined();
     });
 
+    it('is disabled when an ingredient row exists but is invalid', async () => {
+      wrapper = mountComponent();
+      const inputs = getInputs(wrapper);
+      await inputs.name.setValue('Test Recipe');
+      await inputs.servings.setValue('4');
+
+      const addIngredientButton = wrapper.findComponent('[data-testid="add-ingredient-button"]');
+      await addIngredientButton.trigger('click');
+      await flushPromises();
+
+      const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+      expect(button.attributes('disabled')).toBeDefined();
+    });
+
     it('is disabled when servings is missing', async () => {
       wrapper = mountComponent();
       const inputs = getInputs(wrapper);
