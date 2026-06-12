@@ -1,0 +1,74 @@
+---
+description: Meal Planner project architecture, patterns, and conventions
+alwaysApply: true
+---
+
+# Meal Planner
+
+Vue 3 + TypeScript + Vuetify + Firebase meal planning app using Vite and pnpm.
+
+## Tech Stack
+
+- **Frontend**: Vue 3 (Composition API with `<script setup>`), TypeScript, Vuetify 3
+- **Backend**: Firebase (Authentication, Firestore)
+- **Build**: Vite with auto-imports for components, pages, and routes
+- **Testing**: Vitest + @vue/test-utils
+
+## Project Structure
+
+- `src/components/`: Auto-imported Vue components (multi-word names, no manual imports)
+- `src/pages/`: Auto-converted to routes via `unplugin-vue-router` (e.g., `foods/[id]/index.vue` → `/foods/:id`)
+- `src/layouts/`: Reusable layouts (`default` for main app, `standalone` for login)
+- `src/data/`: Composables for Firestore operations (prefix with `use*`, e.g., `useFoodsData()`)
+- `src/core/`: Business logic composables (`useAuthentication()`, `useRecipeGenerator()`)
+- `src/models/`: TypeScript interfaces for domain entities (`FoodItem`, `Recipe`, `Portion`)
+
+## Key Patterns
+
+### Composables
+
+All data access and business logic uses composables returning reactive state:
+
+```typescript
+export const useFoodsData = () => {
+  const db = useFirestore();
+  const foods = useCollection<FoodItem>(collection(db, 'foods'));
+  const addFood = async (food: FoodItem) => { /* ... */ };
+  return { foods, addFood, updateFood, removeFood };
+};
+```
+
+### Auto-imports
+
+- Components in `src/components/` are globally available (no import statements)
+- Pages in `src/pages/` become routes automatically (folder structure = URL structure)
+- Use `<route lang="yaml">` block in page components for metadata (e.g., `meta: { layout: standalone }`)
+
+### Firebase
+
+- Use VueFire composables: `useFirestore()`, `useCollection()`, `useCurrentUser()`
+- Authentication via `useAuthentication()` in `src/core/authentication.ts`
+- Router has `checkAuthStatus` guard (routes need `meta: { allowAnonymous: true }` to skip auth)
+
+## Code Conventions
+
+- **Components**: Multi-word PascalCase (e.g., `FoodListItem.vue`); pages may use lowercase for URL paths
+- **Composables**: Prefix with `use`, return reactive state + methods
+- **Tests**: Co-located in `__tests__/`, named `*.spec.ts`
+- **Types**: Centralized in `src/models/`
+- **Comments**: Explain "why", not "what"
+
+## Commands
+
+```bash
+pnpm dev              # Dev server (localhost:3000)
+pnpm test             # Run tests once
+pnpm test:dev         # Watch mode
+pnpm test:cov         # Coverage
+pnpm lint             # ESLint
+pnpm build            # Production build
+pnpm emulate          # Firebase emulators with seed data
+pnpm save-seed        # Export emulator data to seed-data/
+```
+
+Single test file: `pnpm vitest run src/path/to/file.spec.ts`
