@@ -20,8 +20,9 @@ import type {
 
 declare module 'vue-router' {
   interface TypesConfig {
-    ParamParsers:
-      | never
+    _ParamParsers: {}
+    RouteNamedMap: import('vue-router/auto-routes').RouteNamedMap
+    _RouteFileInfoMap: import('vue-router/auto-routes')._RouteFileInfoMap
   }
 }
 
@@ -139,11 +140,15 @@ declare module 'vue-router/auto-routes' {
         | '/'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/dashboard/index.vue': {
       routes:
         | '/dashboard/'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/dashboard/recipes.vue': {
@@ -151,11 +156,15 @@ declare module 'vue-router/auto-routes' {
         | '/dashboard/recipes'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/error.vue': {
       routes:
         | '/error'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/login.vue': {
@@ -163,11 +172,15 @@ declare module 'vue-router/auto-routes' {
         | '/login'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/planning/index.vue': {
       routes:
         | '/planning/'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/planning/day.vue': {
@@ -175,11 +188,15 @@ declare module 'vue-router/auto-routes' {
         | '/planning/day'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/planning/week.vue': {
       routes:
         | '/planning/week'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/recipes/index.vue': {
@@ -187,11 +204,15 @@ declare module 'vue-router/auto-routes' {
         | '/recipes/'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/recipes/[id]/index.vue': {
       routes:
         | '/recipes/[id]/'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/recipes/[id]/update.vue': {
@@ -199,17 +220,23 @@ declare module 'vue-router/auto-routes' {
         | '/recipes/[id]/update'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/recipes/add.vue': {
       routes:
         | '/recipes/add'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/settings.vue': {
       routes:
         | '/settings'
       views:
+        | never
+      pathParamNames:
         | never
     }
   }
