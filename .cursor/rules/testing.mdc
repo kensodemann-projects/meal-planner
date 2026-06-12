@@ -1,0 +1,56 @@
+---
+description: Vitest and Vue Test Utils conventions for Meal Planner
+globs: **/*.spec.ts,**/__tests__/**,**/PLAN.md
+alwaysApply: false
+---
+
+# Testing
+
+Vitest with jsdom environment.
+
+## Vuetify in Tests
+
+```typescript
+const vuetify = createVuetify({ components, directives });
+mount(Component, { global: { plugins: [vuetify] } });
+```
+
+## Mocks
+
+- Manual mocks in `src/data/__mocks__/` and `src/core/__mocks__/`
+- Use `vi.mock('@/data/foods')` to swap real composables with mocks
+- Example: `src/data/__mocks__/foods.ts` exports mocked `useFoodsData` with `vi.fn()` methods
+- Mock Firebase/VueFire: `vi.mock('@/core/authentication')`
+- Use `vi.hoisted()` for mocks that must be hoisted before imports (e.g., mocking `firebase/ai` module-level calls)
+
+## Shared Test Utilities
+
+- Test data: `src/data/__tests__/test-data.ts` (`TEST_FOODS`, `TEST_MEAL_PLAN`, `TEST_MEAL_PLANS`, etc.)
+- Form validation helpers: `src/components/__tests__/test-utils.ts` (e.g., `textFieldIsRequired`, `numberInputIsRequired`)
+- Query elements via `data-testid`: `wrapper.findComponent('[data-testid="my-input"]')`
+
+## Test Planning Workflow
+
+When asked to create a test plan for TODO comments (e.g., "create a test plan for TODOs in @file"):
+
+1. Search for `TODO:` comments in the specified file(s)
+2. Analyze surrounding test structure (describe blocks, related cases, setup/teardown, mocks)
+3. Find reference patterns in the same file for similar functionality
+4. Examine source components for events, props, conditional rendering, data flow
+5. Determine implementation status (feature exists vs TDD)
+6. Create `PLAN.md` in the same directory as the test file — do not modify code
+
+### PLAN.md Structure
+
+For each TODO test case: test location, context (scenario, workflow, implementation status), setup steps, test actions, assertions, pattern references (similar tests by line number), and key implementation notes.
+
+Clearly mark each test as **TDD** (feature missing; failing is expected) or **Existing functionality** (should pass immediately).
+
+### Implementation Workflow
+
+1. Create PLAN.md only (no test implementation yet)
+2. User reviews and may edit PLAN.md
+3. Implement tests only when instructed — always read the current PLAN.md first
+
+For TDD tests: implement failing tests as written and note what code changes are needed to pass.
+For existing functionality: tests should pass; investigate failures as potential bugs.
