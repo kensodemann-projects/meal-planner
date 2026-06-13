@@ -4,9 +4,8 @@
     variant="outlined"
     role="button"
     tabindex="0"
-    @click="$emit('click')"
-    @keydown.enter.prevent="$emit('click')"
-    @keydown.space.prevent="$emit('click')"
+    @click="emit('click')"
+    @keydown="onKeydown"
   >
     <v-card-title>{{ intlFormat(date, { dateStyle: 'full' }) }}</v-card-title>
     <v-card-subtitle>Meals: {{ meals }}</v-card-subtitle>
@@ -46,7 +45,13 @@ const meals = computed(() =>
   props.mealPlan && props.mealPlan.meals.length > 0 ? buildMealSummary(props.mealPlan) : 'None',
 );
 
-defineEmits<{
+const emit = defineEmits<{
   (event: 'click'): void;
 }>();
+
+const onKeydown = (event: KeyboardEvent) => {
+  if (event.key !== 'Enter' && event.key !== ' ') return;
+  event.preventDefault();
+  emit('click');
+};
 </script>

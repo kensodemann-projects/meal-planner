@@ -4,9 +4,8 @@
     variant="outlined"
     role="button"
     tabindex="0"
-    @click="$emit('click')"
-    @keydown.enter.prevent="$emit('click')"
-    @keydown.space.prevent="$emit('click')"
+    @click="emit('click')"
+    @keydown="onKeydown"
   >
     <v-card-title>{{ title }}</v-card-title>
     <v-card-subtitle>{{ dateRange }}</v-card-subtitle>
@@ -31,9 +30,15 @@ const props = defineProps<{
   settings?: Settings | null;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
   (event: 'click'): void;
 }>();
+
+const onKeydown = (event: KeyboardEvent) => {
+  if (event.key !== 'Enter' && event.key !== ' ') return;
+  event.preventDefault();
+  emit('click');
+};
 
 const dateRange = computed(
   () => `${format(props.week.startDate, 'M/d/yyyy')} - ${format(props.week.endDate, 'M/d/yyyy')}`,
