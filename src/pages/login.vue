@@ -1,7 +1,7 @@
 <template>
   <div>
-    <LoginCard :loading="loading" @login="onLogin" @resetPassword="onResetPassword" />
-    <v-alert v-if="message" :type="messageType" class="error-message mt-4" @click="clearMessage">
+    <LoginCard class="login-card" :loading="loading" @login="onLogin" @resetPassword="onResetPassword" />
+    <v-alert v-if="message" :type="messageType" class="feedback-message mt-4" @click="clearMessage">
       {{ message }}
     </v-alert>
   </div>
@@ -52,65 +52,65 @@ const onLogin = async ({ email, password }: { email: string; password: string })
 
 <style scoped>
 @media (min-width: 0px) {
-  .auth-card {
+  .login-card {
     margin-top: 25%;
     margin-left: 5%;
     margin-right: 5%;
   }
 
-  .error-message {
+  .feedback-message {
     margin-left: 5%;
     margin-right: 5%;
   }
 }
 
 @media (min-width: 576px) {
-  .auth-card {
+  .login-card {
     margin-top: 20%;
     margin-left: 10%;
     margin-right: 10%;
   }
 
-  .error-message {
+  .feedback-message {
     margin-left: 10%;
     margin-right: 10%;
   }
 }
 
 @media (min-width: 768px) {
-  .auth-card {
+  .login-card {
     margin-top: 10%;
     margin-left: 20%;
     margin-right: 20%;
   }
 
-  .error-message {
+  .feedback-message {
     margin-left: 20%;
     margin-right: 20%;
   }
 }
 
 @media (min-width: 992px) {
-  .auth-card {
+  .login-card {
     margin-top: 10%;
     margin-left: 25%;
     margin-right: 25%;
   }
 
-  .error-message {
+  .feedback-message {
     margin-left: 25%;
     margin-right: 25%;
   }
 }
 
 @media (min-width: 1200px) {
-  .auth-card {
+  .login-card {
     margin-top: 10%;
     margin-left: 30%;
     margin-right: 30%;
   }
 
-  .error-message {
+  .feedback-message {
     margin-left: 30%;
     margin-right: 30%;
   }
