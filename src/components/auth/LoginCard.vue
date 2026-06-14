@@ -8,7 +8,7 @@
         Please enter your email address. If your email is associated with a valid active account, we will send an
         instructional email with a password reset link. Use that link to reset your password.
       </div>
-      <v-form ref="loginForm" v-model="valid">
+      <v-form v-model="valid">
         <v-text-field
           v-model="email"
           label="Email"
@@ -54,6 +54,7 @@ defineProps({ loading: Boolean });
 const emit = defineEmits(['login', 'resetPassword']);
 
 const login = async () => {
+  if (!valid.value) return;
   if (resetMode.value) {
     emit('resetPassword', {
       email: email.value,
@@ -63,7 +64,6 @@ const login = async () => {
       email: email.value,
       password: password.value,
     });
-    resetMode.value = false;
   }
 };
 
