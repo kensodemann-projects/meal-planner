@@ -57,6 +57,7 @@ export const useFoodsData = () => {
 - **Tests**: Co-located in `__tests__/`, named `*.spec.ts`
 - **Types**: Centralized in `src/models/`
 - **Comments**: Explain "why", not "what"
+- **Functions**: Prefer arrow functions unless a standard `function` is required or clearly advantageous (e.g., hoisting, `this` binding, generators). Use arrows for callbacks, composable methods, and Vue event handlers.
 
 ## Commands
 
