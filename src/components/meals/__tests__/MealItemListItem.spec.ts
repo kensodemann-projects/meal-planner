@@ -35,4 +35,34 @@ describe('Meal Item List Item', () => {
     wrapper = mountComponent({ mealItem: TEST_MEAL.items[0]! });
     expect(wrapper.text()).toContain(TEST_MEAL.items[0]!.name);
   });
+
+  describe('edit button', () => {
+    it('is visible', () => {
+      wrapper = mountComponent({ mealItem: TEST_MEAL.items[0]! });
+      expect(wrapper.findComponent('[data-testid="edit-button"]').exists()).toBe(true);
+    });
+
+    it('emits edit event on click', () => {
+      wrapper = mountComponent({ mealItem: TEST_MEAL.items[0]! });
+      wrapper.findComponent('[data-testid="edit-button"]').trigger('click');
+      expect(wrapper.emitted('modify')).toBeDefined();
+      const emittedItem = (wrapper.emitted('modify') as unknown[][])[0]![0] as MealItem;
+      expect(emittedItem).toEqual(TEST_MEAL.items[0]!);
+    });
+  });
+
+  describe('delete button', () => {
+    it('is visible', () => {
+      wrapper = mountComponent({ mealItem: TEST_MEAL.items[0]! });
+      expect(wrapper.findComponent('[data-testid="delete-button"]').exists()).toBe(true);
+    });
+
+    it('emits delete event on click', () => {
+      wrapper = mountComponent({ mealItem: TEST_MEAL.items[0]! });
+      wrapper.findComponent('[data-testid="delete-button"]').trigger('click');
+      expect(wrapper.emitted('delete')).toBeDefined();
+      const emittedItem = (wrapper.emitted('delete') as unknown[][])[0]![0] as MealItem;
+      expect(emittedItem).toEqual(TEST_MEAL.items[0]!);
+    });
+  });
 });
