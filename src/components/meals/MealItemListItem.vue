@@ -1,6 +1,14 @@
 <template>
   <div class="d-flex flex-row align-center ga-1 w-100 pl-6">
-    <div class="flex-grow-1">{{ mealItem.name }}</div>
+    <div class="flex-grow-1">
+      {{ mealItem.name }}
+    </div>
+    <div data-testid="nutrition-data">
+      <v-icon icon="mdi-format-list-bulleted" />
+      <v-tooltip activator="parent" location="bottom" width="350">
+        <NutritionData :value="mealItem.nutrition" />
+      </v-tooltip>
+    </div>
     <v-btn
       density="compact"
       variant="text"
