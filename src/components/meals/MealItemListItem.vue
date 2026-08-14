@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex flex-row align-center ga-1 w-100 pl-6">
-    <div class="flex-grow-1">
+    <div class="flex-grow-1 text-truncate">
       {{ mealItem.name }}
     </div>
     <div data-testid="nutrition-data">
