@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-row align-center ga-1 w-100 pl-6">
+  <div class="d-flex flex-row align-center ga-1 w-100">
     <div class="flex-grow-1 text-truncate">
       {{ mealItem.name }}
     </div>
@@ -14,7 +14,7 @@
       variant="text"
       color="primary"
       icon="mdi-pencil"
-      data-testid="edit-button"
+      data-testid="modify-button"
       @click="$emit('modify', mealItem)"
     ></v-btn>
     <v-btn
@@ -37,5 +37,3 @@ defineEmits<{
 }>();
 defineProps<{ mealItem: MealItem }>();
 </script>
-
-<style scoped></style>

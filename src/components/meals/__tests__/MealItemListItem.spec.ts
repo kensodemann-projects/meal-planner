@@ -60,15 +60,15 @@ describe('Meal Item List Item', () => {
     });
   });
 
-  describe('edit button', () => {
+  describe('modify button', () => {
     it('is visible', () => {
       wrapper = mountComponent({ mealItem: TEST_MEAL.items[0]! });
-      expect(wrapper.findComponent('[data-testid="edit-button"]').exists()).toBe(true);
+      expect(wrapper.findComponent('[data-testid="modify-button"]').exists()).toBe(true);
     });
 
-    it('emits edit event on click', () => {
+    it('emits modify event on click', () => {
       wrapper = mountComponent({ mealItem: TEST_MEAL.items[0]! });
-      wrapper.findComponent('[data-testid="edit-button"]').trigger('click');
+      wrapper.findComponent('[data-testid="modify-button"]').trigger('click');
       expect(wrapper.emitted('modify')).toBeDefined();
       const emittedItem = (wrapper.emitted('modify') as unknown[][])[0]![0] as MealItem;
       expect(emittedItem).toEqual(TEST_MEAL.items[0]!);
