@@ -6,7 +6,7 @@
     <div data-testid="nutrition-data">
       <v-icon icon="mdi-format-list-bulleted" />
       <v-tooltip activator="parent" location="bottom" width="350">
-        <NutritionData :value="mealItem.nutrition" />
+        <NutritionData :value="mealItem.nutrition" :settings="settings" />
       </v-tooltip>
     </div>
     <v-btn
@@ -30,10 +30,11 @@
 
 <script setup lang="ts">
 import type { MealItem } from '@/models/meal';
+import type { Settings } from '@/models/settings';
 
 defineEmits<{
   (event: 'modify', value: MealItem): void;
   (event: 'delete', value: MealItem): void;
 }>();
-defineProps<{ mealItem: MealItem }>();
+defineProps<{ mealItem: MealItem; settings?: Settings | null }>();
 </script>

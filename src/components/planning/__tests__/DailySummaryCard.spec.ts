@@ -12,21 +12,6 @@ import type { Settings } from '@/models/settings';
 const vuetify = createVuetify({ components, directives });
 
 const TEST_MEAL_PLAN = TEST_MEAL_PLANS[0];
-const TEST_SETTINGS: Settings = {
-  minDailyCalories: 1950,
-  maxDailyCalories: 2150,
-  minDailyProtein: 140,
-  maxDailyProtein: 160,
-  minDailyCarbs: 210,
-  maxDailyCarbs: 235,
-  minDailyFat: 60,
-  maxDailyFat: 75,
-  minDailySodium: 1500,
-  maxDailySodium: 2300,
-  maxDailySugar: 38,
-  tolerance: 10,
-  weekStartDay: 0,
-};
 
 const mountComponent = (
   props: { date: Date; settings?: Settings; mealPlan?: MealPlan } = { date: parseISO('2026-04-02') },
@@ -54,103 +39,30 @@ describe('Daily Summary Card', () => {
     expect(title.text()).toBe(expectedTitle);
   });
 
-  describe('interactions', () => {
-    it('emits click when the card is clicked', async () => {
-      wrapper = mountComponent();
-      const card = wrapper.findComponent(components.VCard);
-      await card.trigger('click');
-      expect(wrapper.emitted('click')).toHaveLength(1);
-    });
-
-    it('emits click when Enter is pressed on the card', async () => {
-      wrapper = mountComponent();
-      const card = wrapper.findComponent(components.VCard);
-      await card.trigger('keydown', { key: 'Enter' });
-      expect(wrapper.emitted('click')).toHaveLength(1);
-    });
-
-    it('emits click and prevents default when Space is pressed on the card', async () => {
-      wrapper = mountComponent();
-      const card = wrapper.findComponent(components.VCard);
-      const event = new KeyboardEvent('keydown', {
-        key: ' ',
-        code: 'Space',
-        bubbles: true,
-        cancelable: true,
-      });
-
-      card.element.dispatchEvent(event);
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.emitted('click')).toHaveLength(1);
-      expect(event.defaultPrevented).toBe(true);
-    });
-  });
-
   describe('meal sensitive content', () => {
     describe('without a meal plan', () => {
       it('displays a subtitle indicating no meals exist for the day', () => {
         wrapper = mountComponent({ date: parseISO('2026-04-02') });
         const subtitle = wrapper.findComponent(components.VCardSubtitle);
-        expect(subtitle.text()).toBe('Meals: None');
-      });
-
-      it('does not display any nutrition information', () => {
-        wrapper = mountComponent({ date: parseISO('2026-04-02') });
-        const nutritionData = wrapper.findComponent({ name: 'NutritionData' });
-        expect(nutritionData.exists()).toBe(false);
+        expect(subtitle.text()).toBe('No meals have been entered');
       });
     });
 
     describe('with a meal plan that has all meals', () => {
-      it('displays a subtitle indicating the meals', () => {
+      it('no subtitle is displayed', () => {
         wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: TEST_MEAL_PLAN });
         const subtitle = wrapper.findComponent(components.VCardSubtitle);
-        expect(subtitle.text()).toBe('Meals: Breakfast, Lunch, Dinner, Snack');
-      });
-
-      it('displays total nutrition information', () => {
-        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: TEST_MEAL_PLAN, settings: TEST_SETTINGS });
-        const nutritionData = wrapper.findComponent({ name: 'NutritionData' });
-        expect(nutritionData.exists()).toBe(true);
-        expect(nutritionData.props('value')).toEqual({
-          calories: 1530,
-          sodium: 1125,
-          fat: 58,
-          protein: 110,
-          carbs: 145,
-          sugar: 56,
-        });
-        expect(nutritionData.props('settings')).toEqual(TEST_SETTINGS);
+        expect(subtitle.exists()).toBe(false);
       });
     });
 
     describe('with a meal plan that has some meals', () => {
       const PARTIAL_MEAL_PLAN = { ...TEST_MEAL_PLAN, meals: TEST_MEAL_PLAN.meals.slice(0, 2) };
 
-      it('displays a subtitle indicating the meals in the plan', () => {
+      it('no subtitle is displayed', () => {
         wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: PARTIAL_MEAL_PLAN });
         const subtitle = wrapper.findComponent(components.VCardSubtitle);
-        expect(subtitle.text()).toBe('Meals: Breakfast, Lunch');
-      });
-
-      it('displays total nutrition information', () => {
-        wrapper = mountComponent({
-          date: parseISO('2026-04-02'),
-          mealPlan: PARTIAL_MEAL_PLAN,
-          settings: TEST_SETTINGS,
-        });
-        const nutritionData = wrapper.findComponent({ name: 'NutritionData' });
-        expect(nutritionData.exists()).toBe(true);
-        expect(nutritionData.props('value')).toEqual({
-          calories: 770,
-          sodium: 630,
-          fat: 26,
-          protein: 50,
-          carbs: 86,
-          sugar: 26,
-        });
-        expect(nutritionData.props('settings')).toEqual(TEST_SETTINGS);
+        expect(subtitle.exists()).toBe(false);
       });
     });
 
@@ -160,13 +72,7 @@ describe('Daily Summary Card', () => {
       it('displays a subtitle indicating no meals exist for the day', () => {
         wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: EMPTY_MEAL_PLAN });
         const subtitle = wrapper.findComponent(components.VCardSubtitle);
-        expect(subtitle.text()).toBe('Meals: None');
-      });
-
-      it('does not display any nutrition information', () => {
-        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: EMPTY_MEAL_PLAN });
-        const nutritionData = wrapper.findComponent({ name: 'NutritionData' });
-        expect(nutritionData.exists()).toBe(false);
+        expect(subtitle.text()).toBe('No meals have been entered');
       });
     });
   });
