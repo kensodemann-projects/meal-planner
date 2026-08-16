@@ -1,5 +1,6 @@
 import { dailyMealPlanNutrients } from '@/core/nutritional-calculations';
 import { TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
+import type { MealItem } from '@/models/meal';
 import type { MealPlan } from '@/models/meal-plan';
 import type { Settings } from '@/models/settings';
 import { flushPromises, mount } from '@vue/test-utils';
@@ -138,6 +139,36 @@ describe('Daily Summary Card', () => {
         await flushPromises();
         expect(document.querySelector('.v-overlay--active')).toBeNull();
       });
+    });
+  });
+
+  describe('modify event', () => {
+    it('emits the associated meal item when a meal item is modified', async () => {
+      wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: TEST_MEAL_PLAN });
+      const mealItems = TEST_MEAL_PLAN.meals.flatMap((meal) => meal.items);
+      const buttons = wrapper.findAllComponents('[data-testid="modify-button"]');
+      expect(buttons).toHaveLength(mealItems.length);
+
+      for (const [index, button] of buttons.entries()) {
+        await button.trigger('click');
+        const emittedItem = (wrapper.emitted('modify') as unknown[][])[index]![0] as MealItem;
+        expect(emittedItem).toEqual(mealItems[index]);
+      }
+    });
+  });
+
+  describe('delete event', () => {
+    it('emits the associated meal item when a meal item is deleted', async () => {
+      wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: TEST_MEAL_PLAN });
+      const mealItems = TEST_MEAL_PLAN.meals.flatMap((meal) => meal.items);
+      const buttons = wrapper.findAllComponents('[data-testid="delete-button"]');
+      expect(buttons).toHaveLength(mealItems.length);
+
+      for (const [index, button] of buttons.entries()) {
+        await button.trigger('click');
+        const emittedItem = (wrapper.emitted('delete') as unknown[][])[index]![0] as MealItem;
+        expect(emittedItem).toEqual(mealItems[index]);
+      }
     });
   });
 });

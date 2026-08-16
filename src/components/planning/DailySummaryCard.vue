@@ -16,6 +16,8 @@
           :key="mealItem.id"
           :mealItem="mealItem"
           :settings="settings"
+          @modify="$emit('modify', $event)"
+          @delete="$emit('delete', $event)"
         />
       </template>
     </v-card-text>
