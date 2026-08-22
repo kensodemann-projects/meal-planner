@@ -15,6 +15,21 @@ import DailySummaryCard from '../DailySummaryCard.vue';
 const vuetify = createVuetify({ components, directives });
 
 const TEST_MEAL_PLAN = TEST_MEAL_PLANS[0];
+const TEST_SETTINGS: Settings = {
+  minDailyCalories: 1950,
+  maxDailyCalories: 2150,
+  minDailyProtein: 140,
+  maxDailyProtein: 160,
+  minDailyCarbs: 210,
+  maxDailyCarbs: 235,
+  minDailyFat: 60,
+  maxDailyFat: 75,
+  minDailySodium: 1500,
+  maxDailySodium: 2300,
+  maxDailySugar: 38,
+  tolerance: 10,
+  weekStartDay: 0,
+};
 
 const mountComponent = (
   props: { date: Date; settings?: Settings; mealPlan?: MealPlan } = { date: parseISO('2026-04-02') },
@@ -98,6 +113,18 @@ describe('Daily Summary Card', () => {
         await title.trigger('mouseenter');
         await flushPromises();
         expect(document.querySelector('.v-overlay--active')).not.toBeNull();
+      });
+
+      it('passes settings to the nutrition tooltip', () => {
+        wrapper = mountComponent({
+          date: parseISO('2026-04-02'),
+          mealPlan: TEST_MEAL_PLAN,
+          settings: TEST_SETTINGS,
+        });
+        const title = wrapper.findComponent(components.VCardTitle);
+        const nutritionData = title.findComponent({ name: 'NutritionData' });
+        expect(nutritionData.exists()).toBe(true);
+        expect(nutritionData.props('settings')).toEqual(TEST_SETTINGS);
       });
 
       it('renders a heading for each meal type', () => {
