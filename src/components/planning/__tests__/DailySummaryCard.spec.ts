@@ -9,6 +9,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
+import MealItemListItem from '../../meals/MealItemListItem.vue';
 import DailySummaryCard from '../DailySummaryCard.vue';
 
 const vuetify = createVuetify({ components, directives });
@@ -62,6 +63,16 @@ describe('Daily Summary Card', () => {
         await flushPromises();
         expect(document.querySelector('.v-overlay--active')).toBeNull();
       });
+
+      it('does not render any meal-type headings', () => {
+        wrapper = mountComponent({ date: parseISO('2026-04-02') });
+        expect(wrapper.findAll('.text-title-medium')).toHaveLength(0);
+      });
+
+      it('does not render any MealItemListItem components', () => {
+        wrapper = mountComponent({ date: parseISO('2026-04-02') });
+        expect(wrapper.findAllComponents(MealItemListItem)).toHaveLength(0);
+      });
     });
 
     describe('with a meal plan that has all meals', () => {
@@ -87,6 +98,31 @@ describe('Daily Summary Card', () => {
         await title.trigger('mouseenter');
         await flushPromises();
         expect(document.querySelector('.v-overlay--active')).not.toBeNull();
+      });
+
+      it('renders a heading for each meal type', () => {
+        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: TEST_MEAL_PLAN });
+        const headings = wrapper.findAll('.text-title-medium');
+        expect(headings.map((heading) => heading.text())).toEqual(['Breakfast', 'Lunch', 'Dinner', 'Snack']);
+      });
+
+      it('renders a MealItemListItem for every meal item', () => {
+        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: TEST_MEAL_PLAN });
+        const mealItems = TEST_MEAL_PLAN.meals.flatMap((meal) => meal.items);
+        const listItems = wrapper.findAllComponents(MealItemListItem);
+        expect(listItems).toHaveLength(mealItems.length);
+        listItems.forEach((listItem, index) => {
+          expect(listItem.props('mealItem')).toEqual(mealItems[index]);
+        });
+      });
+
+      it('displays the correct name for each meal item', () => {
+        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: TEST_MEAL_PLAN });
+        const mealItems = TEST_MEAL_PLAN.meals.flatMap((meal) => meal.items);
+        const listItems = wrapper.findAllComponents(MealItemListItem);
+        listItems.forEach((listItem, index) => {
+          expect(listItem.text()).toContain(mealItems[index]!.name);
+        });
       });
     });
 
@@ -116,6 +152,38 @@ describe('Daily Summary Card', () => {
         await flushPromises();
         expect(document.querySelector('.v-overlay--active')).not.toBeNull();
       });
+
+      it('renders headings only for meal types that exist in the plan', () => {
+        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: PARTIAL_MEAL_PLAN });
+        const headings = wrapper.findAll('.text-title-medium');
+        expect(headings.map((heading) => heading.text())).toEqual(['Breakfast', 'Lunch']);
+      });
+
+      it('does not render headings for missing meal types', () => {
+        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: PARTIAL_MEAL_PLAN });
+        const headingTexts = wrapper.findAll('.text-title-medium').map((heading) => heading.text());
+        expect(headingTexts).not.toContain('Dinner');
+        expect(headingTexts).not.toContain('Snack');
+      });
+
+      it('renders a MealItemListItem only for items in the included meals', () => {
+        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: PARTIAL_MEAL_PLAN });
+        const mealItems = PARTIAL_MEAL_PLAN.meals.flatMap((meal) => meal.items);
+        const listItems = wrapper.findAllComponents(MealItemListItem);
+        expect(listItems).toHaveLength(mealItems.length);
+        listItems.forEach((listItem, index) => {
+          expect(listItem.props('mealItem')).toEqual(mealItems[index]);
+        });
+      });
+
+      it('displays the correct name for each rendered meal item', () => {
+        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: PARTIAL_MEAL_PLAN });
+        const mealItems = PARTIAL_MEAL_PLAN.meals.flatMap((meal) => meal.items);
+        const listItems = wrapper.findAllComponents(MealItemListItem);
+        listItems.forEach((listItem, index) => {
+          expect(listItem.text()).toContain(mealItems[index]!.name);
+        });
+      });
     });
 
     describe('with a meal plan without meals', () => {
@@ -138,6 +206,16 @@ describe('Daily Summary Card', () => {
         await title.trigger('mouseenter');
         await flushPromises();
         expect(document.querySelector('.v-overlay--active')).toBeNull();
+      });
+
+      it('does not render any meal-type headings', () => {
+        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: EMPTY_MEAL_PLAN });
+        expect(wrapper.findAll('.text-title-medium')).toHaveLength(0);
+      });
+
+      it('does not render any MealItemListItem components', () => {
+        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: EMPTY_MEAL_PLAN });
+        expect(wrapper.findAllComponents(MealItemListItem)).toHaveLength(0);
       });
     });
   });
