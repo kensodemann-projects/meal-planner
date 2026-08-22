@@ -159,13 +159,6 @@ describe('Daily Summary Card', () => {
         expect(headings.map((heading) => heading.text())).toEqual(['Breakfast', 'Lunch']);
       });
 
-      it('does not render headings for missing meal types', () => {
-        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: PARTIAL_MEAL_PLAN });
-        const headingTexts = wrapper.findAll('.text-title-medium').map((heading) => heading.text());
-        expect(headingTexts).not.toContain('Dinner');
-        expect(headingTexts).not.toContain('Snack');
-      });
-
       it('renders a MealItemListItem only for items in the included meals', () => {
         wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: PARTIAL_MEAL_PLAN });
         const mealItems = PARTIAL_MEAL_PLAN.meals.flatMap((meal) => meal.items);
