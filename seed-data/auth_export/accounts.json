@@ -9,7 +9,7 @@
       "photoUrl": "",
       "passwordHash": "fakeHash:salt=fakeSaltN2tUH9O3sNQ84tGTHAHb:password=tester",
       "salt": "fakeSaltN2tUH9O3sNQ84tGTHAHb",
-      "passwordUpdatedAt": 1775900344764,
+      "passwordUpdatedAt": 1787425193983,
       "providerUserInfo": [
         {
           "providerId": "password",
@@ -20,11 +20,11 @@
           "photoUrl": ""
         }
       ],
-      "validSince": "1775900344",
+      "validSince": "1787425193",
       "email": "ken.sodemann@gmail.com",
       "emailVerified": false,
       "disabled": false,
-      "lastRefreshAt": "2026-04-13T08:48:36.982Z"
+      "lastRefreshAt": "2026-08-22T19:00:18.057Z"
     }
   ]
 }
