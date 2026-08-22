@@ -1,5 +1,5 @@
 <template>
-  <v-card data-testid="daily-summary-card" variant="outlined" role="button" tabindex="0">
+  <v-card data-testid="daily-summary-card" variant="outlined">
     <v-card-title
       >{{ intlFormat(date, { dateStyle: 'full' }) }}
       <v-tooltip v-if="nutrition" activator="parent" location="bottom" width="350">
@@ -9,16 +9,17 @@
     <v-card-subtitle v-if="!mealPlan || mealPlan.meals.length === 0">No meals have been entered</v-card-subtitle>
     <v-card-text>
       <template v-for="meal in mealPlan?.meals" :key="meal.id">
-        <div class="text-title-medium">{{ meal.type }}</div>
-        <MealItemListItem
-          class="ml-4"
-          v-for="mealItem in meal.items"
-          :key="mealItem.id"
-          :mealItem="mealItem"
-          :settings="settings"
-          @modify="$emit('modify', $event)"
-          @delete="$emit('delete', $event)"
-        />
+        <template v-if="meal.items.length > 0">
+          <div class="text-title-medium">{{ meal.type }}</div>
+          <MealItemListItem
+            class="ml-4"
+            v-for="mealItem in meal.items"
+            :key="mealItem.id"
+            :mealItem="mealItem"
+            @modify="$emit('modify', $event)"
+            @delete="$emit('delete', $event)"
+          />
+        </template>
       </template>
     </v-card-text>
   </v-card>

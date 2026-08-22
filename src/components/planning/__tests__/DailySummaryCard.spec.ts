@@ -179,6 +179,21 @@ describe('Daily Summary Card', () => {
       });
     });
 
+    describe('with a meal plan that includes empty meals', () => {
+      const MEAL_PLAN_WITH_EMPTY_MEALS = {
+        ...TEST_MEAL_PLAN,
+        meals: TEST_MEAL_PLAN.meals.map((meal) =>
+          meal.type === 'Lunch' || meal.type === 'Snack' ? { ...meal, items: [] } : meal,
+        ),
+      };
+
+      it('does not render headings for meals that have no items', () => {
+        wrapper = mountComponent({ date: parseISO('2026-04-02'), mealPlan: MEAL_PLAN_WITH_EMPTY_MEALS });
+        const headings = wrapper.findAll('.text-title-medium');
+        expect(headings.map((heading) => heading.text())).toEqual(['Breakfast', 'Dinner']);
+      });
+    });
+
     describe('with a meal plan without meals', () => {
       const EMPTY_MEAL_PLAN = { ...TEST_MEAL_PLAN, meals: [] };
 
