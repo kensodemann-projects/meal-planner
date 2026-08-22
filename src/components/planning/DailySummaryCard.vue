@@ -1,22 +1,33 @@
 <template>
-  <v-card
-    data-testid="daily-summary-card"
-    variant="outlined"
-    role="button"
-    tabindex="0"
-    @click="emit('click')"
-    @keydown="onKeydown"
-  >
-    <v-card-title>{{ intlFormat(date, { dateStyle: 'full' }) }}</v-card-title>
-    <v-card-subtitle>Meals: {{ meals }}</v-card-subtitle>
+  <v-card data-testid="daily-summary-card" variant="outlined">
+    <v-card-title
+      >{{ intlFormat(date, { dateStyle: 'full' }) }}
+      <v-tooltip v-if="nutrition" activator="parent" location="bottom" width="350">
+        <NutritionData :value="nutrition" :settings="settings" />
+      </v-tooltip>
+    </v-card-title>
+    <v-card-subtitle v-if="!mealPlan || mealPlan.meals.length === 0">No meals have been entered</v-card-subtitle>
     <v-card-text>
-      <NutritionData v-if="nutrition" :value="nutrition" :settings="settings" />
+      <template v-for="meal in mealPlan?.meals" :key="meal.id">
+        <template v-if="meal.items.length > 0">
+          <div class="text-title-medium">{{ meal.type }}</div>
+          <MealItemListItem
+            class="ml-4"
+            v-for="mealItem in meal.items"
+            :key="mealItem.id"
+            :mealItem="mealItem"
+            @modify="$emit('modify', $event)"
+            @delete="$emit('delete', $event)"
+          />
+        </template>
+      </template>
     </v-card-text>
   </v-card>
 </template>
 
 <script setup lang="ts">
 import { dailyMealPlanNutrients } from '@/core/nutritional-calculations';
+import type { MealItem } from '@/models/meal';
 import type { MealPlan } from '@/models/meal-plan';
 import type { Nutrition } from '@/models/nutrition';
 import type { Settings } from '@/models/settings';
@@ -29,29 +40,12 @@ const props = defineProps<{
   settings?: Settings | null;
 }>();
 
-const buildMealSummary = (mealPlan: MealPlan): string => {
-  let summary = '';
-  if (mealPlan.meals.find((m) => m.type === 'Breakfast')) summary += 'Breakfast';
-  if (mealPlan.meals.find((m) => m.type === 'Lunch')) summary += `${summary ? ', ' : ''}Lunch`;
-  if (mealPlan.meals.find((m) => m.type === 'Dinner')) summary += `${summary ? ', ' : ''}Dinner`;
-  if (mealPlan.meals.find((m) => m.type === 'Snack')) summary += `${summary ? ', ' : ''}Snack`;
-  return summary;
-};
-
 const nutrition = computed<Nutrition | undefined>(() =>
   props.mealPlan && props.mealPlan.meals.length > 0 ? dailyMealPlanNutrients(props.mealPlan) : undefined,
 );
-const meals = computed(() =>
-  props.mealPlan && props.mealPlan.meals.length > 0 ? buildMealSummary(props.mealPlan) : 'None',
-);
 
-const emit = defineEmits<{
-  (event: 'click'): void;
+defineEmits<{
+  (event: 'modify', value: MealItem): void;
+  (event: 'delete', value: MealItem): void;
 }>();
-
-const onKeydown = (event: KeyboardEvent) => {
-  if (event.key !== 'Enter' && event.key !== ' ') return;
-  event.preventDefault();
-  emit('click');
-};
 </script>

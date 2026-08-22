@@ -6,12 +6,7 @@
     </div>
     <template v-else>
       <div v-for="row in weekRows" :key="row.iso" class="day-plan mb-4">
-        <DailySummaryCard
-          :date="row.day"
-          :mealPlan="row.plan"
-          :settings="settings"
-          @click="router.push({ path: '/planning/day', query: { dt: row.iso } })"
-        />
+        <DailySummaryCard :date="row.day" :mealPlan="row.plan" :settings="settings" />
       </div>
     </template>
     <v-container fluid>
