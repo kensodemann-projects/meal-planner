@@ -9,7 +9,7 @@
                 label="Select Date"
                 v-model="mealDate"
                 v-model:search="mealDateSearch"
-                :items="recipes"
+                :items="weekDates"
                 item-title="dateString"
                 item-value="date"
                 :rules="[validationRules.required]"
@@ -60,7 +60,8 @@ import { validationRules } from '@/core/validation-rules';
 import { useRecipesData } from '@/data/recipes';
 import type { MealItem } from '@/models/meal';
 import type { Nutrition } from '@/models/nutrition';
-import { ref, shallowRef, watch } from 'vue';
+import { computed, ref, shallowRef, watch } from 'vue';
+import { addDays, format } from 'date-fns';
 
 const { mealItem, weekStartDate } = defineProps<{
   mealItem?: MealItem;
@@ -76,6 +77,17 @@ const recipeId = shallowRef<string | undefined>(mealItem?.recipeId);
 const servings = shallowRef<number>(mealItem?.servings || 1);
 const recipeSearch = shallowRef<string>('');
 const { recipes } = useRecipesData();
+
+const weekDates = computed(() => {
+  const [year, month, day] = weekStartDate.split('-').map(Number);
+  return Array.from({ length: 7 }, (_, i) => {
+    const date = addDays(new Date(year, month - 1, day), i);
+    return {
+      dateString: format(date, 'EEEE, MMMM d'),
+      date: format(date, 'yyyy-MM-dd'),
+    };
+  });
+});
 
 defineEmits<{
   (event: 'cancel'): void;
