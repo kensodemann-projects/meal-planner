@@ -2,16 +2,11 @@
   <div>
     <h1>Test the Editor</h1>
   </div>
-  <MealItemEditorCard :mealItem="mealItem" :items="recipes" />
+  <MealItemEditor week-start-date="2026-08-26" />
 </template>
 
 <script setup lang="ts">
-import type { MealItem } from '@/models/meal';
-import { useRecipesData } from '@/data/recipes';
-import { ref } from 'vue';
-
-const mealItem = ref<Partial<MealItem>>({});
-const { recipes } = useRecipesData();
+//
 </script>
 
 <style scoped></style>
