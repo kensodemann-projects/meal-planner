@@ -77,6 +77,12 @@ describe('MealItemEditor', () => {
         { dateString: 'Saturday, September 5', date: '2026-09-05' },
       ]);
     });
+
+    it('has the proper label', () => {
+      wrapper = mountComponent();
+      const dateInput = wrapper.findComponent('[data-testid="date-input"]') as VueWrapper<components.VAutocomplete>;
+      expect(dateInput.props('label')).toBe('Select Date');
+    });
   });
 
   describe('recipe select', () => {
