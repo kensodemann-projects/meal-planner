@@ -49,7 +49,7 @@
       </v-card-text>
       <v-card-actions>
         <CancelButton @click="$emit('cancel')" />
-        <SaveButton :disabled="!(isModified && valid)" @click="$emit('save')" />
+        <SaveButton :disabled="!(isModified && valid)" @click="$emit('cancel')" />
       </v-card-actions>
     </v-card>
   </v-form>
@@ -58,13 +58,21 @@
 <script setup lang="ts">
 import { validationRules } from '@/core/validation-rules';
 import { useRecipesData } from '@/data/recipes';
-import type { MealItem } from '@/models/meal';
+import type { MealItem, MealType } from '@/models/meal';
 import type { Nutrition } from '@/models/nutrition';
 import { computed, ref, shallowRef, watch } from 'vue';
 import { addDays, format } from 'date-fns';
 
+export interface PlannedMealItem {
+  mealItem: MealItem;
+  mealDate: string;
+  mealType: MealType;
+}
+
 const { mealItem, weekStartDate } = defineProps<{
   mealItem?: MealItem;
+  mealType?: MealType;
+  mealDate?: string;
   weekStartDate: string;
 }>();
 
@@ -91,7 +99,7 @@ const weekDates = computed(() => {
 
 defineEmits<{
   (event: 'cancel'): void;
-  (event: 'save'): void;
+  (event: 'save', payload: PlannedMealItem): void;
 }>();
 
 const selectFirstMatchingRecipe = () => {

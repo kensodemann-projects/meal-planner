@@ -1,7 +1,7 @@
 import { autocompleteIsRequired } from '@/components/__tests__/test-utils.ts';
 import { TEST_RECIPES } from '@/data/__tests__/test-data.ts';
 import { useRecipesData } from '@/data/recipes';
-import type { MealItem } from '@/models/meal';
+import type { MealItem, MealType } from '@/models/meal';
 import type { Recipe } from '@/models/recipe.ts';
 import { mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -33,8 +33,11 @@ const TEST_MEAL_ITEM: MealItem = {
   },
 };
 
-const mountComponent = (props: { mealItem?: MealItem; weekStartDate: string } = { weekStartDate: '2026-01-01' }) =>
-  mount(MealItemEditor, { props, global: { plugins: [vuetify] } });
+const mountComponent = (
+  props: { mealItem?: MealItem; mealType?: MealType; mealDate?: string; weekStartDate: string } = {
+    weekStartDate: '2026-01-01',
+  },
+) => mount(MealItemEditor, { props, global: { plugins: [vuetify] } });
 
 describe('MealItemEditor', () => {
   let wrapper: ReturnType<typeof mountComponent>;
@@ -82,6 +85,12 @@ describe('MealItemEditor', () => {
       wrapper = mountComponent();
       const dateInput = wrapper.findComponent('[data-testid="date-input"]') as VueWrapper<components.VAutocomplete>;
       expect(dateInput.props('label')).toBe('Select Date');
+    });
+
+    it('defaults to the week start date', () => {
+      wrapper = mountComponent({ weekStartDate: '2026-08-30' });
+      const dateInput = wrapper.findComponent('[data-testid="date-input"]') as VueWrapper<components.VAutocomplete>;
+      expect(dateInput.props('modelValue')).toBe('2026-08-30');
     });
   });
 
