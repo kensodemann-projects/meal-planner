@@ -69,7 +69,7 @@ export interface PlannedMealItem {
   mealType: MealType;
 }
 
-const { mealItem, weekStartDate } = defineProps<{
+const props = defineProps<{
   mealItem?: MealItem;
   mealType?: MealType;
   mealDate?: string;
@@ -78,16 +78,16 @@ const { mealItem, weekStartDate } = defineProps<{
 
 const valid = shallowRef(false);
 const isModified = shallowRef(false);
-const mealDate = shallowRef<string>(weekStartDate);
+const mealDate = shallowRef<string>(props.mealDate || props.weekStartDate);
 const mealDateSearch = shallowRef<string>('');
-const nutrition = ref<Nutrition | undefined>(mealItem?.nutrition);
-const recipeId = shallowRef<string | undefined>(mealItem?.recipeId);
-const servings = shallowRef<number>(mealItem?.servings || 1);
+const nutrition = ref<Nutrition | undefined>(props.mealItem?.nutrition);
+const recipeId = shallowRef<string | undefined>(props.mealItem?.recipeId);
+const servings = shallowRef<number>(props.mealItem?.servings || 1);
 const recipeSearch = shallowRef<string>('');
 const { recipes } = useRecipesData();
 
 const weekDates = computed(() => {
-  const [year, month, day] = weekStartDate.split('-').map(Number);
+  const [year, month, day] = props.weekStartDate.split('-').map(Number);
   return Array.from({ length: 7 }, (_, i) => {
     const date = addDays(new Date(year, month - 1, day), i);
     return {
@@ -113,10 +113,10 @@ const selectFirstMatchingRecipe = () => {
 
 const selectFirstMatchingDate = () => {
   if (!mealDateSearch.value) {
-    mealDate.value = weekStartDate;
+    mealDate.value = props.weekStartDate;
     return;
   }
-  return weekStartDate;
+  return props.weekStartDate;
 };
 
 watch(recipeId, () => {

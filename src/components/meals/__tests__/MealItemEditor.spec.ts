@@ -92,6 +92,12 @@ describe('MealItemEditor', () => {
       const dateInput = wrapper.findComponent('[data-testid="date-input"]') as VueWrapper<components.VAutocomplete>;
       expect(dateInput.props('modelValue')).toBe('2026-08-30');
     });
+
+    it('selects the passed meal date', () => {
+      wrapper = mountComponent({ weekStartDate: '2026-08-30', mealDate: '2026-09-02' });
+      const dateInput = wrapper.findComponent('[data-testid="date-input"]') as VueWrapper<components.VAutocomplete>;
+      expect(dateInput.props('modelValue')).toBe('2026-09-02');
+    });
   });
 
   describe('recipe select', () => {
