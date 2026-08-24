@@ -98,6 +98,45 @@ describe('MealItemEditor', () => {
       const dateInput = wrapper.findComponent('[data-testid="date-input"]') as VueWrapper<components.VAutocomplete>;
       expect(dateInput.props('modelValue')).toBe('2026-09-02');
     });
+
+    describe('tab key behavior', () => {
+      it('selects the first matching date when the search text matches', async () => {
+        wrapper = mountComponent({ weekStartDate: '2026-08-30' });
+        const dateInput = wrapper.findComponent('[data-testid="date-input"]') as VueWrapper<components.VAutocomplete>;
+        const input = dateInput.find('input');
+        await input.setValue('wednesday');
+        await input.trigger('keydown.tab');
+        // 'wednesday' only matches 'Wednesday, September 2'
+        expect(dateInput.props('modelValue')).toBe('2026-09-02');
+      });
+
+      it('selects the first matching date when the search text matches multiple items', async () => {
+        wrapper = mountComponent({ weekStartDate: '2026-08-30' });
+        const dateInput = wrapper.findComponent('[data-testid="date-input"]') as VueWrapper<components.VAutocomplete>;
+        const input = dateInput.find('input');
+        await input.setValue('september');
+        await input.trigger('keydown.tab');
+        // 'September 1' through 'September 5' match; first is 2026-09-01
+        expect(dateInput.props('modelValue')).toBe('2026-09-01');
+      });
+
+      it('does not select any date when the search text is empty', async () => {
+        wrapper = mountComponent({ weekStartDate: '2026-08-30' });
+        const dateInput = wrapper.findComponent('[data-testid="date-input"]') as VueWrapper<components.VAutocomplete>;
+        const input = dateInput.find('input');
+        await input.trigger('keydown.tab');
+        expect(dateInput.props('modelValue')).toBe('');
+      });
+
+      it('does not select any date when the search text does not match any date', async () => {
+        wrapper = mountComponent({ weekStartDate: '2026-08-30' });
+        const dateInput = wrapper.findComponent('[data-testid="date-input"]') as VueWrapper<components.VAutocomplete>;
+        const input = dateInput.find('input');
+        await input.setValue('zzz');
+        await input.trigger('keydown.tab');
+        expect(dateInput.props('modelValue')).toBe('');
+      });
+    });
   });
 
   describe('recipe select', () => {

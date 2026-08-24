@@ -113,10 +113,11 @@ const selectFirstMatchingRecipe = () => {
 
 const selectFirstMatchingDate = () => {
   if (!mealDateSearch.value) {
-    mealDate.value = props.weekStartDate;
+    mealDate.value = '';
     return;
   }
-  return props.weekStartDate;
+  const match = weekDates.value?.find((dt) => dt.dateString.toLowerCase().includes(mealDateSearch.value.toLowerCase()));
+  mealDate.value = match?.date || '';
 };
 
 watch(recipeId, () => {
