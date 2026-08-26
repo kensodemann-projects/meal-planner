@@ -139,6 +139,87 @@ describe('MealItemEditor', () => {
     });
   });
 
+  describe('meal type select', () => {
+    it('has the four meal type options', () => {
+      wrapper = mountComponent();
+      const mealTypeInput = wrapper.findComponent(
+        '[data-testid="meal-type-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      expect(mealTypeInput.props('items')).toEqual(['Breakfast', 'Lunch', 'Dinner', 'Snack']);
+    });
+
+    it('has the proper label', () => {
+      wrapper = mountComponent();
+      const mealTypeInput = wrapper.findComponent(
+        '[data-testid="meal-type-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      expect(mealTypeInput.props('label')).toBe('Select Meal Type');
+    });
+
+    it('does not default', () => {
+      wrapper = mountComponent();
+      const mealTypeInput = wrapper.findComponent(
+        '[data-testid="meal-type-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      expect(mealTypeInput.props('modelValue')).toBeNull();
+    });
+
+    it('selects the passed meal type', () => {
+      wrapper = mountComponent({ weekStartDate: '2026-08-30', mealType: 'Lunch' });
+      const mealTypeInput = wrapper.findComponent(
+        '[data-testid="meal-type-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      expect(mealTypeInput.props('modelValue')).toBe('Lunch');
+    });
+
+    describe('tab key behavior', () => {
+      it('selects the first matching meal type when the search text matches', async () => {
+        wrapper = mountComponent();
+        const mealTypeInput = wrapper.findComponent(
+          '[data-testid="meal-type-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = mealTypeInput.find('input');
+        await input.setValue('lunch');
+        await input.trigger('keydown.tab');
+        // 'lunch' only matches 'Lunch'
+        expect(mealTypeInput.props('modelValue')).toBe('Lunch');
+      });
+
+      it('selects the first matching meal type when the search text matches multiple items', async () => {
+        wrapper = mountComponent();
+        const mealTypeInput = wrapper.findComponent(
+          '[data-testid="meal-type-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = mealTypeInput.find('input');
+        await input.setValue('s');
+        await input.trigger('keydown.tab');
+        // 'Breakfast' and 'Snack' match; first is 'Breakfast'
+        expect(mealTypeInput.props('modelValue')).toBe('Breakfast');
+      });
+
+      it('does not select any meal type when the search text is empty', async () => {
+        wrapper = mountComponent({ weekStartDate: '2026-01-01', mealType: 'Lunch' });
+        const mealTypeInput = wrapper.findComponent(
+          '[data-testid="meal-type-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = mealTypeInput.find('input');
+        await input.trigger('keydown.tab');
+        expect(mealTypeInput.props('modelValue')).toBeNull();
+      });
+
+      it('does not select any meal type when the search text does not match any meal type', async () => {
+        wrapper = mountComponent({ weekStartDate: '2026-01-01', mealType: 'Lunch' });
+        const mealTypeInput = wrapper.findComponent(
+          '[data-testid="meal-type-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        const input = mealTypeInput.find('input');
+        await input.setValue('zzz');
+        await input.trigger('keydown.tab');
+        expect(mealTypeInput.props('modelValue')).toBeNull();
+      });
+    });
+  });
+
   describe('recipe select', () => {
     it('does not default', () => {
       wrapper = mountComponent();

@@ -17,7 +17,17 @@
                 @keydown.tab="selectFirstMatchingDate"
               ></v-autocomplete>
             </v-col>
-            <v-col cols="12" md="6"></v-col>
+            <v-col cols="12" md="6">
+              <v-autocomplete
+                label="Select Meal Type"
+                v-model="mealType"
+                v-model:search="mealTypeSearch"
+                :items="mealTypes"
+                :rules="[validationRules.required]"
+                data-testid="meal-type-input"
+                @keydown.tab="selectFirstMatchingMealType"
+              ></v-autocomplete>
+            </v-col>
           </v-row>
           <v-row>
             <v-col cols="12" md="6">
@@ -80,6 +90,8 @@ const valid = shallowRef(false);
 const isModified = shallowRef(false);
 const mealDate = shallowRef<string>(props.mealDate || props.weekStartDate);
 const mealDateSearch = shallowRef<string>('');
+const mealType = shallowRef<MealType | undefined>(props.mealType);
+const mealTypeSearch = shallowRef<string>('');
 const nutrition = ref<Nutrition | undefined>(props.mealItem?.nutrition);
 const recipeId = shallowRef<string | undefined>(props.mealItem?.recipeId);
 const servings = shallowRef<number>(props.mealItem?.servings || 1);
@@ -96,6 +108,8 @@ const weekDates = computed(() => {
     };
   });
 });
+
+const mealTypes: MealType[] = ['Breakfast', 'Lunch', 'Dinner', 'Snack'];
 
 defineEmits<{
   (event: 'cancel'): void;
@@ -118,6 +132,15 @@ const selectFirstMatchingDate = () => {
   }
   const match = weekDates.value?.find((dt) => dt.dateString.toLowerCase().includes(mealDateSearch.value.toLowerCase()));
   mealDate.value = match?.date || '';
+};
+
+const selectFirstMatchingMealType = () => {
+  if (!mealTypeSearch.value) {
+    mealType.value = undefined;
+    return;
+  }
+  const match = mealTypes.find((type) => type.toLowerCase().includes(mealTypeSearch.value.toLowerCase()));
+  mealType.value = match || undefined;
 };
 
 watch(recipeId, () => {
