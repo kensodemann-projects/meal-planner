@@ -88,12 +88,12 @@ const props = defineProps<{
 
 const valid = shallowRef(false);
 const isModified = shallowRef(false);
-const mealDate = shallowRef<string>(props.mealDate || props.weekStartDate);
+const mealDate = shallowRef<string | undefined | null>(props.mealDate);
 const mealDateSearch = shallowRef<string>('');
-const mealType = shallowRef<MealType | undefined>(props.mealType);
+const mealType = shallowRef<MealType | undefined | null>(props.mealType);
 const mealTypeSearch = shallowRef<string>('');
 const nutrition = ref<Nutrition | undefined>(props.mealItem?.nutrition);
-const recipeId = shallowRef<string | undefined>(props.mealItem?.recipeId);
+const recipeId = shallowRef<string | undefined | null>(props.mealItem?.recipeId);
 const servings = shallowRef<number>(props.mealItem?.servings || 1);
 const recipeSearch = shallowRef<string>('');
 const { recipes } = useRecipesData();
@@ -118,29 +118,29 @@ defineEmits<{
 
 const selectFirstMatchingRecipe = () => {
   if (!recipeSearch.value) {
-    recipeId.value = '';
+    recipeId.value = null;
     return;
   }
   const match = recipes.value?.find((recipe) => recipe.name.toLowerCase().includes(recipeSearch.value.toLowerCase()));
-  recipeId.value = match?.id || '';
+  recipeId.value = match?.id || null;
 };
 
 const selectFirstMatchingDate = () => {
   if (!mealDateSearch.value) {
-    mealDate.value = '';
+    mealDate.value = null;
     return;
   }
   const match = weekDates.value?.find((dt) => dt.dateString.toLowerCase().includes(mealDateSearch.value.toLowerCase()));
-  mealDate.value = match?.date || '';
+  mealDate.value = match?.date || null;
 };
 
 const selectFirstMatchingMealType = () => {
   if (!mealTypeSearch.value) {
-    mealType.value = undefined;
+    mealType.value = null;
     return;
   }
   const match = mealTypes.find((type) => type.toLowerCase().includes(mealTypeSearch.value.toLowerCase()));
-  mealType.value = match || undefined;
+  mealType.value = match || null;
 };
 
 watch(recipeId, () => {

@@ -87,10 +87,10 @@ describe('MealItemEditor', () => {
       expect(dateInput.props('label')).toBe('Select Date');
     });
 
-    it('defaults to the week start date', () => {
+    it('does not default', () => {
       wrapper = mountComponent({ weekStartDate: '2026-08-30' });
       const dateInput = wrapper.findComponent('[data-testid="date-input"]') as VueWrapper<components.VAutocomplete>;
-      expect(dateInput.props('modelValue')).toBe('2026-08-30');
+      expect(dateInput.props('modelValue')).toBeNull();
     });
 
     it('selects the passed meal date', () => {
@@ -125,7 +125,7 @@ describe('MealItemEditor', () => {
         const dateInput = wrapper.findComponent('[data-testid="date-input"]') as VueWrapper<components.VAutocomplete>;
         const input = dateInput.find('input');
         await input.trigger('keydown.tab');
-        expect(dateInput.props('modelValue')).toBe('');
+        expect(dateInput.props('modelValue')).toBeNull();
       });
 
       it('does not select any date when the search text does not match any date', async () => {
@@ -134,7 +134,7 @@ describe('MealItemEditor', () => {
         const input = dateInput.find('input');
         await input.setValue('zzz');
         await input.trigger('keydown.tab');
-        expect(dateInput.props('modelValue')).toBe('');
+        expect(dateInput.props('modelValue')).toBeNull();
       });
     });
   });
@@ -222,8 +222,10 @@ describe('MealItemEditor', () => {
 
   describe('recipe select', () => {
     it('does not default', () => {
-      wrapper = mountComponent();
-      expect((wrapper.vm as any).recipeId).toBeUndefined();
+      const recipeSelect = wrapper.findComponent(
+        '[data-testid="recipe-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      expect(recipeSelect.props('modelValue')).toBeNull();
     });
 
     it('has the proper label', () => {
@@ -310,7 +312,7 @@ describe('MealItemEditor', () => {
         ) as VueWrapper<components.VAutocomplete>;
         const input = recipeInput.find('input');
         await input.trigger('keydown.tab');
-        expect(recipeInput.props('modelValue')).toBe('');
+        expect(recipeInput.props('modelValue')).toBeNull();
       });
 
       it('does not select any recipe when the search text does not match any recipe', async () => {
@@ -321,7 +323,7 @@ describe('MealItemEditor', () => {
         const input = recipeInput.find('input');
         await input.setValue('zzz');
         await input.trigger('keydown.tab');
-        expect(recipeInput.props('modelValue')).toBe('');
+        expect(recipeInput.props('modelValue')).toBeNull();
       });
     });
   });
