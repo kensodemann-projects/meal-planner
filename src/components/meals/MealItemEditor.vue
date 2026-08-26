@@ -59,7 +59,7 @@
       </v-card-text>
       <v-card-actions>
         <CancelButton @click="$emit('cancel')" />
-        <SaveButton :disabled="!(isModified && valid)" @click="$emit('cancel')" />
+        <SaveButton :disabled="!(isModified && valid)" @click="onSave" />
       </v-card-actions>
     </v-card>
   </v-form>
@@ -87,7 +87,6 @@ const props = defineProps<{
 }>();
 
 const valid = shallowRef(false);
-const isModified = shallowRef(false);
 const mealDate = shallowRef<string | undefined | null>(props.mealDate);
 const mealDateSearch = shallowRef<string>('');
 const mealType = shallowRef<MealType | undefined | null>(props.mealType);
@@ -111,7 +110,7 @@ const weekDates = computed(() => {
 
 const mealTypes: MealType[] = ['Breakfast', 'Lunch', 'Dinner', 'Snack'];
 
-defineEmits<{
+const emit = defineEmits<{
   (event: 'cancel'): void;
   (event: 'save', payload: PlannedMealItem): void;
 }>();
@@ -143,6 +142,19 @@ const selectFirstMatchingMealType = () => {
   mealType.value = match || null;
 };
 
+const isModified = computed(() => {
+  if (!props.mealItem) return true;
+  if (
+    mealDate.value !== props.mealDate ||
+    mealType.value !== props.mealType ||
+    recipeId.value !== props.mealItem?.recipeId ||
+    servings.value !== props.mealItem?.servings
+  )
+    return true;
+  const nutritionFields: (keyof Nutrition)[] = ['calories', 'sodium', 'sugar', 'carbs', 'fat', 'protein'];
+  return nutritionFields.some((field) => nutrition.value?.[field] !== props.mealItem?.nutrition?.[field]);
+});
+
 watch(recipeId, () => {
   if (recipeId.value) {
     const recipe = recipes.value?.find((recipe) => recipe.id === recipeId.value);
@@ -158,6 +170,20 @@ watch(recipeId, () => {
     }
   }
 });
+
+const onSave = () => {
+  emit('save', {
+    mealDate: mealDate.value!,
+    mealType: mealType.value!,
+    mealItem: {
+      id: props.mealItem?.id || '',
+      name: recipes.value?.find((recipe) => recipe.id === recipeId.value)?.name || '',
+      recipeId: recipeId.value!,
+      servings: servings.value,
+      nutrition: { ...nutrition.value! },
+    },
+  });
+};
 </script>
 
 <style scoped></style>

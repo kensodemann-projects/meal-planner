@@ -3,7 +3,7 @@ import { TEST_RECIPES } from '@/data/__tests__/test-data.ts';
 import { useRecipesData } from '@/data/recipes';
 import type { MealItem, MealType } from '@/models/meal';
 import type { Recipe } from '@/models/recipe.ts';
-import { mount, VueWrapper } from '@vue/test-utils';
+import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Ref } from 'vue';
 import { createVuetify } from 'vuetify';
@@ -21,7 +21,7 @@ const vuetify = createVuetify({
 const TEST_MEAL_ITEM: MealItem = {
   id: '4498eae8-b4c9-4327-b1c2-518f071981f2',
   servings: 2,
-  name: 'Test Meal Item',
+  name: TEST_RECIPES[0]!.name,
   recipeId: TEST_RECIPES[0]!.id!,
   nutrition: {
     calories: 630,
@@ -342,6 +342,140 @@ describe('MealItemEditor', () => {
       expect(wrapper.emitted('cancel')).toBeTruthy();
       expect(wrapper.emitted('cancel')).toHaveLength(1);
       expect(wrapper.emitted('cancel')?.[0]).toEqual([]);
+    });
+  });
+
+  describe('save button', () => {
+    const fillRequiredCreateFields = async () => {
+      await wrapper.findComponent('[data-testid="date-input"]').setValue('2026-08-30');
+      await wrapper.findComponent('[data-testid="meal-type-input"]').setValue('Lunch');
+      await wrapper.findComponent('[data-testid="recipe-input"]').setValue(TEST_RECIPES[0]!.id);
+      await flushPromises();
+    };
+
+    describe('when creating a new meal item', () => {
+      beforeEach(() => {
+        wrapper = mountComponent({ weekStartDate: '2026-08-30' });
+      });
+
+      it('starts disabled', () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        expect(saveButton.attributes('disabled')).toBeDefined();
+      });
+
+      it('is enabled once all required fields are filled', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        expect(saveButton.attributes('disabled')).toBeDefined();
+        await fillRequiredCreateFields();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('becomes disabled again if a required field is cleared', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        await fillRequiredCreateFields();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+        await wrapper.findComponent('[data-testid="date-input"]').setValue(null);
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeDefined();
+      });
+
+      it('emits the save event with a payload based on the entered data when enabled', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        await fillRequiredCreateFields();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+        await saveButton.trigger('click');
+        expect(wrapper.emitted('save')).toBeTruthy();
+        expect(wrapper.emitted('save')).toHaveLength(1);
+        expect(wrapper.emitted('save')?.[0]).toEqual([
+          {
+            mealDate: '2026-08-30',
+            mealType: 'Lunch',
+            mealItem: {
+              id: expect.any(String),
+              name: TEST_RECIPES[0]!.name,
+              recipeId: TEST_RECIPES[0]!.id,
+              servings: 1,
+              nutrition: {
+                calories: TEST_RECIPES[0]!.calories,
+                sodium: TEST_RECIPES[0]!.sodium,
+                sugar: TEST_RECIPES[0]!.sugar,
+                carbs: TEST_RECIPES[0]!.carbs,
+                fat: TEST_RECIPES[0]!.fat,
+                protein: TEST_RECIPES[0]!.protein,
+              },
+            },
+          },
+        ]);
+      });
+    });
+
+    describe('when editing an existing meal item', () => {
+      beforeEach(() => {
+        wrapper = mountComponent({
+          weekStartDate: '2026-08-30',
+          mealItem: TEST_MEAL_ITEM,
+          mealDate: '2026-09-02',
+          mealType: 'Lunch',
+        });
+      });
+
+      it('starts disabled', () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        expect(saveButton.attributes('disabled')).toBeDefined();
+      });
+
+      it('is enabled if any changes are made', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        expect(saveButton.attributes('disabled')).toBeDefined();
+        const servingsInput = wrapper.findComponent('[data-testid="servings-input"]');
+        await servingsInput.setValue(3);
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled if a nutrition value is updated', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        expect(saveButton.attributes('disabled')).toBeDefined();
+        const caloriesInput = wrapper.findComponent('[data-testid="calories-input"]').find('input');
+        await caloriesInput.setValue(631);
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is disabled if a required field is cleared', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const servingsInput = wrapper.findComponent('[data-testid="servings-input"]');
+        await servingsInput.setValue(3);
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+        await wrapper.findComponent('[data-testid="date-input"]').setValue(null);
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeDefined();
+      });
+
+      it('emits the save event with a payload based on the entered data when enabled', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const caloriesInput = wrapper.findComponent('[data-testid="calories-input"]').find('input');
+        await caloriesInput.setValue(631);
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+        await saveButton.trigger('click');
+        expect(wrapper.emitted('save')).toBeTruthy();
+        expect(wrapper.emitted('save')).toHaveLength(1);
+        expect(wrapper.emitted('save')?.[0]).toEqual([
+          {
+            mealDate: '2026-09-02',
+            mealType: 'Lunch',
+            mealItem: {
+              ...TEST_MEAL_ITEM,
+              nutrition: {
+                ...TEST_MEAL_ITEM.nutrition,
+                calories: 631,
+              },
+            },
+          },
+        ]);
+      });
     });
   });
 });
