@@ -327,4 +327,21 @@ describe('MealItemEditor', () => {
       });
     });
   });
+
+  describe('cancel button', () => {
+    it('is not disabled', () => {
+      wrapper = mountComponent();
+      const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+      expect(cancelButton.attributes('disabled')).toBeUndefined();
+    });
+
+    it('emits the cancel event without a payload on click', async () => {
+      wrapper = mountComponent();
+      const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+      await cancelButton.trigger('click');
+      expect(wrapper.emitted('cancel')).toBeTruthy();
+      expect(wrapper.emitted('cancel')).toHaveLength(1);
+      expect(wrapper.emitted('cancel')?.[0]).toEqual([]);
+    });
+  });
 });
