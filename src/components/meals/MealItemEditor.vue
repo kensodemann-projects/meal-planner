@@ -179,7 +179,7 @@ const onSave = () => {
     mealDate: mealDate.value!,
     mealType: mealType.value!,
     mealItem: {
-      id: props.mealItem?.id || '',
+      id: props.mealItem?.id || globalThis.crypto.randomUUID(),
       name: recipes.value?.find((recipe) => recipe.id === recipeId.value)?.name || '',
       recipeId: recipeId.value!,
       servings: servings.value,

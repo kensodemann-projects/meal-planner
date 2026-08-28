@@ -9,7 +9,7 @@ import type { Ref } from 'vue';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import MealItemEditor from '../MealItemEditor.vue';
+import MealItemEditor, { type PlannedMealItem } from '../MealItemEditor.vue';
 
 vi.mock('@/data/recipes');
 
@@ -391,7 +391,7 @@ describe('MealItemEditor', () => {
             mealDate: '2026-08-30',
             mealType: 'Lunch',
             mealItem: {
-              id: expect.any(String),
+              id: expect.stringMatching(/.+/),
               name: TEST_RECIPES[0]!.name,
               recipeId: TEST_RECIPES[0]!.id,
               servings: 1,
@@ -406,6 +406,20 @@ describe('MealItemEditor', () => {
             },
           },
         ]);
+      });
+
+      it('generates a unique id for each new meal item', async () => {
+        const savedIds: string[] = [];
+        for (let i = 0; i < 2; i++) {
+          wrapper = mountComponent({ weekStartDate: '2026-08-30' });
+          await fillRequiredCreateFields();
+          await wrapper.getComponent('[data-testid="save-button"]').trigger('click');
+          const payload = wrapper.emitted('save')?.[0]?.[0] as PlannedMealItem;
+          expect(payload.mealItem.id).toEqual(expect.stringMatching(/.+/));
+          savedIds.push(payload.mealItem.id);
+          wrapper.unmount();
+        }
+        expect(savedIds[0]).not.toEqual(savedIds[1]);
       });
     });
 
