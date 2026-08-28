@@ -15,6 +15,16 @@
       </v-row>
     </v-container>
   </div>
+
+  <v-fab
+    color="primary"
+    icon="mdi-plus"
+    variant="tonal"
+    location="bottom end"
+    absolute
+    @click="router.push(`planning/add?weekEndDate=${dt}`)"
+    data-testid="add-button"
+  ></v-fab>
 </template>
 
 <script setup lang="ts">
