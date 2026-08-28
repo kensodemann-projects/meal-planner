@@ -84,9 +84,9 @@ const mountComponent = (props = {}) =>
 const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
   name: wrapper.findComponent('[data-testid="name-input"]').find('input'),
   description: wrapper.findComponent('[data-testid="description-input"]').find('textarea'),
-  category: wrapper.findComponent('[data-testid="category-input"]').find('input'),
-  cuisine: wrapper.findComponent('[data-testid="cuisine-input"]').find('input'),
-  difficulty: wrapper.findComponent('[data-testid="difficulty-input"]').find('input'),
+  category: wrapper.findComponent('[data-testid="category-input"]'),
+  cuisine: wrapper.findComponent('[data-testid="cuisine-input"]'),
+  difficulty: wrapper.findComponent('[data-testid="difficulty-input"]'),
   servings: wrapper.findComponent('[data-testid="servings-input"]').find('input'),
   prepTimeMinutes: wrapper.findComponent('[data-testid="prep-time-input"]').find('input'),
   cookTimeMinutes: wrapper.findComponent('[data-testid="cook-time-input"]').find('input'),
@@ -476,9 +476,9 @@ describe('Recipe Editor', () => {
       const nutritionInputs = getNutritionInputs(wrapper);
       expect(inputs.name.element.value).toBe('');
       expect(inputs.description.element.value).toBe('');
-      expect(inputs.category.element.value).toBe('');
-      expect(inputs.cuisine.element.value).toBe('');
-      expect(inputs.difficulty.element.value).toBe('');
+      expect(inputs.category.props('modelValue')).toBeNull();
+      expect(inputs.cuisine.props('modelValue')).toBeNull();
+      expect(inputs.difficulty.props('modelValue')).toBeNull();
       expect(inputs.servings.element.value).toBe('');
       expect(inputs.prepTimeMinutes.element.value).toBe('');
       expect(inputs.cookTimeMinutes.element.value).toBe('');
@@ -619,12 +619,9 @@ describe('Recipe Editor', () => {
         const inputs = getInputs(wrapper);
         const nutritionInputs = getNutritionInputs(wrapper);
         await inputs.category.setValue('Dessert');
-        (wrapper.vm as any).category = 'Dessert';
         await inputs.cuisine.setValue('American');
-        (wrapper.vm as any).cuisine = 'American';
         expect(saveButton.attributes('disabled')).toBeDefined();
         await inputs.difficulty.setValue('Easy');
-        (wrapper.vm as any).difficulty = 'Easy';
         await inputs.name.setValue('Apple Pie');
         await inputs.servings.setValue('2');
         await inputs.prepTimeMinutes.setValue('30');
@@ -638,11 +635,8 @@ describe('Recipe Editor', () => {
         const inputs = getInputs(wrapper);
         const nutritionInputs = getNutritionInputs(wrapper);
         await inputs.cuisine.setValue('American');
-        (wrapper.vm as any).cuisine = 'American';
         await inputs.category.setValue('Dessert');
-        (wrapper.vm as any).category = 'Dessert';
         await inputs.difficulty.setValue('Easy');
-        (wrapper.vm as any).difficulty = 'Easy';
         await inputs.name.setValue('Apple Pie');
         await inputs.servings.setValue('2');
         await inputs.prepTimeMinutes.setValue('30');
@@ -659,11 +653,8 @@ describe('Recipe Editor', () => {
         const inputs = getInputs(wrapper);
         const nutritionInputs = getNutritionInputs(wrapper);
         await inputs.category.setValue('Dessert');
-        (wrapper.vm as any).category = 'Dessert';
         await inputs.cuisine.setValue('American');
-        (wrapper.vm as any).cuisine = 'American';
         await inputs.difficulty.setValue('Easy');
-        (wrapper.vm as any).difficulty = 'Easy';
         await inputs.name.setValue('Apple Pie');
         await inputs.servings.setValue('2');
         await inputs.prepTimeMinutes.setValue('30');
@@ -680,12 +671,9 @@ describe('Recipe Editor', () => {
         const inputs = getInputs(wrapper);
         const nutritionInputs = getNutritionInputs(wrapper);
         await inputs.category.setValue('Dessert');
-        (wrapper.vm as any).category = 'Dessert';
         await inputs.cuisine.setValue('American');
-        (wrapper.vm as any).cuisine = 'American';
         expect(saveButton.attributes('disabled')).toBeDefined();
         await inputs.difficulty.setValue('Easy');
-        (wrapper.vm as any).difficulty = 'Easy';
         await inputs.name.setValue(' Apple Pie   ');
         await inputs.servings.setValue('2');
         await inputs.prepTimeMinutes.setValue('30');
@@ -721,12 +709,9 @@ describe('Recipe Editor', () => {
         const inputs = getInputs(wrapper);
         const nutritionInputs = getNutritionInputs(wrapper);
         await inputs.category.setValue('Dessert');
-        (wrapper.vm as any).category = 'Dessert';
         await inputs.cuisine.setValue('American');
-        (wrapper.vm as any).cuisine = 'American';
         expect(saveButton.attributes('disabled')).toBeDefined();
         await inputs.difficulty.setValue('Easy');
-        (wrapper.vm as any).difficulty = 'Easy';
         await inputs.name.setValue('Apple Pie');
         await inputs.servings.setValue('2');
         await inputs.prepTimeMinutes.setValue('30');
@@ -751,9 +736,9 @@ describe('Recipe Editor', () => {
       const inputs = getInputs(wrapper);
       const nutritionInputs = getNutritionInputs(wrapper);
       expect(inputs.name.element.value).toBe(BEER_CHEESE.name);
-      expect((wrapper.vm as any).category).toBe(BEER_CHEESE.category);
-      expect((wrapper.vm as any).cuisine).toBe(BEER_CHEESE.cuisine);
-      expect((wrapper.vm as any).difficulty).toBe(BEER_CHEESE.difficulty);
+      expect(inputs.category.props('modelValue')).toBe(BEER_CHEESE.category);
+      expect(inputs.cuisine.props('modelValue')).toBe(BEER_CHEESE.cuisine);
+      expect(inputs.difficulty.props('modelValue')).toBe(BEER_CHEESE.difficulty);
       expect(inputs.servings.element.value).toBe(BEER_CHEESE.servings.toString());
       expect(inputs.prepTimeMinutes.element.value).toBe(BEER_CHEESE.prepTimeMinutes.toString());
       expect(inputs.cookTimeMinutes.element.value).toBe(BEER_CHEESE.cookTimeMinutes.toString());
@@ -911,8 +896,7 @@ describe('Recipe Editor', () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
         const inputs = getInputs(wrapper);
         await inputs.name.setValue(BEER_CHEESE.name);
-        (wrapper.vm as any).category = 'Dessert';
-        await wrapper.vm.$nextTick();
+        await inputs.category.setValue('Dessert');
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
 
@@ -920,8 +904,7 @@ describe('Recipe Editor', () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
         const inputs = getInputs(wrapper);
         await inputs.name.setValue(BEER_CHEESE.name);
-        (wrapper.vm as any).cuisine = 'Italian';
-        await wrapper.vm.$nextTick();
+        await inputs.cuisine.setValue('Italian');
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
 
@@ -929,8 +912,7 @@ describe('Recipe Editor', () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
         const inputs = getInputs(wrapper);
         await inputs.name.setValue(BEER_CHEESE.name);
-        (wrapper.vm as any).difficulty = 'Easy';
-        await wrapper.vm.$nextTick();
+        await inputs.difficulty.setValue('Easy');
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
 
@@ -1045,9 +1027,7 @@ describe('Recipe Editor', () => {
         const inputs = getInputs(wrapper);
         const nutritionInputs = getNutritionInputs(wrapper);
         await inputs.category.setValue('Dessert');
-        (wrapper.vm as any).category = 'Dessert';
         await inputs.difficulty.setValue('Normal');
-        (wrapper.vm as any).difficulty = 'Normal';
         await inputs.name.setValue('Apple Pie');
         await nutritionInputs.calories.setValue('325');
         await saveButton.trigger('click');

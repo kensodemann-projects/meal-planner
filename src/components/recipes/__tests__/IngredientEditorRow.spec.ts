@@ -66,7 +66,10 @@ describe('Ingredient Editor Row', () => {
 
     it('is initialized', () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
-      expect((wrapper.vm as any).unitOfMeasureId).toBe('cup');
+      const autocomplete = wrapper.findComponent(
+        '[data-testid="unit-of-measure-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      expect(autocomplete.props('modelValue')).toBe('cup');
     });
 
     it('is emitted on change', async () => {
