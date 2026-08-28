@@ -22,7 +22,7 @@
     variant="tonal"
     location="bottom end"
     absolute
-    @click="router.push(`planning/add?weekEndDate=${dt}`)"
+    @click="navigateToAdd"
     data-testid="add-button"
   ></v-fab>
 </template>
@@ -63,6 +63,10 @@ const loadMealPlans = async () => {
   } finally {
     isLoading.value = false;
   }
+};
+
+const navigateToAdd = () => {
+  router.push({ path: 'planning/add', query: { weekEndDate: dt.value } });
 };
 
 watch(dt, loadMealPlans, { immediate: true });
