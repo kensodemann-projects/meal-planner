@@ -139,4 +139,18 @@ describe('week', () => {
       expect(back).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe('add button', () => {
+    it('is rendered', async () => {
+      wrapper = await renderPage();
+      expect(wrapper.findComponent('[data-testid="add-button"]').exists()).toBe(true);
+    });
+
+    it('navigates to the add page with the week start date when clicked', async () => {
+      wrapper = await renderPage();
+      await wrapper.findComponent('[data-testid="add-button"]').trigger('click');
+      const { push } = useRouter();
+      expect(push).toHaveBeenCalledExactlyOnceWith({ path: 'add', query: { weekStartDate: '2025-12-29' } });
+    });
+  });
 });
