@@ -68,16 +68,10 @@
 <script setup lang="ts">
 import { validationRules } from '@/core/validation-rules';
 import { useRecipesData } from '@/data/recipes';
-import type { MealItem, MealType } from '@/models/meal';
+import type { MealItem, MealType, PlannedMealItem } from '@/models/meal';
 import type { Nutrition } from '@/models/nutrition';
 import { addDays, format } from 'date-fns';
 import { computed, ref, shallowRef, watch } from 'vue';
-
-export interface PlannedMealItem {
-  mealItem: MealItem;
-  mealDate: string;
-  mealType: MealType;
-}
 
 const props = defineProps<{
   mealItem?: MealItem;

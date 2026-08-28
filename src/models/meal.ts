@@ -15,3 +15,9 @@ export interface Meal {
   type: MealType;
   items: MealItem[];
 }
+
+export interface PlannedMealItem {
+  mealItem: MealItem;
+  mealDate: string;
+  mealType: MealType;
+}

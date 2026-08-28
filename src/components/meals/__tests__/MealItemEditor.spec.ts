@@ -1,7 +1,7 @@
 import { autocompleteIsRequired } from '@/components/__tests__/test-utils.ts';
 import { TEST_RECIPES } from '@/data/__tests__/test-data.ts';
 import { useRecipesData } from '@/data/recipes';
-import type { MealItem, MealType } from '@/models/meal';
+import type { MealItem, MealType, PlannedMealItem } from '@/models/meal';
 import type { Recipe } from '@/models/recipe.ts';
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -9,7 +9,7 @@ import type { Ref } from 'vue';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import MealItemEditor, { type PlannedMealItem } from '../MealItemEditor.vue';
+import MealItemEditor from '../MealItemEditor.vue';
 
 vi.mock('@/data/recipes');
 
