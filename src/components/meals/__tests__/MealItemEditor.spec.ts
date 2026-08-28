@@ -273,6 +273,48 @@ describe('MealItemEditor', () => {
       });
     });
 
+    it('scales manually modified nutrition when the servings change', async () => {
+      wrapper = mountComponent();
+      const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
+      const recipeInput = wrapper.findComponent('[data-testid="recipe-input"]');
+      await recipeInput.setValue(TEST_RECIPES[1]!.id);
+      expect(nutritionEditor.props('modelValue')).toEqual({
+        calories: TEST_RECIPES[1]!.calories,
+        sodium: TEST_RECIPES[1]!.sodium,
+        sugar: TEST_RECIPES[1]!.sugar,
+        carbs: TEST_RECIPES[1]!.carbs,
+        fat: TEST_RECIPES[1]!.fat,
+        protein: TEST_RECIPES[1]!.protein,
+      });
+
+      const modifiedCalories = TEST_RECIPES[1]!.calories + 100;
+      await wrapper.findComponent('[data-testid="calories-input"]').find('input').setValue(modifiedCalories);
+      await flushPromises();
+
+      const servingsInput = wrapper.findComponent('[data-testid="servings-input"]');
+      await servingsInput.setValue(2);
+      await flushPromises();
+      expect(nutritionEditor.props('modelValue')).toEqual({
+        calories: modifiedCalories * 2,
+        sodium: TEST_RECIPES[1]!.sodium * 2,
+        sugar: TEST_RECIPES[1]!.sugar * 2,
+        carbs: TEST_RECIPES[1]!.carbs * 2,
+        fat: TEST_RECIPES[1]!.fat * 2,
+        protein: TEST_RECIPES[1]!.protein * 2,
+      });
+
+      await recipeInput.setValue(TEST_RECIPES[2]!.id);
+      await flushPromises();
+      expect(nutritionEditor.props('modelValue')).toEqual({
+        calories: TEST_RECIPES[2]!.calories * 2,
+        sodium: TEST_RECIPES[2]!.sodium * 2,
+        sugar: TEST_RECIPES[2]!.sugar * 2,
+        carbs: TEST_RECIPES[2]!.carbs * 2,
+        fat: TEST_RECIPES[2]!.fat * 2,
+        protein: TEST_RECIPES[2]!.protein * 2,
+      });
+    });
+
     describe('for an existing recipe item', () => {
       it('is initialized based on the meal item', () => {
         wrapper = mountComponent({ mealItem: TEST_MEAL_ITEM, weekStartDate: '2026-01-01' });

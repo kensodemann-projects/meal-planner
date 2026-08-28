@@ -70,8 +70,8 @@ import { validationRules } from '@/core/validation-rules';
 import { useRecipesData } from '@/data/recipes';
 import type { MealItem, MealType } from '@/models/meal';
 import type { Nutrition } from '@/models/nutrition';
-import { computed, ref, shallowRef, watch } from 'vue';
 import { addDays, format } from 'date-fns';
+import { computed, ref, shallowRef, watch } from 'vue';
 
 export interface PlannedMealItem {
   mealItem: MealItem;
@@ -155,24 +155,36 @@ const isModified = computed(() => {
   return nutritionFields.some((field) => nutrition.value?.[field] !== props.mealItem?.nutrition?.[field]);
 });
 
-const setNutritionFromRecipe = () => {
+const setScaledNutrition = (baseNutrition: Nutrition, scalingFactor: number) => {
+  nutrition.value = {
+    calories: baseNutrition.calories * scalingFactor,
+    sodium: baseNutrition.sodium * scalingFactor,
+    sugar: baseNutrition.sugar * scalingFactor,
+    carbs: baseNutrition.carbs * scalingFactor,
+    fat: baseNutrition.fat * scalingFactor,
+    protein: baseNutrition.protein * scalingFactor,
+  };
+};
+
+watch(recipeId, () => {
   if (recipeId.value && servings.value) {
     const recipe = recipes.value?.find((recipe) => recipe.id === recipeId.value);
     if (recipe) {
-      nutrition.value = {
-        calories: recipe.calories * servings.value,
-        sodium: recipe.sodium * servings.value,
-        sugar: recipe.sugar * servings.value,
-        carbs: recipe.carbs * servings.value,
-        fat: recipe.fat * servings.value,
-        protein: recipe.protein * servings.value,
-      };
+      setScaledNutrition(recipe, servings.value);
     }
   }
-};
+});
 
-watch(recipeId, () => setNutritionFromRecipe());
-watch(servings, () => setNutritionFromRecipe());
+let lastServings: number = 1;
+watch(servings, (curr: number, prev: number) => {
+  lastServings = prev || lastServings;
+  if (recipeId.value && curr && curr !== lastServings) {
+    const recipe = recipes.value?.find((recipe) => recipe.id === recipeId.value);
+    if (recipe) {
+      setScaledNutrition(nutrition.value!, curr / lastServings);
+    }
+  }
+});
 
 const onSave = () => {
   emit('save', {
