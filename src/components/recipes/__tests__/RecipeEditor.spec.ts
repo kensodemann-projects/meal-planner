@@ -84,9 +84,9 @@ const mountComponent = (props = {}) =>
 const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
   name: wrapper.findComponent('[data-testid="name-input"]').find('input'),
   description: wrapper.findComponent('[data-testid="description-input"]').find('textarea'),
-  category: wrapper.findComponent('[data-testid="category-input"]'),
-  cuisine: wrapper.findComponent('[data-testid="cuisine-input"]'),
-  difficulty: wrapper.findComponent('[data-testid="difficulty-input"]'),
+  category: wrapper.findComponent('[data-testid="category-input"]') as VueWrapper<components.VAutocomplete>,
+  cuisine: wrapper.findComponent('[data-testid="cuisine-input"]') as VueWrapper<components.VAutocomplete>,
+  difficulty: wrapper.findComponent('[data-testid="difficulty-input"]') as VueWrapper<components.VAutocomplete>,
   servings: wrapper.findComponent('[data-testid="servings-input"]').find('input'),
   prepTimeMinutes: wrapper.findComponent('[data-testid="prep-time-input"]').find('input'),
   cookTimeMinutes: wrapper.findComponent('[data-testid="cook-time-input"]').find('input'),
