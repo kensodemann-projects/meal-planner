@@ -155,8 +155,8 @@ const isModified = computed(() => {
   return nutritionFields.some((field) => nutrition.value?.[field] !== props.mealItem?.nutrition?.[field]);
 });
 
-watch(recipeId, () => {
-  if (recipeId.value) {
+const setNutritionFromRecipe = () => {
+  if (recipeId.value && servings.value) {
     const recipe = recipes.value?.find((recipe) => recipe.id === recipeId.value);
     if (recipe) {
       nutrition.value = {
@@ -169,7 +169,10 @@ watch(recipeId, () => {
       };
     }
   }
-});
+};
+
+watch(recipeId, () => setNutritionFromRecipe());
+watch(servings, () => setNutritionFromRecipe());
 
 const onSave = () => {
   emit('save', {
