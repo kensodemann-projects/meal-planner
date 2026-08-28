@@ -318,7 +318,10 @@ describe('MealItemEditor', () => {
     describe('for an existing recipe item', () => {
       it('is initialized based on the meal item', () => {
         wrapper = mountComponent({ mealItem: TEST_MEAL_ITEM, weekStartDate: '2026-01-01' });
-        expect((wrapper.vm as any).recipeId).toBe(TEST_MEAL_ITEM.recipeId);
+        const recipeInput = wrapper.findComponent(
+          '[data-testid="recipe-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        expect(recipeInput.props('modelValue')).toBe(TEST_MEAL_ITEM.recipeId);
       });
     });
 
