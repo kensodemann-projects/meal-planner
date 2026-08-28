@@ -10,7 +10,7 @@
     title="This Week"
     :week="thisWeek"
     :settings="settings"
-    @click="router.push({ path: 'planning/week', query: { dt: dateToISO(thisWeek.startDate) } })"
+    @click="router.push({ path: 'planning/week', query: { weekStartDate: dateToISO(thisWeek.startDate) } })"
   />
   <WeeklySummaryCard
     class="mb-4"
@@ -18,7 +18,7 @@
     title="Next Week (Planning)"
     :week="nextWeek"
     :settings="settings"
-    @click="router.push({ path: 'planning/week', query: { dt: dateToISO(nextWeek.startDate) } })"
+    @click="router.push({ path: 'planning/week', query: { weekStartDate: dateToISO(nextWeek.startDate) } })"
   />
 
   <h2>Recent Weeks</h2>
@@ -30,7 +30,7 @@
     :title="`Weeks Ago: ${differenceInWeeks(thisWeek?.startDate || new Date(), week.startDate)}`"
     :week="week"
     :settings="settings"
-    @click="router.push({ path: 'planning/week', query: { dt: dateToISO(week.startDate) } })"
+    @click="router.push({ path: 'planning/week', query: { weekStartDate: dateToISO(week.startDate) } })"
   />
 </template>
 

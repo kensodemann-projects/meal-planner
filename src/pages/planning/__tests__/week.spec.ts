@@ -31,7 +31,7 @@ describe('week', () => {
 
   beforeEach(() => {
     (useRoute as Mock).mockReturnValue({
-      query: { dt: '2025-12-29' },
+      query: { weekStartDate: '2025-12-29' },
     });
     (useRouter as Mock).mockReturnValue({
       back: vi.fn(),

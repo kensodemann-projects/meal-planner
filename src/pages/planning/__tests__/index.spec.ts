@@ -84,7 +84,7 @@ describe('Planning', () => {
         await weekCards[0]!.trigger('click');
         expect(router.push).toHaveBeenCalledExactlyOnceWith({
           path: 'planning/week',
-          query: { dt: '2025-12-22' },
+          query: { weekStartDate: '2025-12-22' },
         });
       });
 
@@ -188,7 +188,7 @@ describe('Planning', () => {
         await weekCards[1]!.trigger('click');
         expect(router.push).toHaveBeenCalledExactlyOnceWith({
           path: 'planning/week',
-          query: { dt: '2025-12-29' },
+          query: { weekStartDate: '2025-12-29' },
         });
       });
     });
@@ -219,7 +219,7 @@ describe('Planning', () => {
           await weekCards[i]!.trigger('click');
           expect(router.push).toHaveBeenCalledWith({
             path: 'planning/week',
-            query: { dt: targetDates[i - 2] },
+            query: { weekStartDate: targetDates[i - 2] },
           });
         }
       });
