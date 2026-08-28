@@ -32,7 +32,8 @@ describe('Meal Item Editor Rows', () => {
   describe('recipe select', () => {
     it('does not default', () => {
       wrapper = mountComponent({ modelValue: {}, items: TEST_RECIPES });
-      expect((wrapper.vm as any).recipeId).toBeUndefined();
+      const recipeInput = wrapper.findComponent('[data-testid="recipe-input"]') as VueWrapper<components.VAutocomplete>;
+      expect(recipeInput.props('modelValue')).toBeNull();
     });
 
     it('has the proper label', () => {
@@ -52,7 +53,7 @@ describe('Meal Item Editor Rows', () => {
       wrapper = mountComponent({ modelValue: {}, items: TEST_RECIPES });
       const recipeInput = wrapper.findComponent('[data-testid="recipe-input"]');
 
-      await (recipeInput as any).vm.$emit('update:modelValue', TEST_RECIPES[1]!.id);
+      await recipeInput.setValue(TEST_RECIPES[1]!.id);
 
       const emitted = wrapper.emitted('update:modelValue');
       expect(emitted?.length).toBe(1);
@@ -63,7 +64,7 @@ describe('Meal Item Editor Rows', () => {
       wrapper = mountComponent({ modelValue: {}, items: TEST_RECIPES });
       const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
       const recipeInput = wrapper.findComponent('[data-testid="recipe-input"]');
-      await (recipeInput as any).vm.$emit('update:modelValue', TEST_RECIPES[1]!.id);
+      await recipeInput.setValue(TEST_RECIPES[1]!.id);
       expect(nutritionEditor.props('modelValue')).toEqual({
         calories: TEST_RECIPES[1]!.calories,
         sodium: TEST_RECIPES[1]!.sodium,
@@ -79,7 +80,7 @@ describe('Meal Item Editor Rows', () => {
       const recipeInput = wrapper.findComponent('[data-testid="recipe-input"]');
       const recipe = TEST_RECIPES[0]!;
 
-      await (recipeInput as any).vm.$emit('update:modelValue', recipe.id);
+      await recipeInput.setValue(recipe.id);
 
       const emitted = wrapper.emitted('update:modelValue');
       const nutrition = (emitted![0]![0] as MealItem).nutrition;
@@ -97,7 +98,10 @@ describe('Meal Item Editor Rows', () => {
     describe('for an existing recipe item', () => {
       it('is initialized based on the meal item', () => {
         wrapper = mountComponent({ modelValue: TEST_MEAL_ITEM, items: TEST_RECIPES });
-        expect((wrapper.vm as any).recipeId).toBe(TEST_MEAL_ITEM.recipeId);
+        const recipeInput = wrapper.findComponent(
+          '[data-testid="recipe-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        expect(recipeInput.props('modelValue')).toBe(TEST_MEAL_ITEM.recipeId);
       });
     });
 

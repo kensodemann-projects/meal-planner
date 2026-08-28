@@ -71,8 +71,10 @@ describe('Meal Item Editor Card', () => {
 
       it('defaults the servings', () => {
         const inputs = getInputs(wrapper);
-        // it is hard to directly test the autocomplete value, so we check the underlying model
-        expect((wrapper.vm as any).editMealItem.recipeId).toBeUndefined();
+        const recipeInput = wrapper.findComponent(
+          '[data-testid="recipe-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        expect(recipeInput.props('modelValue')).toBeNull();
         expect(inputs.servingsInput.element.value).toBe('1');
         expect(inputs.caloriesInput.element.value).toBe('');
         expect(inputs.sodiumInput.element.value).toBe('');
@@ -93,7 +95,7 @@ describe('Meal Item Editor Card', () => {
           expect(saveButton.attributes('disabled')).toBeDefined();
           // Choosing a recipe will default all of the other inputs, so this should enable the button
           const recipeInput = wrapper.findComponent('[data-testid="recipe-input"]');
-          await (recipeInput as any).vm.$emit('update:modelValue', TEST_MEAL_ITEM.recipeId);
+          await recipeInput.setValue(TEST_MEAL_ITEM.recipeId);
           await flushPromises();
           expect(saveButton.attributes('disabled')).toBeUndefined();
         });
@@ -101,7 +103,7 @@ describe('Meal Item Editor Card', () => {
         it('emits "save" with the data', async () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
           const recipeInput = wrapper.findComponent('[data-testid="recipe-input"]');
-          await (recipeInput as any).vm.$emit('update:modelValue', TEST_RECIPES[0]!.id);
+          await recipeInput.setValue(TEST_RECIPES[0]!.id);
           await flushPromises();
           await saveButton.trigger('click');
           expect(wrapper.emitted('save')).toBeTruthy();
@@ -149,8 +151,10 @@ describe('Meal Item Editor Card', () => {
 
       it('initializes the inputs', () => {
         const inputs = getInputs(wrapper);
-        // it is hard to directly test the autocomplete value, so we check the underlying model
-        expect((wrapper.vm as any).editMealItem.recipeId).toBe(TEST_MEAL_ITEM.recipeId);
+        const recipeInput = wrapper.findComponent(
+          '[data-testid="recipe-input"]',
+        ) as VueWrapper<components.VAutocomplete>;
+        expect(recipeInput.props('modelValue')).toBe(TEST_MEAL_ITEM.recipeId);
         expect(inputs.servingsInput.element.value).toBe(TEST_MEAL_ITEM.servings.toString());
         expect(inputs.caloriesInput.element.value).toBe(TEST_MEAL_ITEM.nutrition.calories.toString());
         expect(inputs.sodiumInput.element.value).toBe(TEST_MEAL_ITEM.nutrition.sodium.toString());
@@ -185,9 +189,9 @@ describe('Meal Item Editor Card', () => {
           const inputs = getInputs(wrapper);
           const recipeInput = wrapper.findComponent('[data-testid="recipe-input"]');
           expect(saveButton.attributes('disabled')).toBeDefined();
-          await (recipeInput as any).vm.$emit('update:modelValue', TEST_RECIPES[1]!.id);
+          await recipeInput.setValue(TEST_RECIPES[1]!.id);
           expect(saveButton.attributes('disabled')).toBeUndefined();
-          await (recipeInput as any).vm.$emit('update:modelValue', TEST_MEAL_ITEM.recipeId);
+          await recipeInput.setValue(TEST_MEAL_ITEM.recipeId);
           expect(saveButton.attributes('disabled')).toBeDefined();
           await inputs.caloriesInput.setValue(1);
           expect(saveButton.attributes('disabled')).toBeUndefined();
