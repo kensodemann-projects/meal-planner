@@ -43,8 +43,8 @@ const { settings } = useSettingsData();
 const { getMealPlansForPeriod } = useMealPlansData();
 const route = useRoute();
 const router = useRouter();
-const dt = computed(() => route.query.dt as string);
-const weekDays = computed(() => [0, 1, 2, 3, 4, 5, 6].map((offset) => addDays(parseISO(dt.value), offset)));
+const weekStartDate = computed(() => route.query.dt as string);
+const weekDays = computed(() => [0, 1, 2, 3, 4, 5, 6].map((offset) => addDays(parseISO(weekStartDate.value), offset)));
 const mealPlans = ref<MealPlan[]>([]);
 const isLoading = ref(true);
 
@@ -66,8 +66,8 @@ const loadMealPlans = async () => {
 };
 
 const navigateToAdd = () => {
-  router.push({ path: 'planning/add', query: { weekEndDate: dt.value } });
+  router.push({ path: 'add', query: { weekStartDate: weekStartDate.value } });
 };
 
-watch(dt, loadMealPlans, { immediate: true });
+watch(weekStartDate, loadMealPlans, { immediate: true });
 </script>
