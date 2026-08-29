@@ -20,12 +20,14 @@ const checkAuthStatus = async (to: RouteLocationNormalized) => {
   }
 };
 
-const validateWeekParams = (to: RouteLocationNormalized) => {
-  if (to.path === '/planning/week' || to.path === '/planning/day') {
-    const dt = to.query.dt as string | undefined;
-    if (!dt || !isValid(parseISO(dt))) {
-      return '/error';
-    }
+const isValidDateQueryParam = (value: unknown) => typeof value === 'string' && isValid(parseISO(value));
+
+const validateDateParams = (to: RouteLocationNormalized) => {
+  if ((to.path === '/planning/week' || to.path === '/planning/add') && !isValidDateQueryParam(to.query.weekStartDate)) {
+    return '/error';
+  }
+  if (to.path === '/planning/day' && !isValidDateQueryParam(to.query.dt)) {
+    return '/error';
   }
 };
 
@@ -35,7 +37,7 @@ const router = createRouter({
 });
 
 router.beforeEach(checkAuthStatus);
-router.beforeEach(validateWeekParams);
+router.beforeEach(validateDateParams);
 
 // Reload the page when a dynamic import fails due to version skew after deployment.
 // See: https://vite.dev/guide/build#load-error-handling

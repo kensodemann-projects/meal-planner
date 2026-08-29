@@ -1,3 +1,4 @@
+import type { PlannedMealItem } from '@/models/meal';
 import type { MealPlan } from '@/models/meal-plan';
 import { format, startOfWeek, subWeeks } from 'date-fns';
 import { addDoc, collection, deleteDoc, doc, orderBy, query, updateDoc, where } from 'firebase/firestore';
@@ -43,8 +44,33 @@ export const useMealPlansData = () => {
     return mealPlans.value.filter((f) => f.date >= startDate && f.date <= endDate);
   };
 
+  const addMealItemToMealPlan = async (mealItem: PlannedMealItem): Promise<void> => {
+    const mealPlan = await getMealPlanForDate(mealItem.mealDate);
+    const newItem = { ...mealItem.mealItem };
+
+    if (mealPlan?.id) {
+      const meals = mealPlan.meals.map((meal) =>
+        meal.type === mealItem.mealType ? { ...meal, items: [...meal.items, newItem] } : { ...meal },
+      );
+      if (!meals.some((meal) => meal.type === mealItem.mealType)) {
+        meals.push({
+          id: globalThis.crypto.randomUUID(),
+          type: mealItem.mealType,
+          items: [newItem],
+        });
+      }
+      await updateMealPlan(mealPlan.id, { date: mealPlan.date, meals });
+    } else {
+      await addMealPlan({
+        date: mealItem.mealDate,
+        meals: [{ id: globalThis.crypto.randomUUID(), type: mealItem.mealType, items: [{ ...mealItem.mealItem }] }],
+      });
+    }
+  };
+
   return {
     addMealPlan,
+    addMealItemToMealPlan,
     error,
     mealPlans,
     getMealPlan,

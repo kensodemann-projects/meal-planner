@@ -35,14 +35,14 @@
     title="This Week"
     :week="thisWeek"
     :settings="settings"
-    @click="router.push({ path: 'planning/week', query: { dt: dateToISO(thisWeek.startDate) } })"
+    @click="router.push({ path: 'planning/week', query: { weekStartDate: dateToISO(thisWeek.startDate) } })"
   />
   <WeeklySummaryCard
     v-if="nextWeek"
     title="Next Week (Planning)"
     :week="nextWeek"
     :settings="settings"
-    @click="router.push({ path: 'planning/week', query: { dt: dateToISO(nextWeek.startDate) } })"
+    @click="router.push({ path: 'planning/week', query: { weekStartDate: dateToISO(nextWeek.startDate) } })"
   />
 </template>
 

@@ -15,6 +15,16 @@
       </v-row>
     </v-container>
   </div>
+
+  <v-fab
+    color="primary"
+    icon="mdi-plus"
+    variant="tonal"
+    location="bottom end"
+    absolute
+    @click="navigateToAdd"
+    data-testid="add-button"
+  ></v-fab>
 </template>
 
 <script setup lang="ts">
@@ -33,8 +43,8 @@ const { settings } = useSettingsData();
 const { getMealPlansForPeriod } = useMealPlansData();
 const route = useRoute();
 const router = useRouter();
-const dt = computed(() => route.query.dt as string);
-const weekDays = computed(() => [0, 1, 2, 3, 4, 5, 6].map((offset) => addDays(parseISO(dt.value), offset)));
+const weekStartDate = computed(() => route.query.weekStartDate as string);
+const weekDays = computed(() => [0, 1, 2, 3, 4, 5, 6].map((offset) => addDays(parseISO(weekStartDate.value), offset)));
 const mealPlans = ref<MealPlan[]>([]);
 const isLoading = ref(true);
 
@@ -55,5 +65,9 @@ const loadMealPlans = async () => {
   }
 };
 
-watch(dt, loadMealPlans, { immediate: true });
+const navigateToAdd = () => {
+  router.push({ path: 'add', query: { weekStartDate: weekStartDate.value } });
+};
+
+watch(weekStartDate, loadMealPlans, { immediate: true });
 </script>

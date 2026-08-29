@@ -1,9 +1,11 @@
+import type { PlannedMealItem } from '@/models/meal';
 import type { MealPlan } from '@/models/meal-plan';
 import { vi } from 'vitest';
 import { ref, type Ref } from 'vue';
 
 interface MealPlansData {
   addMealPlan: (mealPlan: MealPlan) => Promise<string>;
+  addMealItemToMealPlan: (mealItem: PlannedMealItem) => Promise<void>;
   mealPlans: Ref<MealPlan[]>;
   error: Ref<Error | null>;
   loading: Ref<boolean>;
@@ -15,6 +17,7 @@ interface MealPlansData {
 }
 
 const addMealPlan = vi.fn().mockResolvedValue('mock-id');
+const addMealItemToMealPlan = vi.fn().mockResolvedValue(undefined);
 const getMealPlan = vi.fn().mockResolvedValue(null);
 const getMealPlanForDate = vi.fn().mockResolvedValue(null);
 const getMealPlansForPeriod = vi.fn().mockResolvedValue([]);
@@ -26,6 +29,7 @@ const loading = ref<boolean>(false);
 
 export const useMealPlansData: () => MealPlansData = vi.fn().mockReturnValue({
   addMealPlan,
+  addMealItemToMealPlan,
   error,
   mealPlans,
   getMealPlan,
