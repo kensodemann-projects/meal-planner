@@ -70,6 +70,14 @@ describe('add', () => {
   });
 
   describe('on cancel', () => {
+    it('does not add a meal item', async () => {
+      const { addMealItemToMealPlan } = useMealPlansData();
+      wrapper = await renderPage();
+      wrapper.findComponent(MealItemEditor).vm.$emit('cancel');
+      await flushPromises();
+      expect(addMealItemToMealPlan).not.toHaveBeenCalled();
+    });
+
     it('navigates to the week page', async () => {
       wrapper = await renderPage();
       const editor = wrapper.findComponent(MealItemEditor);

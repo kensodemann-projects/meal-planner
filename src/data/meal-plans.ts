@@ -46,19 +46,20 @@ export const useMealPlansData = () => {
 
   const addMealItemToMealPlan = async (mealItem: PlannedMealItem): Promise<void> => {
     const mealPlan = await getMealPlanForDate(mealItem.mealDate);
-    if (mealPlan) {
-      const meal = mealPlan.meals.find((m) => m.type === mealItem.mealType);
-      if (meal) {
-        meal.items.push({ ...mealItem.mealItem });
-      } else {
-        mealPlan.meals.push({
+    const newItem = { ...mealItem.mealItem };
+
+    if (mealPlan?.id) {
+      const meals = mealPlan.meals.map((meal) =>
+        meal.type === mealItem.mealType ? { ...meal, items: [...meal.items, newItem] } : { ...meal },
+      );
+      if (!meals.some((meal) => meal.type === mealItem.mealType)) {
+        meals.push({
           id: globalThis.crypto.randomUUID(),
           type: mealItem.mealType,
-          items: [{ ...mealItem.mealItem }],
+          items: [newItem],
         });
       }
-      const { id, ...fields } = mealPlan;
-      await updateMealPlan(id!, fields);
+      await updateMealPlan(mealPlan.id, { date: mealPlan.date, meals });
     } else {
       await addMealPlan({
         date: mealItem.mealDate,
