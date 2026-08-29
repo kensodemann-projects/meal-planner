@@ -40,7 +40,7 @@ describe('add', () => {
       query: { weekStartDate: '2025-12-29' },
     });
     (useRouter as Mock).mockReturnValue({
-      back: vi.fn(),
+      replace: vi.fn(),
     });
   });
 
@@ -59,7 +59,7 @@ describe('add', () => {
 
   it('displays the page heading', async () => {
     wrapper = await renderPage();
-    expect(wrapper.find('h1').text()).toBe('Add Daily Meal Plan');
+    expect(wrapper.find('h1').text()).toBe('Add Meal Item');
   });
 
   it('renders MealItemEditor with the week start date from the route', async () => {
@@ -70,13 +70,16 @@ describe('add', () => {
   });
 
   describe('on cancel', () => {
-    it('navigates back to the previous page', async () => {
+    it('navigates to the week page', async () => {
       wrapper = await renderPage();
       const editor = wrapper.findComponent(MealItemEditor);
       editor.vm.$emit('cancel');
       await flushPromises();
-      const { back } = useRouter();
-      expect(back).toHaveBeenCalledTimes(1);
+      const { replace } = useRouter();
+      expect(replace).toHaveBeenCalledExactlyOnceWith({
+        path: '/planning/week',
+        query: { weekStartDate: '2025-12-29' },
+      });
     });
   });
 
@@ -90,13 +93,16 @@ describe('add', () => {
       expect(addMealItemToMealPlan).toHaveBeenCalledExactlyOnceWith(TEST_PLANNED_MEAL_ITEM);
     });
 
-    it('navigates back to the previous page', async () => {
+    it('navigates to the week page', async () => {
       wrapper = await renderPage();
       const editor = wrapper.findComponent(MealItemEditor);
       editor.vm.$emit('save', TEST_PLANNED_MEAL_ITEM);
       await flushPromises();
-      const { back } = useRouter();
-      expect(back).toHaveBeenCalledTimes(1);
+      const { replace } = useRouter();
+      expect(replace).toHaveBeenCalledExactlyOnceWith({
+        path: '/planning/week',
+        query: { weekStartDate: '2025-12-29' },
+      });
     });
   });
 });
