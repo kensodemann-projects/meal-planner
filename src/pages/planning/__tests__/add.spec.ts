@@ -1,4 +1,7 @@
 import MealItemEditor from '@/components/meals/MealItemEditor.vue';
+import { TEST_MEAL } from '@/data/__tests__/test-data';
+import { useMealPlansData } from '@/data/meal-plans';
+import type { PlannedMealItem } from '@/models/meal';
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { useRoute, useRouter } from 'vue-router';
@@ -9,6 +12,13 @@ import add from '../add.vue';
 
 vi.mock('vue-router');
 vi.mock('@/data/recipes');
+vi.mock('@/data/meal-plans');
+
+const TEST_PLANNED_MEAL_ITEM: PlannedMealItem = {
+  mealDate: '2025-12-29',
+  mealType: 'Lunch',
+  mealItem: TEST_MEAL.items[0]!,
+};
 
 const vuetify = createVuetify({
   components,
@@ -25,6 +35,7 @@ describe('add', () => {
   let wrapper: ReturnType<typeof mountPage>;
 
   beforeEach(() => {
+    vi.clearAllMocks();
     (useRoute as Mock).mockReturnValue({
       query: { weekStartDate: '2025-12-29' },
     });
@@ -63,6 +74,26 @@ describe('add', () => {
       wrapper = await renderPage();
       const editor = wrapper.findComponent(MealItemEditor);
       editor.vm.$emit('cancel');
+      await flushPromises();
+      const { back } = useRouter();
+      expect(back).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('on save', () => {
+    it('adds the meal item to the meal plan', async () => {
+      const { addMealItemToMealPlan } = useMealPlansData();
+      wrapper = await renderPage();
+      const editor = wrapper.findComponent(MealItemEditor);
+      editor.vm.$emit('save', TEST_PLANNED_MEAL_ITEM);
+      await flushPromises();
+      expect(addMealItemToMealPlan).toHaveBeenCalledExactlyOnceWith(TEST_PLANNED_MEAL_ITEM);
+    });
+
+    it('navigates back to the previous page', async () => {
+      wrapper = await renderPage();
+      const editor = wrapper.findComponent(MealItemEditor);
+      editor.vm.$emit('save', TEST_PLANNED_MEAL_ITEM);
       await flushPromises();
       const { back } = useRouter();
       expect(back).toHaveBeenCalledTimes(1);
