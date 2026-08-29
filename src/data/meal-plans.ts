@@ -1,4 +1,5 @@
-import type { PlannedMealItem } from '@/models/meal';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import type { MealType, PlannedMealItem } from '@/models/meal';
 import type { MealPlan } from '@/models/meal-plan';
 import { format, startOfWeek, subWeeks } from 'date-fns';
 import { addDoc, collection, deleteDoc, doc, orderBy, query, updateDoc, where } from 'firebase/firestore';
@@ -68,6 +69,12 @@ export const useMealPlansData = () => {
     }
   };
 
+  const updateMealPlanItem = async (
+    mealItem: PlannedMealItem,
+    originalMealDate: string,
+    originalMealType: MealType,
+  ): Promise<void> => {};
+
   return {
     addMealPlan,
     addMealItemToMealPlan,
@@ -79,5 +86,6 @@ export const useMealPlansData = () => {
     loading,
     removeMealPlan,
     updateMealPlan,
+    updateMealPlanItem,
   };
 };
