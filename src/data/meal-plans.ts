@@ -69,11 +69,26 @@ export const useMealPlansData = () => {
     }
   };
 
-  const updateMealPlanItem = async (
+  const updateMealItemInMealPlan = async (
     mealItem: PlannedMealItem,
     originalMealDate: string,
     originalMealType: MealType,
-  ): Promise<void> => {};
+  ): Promise<void> => {
+    if (originalMealDate === mealItem.mealDate && originalMealType === mealItem.mealType) {
+      const mealPlan = await getMealPlanForDate(mealItem.mealDate);
+      if (mealPlan?.id) {
+        const meals = mealPlan.meals.map((meal) =>
+          meal.type === mealItem.mealType
+            ? {
+                ...meal,
+                items: meal.items.map((item) => (item.id === mealItem.mealItem.id ? { ...mealItem.mealItem } : item)),
+              }
+            : { ...meal },
+        );
+        await updateMealPlan(mealPlan.id, { date: mealPlan.date, meals });
+      }
+    }
+  };
 
   return {
     addMealPlan,
@@ -86,6 +101,6 @@ export const useMealPlansData = () => {
     loading,
     removeMealPlan,
     updateMealPlan,
-    updateMealPlanItem,
+    updateMealItemInMealPlan,
   };
 };

@@ -1,4 +1,4 @@
-import type { PlannedMealItem } from '@/models/meal';
+import type { MealType, PlannedMealItem } from '@/models/meal';
 import type { MealPlan } from '@/models/meal-plan';
 import { vi } from 'vitest';
 import { ref, type Ref } from 'vue';
@@ -14,6 +14,11 @@ interface MealPlansData {
   getMealPlansForPeriod: (startDate: string, endDate: string) => Promise<MealPlan[]>;
   removeMealPlan: (id: string) => Promise<void>;
   updateMealPlan: (id: string, fields: Omit<MealPlan, 'id'>) => Promise<void>;
+  updateMealItemInMealPlan: (
+    mealItem: PlannedMealItem,
+    originalMealDate: string,
+    originalMealType: MealType,
+  ) => Promise<void>;
 }
 
 const addMealPlan = vi.fn().mockResolvedValue('mock-id');
@@ -23,6 +28,7 @@ const getMealPlanForDate = vi.fn().mockResolvedValue(null);
 const getMealPlansForPeriod = vi.fn().mockResolvedValue([]);
 const removeMealPlan = vi.fn();
 const updateMealPlan = vi.fn();
+const updateMealItemInMealPlan = vi.fn();
 const mealPlans = ref<MealPlan[]>([]);
 const error = ref<Error | null>(null);
 const loading = ref<boolean>(false);
@@ -38,4 +44,5 @@ export const useMealPlansData: () => MealPlansData = vi.fn().mockReturnValue({
   loading,
   removeMealPlan,
   updateMealPlan,
+  updateMealItemInMealPlan,
 });
