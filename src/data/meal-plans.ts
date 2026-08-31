@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { Meal, MealType, PlannedMealItem } from '@/models/meal';
 import type { MealPlan } from '@/models/meal-plan';
 import { format, startOfWeek, subWeeks } from 'date-fns';
-import { addDoc, collection, deleteDoc, doc, orderBy, query, updateDoc, where } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, orderBy, query, updateDoc, where, writeBatch } from 'firebase/firestore';
 import { computed } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
 
@@ -94,6 +93,27 @@ export const useMealPlansData = () => {
     }
   };
 
+  const moveMealItemToNewDate = async (sourcePlan: MealPlan, plannedMealItem: PlannedMealItem): Promise<void> => {
+    const sourceMeals = createMealsWithoutItem(sourcePlan.meals, plannedMealItem);
+    const destPlan = await getMealPlanForDate(plannedMealItem.mealDate);
+    const destMeals = createMealsWithNewItem(destPlan?.meals || [], plannedMealItem);
+    const batch = writeBatch(db);
+
+    if (mealsAreEmpty(sourceMeals)) {
+      batch.delete(doc(db, `${path}/${sourcePlan.id}`));
+    } else {
+      batch.update(doc(db, `${path}/${sourcePlan.id}`), { date: sourcePlan.date, meals: sourceMeals });
+    }
+
+    if (destPlan?.id) {
+      batch.update(doc(db, `${path}/${destPlan.id}`), { date: destPlan.date, meals: destMeals });
+    } else {
+      batch.set(doc(mealPlansCollection), { date: plannedMealItem.mealDate, meals: destMeals });
+    }
+
+    await batch.commit();
+  };
+
   const updateMealItemInMealPlan = async (
     plannedMealItem: PlannedMealItem,
     originalMealDate: string,
@@ -106,13 +126,7 @@ export const useMealPlansData = () => {
     }
 
     if (originalMealDate !== plannedMealItem.mealDate) {
-      const meals = createMealsWithoutItem(mealPlan.meals, plannedMealItem);
-      if (mealsAreEmpty(meals)) {
-        await removeMealPlan(mealPlan.id);
-      } else {
-        await updateMealPlan(mealPlan.id, { date: mealPlan.date, meals });
-      }
-      await addMealItemToMealPlan(plannedMealItem);
+      await moveMealItemToNewDate(mealPlan, plannedMealItem);
     } else if (originalMealType !== plannedMealItem.mealType) {
       const meals = createMealsWithNewItem(createMealsWithoutItem(mealPlan.meals, plannedMealItem), plannedMealItem);
       await updateMealPlan(mealPlan.id, { date: mealPlan.date, meals });

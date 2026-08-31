@@ -1,5 +1,5 @@
 import type { MealItem, PlannedMealItem } from '@/models/meal';
-import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, updateDoc, writeBatch } from 'firebase/firestore';
 import { type Mock, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ref } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
@@ -22,9 +22,20 @@ vi.mock('firebase/firestore', async () => {
       .mockImplementation((col: string, op: string, value: number) => ':where:' + col + op + value.toString()),
     deleteDoc: vi.fn(),
     updateDoc: vi.fn(),
+    writeBatch: vi.fn().mockImplementation(() => ({
+      update: vi.fn().mockReturnThis(),
+      delete: vi.fn().mockReturnThis(),
+      set: vi.fn().mockReturnThis(),
+      commit: vi.fn().mockResolvedValue(undefined),
+    })),
     getDocs: vi.fn().mockResolvedValue([]),
     getDoc: vi.fn().mockResolvedValue({ exists: vi.fn().mockResolvedValue(false) }),
-    doc: vi.fn().mockImplementation((db: any, ...paths: string[]) => db.id.toString() + ':doc:' + paths.join(':')),
+    doc: vi.fn().mockImplementation((dbOrCol: any, ...paths: string[]) => {
+      if (paths.length === 0) {
+        return String(dbOrCol).replace(':col:', ':doc:') + '/new';
+      }
+      return dbOrCol.id.toString() + ':doc:' + paths.join(':');
+    }),
   };
 });
 vi.mock('vuefire', async () => {
@@ -570,6 +581,25 @@ describe('Meal Plans Data Service', () => {
         meals: [{ id: 'meal-solo-1', type: 'Lunch' as const, items: [soloItem] }],
       };
 
+      type MockWriteBatch = {
+        update: Mock;
+        delete: Mock;
+        set: Mock;
+        commit: Mock;
+      };
+
+      const getWriteBatch = (): MockWriteBatch => {
+        expect(writeBatch).toHaveBeenCalledOnce();
+        expect(writeBatch).toHaveBeenCalledWith({ id: 42, name: 'my fake fire store' });
+        return vi.mocked(writeBatch).mock.results[0]!.value as MockWriteBatch;
+      };
+
+      const expectNoDirectWrites = () => {
+        expect(updateDoc).not.toHaveBeenCalled();
+        expect(addDoc).not.toHaveBeenCalled();
+        expect(deleteDoc).not.toHaveBeenCalled();
+      };
+
       describe('when a meal plan exists for the new date with that meal type', () => {
         const originalItem = sourcePlan.meals[0]!.items[0]!;
         const originalMealDate = sourcePlan.date;
@@ -587,19 +617,22 @@ describe('Meal Plans Data Service', () => {
           const { id, ...planFields } = destPlan;
           const { updateMealItemInMealPlan } = useMealPlansData();
           await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
-          expect(updateDoc).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
             ...planFields,
             meals: planFields.meals.map((meal) =>
               meal.type === 'Breakfast' ? { ...meal, items: [...meal.items, updatedItem] } : meal,
             ),
           });
+          expect(batch.commit).toHaveBeenCalledOnce();
         });
 
         it('removes the item from the source meal and leaves remaining items', async () => {
           const { id, ...planFields } = sourcePlan;
           const { updateMealItemInMealPlan } = useMealPlansData();
           await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
-          expect(updateDoc).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
             ...planFields,
             meals: planFields.meals.map((meal) =>
               meal.type === 'Breakfast'
@@ -607,14 +640,18 @@ describe('Meal Plans Data Service', () => {
                 : meal,
             ),
           });
+          expect(batch.commit).toHaveBeenCalledOnce();
         });
 
         it('does not add or delete a meal plan document', async () => {
           const { updateMealItemInMealPlan } = useMealPlansData();
           await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
-          expect(updateDoc).toHaveBeenCalledTimes(2);
-          expect(addDoc).not.toHaveBeenCalled();
-          expect(deleteDoc).not.toHaveBeenCalled();
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledTimes(2);
+          expect(batch.set).not.toHaveBeenCalled();
+          expect(batch.delete).not.toHaveBeenCalled();
+          expect(batch.commit).toHaveBeenCalledOnce();
+          expectNoDirectWrites();
         });
       });
 
@@ -635,7 +672,8 @@ describe('Meal Plans Data Service', () => {
           const { id, ...planFields } = destPlan;
           const { updateMealItemInMealPlan } = useMealPlansData();
           await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
-          expect(updateDoc).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
             ...planFields,
             meals: [
               ...planFields.meals,
@@ -646,13 +684,15 @@ describe('Meal Plans Data Service', () => {
               },
             ],
           });
+          expect(batch.commit).toHaveBeenCalledOnce();
         });
 
         it('removes the item from the source meal plan', async () => {
           const { id, ...planFields } = sourcePlan;
           const { updateMealItemInMealPlan } = useMealPlansData();
           await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
-          expect(updateDoc).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
             ...planFields,
             meals: planFields.meals.map((meal) =>
               meal.type === 'Breakfast'
@@ -660,14 +700,18 @@ describe('Meal Plans Data Service', () => {
                 : meal,
             ),
           });
+          expect(batch.commit).toHaveBeenCalledOnce();
         });
 
         it('does not add or delete a meal plan document', async () => {
           const { updateMealItemInMealPlan } = useMealPlansData();
           await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
-          expect(updateDoc).toHaveBeenCalledTimes(2);
-          expect(addDoc).not.toHaveBeenCalled();
-          expect(deleteDoc).not.toHaveBeenCalled();
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledTimes(2);
+          expect(batch.set).not.toHaveBeenCalled();
+          expect(batch.delete).not.toHaveBeenCalled();
+          expect(batch.commit).toHaveBeenCalledOnce();
+          expectNoDirectWrites();
         });
       });
 
@@ -687,8 +731,9 @@ describe('Meal Plans Data Service', () => {
         it('adds a new meal plan document for the destination date', async () => {
           const { updateMealItemInMealPlan } = useMealPlansData();
           await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
-          expect(addDoc).toHaveBeenCalledOnce();
-          expect(addDoc).toHaveBeenCalledWith('42:col:meal-plans', {
+          const batch = getWriteBatch();
+          expect(batch.set).toHaveBeenCalledOnce();
+          expect(batch.set).toHaveBeenCalledWith('42:doc:meal-plans/new', {
             date: '2099-01-01',
             meals: [
               {
@@ -698,14 +743,16 @@ describe('Meal Plans Data Service', () => {
               },
             ],
           });
+          expect(batch.commit).toHaveBeenCalledOnce();
         });
 
         it('removes the item from the source meal plan', async () => {
           const { id, ...planFields } = sourcePlan;
           const { updateMealItemInMealPlan } = useMealPlansData();
           await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
-          expect(updateDoc).toHaveBeenCalledOnce();
-          expect(updateDoc).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledOnce();
+          expect(batch.update).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
             ...planFields,
             meals: planFields.meals.map((meal) =>
               meal.type === 'Breakfast'
@@ -713,14 +760,18 @@ describe('Meal Plans Data Service', () => {
                 : meal,
             ),
           });
+          expect(batch.commit).toHaveBeenCalledOnce();
         });
 
         it('does not delete a meal plan document', async () => {
           const { updateMealItemInMealPlan } = useMealPlansData();
           await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
-          expect(addDoc).toHaveBeenCalledOnce();
-          expect(updateDoc).toHaveBeenCalledOnce();
-          expect(deleteDoc).not.toHaveBeenCalled();
+          const batch = getWriteBatch();
+          expect(batch.set).toHaveBeenCalledOnce();
+          expect(batch.update).toHaveBeenCalledOnce();
+          expect(batch.delete).not.toHaveBeenCalled();
+          expect(batch.commit).toHaveBeenCalledOnce();
+          expectNoDirectWrites();
         });
       });
 
@@ -741,30 +792,37 @@ describe('Meal Plans Data Service', () => {
           const { id, ...planFields } = sourcePlan;
           const { updateMealItemInMealPlan } = useMealPlansData();
           await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
-          expect(updateDoc).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
             ...planFields,
             meals: planFields.meals.filter((meal) => meal.type !== 'Snack'),
           });
+          expect(batch.commit).toHaveBeenCalledOnce();
         });
 
         it('updates the destination meal plan with the updated item', async () => {
           const { id, ...planFields } = destPlan;
           const { updateMealItemInMealPlan } = useMealPlansData();
           await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
-          expect(updateDoc).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
             ...planFields,
             meals: planFields.meals.map((meal) =>
               meal.type === 'Breakfast' ? { ...meal, items: [...meal.items, updatedItem] } : meal,
             ),
           });
+          expect(batch.commit).toHaveBeenCalledOnce();
         });
 
         it('does not delete the source meal plan document', async () => {
           const { updateMealItemInMealPlan } = useMealPlansData();
           await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
-          expect(updateDoc).toHaveBeenCalledTimes(2);
-          expect(deleteDoc).not.toHaveBeenCalled();
-          expect(addDoc).not.toHaveBeenCalled();
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledTimes(2);
+          expect(batch.delete).not.toHaveBeenCalled();
+          expect(batch.set).not.toHaveBeenCalled();
+          expect(batch.commit).toHaveBeenCalledOnce();
+          expectNoDirectWrites();
         });
       });
 
@@ -784,29 +842,36 @@ describe('Meal Plans Data Service', () => {
         it('deletes the source meal plan document', async () => {
           const { updateMealItemInMealPlan } = useMealPlansData();
           await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
-          expect(deleteDoc).toHaveBeenCalledOnce();
-          expect(deleteDoc).toHaveBeenCalledWith('42:doc:meal-plans/mp-solo');
+          const batch = getWriteBatch();
+          expect(batch.delete).toHaveBeenCalledOnce();
+          expect(batch.delete).toHaveBeenCalledWith('42:doc:meal-plans/mp-solo');
+          expect(batch.commit).toHaveBeenCalledOnce();
         });
 
         it('updates the destination meal plan with the updated item', async () => {
           const { id, ...planFields } = destWithType;
           const { updateMealItemInMealPlan } = useMealPlansData();
           await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
-          expect(updateDoc).toHaveBeenCalledOnce();
-          expect(updateDoc).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledOnce();
+          expect(batch.update).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
             ...planFields,
             meals: planFields.meals.map((meal) =>
               meal.type === 'Lunch' ? { ...meal, items: [...meal.items, updatedItem] } : meal,
             ),
           });
+          expect(batch.commit).toHaveBeenCalledOnce();
         });
 
         it('does not add a meal plan document', async () => {
           const { updateMealItemInMealPlan } = useMealPlansData();
           await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
-          expect(deleteDoc).toHaveBeenCalledOnce();
-          expect(updateDoc).toHaveBeenCalledOnce();
-          expect(addDoc).not.toHaveBeenCalled();
+          const batch = getWriteBatch();
+          expect(batch.delete).toHaveBeenCalledOnce();
+          expect(batch.update).toHaveBeenCalledOnce();
+          expect(batch.set).not.toHaveBeenCalled();
+          expect(batch.commit).toHaveBeenCalledOnce();
+          expectNoDirectWrites();
         });
 
         describe('and no meal plan exists for the new date', () => {
@@ -819,10 +884,11 @@ describe('Meal Plans Data Service', () => {
           it('deletes the source meal plan and adds a new destination plan', async () => {
             const { updateMealItemInMealPlan } = useMealPlansData();
             await updateMealItemInMealPlan(moved, originalMealDate, originalMealType);
-            expect(deleteDoc).toHaveBeenCalledOnce();
-            expect(deleteDoc).toHaveBeenCalledWith('42:doc:meal-plans/mp-solo');
-            expect(addDoc).toHaveBeenCalledOnce();
-            expect(addDoc).toHaveBeenCalledWith('42:col:meal-plans', {
+            const batch = getWriteBatch();
+            expect(batch.delete).toHaveBeenCalledOnce();
+            expect(batch.delete).toHaveBeenCalledWith('42:doc:meal-plans/mp-solo');
+            expect(batch.set).toHaveBeenCalledOnce();
+            expect(batch.set).toHaveBeenCalledWith('42:doc:meal-plans/new', {
               date: '2099-01-01',
               meals: [
                 {
@@ -832,7 +898,9 @@ describe('Meal Plans Data Service', () => {
                 },
               ],
             });
-            expect(updateDoc).not.toHaveBeenCalled();
+            expect(batch.update).not.toHaveBeenCalled();
+            expect(batch.commit).toHaveBeenCalledOnce();
+            expectNoDirectWrites();
           });
         });
       });
