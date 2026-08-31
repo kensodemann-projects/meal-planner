@@ -78,6 +78,8 @@ export const useMealPlansData = () => {
     return newMeals.filter((meal) => meal.items.length > 0);
   };
 
+  const mealsAreEmpty = (meals: Meal[]): boolean => meals.flatMap((meal) => meal.items).length === 0;
+
   const addMealItemToMealPlan = async (plannedMealItem: PlannedMealItem): Promise<void> => {
     const mealPlan = await getMealPlanForDate(plannedMealItem.mealDate);
     const meals = createMealsWithNewItem(mealPlan?.meals || [], plannedMealItem);
@@ -97,29 +99,26 @@ export const useMealPlansData = () => {
     originalMealDate: string,
     originalMealType: MealType,
   ): Promise<void> => {
-    if (originalMealDate === plannedMealItem.mealDate && originalMealType === plannedMealItem.mealType) {
-      const mealPlan = await getMealPlanForDate(plannedMealItem.mealDate);
-      if (mealPlan?.id) {
-        const meals = createMealsWithUpdatedItem(mealPlan.meals, plannedMealItem);
+    const mealPlan = await getMealPlanForDate(originalMealDate);
+    if (!mealPlan?.id) {
+      console.error('Meal plan not found for date:', originalMealDate);
+      return;
+    }
+
+    if (originalMealDate !== plannedMealItem.mealDate) {
+      const meals = createMealsWithoutItem(mealPlan.meals, plannedMealItem);
+      if (mealsAreEmpty(meals)) {
+        await removeMealPlan(mealPlan.id);
+      } else {
         await updateMealPlan(mealPlan.id, { date: mealPlan.date, meals });
       }
-    } else if (originalMealDate !== plannedMealItem.mealDate) {
-      const mealPlan = await getMealPlanForDate(originalMealDate);
-      if (mealPlan?.id) {
-        const meals = createMealsWithoutItem(mealPlan.meals, plannedMealItem);
-        if (meals.flatMap((meal) => meal.items).length === 0) {
-          await removeMealPlan(mealPlan.id);
-        } else {
-          await updateMealPlan(mealPlan.id, { date: mealPlan.date, meals });
-        }
-        await addMealItemToMealPlan(plannedMealItem);
-      }
+      await addMealItemToMealPlan(plannedMealItem);
+    } else if (originalMealType !== plannedMealItem.mealType) {
+      const meals = createMealsWithNewItem(createMealsWithoutItem(mealPlan.meals, plannedMealItem), plannedMealItem);
+      await updateMealPlan(mealPlan.id, { date: mealPlan.date, meals });
     } else {
-      const mealPlan = await getMealPlanForDate(plannedMealItem.mealDate);
-      if (mealPlan?.id) {
-        const meals = createMealsWithNewItem(createMealsWithoutItem(mealPlan.meals, plannedMealItem), plannedMealItem);
-        await updateMealPlan(mealPlan.id, { date: mealPlan.date, meals });
-      }
+      const meals = createMealsWithUpdatedItem(mealPlan.meals, plannedMealItem);
+      await updateMealPlan(mealPlan.id, { date: mealPlan.date, meals });
     }
   };
 
