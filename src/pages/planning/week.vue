@@ -6,7 +6,12 @@
     </div>
     <template v-else>
       <div v-for="row in weekRows" :key="row.iso" class="day-plan mb-4">
-        <DailySummaryCard :date="row.day" :mealPlan="row.plan" :settings="settings" />
+        <DailySummaryCard
+          :date="row.day"
+          :mealPlan="row.plan"
+          :settings="settings"
+          @modify="(plannedMealItem) => navigateToUpdate(row.plan!, plannedMealItem)"
+        />
       </div>
     </template>
     <v-container fluid>
@@ -32,6 +37,7 @@ import DailySummaryCard from '@/components/planning/DailySummaryCard.vue';
 import { dateToISO } from '@/core/dates';
 import { useMealPlansData } from '@/data/meal-plans';
 import { useSettingsData } from '@/data/settings';
+import type { PlannedMealItem } from '@/models/meal';
 import type { MealPlan } from '@/models/meal-plan';
 import { addDays, parseISO } from 'date-fns';
 import { computed, ref, watch } from 'vue';
@@ -67,6 +73,18 @@ const loadMealPlans = async () => {
 
 const navigateToAdd = () => {
   router.push({ path: 'add', query: { weekStartDate: weekStartDate.value } });
+};
+
+const navigateToUpdate = (mealPlan: MealPlan, plannedMealItem: PlannedMealItem) => {
+  router.push({
+    path: 'update',
+    query: {
+      weekStartDate: weekStartDate.value,
+      mealPlanId: mealPlan.id,
+      mealType: plannedMealItem.mealType,
+      mealItemId: plannedMealItem.mealItem.id,
+    },
+  });
 };
 
 watch(weekStartDate, loadMealPlans, { immediate: true });
