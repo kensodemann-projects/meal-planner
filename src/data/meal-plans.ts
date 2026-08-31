@@ -1,7 +1,7 @@
-import type { PlannedMealItem } from '@/models/meal';
+import type { Meal, MealType, PlannedMealItem } from '@/models/meal';
 import type { MealPlan } from '@/models/meal-plan';
 import { format, startOfWeek, subWeeks } from 'date-fns';
-import { addDoc, collection, deleteDoc, doc, orderBy, query, updateDoc, where } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, orderBy, query, updateDoc, where, writeBatch } from 'firebase/firestore';
 import { computed } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
 
@@ -44,27 +44,95 @@ export const useMealPlansData = () => {
     return mealPlans.value.filter((f) => f.date >= startDate && f.date <= endDate);
   };
 
-  const addMealItemToMealPlan = async (mealItem: PlannedMealItem): Promise<void> => {
-    const mealPlan = await getMealPlanForDate(mealItem.mealDate);
-    const newItem = { ...mealItem.mealItem };
+  const createMealsWithNewItem = (meals: Meal[], plannedMealItem: PlannedMealItem): Meal[] => {
+    const newItem = { ...plannedMealItem.mealItem };
+    const newMeals = meals.map((meal) =>
+      meal.type === plannedMealItem.mealType ? { ...meal, items: [...meal.items, newItem] } : { ...meal },
+    );
+    if (!newMeals.some((meal) => meal.type === plannedMealItem.mealType)) {
+      newMeals.push({ id: globalThis.crypto.randomUUID(), type: plannedMealItem.mealType, items: [newItem] });
+    }
+    return newMeals;
+  };
+
+  const createMealsWithUpdatedItem = (meals: Meal[], plannedMealItem: PlannedMealItem): Meal[] => {
+    const newMeals = meals.map((meal) =>
+      meal.type === plannedMealItem.mealType
+        ? {
+            ...meal,
+            items: meal.items.map((item) =>
+              item.id === plannedMealItem.mealItem.id ? { ...plannedMealItem.mealItem } : item,
+            ),
+          }
+        : { ...meal },
+    );
+    return newMeals;
+  };
+
+  const createMealsWithoutItem = (meals: Meal[], plannedMealItem: PlannedMealItem): Meal[] => {
+    const newMeals = meals.map((meal) => ({
+      ...meal,
+      items: meal.items.filter((item) => item.id !== plannedMealItem.mealItem.id),
+    }));
+    return newMeals.filter((meal) => meal.items.length > 0);
+  };
+
+  const mealsAreEmpty = (meals: Meal[]): boolean => meals.flatMap((meal) => meal.items).length === 0;
+
+  const addMealItemToMealPlan = async (plannedMealItem: PlannedMealItem): Promise<void> => {
+    const mealPlan = await getMealPlanForDate(plannedMealItem.mealDate);
+    const meals = createMealsWithNewItem(mealPlan?.meals || [], plannedMealItem);
 
     if (mealPlan?.id) {
-      const meals = mealPlan.meals.map((meal) =>
-        meal.type === mealItem.mealType ? { ...meal, items: [...meal.items, newItem] } : { ...meal },
-      );
-      if (!meals.some((meal) => meal.type === mealItem.mealType)) {
-        meals.push({
-          id: globalThis.crypto.randomUUID(),
-          type: mealItem.mealType,
-          items: [newItem],
-        });
-      }
       await updateMealPlan(mealPlan.id, { date: mealPlan.date, meals });
     } else {
       await addMealPlan({
-        date: mealItem.mealDate,
-        meals: [{ id: globalThis.crypto.randomUUID(), type: mealItem.mealType, items: [{ ...mealItem.mealItem }] }],
+        date: plannedMealItem.mealDate,
+        meals,
       });
+    }
+  };
+
+  const moveMealItemToNewDate = async (sourcePlan: MealPlan, plannedMealItem: PlannedMealItem): Promise<void> => {
+    const sourceMeals = createMealsWithoutItem(sourcePlan.meals, plannedMealItem);
+    const destPlan = await getMealPlanForDate(plannedMealItem.mealDate);
+    const destMeals = createMealsWithNewItem(destPlan?.meals || [], plannedMealItem);
+    const batch = writeBatch(db);
+
+    if (mealsAreEmpty(sourceMeals)) {
+      batch.delete(doc(db, `${path}/${sourcePlan.id}`));
+    } else {
+      batch.update(doc(db, `${path}/${sourcePlan.id}`), { date: sourcePlan.date, meals: sourceMeals });
+    }
+
+    if (destPlan?.id) {
+      batch.update(doc(db, `${path}/${destPlan.id}`), { date: destPlan.date, meals: destMeals });
+    } else {
+      batch.set(doc(mealPlansCollection), { date: plannedMealItem.mealDate, meals: destMeals });
+    }
+
+    await batch.commit();
+  };
+
+  const updateMealItemInMealPlan = async (
+    plannedMealItem: PlannedMealItem,
+    originalMealDate: string,
+    originalMealType: MealType,
+  ): Promise<void> => {
+    const mealPlan = await getMealPlanForDate(originalMealDate);
+    if (!mealPlan?.id) {
+      console.error('Meal plan not found for date:', originalMealDate);
+      return;
+    }
+
+    if (originalMealDate !== plannedMealItem.mealDate) {
+      await moveMealItemToNewDate(mealPlan, plannedMealItem);
+    } else if (originalMealType !== plannedMealItem.mealType) {
+      const meals = createMealsWithNewItem(createMealsWithoutItem(mealPlan.meals, plannedMealItem), plannedMealItem);
+      await updateMealPlan(mealPlan.id, { date: mealPlan.date, meals });
+    } else {
+      const meals = createMealsWithUpdatedItem(mealPlan.meals, plannedMealItem);
+      await updateMealPlan(mealPlan.id, { date: mealPlan.date, meals });
     }
   };
 
@@ -79,5 +147,6 @@ export const useMealPlansData = () => {
     loading,
     removeMealPlan,
     updateMealPlan,
+    updateMealItemInMealPlan,
   };
 };

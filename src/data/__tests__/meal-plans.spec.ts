@@ -1,5 +1,5 @@
 import type { MealItem, PlannedMealItem } from '@/models/meal';
-import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, updateDoc, writeBatch } from 'firebase/firestore';
 import { type Mock, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ref } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
@@ -22,9 +22,20 @@ vi.mock('firebase/firestore', async () => {
       .mockImplementation((col: string, op: string, value: number) => ':where:' + col + op + value.toString()),
     deleteDoc: vi.fn(),
     updateDoc: vi.fn(),
+    writeBatch: vi.fn().mockImplementation(() => ({
+      update: vi.fn().mockReturnThis(),
+      delete: vi.fn().mockReturnThis(),
+      set: vi.fn().mockReturnThis(),
+      commit: vi.fn().mockResolvedValue(undefined),
+    })),
     getDocs: vi.fn().mockResolvedValue([]),
     getDoc: vi.fn().mockResolvedValue({ exists: vi.fn().mockResolvedValue(false) }),
-    doc: vi.fn().mockImplementation((db: any, ...paths: string[]) => db.id.toString() + ':doc:' + paths.join(':')),
+    doc: vi.fn().mockImplementation((dbOrCol: any, ...paths: string[]) => {
+      if (paths.length === 0) {
+        return String(dbOrCol).replace(':col:', ':doc:') + '/new';
+      }
+      return dbOrCol.id.toString() + ':doc:' + paths.join(':');
+    }),
   };
 });
 vi.mock('vuefire', async () => {
@@ -306,6 +317,592 @@ describe('Meal Plans Data Service', () => {
       expect(updateDoc).toHaveBeenCalledOnce();
       expect(updateDoc).toHaveBeenCalledWith('42:doc:meal-plans/43334-22343-893', {
         ...TEST_MEAL_PLAN,
+      });
+    });
+  });
+
+  describe('update meal item in meal plan', () => {
+    const GENERATED_MEAL_ID = 'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee';
+
+    const seedMealPlans = (plans = TEST_MEAL_PLANS) => {
+      const mealPlans = ref(structuredClone(plans));
+      (mealPlans as any).promise = { value: Promise.resolve() };
+      (useCollection as Mock).mockReturnValueOnce(mealPlans);
+    };
+
+    const updatedItemFor = (id: string): MealItem => ({
+      id,
+      name: 'Steel Cut Oats',
+      recipeId: 'recipe-updated',
+      servings: 2,
+      nutrition: {
+        calories: 640,
+        sodium: 200,
+        sugar: 4,
+        carbs: 108,
+        fat: 12,
+        protein: 20,
+      },
+    });
+
+    beforeEach(() => {
+      vi.spyOn(globalThis.crypto, 'randomUUID').mockReturnValue(
+        GENERATED_MEAL_ID as `${string}-${string}-${string}-${string}-${string}`,
+      );
+    });
+
+    afterEach(() => {
+      vi.mocked(globalThis.crypto.randomUUID).mockRestore();
+    });
+
+    describe('when the date and meal type are unchanged', () => {
+      const existingPlan = TEST_MEAL_PLANS[0]!;
+      const originalItem = existingPlan.meals[0]!.items[0]!;
+      const originalMealDate = existingPlan.date;
+      const originalMealType = 'Breakfast' as const;
+      const updatedItem: MealItem = {
+        id: originalItem.id,
+        name: 'Steel Cut Oats',
+        recipeId: 'recipe-updated',
+        servings: 2,
+        nutrition: {
+          calories: 640,
+          sodium: 200,
+          sugar: 4,
+          carbs: 108,
+          fat: 12,
+          protein: 20,
+        },
+      };
+      const updated: PlannedMealItem = {
+        mealDate: existingPlan.date,
+        mealType: 'Breakfast',
+        mealItem: updatedItem,
+      };
+
+      beforeEach(() => seedMealPlans());
+
+      it('replaces the matching item with the updated fields', async () => {
+        const { id, ...planFields } = existingPlan;
+        const { updateMealItemInMealPlan } = useMealPlansData();
+        await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+        expect(updateDoc).toHaveBeenCalledOnce();
+        expect(updateDoc).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+          ...planFields,
+          meals: planFields.meals.map((meal) =>
+            meal.type === 'Breakfast'
+              ? {
+                  ...meal,
+                  items: meal.items.map((item) => (item.id === originalItem.id ? updatedItem : item)),
+                }
+              : meal,
+          ),
+        });
+      });
+
+      it('leaves other items and meals unchanged', async () => {
+        const { updateMealItemInMealPlan } = useMealPlansData();
+        await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+        expect(updateDoc).toHaveBeenCalledOnce();
+        const updatedFields = (updateDoc as Mock).mock.calls[0]?.[1];
+        const breakfast = updatedFields.meals.find((meal: { type: string }) => meal.type === 'Breakfast');
+        expect(breakfast.items).toHaveLength(2);
+        expect(breakfast.items.find((item: { id: string }) => item.id === 'item-1-1-2')).toEqual(
+          existingPlan.meals[0]!.items[1],
+        );
+        expect(updatedFields.meals.filter((meal: { type: string }) => meal.type !== 'Breakfast')).toEqual(
+          existingPlan.meals.filter((meal) => meal.type !== 'Breakfast'),
+        );
+      });
+
+      it('does not add or delete a meal plan document', async () => {
+        const { updateMealItemInMealPlan } = useMealPlansData();
+        await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+        expect(updateDoc).toHaveBeenCalledOnce();
+        expect(addDoc).not.toHaveBeenCalled();
+        expect(deleteDoc).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when the meal type changes on the same date', () => {
+      describe('when the destination meal already exists', () => {
+        const existingPlan = TEST_MEAL_PLANS[0]!;
+        const originalItem = existingPlan.meals[0]!.items[0]!;
+        const originalMealDate = existingPlan.date;
+        const originalMealType = 'Breakfast' as const;
+        const updatedItem = updatedItemFor(originalItem.id);
+        const updated: PlannedMealItem = {
+          mealDate: existingPlan.date,
+          mealType: 'Lunch',
+          mealItem: updatedItem,
+        };
+
+        beforeEach(() => seedMealPlans());
+
+        it('appends the updated item to the destination meal', async () => {
+          const { id, ...planFields } = existingPlan;
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          expect(updateDoc).toHaveBeenCalledOnce();
+          expect(updateDoc).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+            ...planFields,
+            meals: planFields.meals.map((meal) => {
+              if (meal.type === 'Breakfast') {
+                return { ...meal, items: meal.items.filter((item) => item.id !== originalItem.id) };
+              }
+              if (meal.type === 'Lunch') {
+                return { ...meal, items: [...meal.items, updatedItem] };
+              }
+              return meal;
+            }),
+          });
+        });
+
+        it('leaves the remaining items on the source meal', async () => {
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          expect(updateDoc).toHaveBeenCalledOnce();
+          const updatedFields = (updateDoc as Mock).mock.calls[0]?.[1];
+          const breakfast = updatedFields.meals.find((meal: { type: string }) => meal.type === 'Breakfast');
+          expect(breakfast.items).toEqual([existingPlan.meals[0]!.items[1]]);
+        });
+
+        it('does not add or delete a meal plan document', async () => {
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          expect(updateDoc).toHaveBeenCalledOnce();
+          expect(addDoc).not.toHaveBeenCalled();
+          expect(deleteDoc).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('when the destination meal does not exist', () => {
+        const existingPlan = TEST_MEAL_PLANS[1]!;
+        const originalItem = existingPlan.meals[0]!.items[0]!;
+        const originalMealDate = existingPlan.date;
+        const originalMealType = 'Breakfast' as const;
+        const updatedItem = updatedItemFor(originalItem.id);
+        const updated: PlannedMealItem = {
+          mealDate: existingPlan.date,
+          mealType: 'Snack',
+          mealItem: updatedItem,
+        };
+
+        beforeEach(() => seedMealPlans());
+
+        it('adds a new meal of that type containing the updated item', async () => {
+          const { id, ...planFields } = existingPlan;
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          expect(updateDoc).toHaveBeenCalledOnce();
+          expect(updateDoc).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+            ...planFields,
+            meals: [
+              ...planFields.meals.map((meal) =>
+                meal.type === 'Breakfast'
+                  ? { ...meal, items: meal.items.filter((item) => item.id !== originalItem.id) }
+                  : meal,
+              ),
+              {
+                id: GENERATED_MEAL_ID,
+                type: 'Snack',
+                items: [updatedItem],
+              },
+            ],
+          });
+        });
+
+        it('does not add or delete a meal plan document', async () => {
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          expect(updateDoc).toHaveBeenCalledOnce();
+          expect(addDoc).not.toHaveBeenCalled();
+          expect(deleteDoc).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('when the item was the last in the source meal', () => {
+        const existingPlan = TEST_MEAL_PLANS[0]!;
+        const originalItem = existingPlan.meals.find((meal) => meal.type === 'Snack')!.items[0]!;
+        const originalMealDate = existingPlan.date;
+        const originalMealType = 'Snack' as const;
+        const updatedItem = updatedItemFor(originalItem.id);
+        const updated: PlannedMealItem = {
+          mealDate: existingPlan.date,
+          mealType: 'Lunch',
+          mealItem: updatedItem,
+        };
+
+        beforeEach(() => seedMealPlans());
+
+        it('removes the empty source meal from the plan', async () => {
+          const { id, ...planFields } = existingPlan;
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          expect(updateDoc).toHaveBeenCalledOnce();
+          expect(updateDoc).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+            ...planFields,
+            meals: planFields.meals
+              .filter((meal) => meal.type !== 'Snack')
+              .map((meal) => (meal.type === 'Lunch' ? { ...meal, items: [...meal.items, updatedItem] } : meal)),
+          });
+        });
+
+        it('does not delete the meal plan document', async () => {
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          expect(updateDoc).toHaveBeenCalledOnce();
+          expect(deleteDoc).not.toHaveBeenCalled();
+          expect(addDoc).not.toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe('when the date changes', () => {
+      const sourcePlan = TEST_MEAL_PLANS[0]!;
+      const destPlan = TEST_MEAL_PLANS[1]!;
+      const soloItem: MealItem = {
+        id: 'item-solo-1',
+        name: 'Solo Lunch',
+        recipeId: 'food-test-1',
+        servings: 1,
+        nutrition: {
+          calories: 200,
+          sodium: 50,
+          sugar: 1,
+          carbs: 10,
+          fat: 5,
+          protein: 15,
+        },
+      };
+      const soloPlan = {
+        id: 'mp-solo',
+        date: '2025-12-20',
+        meals: [{ id: 'meal-solo-1', type: 'Lunch' as const, items: [soloItem] }],
+      };
+
+      type MockWriteBatch = {
+        update: Mock;
+        delete: Mock;
+        set: Mock;
+        commit: Mock;
+      };
+
+      const getWriteBatch = (): MockWriteBatch => {
+        expect(writeBatch).toHaveBeenCalledOnce();
+        expect(writeBatch).toHaveBeenCalledWith({ id: 42, name: 'my fake fire store' });
+        return vi.mocked(writeBatch).mock.results[0]!.value as MockWriteBatch;
+      };
+
+      const expectNoDirectWrites = () => {
+        expect(updateDoc).not.toHaveBeenCalled();
+        expect(addDoc).not.toHaveBeenCalled();
+        expect(deleteDoc).not.toHaveBeenCalled();
+      };
+
+      describe('when a meal plan exists for the new date with that meal type', () => {
+        const originalItem = sourcePlan.meals[0]!.items[0]!;
+        const originalMealDate = sourcePlan.date;
+        const originalMealType = 'Breakfast' as const;
+        const updatedItem = updatedItemFor(originalItem.id);
+        const updated: PlannedMealItem = {
+          mealDate: destPlan.date,
+          mealType: 'Breakfast',
+          mealItem: updatedItem,
+        };
+
+        beforeEach(() => seedMealPlans());
+
+        it('updates the destination meal plan with the updated item', async () => {
+          const { id, ...planFields } = destPlan;
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+            ...planFields,
+            meals: planFields.meals.map((meal) =>
+              meal.type === 'Breakfast' ? { ...meal, items: [...meal.items, updatedItem] } : meal,
+            ),
+          });
+          expect(batch.commit).toHaveBeenCalledOnce();
+        });
+
+        it('removes the item from the source meal and leaves remaining items', async () => {
+          const { id, ...planFields } = sourcePlan;
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+            ...planFields,
+            meals: planFields.meals.map((meal) =>
+              meal.type === 'Breakfast'
+                ? { ...meal, items: meal.items.filter((item) => item.id !== originalItem.id) }
+                : meal,
+            ),
+          });
+          expect(batch.commit).toHaveBeenCalledOnce();
+        });
+
+        it('does not add or delete a meal plan document', async () => {
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledTimes(2);
+          expect(batch.set).not.toHaveBeenCalled();
+          expect(batch.delete).not.toHaveBeenCalled();
+          expect(batch.commit).toHaveBeenCalledOnce();
+          expectNoDirectWrites();
+        });
+      });
+
+      describe('when a meal plan exists for the new date without that meal type', () => {
+        const originalItem = sourcePlan.meals[0]!.items[0]!;
+        const originalMealDate = sourcePlan.date;
+        const originalMealType = 'Breakfast' as const;
+        const updatedItem = updatedItemFor(originalItem.id);
+        const updated: PlannedMealItem = {
+          mealDate: destPlan.date,
+          mealType: 'Snack',
+          mealItem: updatedItem,
+        };
+
+        beforeEach(() => seedMealPlans());
+
+        it('adds a new meal of that type on the destination plan', async () => {
+          const { id, ...planFields } = destPlan;
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+            ...planFields,
+            meals: [
+              ...planFields.meals,
+              {
+                id: GENERATED_MEAL_ID,
+                type: 'Snack',
+                items: [updatedItem],
+              },
+            ],
+          });
+          expect(batch.commit).toHaveBeenCalledOnce();
+        });
+
+        it('removes the item from the source meal plan', async () => {
+          const { id, ...planFields } = sourcePlan;
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+            ...planFields,
+            meals: planFields.meals.map((meal) =>
+              meal.type === 'Breakfast'
+                ? { ...meal, items: meal.items.filter((item) => item.id !== originalItem.id) }
+                : meal,
+            ),
+          });
+          expect(batch.commit).toHaveBeenCalledOnce();
+        });
+
+        it('does not add or delete a meal plan document', async () => {
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledTimes(2);
+          expect(batch.set).not.toHaveBeenCalled();
+          expect(batch.delete).not.toHaveBeenCalled();
+          expect(batch.commit).toHaveBeenCalledOnce();
+          expectNoDirectWrites();
+        });
+      });
+
+      describe('when no meal plan exists for the new date', () => {
+        const originalItem = sourcePlan.meals[0]!.items[0]!;
+        const originalMealDate = sourcePlan.date;
+        const originalMealType = 'Breakfast' as const;
+        const updatedItem = updatedItemFor(originalItem.id);
+        const updated: PlannedMealItem = {
+          mealDate: '2099-01-01',
+          mealType: 'Breakfast',
+          mealItem: updatedItem,
+        };
+
+        beforeEach(() => seedMealPlans());
+
+        it('adds a new meal plan document for the destination date', async () => {
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          const batch = getWriteBatch();
+          expect(batch.set).toHaveBeenCalledOnce();
+          expect(batch.set).toHaveBeenCalledWith('42:doc:meal-plans/new', {
+            date: '2099-01-01',
+            meals: [
+              {
+                id: GENERATED_MEAL_ID,
+                type: 'Breakfast',
+                items: [updatedItem],
+              },
+            ],
+          });
+          expect(batch.commit).toHaveBeenCalledOnce();
+        });
+
+        it('removes the item from the source meal plan', async () => {
+          const { id, ...planFields } = sourcePlan;
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledOnce();
+          expect(batch.update).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+            ...planFields,
+            meals: planFields.meals.map((meal) =>
+              meal.type === 'Breakfast'
+                ? { ...meal, items: meal.items.filter((item) => item.id !== originalItem.id) }
+                : meal,
+            ),
+          });
+          expect(batch.commit).toHaveBeenCalledOnce();
+        });
+
+        it('does not delete a meal plan document', async () => {
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          const batch = getWriteBatch();
+          expect(batch.set).toHaveBeenCalledOnce();
+          expect(batch.update).toHaveBeenCalledOnce();
+          expect(batch.delete).not.toHaveBeenCalled();
+          expect(batch.commit).toHaveBeenCalledOnce();
+          expectNoDirectWrites();
+        });
+      });
+
+      describe('when the item was the last in the source meal', () => {
+        const originalItem = sourcePlan.meals.find((meal) => meal.type === 'Snack')!.items[0]!;
+        const originalMealDate = sourcePlan.date;
+        const originalMealType = 'Snack' as const;
+        const updatedItem = updatedItemFor(originalItem.id);
+        const updated: PlannedMealItem = {
+          mealDate: destPlan.date,
+          mealType: 'Breakfast',
+          mealItem: updatedItem,
+        };
+
+        beforeEach(() => seedMealPlans());
+
+        it('removes the empty source meal from the source plan', async () => {
+          const { id, ...planFields } = sourcePlan;
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+            ...planFields,
+            meals: planFields.meals.filter((meal) => meal.type !== 'Snack'),
+          });
+          expect(batch.commit).toHaveBeenCalledOnce();
+        });
+
+        it('updates the destination meal plan with the updated item', async () => {
+          const { id, ...planFields } = destPlan;
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+            ...planFields,
+            meals: planFields.meals.map((meal) =>
+              meal.type === 'Breakfast' ? { ...meal, items: [...meal.items, updatedItem] } : meal,
+            ),
+          });
+          expect(batch.commit).toHaveBeenCalledOnce();
+        });
+
+        it('does not delete the source meal plan document', async () => {
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledTimes(2);
+          expect(batch.delete).not.toHaveBeenCalled();
+          expect(batch.set).not.toHaveBeenCalled();
+          expect(batch.commit).toHaveBeenCalledOnce();
+          expectNoDirectWrites();
+        });
+      });
+
+      describe('when the item was the last on the source plan', () => {
+        const originalMealDate = soloPlan.date;
+        const originalMealType = 'Lunch' as const;
+        const updatedItem = updatedItemFor(soloItem.id);
+        const destWithType = TEST_MEAL_PLANS[0]!;
+        const updated: PlannedMealItem = {
+          mealDate: destWithType.date,
+          mealType: 'Lunch',
+          mealItem: updatedItem,
+        };
+
+        beforeEach(() => seedMealPlans([soloPlan, ...TEST_MEAL_PLANS]));
+
+        it('deletes the source meal plan document', async () => {
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          const batch = getWriteBatch();
+          expect(batch.delete).toHaveBeenCalledOnce();
+          expect(batch.delete).toHaveBeenCalledWith('42:doc:meal-plans/mp-solo');
+          expect(batch.commit).toHaveBeenCalledOnce();
+        });
+
+        it('updates the destination meal plan with the updated item', async () => {
+          const { id, ...planFields } = destWithType;
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          const batch = getWriteBatch();
+          expect(batch.update).toHaveBeenCalledOnce();
+          expect(batch.update).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+            ...planFields,
+            meals: planFields.meals.map((meal) =>
+              meal.type === 'Lunch' ? { ...meal, items: [...meal.items, updatedItem] } : meal,
+            ),
+          });
+          expect(batch.commit).toHaveBeenCalledOnce();
+        });
+
+        it('does not add a meal plan document', async () => {
+          const { updateMealItemInMealPlan } = useMealPlansData();
+          await updateMealItemInMealPlan(updated, originalMealDate, originalMealType);
+          const batch = getWriteBatch();
+          expect(batch.delete).toHaveBeenCalledOnce();
+          expect(batch.update).toHaveBeenCalledOnce();
+          expect(batch.set).not.toHaveBeenCalled();
+          expect(batch.commit).toHaveBeenCalledOnce();
+          expectNoDirectWrites();
+        });
+
+        describe('and no meal plan exists for the new date', () => {
+          const moved: PlannedMealItem = {
+            mealDate: '2099-01-01',
+            mealType: 'Lunch',
+            mealItem: updatedItem,
+          };
+
+          it('deletes the source meal plan and adds a new destination plan', async () => {
+            const { updateMealItemInMealPlan } = useMealPlansData();
+            await updateMealItemInMealPlan(moved, originalMealDate, originalMealType);
+            const batch = getWriteBatch();
+            expect(batch.delete).toHaveBeenCalledOnce();
+            expect(batch.delete).toHaveBeenCalledWith('42:doc:meal-plans/mp-solo');
+            expect(batch.set).toHaveBeenCalledOnce();
+            expect(batch.set).toHaveBeenCalledWith('42:doc:meal-plans/new', {
+              date: '2099-01-01',
+              meals: [
+                {
+                  id: GENERATED_MEAL_ID,
+                  type: 'Lunch',
+                  items: [updatedItem],
+                },
+              ],
+            });
+            expect(batch.update).not.toHaveBeenCalled();
+            expect(batch.commit).toHaveBeenCalledOnce();
+            expectNoDirectWrites();
+          });
+        });
       });
     });
   });

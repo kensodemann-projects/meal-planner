@@ -87,6 +87,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/planning/update': RouteRecordInfo<
+      '/planning/update',
+      '/planning/update',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     '/planning/week': RouteRecordInfo<
       '/planning/week',
       '/planning/week',
@@ -201,6 +208,14 @@ declare module 'vue-router/auto-routes' {
     'src/pages/planning/day.vue': {
       routes:
         | '/planning/day'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/planning/update.vue': {
+      routes:
+        | '/planning/update'
       views:
         | never
       pathParamNames:

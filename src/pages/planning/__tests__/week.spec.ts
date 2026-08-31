@@ -1,6 +1,7 @@
 import DailySummaryCard from '@/components/planning/DailySummaryCard.vue';
 import { TEST_MEAL_PLAN, TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
 import { useMealPlansData } from '@/data/meal-plans';
+import type { PlannedMealItem } from '@/models/meal';
 import { flushPromises, mount } from '@vue/test-utils';
 import { format } from 'date-fns';
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
@@ -151,6 +152,68 @@ describe('week', () => {
       await wrapper.findComponent('[data-testid="add-button"]').trigger('click');
       const { push } = useRouter();
       expect(push).toHaveBeenCalledExactlyOnceWith({ path: 'add', query: { weekStartDate: '2025-12-29' } });
+    });
+  });
+
+  describe('modify event', () => {
+    const plannedMealItemFor = (
+      mealPlan: (typeof TEST_MEAL_PLANS)[number],
+      mealIndex = 0,
+      itemIndex = 0,
+    ): PlannedMealItem => {
+      const meal = mealPlan.meals[mealIndex]!;
+      return {
+        mealItem: meal.items[itemIndex]!,
+        mealDate: mealPlan.date,
+        mealType: meal.type,
+      };
+    };
+
+    const emitModifyFromCard = (mealPlan: (typeof TEST_MEAL_PLANS)[number], plannedMealItem: PlannedMealItem) => {
+      const card = wrapper.findAllComponents(DailySummaryCard).find((c) => c.props('mealPlan')?.id === mealPlan.id);
+      expect(card).toBeDefined();
+      card!.vm.$emit('modify', plannedMealItem);
+    };
+
+    it('navigates to the update page with the meal item details when a meal item is modified', async () => {
+      const mealPlan = TEST_MEAL_PLANS.find((plan) => plan.date === '2025-12-29')!;
+      const plannedMealItem = plannedMealItemFor(mealPlan, 1, 0);
+      (useMealPlansData().getMealPlansForPeriod as Mock).mockResolvedValue([mealPlan]);
+      wrapper = await renderPage();
+
+      emitModifyFromCard(mealPlan, plannedMealItem);
+
+      const { push } = useRouter();
+      expect(push).toHaveBeenCalledExactlyOnceWith({
+        path: 'update',
+        query: {
+          weekStartDate: '2025-12-29',
+          mealPlanId: mealPlan.id,
+          mealType: plannedMealItem.mealType,
+          mealItemId: plannedMealItem.mealItem.id,
+        },
+      });
+    });
+
+    it('navigates using the meal plan for the day that emitted modify', async () => {
+      const firstDayPlan = TEST_MEAL_PLANS.find((plan) => plan.date === '2025-12-29')!;
+      const secondDayPlan = TEST_MEAL_PLANS.find((plan) => plan.date === '2025-12-30')!;
+      const plannedMealItem = plannedMealItemFor(secondDayPlan);
+      (useMealPlansData().getMealPlansForPeriod as Mock).mockResolvedValue([firstDayPlan, secondDayPlan]);
+      wrapper = await renderPage();
+
+      emitModifyFromCard(secondDayPlan, plannedMealItem);
+
+      const { push } = useRouter();
+      expect(push).toHaveBeenCalledExactlyOnceWith({
+        path: 'update',
+        query: {
+          weekStartDate: '2025-12-29',
+          mealPlanId: secondDayPlan.id,
+          mealType: plannedMealItem.mealType,
+          mealItemId: plannedMealItem.mealItem.id,
+        },
+      });
     });
   });
 });
