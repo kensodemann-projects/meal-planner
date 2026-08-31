@@ -129,7 +129,7 @@ describe('update', () => {
   });
 
   describe('on save', () => {
-    it('adds the meal item to the meal plan', async () => {
+    it('updates the meal item', async () => {
       const { updateMealItemInMealPlan } = useMealPlansData();
       wrapper = await renderPage();
       const editor = wrapper.findComponent(MealItemEditor);
