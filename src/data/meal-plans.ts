@@ -85,30 +85,40 @@ export const useMealPlansData = () => {
   };
 
   const updateMealItemInMealPlan = async (
-    mealItem: PlannedMealItem,
+    plannedMealItem: PlannedMealItem,
     originalMealDate: string,
     originalMealType: MealType,
   ): Promise<void> => {
-    if (originalMealDate === mealItem.mealDate && originalMealType === mealItem.mealType) {
-      const mealPlan = await getMealPlanForDate(mealItem.mealDate);
+    if (originalMealDate === plannedMealItem.mealDate && originalMealType === plannedMealItem.mealType) {
+      const mealPlan = await getMealPlanForDate(plannedMealItem.mealDate);
       if (mealPlan?.id) {
         const meals = mealPlan.meals.map((meal) =>
-          meal.type === mealItem.mealType
+          meal.type === plannedMealItem.mealType
             ? {
                 ...meal,
-                items: meal.items.map((item) => (item.id === mealItem.mealItem.id ? { ...mealItem.mealItem } : item)),
+                items: meal.items.map((item) =>
+                  item.id === plannedMealItem.mealItem.id ? { ...plannedMealItem.mealItem } : item,
+                ),
               }
             : { ...meal },
         );
         await updateMealPlan(mealPlan.id, { date: mealPlan.date, meals });
       }
-    } else if (originalMealDate !== mealItem.mealDate) {
-      // await removeMealItemFromMealPlan(mealItem.mealItem.id);
-      // await addMealItemToMealPlan(mealItem);
-    } else {
-      const mealPlan = await getMealPlanForDate(mealItem.mealDate);
+    } else if (originalMealDate !== plannedMealItem.mealDate) {
+      const mealPlan = await getMealPlanForDate(originalMealDate);
       if (mealPlan?.id) {
-        const meals = createMealsWithNewItem(createMealsWithoutItem(mealPlan.meals, mealItem), mealItem);
+        const meals = createMealsWithoutItem(mealPlan.meals, plannedMealItem);
+        if (meals.flatMap((meal) => meal.items).length === 0) {
+          await removeMealPlan(mealPlan.id);
+        } else {
+          await updateMealPlan(mealPlan.id, { date: mealPlan.date, meals });
+        }
+        await addMealItemToMealPlan(plannedMealItem);
+      }
+    } else {
+      const mealPlan = await getMealPlanForDate(plannedMealItem.mealDate);
+      if (mealPlan?.id) {
+        const meals = createMealsWithNewItem(createMealsWithoutItem(mealPlan.meals, plannedMealItem), plannedMealItem);
         await updateMealPlan(mealPlan.id, { date: mealPlan.date, meals });
       }
     }
