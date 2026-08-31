@@ -36,8 +36,9 @@ describe('update', () => {
   let wrapper: ReturnType<typeof mountPage>;
 
   beforeEach(() => {
-    const { mealPlans } = useMealPlansData();
+    const { mealPlans, loading } = useMealPlansData();
     (mealPlans.value as MealPlan[]) = TEST_MEAL_PLANS;
+    (loading.value as boolean) = false;
     vi.clearAllMocks();
     (useRoute as Mock).mockReturnValue({
       query: {
@@ -68,6 +69,25 @@ describe('update', () => {
   it('displays the page heading', async () => {
     wrapper = await renderPage();
     expect(wrapper.find('h1').text()).toBe('Update Meal Item');
+  });
+
+  it('shows a loading indicator while meal plans are being fetched', () => {
+    const { loading } = useMealPlansData();
+    (loading.value as boolean) = true;
+    wrapper = mountPage();
+    expect(wrapper.findComponent({ name: 'VProgressCircular' }).exists()).toBe(true);
+  });
+
+  it('does not render MealItemEditor while meal plans are loading', () => {
+    const { loading } = useMealPlansData();
+    (loading.value as boolean) = true;
+    wrapper = mountPage();
+    expect(wrapper.findComponent(MealItemEditor).exists()).toBe(false);
+  });
+
+  it('hides the loading indicator once meal plans have loaded', async () => {
+    wrapper = await renderPage();
+    expect(wrapper.findComponent({ name: 'VProgressCircular' }).exists()).toBe(false);
   });
 
   it('renders MealItemEditor with the week start date from the route', async () => {

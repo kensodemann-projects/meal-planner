@@ -1,7 +1,11 @@
 <template>
   <div>
     <h1 class="text-center">Update Meal Item</h1>
+    <div v-if="loading" class="d-flex justify-center">
+      <v-progress-circular indeterminate />
+    </div>
     <meal-item-editor
+      v-else
       :week-start-date="weekStartDate"
       :meal-date="mealPlan?.date"
       :meal-type="meal?.type"
@@ -20,7 +24,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
 const router = useRouter();
-const { updateMealItemInMealPlan, mealPlans } = useMealPlansData();
+const { updateMealItemInMealPlan, mealPlans, loading } = useMealPlansData();
 const weekStartDate = computed(() => route.query.weekStartDate as string);
 const mealPlan = computed(() => mealPlans.value.find((plan) => plan.id === (route.query.mealPlanId as string)));
 const meal = computed(() => mealPlan.value?.meals.find((meal) => meal.type === (route.query.mealType as MealType)));
