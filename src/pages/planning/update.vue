@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import { useMealPlansData } from '@/data/meal-plans';
-import type { PlannedMealItem } from '@/models/meal';
+import type { MealType, PlannedMealItem } from '@/models/meal';
 import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -23,7 +23,7 @@ const router = useRouter();
 const { updateMealItemInMealPlan, mealPlans } = useMealPlansData();
 const weekStartDate = computed(() => route.query.weekStartDate as string);
 const mealPlan = computed(() => mealPlans.value.find((plan) => plan.id === (route.query.mealPlanId as string)));
-const meal = computed(() => mealPlan.value?.meals.find((meal) => meal.id === (route.query.mealId as string)));
+const meal = computed(() => mealPlan.value?.meals.find((meal) => meal.type === (route.query.mealType as MealType)));
 const mealItem = computed(() => meal.value?.items.find((item) => item.id === (route.query.mealItemId as string)));
 
 const goToWeek = () => router.replace({ path: '/planning/week', query: { weekStartDate: weekStartDate.value } });

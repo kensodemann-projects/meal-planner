@@ -43,7 +43,7 @@ describe('update', () => {
       query: {
         weekStartDate: '2025-12-22',
         mealPlanId: TEST_MEAL_PLANS[1]!.id,
-        mealId: TEST_MEAL_PLANS[1]!.meals[0]!.id,
+        mealType: TEST_MEAL_PLANS[1]!.meals[0]!.type,
         mealItemId: TEST_MEAL_PLANS[1]!.meals[0]!.items[1]!.id,
       },
     });
