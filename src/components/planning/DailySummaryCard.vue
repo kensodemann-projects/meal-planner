@@ -16,8 +16,8 @@
             v-for="mealItem in meal.items"
             :key="mealItem.id"
             :mealItem="mealItem"
-            @modify="$emit('modify', $event)"
-            @delete="$emit('delete', $event)"
+            @modify="$emit('modify', plannedMealItem(meal, $event))"
+            @delete="$emit('delete', plannedMealItem(meal, $event))"
           />
         </template>
       </template>
@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { dailyMealPlanNutrients } from '@/core/nutritional-calculations';
-import type { MealItem } from '@/models/meal';
+import type { Meal, MealItem, PlannedMealItem } from '@/models/meal';
 import type { MealPlan } from '@/models/meal-plan';
 import type { Nutrition } from '@/models/nutrition';
 import type { Settings } from '@/models/settings';
@@ -45,7 +45,13 @@ const nutrition = computed<Nutrition | undefined>(() =>
 );
 
 defineEmits<{
-  (event: 'modify', value: MealItem): void;
-  (event: 'delete', value: MealItem): void;
+  (event: 'modify', value: PlannedMealItem): void;
+  (event: 'delete', value: PlannedMealItem): void;
 }>();
+
+const plannedMealItem = (meal: Meal, mealItem: MealItem): PlannedMealItem => ({
+  mealItem,
+  mealDate: props.mealPlan!.date,
+  mealType: meal.type,
+});
 </script>
