@@ -66,20 +66,14 @@ export const useMealPlansData = () => {
 
   const addMealItemToMealPlan = async (plannedMealItem: PlannedMealItem): Promise<void> => {
     const mealPlan = await getMealPlanForDate(plannedMealItem.mealDate);
+    const meals = createMealsWithNewItem(mealPlan?.meals || [], plannedMealItem);
 
     if (mealPlan?.id) {
-      const meals = createMealsWithNewItem(mealPlan.meals, plannedMealItem);
       await updateMealPlan(mealPlan.id, { date: mealPlan.date, meals });
     } else {
       await addMealPlan({
         date: plannedMealItem.mealDate,
-        meals: [
-          {
-            id: globalThis.crypto.randomUUID(),
-            type: plannedMealItem.mealType,
-            items: [{ ...plannedMealItem.mealItem }],
-          },
-        ],
+        meals,
       });
     }
   };
