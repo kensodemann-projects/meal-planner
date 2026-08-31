@@ -56,6 +56,20 @@ export const useMealPlansData = () => {
     return newMeals;
   };
 
+  const createMealsWithUpdatedItem = (meals: Meal[], plannedMealItem: PlannedMealItem): Meal[] => {
+    const newMeals = meals.map((meal) =>
+      meal.type === plannedMealItem.mealType
+        ? {
+            ...meal,
+            items: meal.items.map((item) =>
+              item.id === plannedMealItem.mealItem.id ? { ...plannedMealItem.mealItem } : item,
+            ),
+          }
+        : { ...meal },
+    );
+    return newMeals;
+  };
+
   const createMealsWithoutItem = (meals: Meal[], plannedMealItem: PlannedMealItem): Meal[] => {
     const newMeals = meals.map((meal) => ({
       ...meal,
@@ -86,16 +100,7 @@ export const useMealPlansData = () => {
     if (originalMealDate === plannedMealItem.mealDate && originalMealType === plannedMealItem.mealType) {
       const mealPlan = await getMealPlanForDate(plannedMealItem.mealDate);
       if (mealPlan?.id) {
-        const meals = mealPlan.meals.map((meal) =>
-          meal.type === plannedMealItem.mealType
-            ? {
-                ...meal,
-                items: meal.items.map((item) =>
-                  item.id === plannedMealItem.mealItem.id ? { ...plannedMealItem.mealItem } : item,
-                ),
-              }
-            : { ...meal },
-        );
+        const meals = createMealsWithUpdatedItem(mealPlan.meals, plannedMealItem);
         await updateMealPlan(mealPlan.id, { date: mealPlan.date, meals });
       }
     } else if (originalMealDate !== plannedMealItem.mealDate) {
