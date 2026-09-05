@@ -34,7 +34,7 @@
 
   <v-dialog v-model="showConfirmDialog" max-width="600px" data-testid="confirm-dialog">
     <ConfirmDialog
-      question="Are you sure you want to delete this meal?"
+      question="Are you sure you want to delete this item from the meal?"
       icon-color="error"
       @confirm="doDelete"
       @cancel="showConfirmDialog = false"
@@ -74,10 +74,14 @@ const weekRows = computed<DayRow[]>(() =>
   }),
 );
 
+const refreshMealPlans = async () => {
+  mealPlans.value = await getMealPlansForPeriod(dateToISO(weekDays.value[0]!), dateToISO(weekDays.value[6]!));
+};
+
 const loadMealPlans = async () => {
   isLoading.value = true;
+  await refreshMealPlans();
   try {
-    mealPlans.value = await getMealPlansForPeriod(dateToISO(weekDays.value[0]!), dateToISO(weekDays.value[6]!));
   } finally {
     isLoading.value = false;
   }
@@ -108,7 +112,7 @@ const doDelete = async () => {
   showConfirmDialog.value = false;
   if (mealItemToDelete.value) {
     await removeMealItemFromMealPlan(mealItemToDelete.value);
-    await loadMealPlans();
+    await refreshMealPlans();
   }
 };
 
