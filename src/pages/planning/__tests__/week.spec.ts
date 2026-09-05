@@ -238,16 +238,118 @@ describe('week', () => {
       card!.vm.$emit('delete', plannedMealItem);
     };
 
-    it('displays the confirmation dialog', async () => {
-      const mealPlan = TEST_MEAL_PLANS.find((plan) => plan.date === '2025-12-29')!;
-      const plannedMealItem = plannedMealItemFor(mealPlan, 1, 0);
-      (useMealPlansData().getMealPlansForPeriod as Mock).mockResolvedValue([mealPlan]);
+    const mealPlan = TEST_MEAL_PLANS.find((plan) => plan.date === '2025-12-29')!;
+    const plannedMealItem = plannedMealItemFor(mealPlan, 1, 0);
+
+    const renderAndEmitDelete = async (
+      plan = mealPlan,
+      item = plannedMealItem,
+      plans: (typeof TEST_MEAL_PLANS)[number][] = [plan],
+    ) => {
+      (useMealPlansData().getMealPlansForPeriod as Mock).mockResolvedValue(plans);
       wrapper = await renderPage();
-
-      emitDeleteFromCard(mealPlan, plannedMealItem);
+      emitDeleteFromCard(plan, item);
       await flushPromises();
+    };
 
+    const cardForPlan = (plan: (typeof TEST_MEAL_PLANS)[number]) =>
+      wrapper.findAllComponents(DailySummaryCard).find((c) => c.props('mealPlan')?.id === plan.id);
+
+    const planWithoutItem = (
+      plan: (typeof TEST_MEAL_PLANS)[number],
+      item: PlannedMealItem,
+    ): (typeof TEST_MEAL_PLANS)[number] => ({
+      ...plan,
+      meals: plan.meals.map((meal) =>
+        meal.type === item.mealType
+          ? { ...meal, items: meal.items.filter((mealItem) => mealItem.id !== item.mealItem.id) }
+          : meal,
+      ),
+    });
+
+    it('displays the confirmation dialog', async () => {
+      await renderAndEmitDelete();
       expect(wrapper.findComponent(ConfirmDialog).exists()).toBe(true);
+    });
+
+    describe('on confirm', () => {
+      it('removes the meal item from the meal plan', async () => {
+        await renderAndEmitDelete();
+        wrapper.findComponent(ConfirmDialog).vm.$emit('confirm');
+        await flushPromises();
+
+        const { removeMealItemFromMealPlan } = useMealPlansData();
+        expect(removeMealItemFromMealPlan).toHaveBeenCalledExactlyOnceWith(plannedMealItem);
+      });
+
+      it('reloads the meal plans for the week', async () => {
+        await renderAndEmitDelete();
+        wrapper.findComponent(ConfirmDialog).vm.$emit('confirm');
+        await flushPromises();
+
+        const { getMealPlansForPeriod } = useMealPlansData();
+        expect(getMealPlansForPeriod).toHaveBeenCalledTimes(2);
+        expect(getMealPlansForPeriod).toHaveBeenLastCalledWith('2025-12-29', '2026-01-04');
+      });
+
+      it('updates the daily summary card with the reloaded meal plan', async () => {
+        const updatedPlan = planWithoutItem(mealPlan, plannedMealItem);
+        (useMealPlansData().getMealPlansForPeriod as Mock)
+          .mockResolvedValueOnce([mealPlan])
+          .mockResolvedValueOnce([updatedPlan]);
+        wrapper = await renderPage();
+
+        emitDeleteFromCard(mealPlan, plannedMealItem);
+        await flushPromises();
+        wrapper.findComponent(ConfirmDialog).vm.$emit('confirm');
+        await flushPromises();
+
+        const card = cardForPlan(mealPlan);
+        expect(card).toBeDefined();
+        expect(card!.props('mealPlan')).toEqual(updatedPlan);
+      });
+
+      it('removes the meal item from the day that emitted delete', async () => {
+        const firstDayPlan = mealPlan;
+        const secondDayPlan = TEST_MEAL_PLANS.find((plan) => plan.date === '2025-12-30')!;
+        const secondDayItem = plannedMealItemFor(secondDayPlan);
+        await renderAndEmitDelete(secondDayPlan, secondDayItem, [firstDayPlan, secondDayPlan]);
+        wrapper.findComponent(ConfirmDialog).vm.$emit('confirm');
+        await flushPromises();
+
+        const { removeMealItemFromMealPlan } = useMealPlansData();
+        expect(removeMealItemFromMealPlan).toHaveBeenCalledExactlyOnceWith(secondDayItem);
+      });
+    });
+
+    describe('on deny', () => {
+      it('does not remove the meal item from the meal plan', async () => {
+        await renderAndEmitDelete();
+        wrapper.findComponent(ConfirmDialog).vm.$emit('cancel');
+        await flushPromises();
+
+        const { removeMealItemFromMealPlan } = useMealPlansData();
+        expect(removeMealItemFromMealPlan).not.toHaveBeenCalled();
+      });
+
+      it('does not reload the meal plans', async () => {
+        await renderAndEmitDelete();
+        wrapper.findComponent(ConfirmDialog).vm.$emit('cancel');
+        await flushPromises();
+
+        const { getMealPlansForPeriod } = useMealPlansData();
+        expect(getMealPlansForPeriod).toHaveBeenCalledExactlyOnceWith('2025-12-29', '2026-01-04');
+      });
+
+      it('does not update the daily summary card', async () => {
+        await renderAndEmitDelete();
+        wrapper.findComponent(ConfirmDialog).vm.$emit('cancel');
+        await flushPromises();
+
+        const card = cardForPlan(mealPlan);
+        expect(card).toBeDefined();
+        expect(card!.props('mealPlan')).toEqual(mealPlan);
+      });
     });
   });
 });

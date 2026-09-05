@@ -11,7 +11,7 @@
           :mealPlan="row.plan"
           :settings="settings"
           @modify="(plannedMealItem) => navigateToUpdate(row.plan!, plannedMealItem)"
-          @delete="(plannedMealItem) => (showConfirmDialog = true)"
+          @delete="confirmDelete"
         />
       </div>
     </template>
@@ -56,7 +56,7 @@ import { useRoute, useRouter } from 'vue-router';
 type DayRow = { day: Date; iso: string; plan?: MealPlan };
 
 const { settings } = useSettingsData();
-const { getMealPlansForPeriod } = useMealPlansData();
+const { getMealPlansForPeriod, removeMealItemFromMealPlan } = useMealPlansData();
 const route = useRoute();
 const router = useRouter();
 const weekStartDate = computed(() => route.query.weekStartDate as string);
@@ -64,6 +64,7 @@ const weekDays = computed(() => [0, 1, 2, 3, 4, 5, 6].map((offset) => addDays(pa
 const mealPlans = ref<MealPlan[]>([]);
 const isLoading = ref(true);
 const showConfirmDialog = ref(false);
+const mealItemToDelete = ref<PlannedMealItem | null>(null);
 
 const weekRows = computed<DayRow[]>(() =>
   weekDays.value.map((d) => {
@@ -98,9 +99,17 @@ const navigateToUpdate = (mealPlan: MealPlan, plannedMealItem: PlannedMealItem) 
   });
 };
 
-const doDelete = (plannedMealItem: PlannedMealItem) => {
+const confirmDelete = (plannedMealItem: PlannedMealItem) => {
+  showConfirmDialog.value = true;
+  mealItemToDelete.value = plannedMealItem;
+};
+
+const doDelete = async () => {
   showConfirmDialog.value = false;
-  console.log('doDelete', plannedMealItem);
+  if (mealItemToDelete.value) {
+    await removeMealItemFromMealPlan(mealItemToDelete.value);
+    await loadMealPlans();
+  }
 };
 
 watch(weekStartDate, loadMealPlans, { immediate: true });
