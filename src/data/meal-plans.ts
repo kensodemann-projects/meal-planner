@@ -1,7 +1,18 @@
 import type { Meal, MealType, PlannedMealItem } from '@/models/meal';
 import type { MealPlan } from '@/models/meal-plan';
 import { format, startOfWeek, subWeeks } from 'date-fns';
-import { addDoc, collection, deleteDoc, doc, orderBy, query, updateDoc, where, writeBatch } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  orderBy,
+  query,
+  runTransaction,
+  updateDoc,
+  where,
+  writeBatch,
+} from 'firebase/firestore';
 import { computed } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
 
@@ -136,6 +147,30 @@ export const useMealPlansData = () => {
     }
   };
 
+  const removeMealItemFromMealPlan = async (plannedMealItem: PlannedMealItem): Promise<void> => {
+    const mealPlan = await getMealPlanForDate(plannedMealItem.mealDate);
+    if (!mealPlan?.id) {
+      console.error('Meal plan not found for date:', plannedMealItem.mealDate);
+      return;
+    }
+
+    const planRef = doc(db, `${path}/${mealPlan.id}`);
+    await runTransaction(db, async (transaction) => {
+      const snapshot = await transaction.get(planRef);
+      if (!snapshot.exists()) {
+        console.error('Meal plan not found for date:', plannedMealItem.mealDate);
+        return;
+      }
+      const { date, meals: currentMeals } = snapshot.data() as MealPlan;
+      const meals = createMealsWithoutItem(currentMeals, plannedMealItem);
+      if (mealsAreEmpty(meals)) {
+        transaction.delete(planRef);
+      } else {
+        transaction.update(planRef, { date, meals });
+      }
+    });
+  };
+
   return {
     addMealPlan,
     addMealItemToMealPlan,
@@ -145,6 +180,7 @@ export const useMealPlansData = () => {
     getMealPlanForDate,
     getMealPlansForPeriod,
     loading,
+    removeMealItemFromMealPlan,
     removeMealPlan,
     updateMealPlan,
     updateMealItemInMealPlan,
