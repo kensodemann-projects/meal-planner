@@ -125,8 +125,7 @@ The landing page after login. Displays a summary of the current and upcoming wee
 
 Where meal plans are created and managed. The landing page offers quick links to this week and next week, plus recent weeks.
 
-- **Weekly view** — Shows all 7 days at a glance. Each day lists the meal slots that have been filled (Breakfast, Lunch, Dinner, Snacks) along with a color-coded nutritional summary. Click a day to open the daily view.
-- **Daily view** — Detailed editing for a single day. Add, edit, or remove meals from any of the four meal slots. A color-coded nutritional summary for the day is displayed. Changes are saved back to the week's plan.
+- **Weekly view** — Shows all 7 days at a glance. Each day lists the meal slots that have been filled (Breakfast, Lunch, Dinner, Snacks) along with a color-coded nutritional summary. Items are added and modified from this view.
 
 ## Recipes
 
