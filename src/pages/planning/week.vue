@@ -80,8 +80,8 @@ const refreshMealPlans = async () => {
 
 const loadMealPlans = async () => {
   isLoading.value = true;
-  await refreshMealPlans();
   try {
+    await refreshMealPlans();
   } finally {
     isLoading.value = false;
   }

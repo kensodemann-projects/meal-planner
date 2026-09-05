@@ -911,6 +911,7 @@ describe('Meal Plans Data Service', () => {
   describe('remove meal item from meal plan', () => {
     type MockTransaction = {
       get: Mock;
+      set: Mock;
       update: Mock;
       delete: Mock;
     };
@@ -947,6 +948,7 @@ describe('Meal Plans Data Service', () => {
     beforeEach(() => {
       transaction = {
         get: vi.fn().mockResolvedValue(snapshotOf({ date: '', meals: [] }, false)),
+        set: vi.fn(),
         update: vi.fn(),
         delete: vi.fn(),
       };
