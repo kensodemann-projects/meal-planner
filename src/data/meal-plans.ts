@@ -136,6 +136,20 @@ export const useMealPlansData = () => {
     }
   };
 
+  const removeMealItemFromMealPlan = async (plannedMealItem: PlannedMealItem): Promise<void> => {
+    const mealPlan = await getMealPlanForDate(plannedMealItem.mealDate);
+    if (!mealPlan?.id) {
+      console.error('Meal plan not found for date:', plannedMealItem.mealDate);
+      return;
+    }
+    const meals = createMealsWithoutItem(mealPlan.meals, plannedMealItem);
+    if (mealsAreEmpty(meals)) {
+      await removeMealPlan(mealPlan.id);
+    } else {
+      await updateMealPlan(mealPlan.id, { date: mealPlan.date, meals });
+    }
+  };
+
   return {
     addMealPlan,
     addMealItemToMealPlan,
@@ -145,6 +159,7 @@ export const useMealPlansData = () => {
     getMealPlanForDate,
     getMealPlansForPeriod,
     loading,
+    removeMealItemFromMealPlan,
     removeMealPlan,
     updateMealPlan,
     updateMealItemInMealPlan,

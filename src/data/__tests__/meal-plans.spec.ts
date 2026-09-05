@@ -907,6 +907,174 @@ describe('Meal Plans Data Service', () => {
     });
   });
 
+  describe('remove meal item from meal plan', () => {
+    const seedMealPlans = (plans = TEST_MEAL_PLANS) => {
+      const mealPlans = ref(structuredClone(plans));
+      (mealPlans as any).promise = { value: Promise.resolve() };
+      (useCollection as Mock).mockReturnValueOnce(mealPlans);
+    };
+
+    describe('when no meal plan exists for the date', () => {
+      const plannedMealItem: PlannedMealItem = {
+        mealDate: '2099-01-01',
+        mealType: 'Breakfast',
+        mealItem: TEST_MEAL_PLANS[0]!.meals[0]!.items[0]!,
+      };
+
+      beforeEach(() => {
+        seedMealPlans();
+        vi.spyOn(console, 'error').mockImplementation(() => {});
+      });
+
+      afterEach(() => {
+        vi.mocked(console.error).mockRestore();
+      });
+
+      it('does not update, add, or delete a meal plan document', async () => {
+        const { removeMealItemFromMealPlan } = useMealPlansData();
+        await removeMealItemFromMealPlan(plannedMealItem);
+        expect(updateDoc).not.toHaveBeenCalled();
+        expect(addDoc).not.toHaveBeenCalled();
+        expect(deleteDoc).not.toHaveBeenCalled();
+      });
+
+      it('logs an error', async () => {
+        const { removeMealItemFromMealPlan } = useMealPlansData();
+        await removeMealItemFromMealPlan(plannedMealItem);
+        expect(console.error).toHaveBeenCalledExactlyOnceWith('Meal plan not found for date:', '2099-01-01');
+      });
+    });
+
+    describe('when the meal still has remaining items', () => {
+      const existingPlan = TEST_MEAL_PLANS[0]!;
+      const itemToRemove = existingPlan.meals[0]!.items[0]!;
+      const plannedMealItem: PlannedMealItem = {
+        mealDate: existingPlan.date,
+        mealType: 'Breakfast',
+        mealItem: itemToRemove,
+      };
+
+      beforeEach(() => seedMealPlans());
+
+      it('obtains a reference to the doc', async () => {
+        const { removeMealItemFromMealPlan } = useMealPlansData();
+        await removeMealItemFromMealPlan(plannedMealItem);
+        expect(doc).toHaveBeenCalledOnce();
+        expect(doc).toHaveBeenCalledWith({ id: 42, name: 'my fake fire store' }, `meal-plans/${existingPlan.id}`);
+      });
+
+      it('updates the meal plan without the item', async () => {
+        const { id, ...planFields } = existingPlan;
+        const { removeMealItemFromMealPlan } = useMealPlansData();
+        await removeMealItemFromMealPlan(plannedMealItem);
+        expect(updateDoc).toHaveBeenCalledOnce();
+        expect(updateDoc).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+          ...planFields,
+          meals: planFields.meals.map((meal) =>
+            meal.type === 'Breakfast'
+              ? { ...meal, items: meal.items.filter((item) => item.id !== itemToRemove.id) }
+              : meal,
+          ),
+        });
+      });
+
+      it('leaves remaining items and other meals unchanged', async () => {
+        const { removeMealItemFromMealPlan } = useMealPlansData();
+        await removeMealItemFromMealPlan(plannedMealItem);
+        expect(updateDoc).toHaveBeenCalledOnce();
+        const updatedFields = (updateDoc as Mock).mock.calls[0]?.[1];
+        const breakfast = updatedFields.meals.find((meal: { type: string }) => meal.type === 'Breakfast');
+        expect(breakfast.items).toEqual([existingPlan.meals[0]!.items[1]]);
+        expect(updatedFields.meals.filter((meal: { type: string }) => meal.type !== 'Breakfast')).toEqual(
+          existingPlan.meals.filter((meal) => meal.type !== 'Breakfast'),
+        );
+      });
+
+      it('does not add or delete a meal plan document', async () => {
+        const { removeMealItemFromMealPlan } = useMealPlansData();
+        await removeMealItemFromMealPlan(plannedMealItem);
+        expect(updateDoc).toHaveBeenCalledOnce();
+        expect(addDoc).not.toHaveBeenCalled();
+        expect(deleteDoc).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when the item was the last in the meal', () => {
+      const existingPlan = TEST_MEAL_PLANS[0]!;
+      const itemToRemove = existingPlan.meals.find((meal) => meal.type === 'Snack')!.items[0]!;
+      const plannedMealItem: PlannedMealItem = {
+        mealDate: existingPlan.date,
+        mealType: 'Snack',
+        mealItem: itemToRemove,
+      };
+
+      beforeEach(() => seedMealPlans());
+
+      it('removes the empty meal from the plan', async () => {
+        const { id, ...planFields } = existingPlan;
+        const { removeMealItemFromMealPlan } = useMealPlansData();
+        await removeMealItemFromMealPlan(plannedMealItem);
+        expect(updateDoc).toHaveBeenCalledOnce();
+        expect(updateDoc).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+          ...planFields,
+          meals: planFields.meals.filter((meal) => meal.type !== 'Snack'),
+        });
+      });
+
+      it('does not delete the meal plan document', async () => {
+        const { removeMealItemFromMealPlan } = useMealPlansData();
+        await removeMealItemFromMealPlan(plannedMealItem);
+        expect(updateDoc).toHaveBeenCalledOnce();
+        expect(deleteDoc).not.toHaveBeenCalled();
+        expect(addDoc).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when the item was the last on the plan', () => {
+      const soloItem: MealItem = {
+        id: 'item-solo-1',
+        name: 'Solo Lunch',
+        recipeId: 'food-test-1',
+        servings: 1,
+        nutrition: {
+          calories: 200,
+          sodium: 50,
+          sugar: 1,
+          carbs: 10,
+          fat: 5,
+          protein: 15,
+        },
+      };
+      const soloPlan = {
+        id: 'mp-solo',
+        date: '2025-12-20',
+        meals: [{ id: 'meal-solo-1', type: 'Lunch' as const, items: [soloItem] }],
+      };
+      const plannedMealItem: PlannedMealItem = {
+        mealDate: soloPlan.date,
+        mealType: 'Lunch',
+        mealItem: soloItem,
+      };
+
+      beforeEach(() => seedMealPlans([soloPlan]));
+
+      it('deletes the meal plan document', async () => {
+        const { removeMealItemFromMealPlan } = useMealPlansData();
+        await removeMealItemFromMealPlan(plannedMealItem);
+        expect(deleteDoc).toHaveBeenCalledOnce();
+        expect(deleteDoc).toHaveBeenCalledWith('42:doc:meal-plans/mp-solo');
+      });
+
+      it('does not update or add a meal plan document', async () => {
+        const { removeMealItemFromMealPlan } = useMealPlansData();
+        await removeMealItemFromMealPlan(plannedMealItem);
+        expect(deleteDoc).toHaveBeenCalledOnce();
+        expect(updateDoc).not.toHaveBeenCalled();
+        expect(addDoc).not.toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('loading state', () => {
     it('exposes the pending state from the collection', () => {
       const mealPlans = ref([]);

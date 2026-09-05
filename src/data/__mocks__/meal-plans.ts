@@ -12,6 +12,7 @@ interface MealPlansData {
   getMealPlan: (id: string) => Promise<MealPlan | null>;
   getMealPlanForDate: (dt: string) => Promise<MealPlan | null>;
   getMealPlansForPeriod: (startDate: string, endDate: string) => Promise<MealPlan[]>;
+  removeMealItemFromMealPlan: (mealItem: PlannedMealItem) => Promise<void>;
   removeMealPlan: (id: string) => Promise<void>;
   updateMealPlan: (id: string, fields: Omit<MealPlan, 'id'>) => Promise<void>;
   updateMealItemInMealPlan: (
@@ -26,6 +27,7 @@ const addMealItemToMealPlan = vi.fn().mockResolvedValue(undefined);
 const getMealPlan = vi.fn().mockResolvedValue(null);
 const getMealPlanForDate = vi.fn().mockResolvedValue(null);
 const getMealPlansForPeriod = vi.fn().mockResolvedValue([]);
+const removeMealItemFromMealPlan = vi.fn();
 const removeMealPlan = vi.fn();
 const updateMealPlan = vi.fn();
 const updateMealItemInMealPlan = vi.fn();
@@ -42,6 +44,7 @@ export const useMealPlansData: () => MealPlansData = vi.fn().mockReturnValue({
   getMealPlanForDate,
   getMealPlansForPeriod,
   loading,
+  removeMealItemFromMealPlan,
   removeMealPlan,
   updateMealPlan,
   updateMealItemInMealPlan,
