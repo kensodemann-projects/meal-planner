@@ -11,6 +11,7 @@
           :mealPlan="row.plan"
           :settings="settings"
           @modify="(plannedMealItem) => navigateToUpdate(row.plan!, plannedMealItem)"
+          @delete="(plannedMealItem) => (showConfirmDialog = true)"
         />
       </div>
     </template>
@@ -30,6 +31,15 @@
     @click="navigateToAdd"
     data-testid="add-button"
   ></v-fab>
+
+  <v-dialog v-model="showConfirmDialog" max-width="600px" data-testid="confirm-dialog">
+    <ConfirmDialog
+      question="Are you sure you want to delete this meal?"
+      icon-color="error"
+      @confirm="doDelete"
+      @cancel="showConfirmDialog = false"
+    />
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
@@ -53,6 +63,7 @@ const weekStartDate = computed(() => route.query.weekStartDate as string);
 const weekDays = computed(() => [0, 1, 2, 3, 4, 5, 6].map((offset) => addDays(parseISO(weekStartDate.value), offset)));
 const mealPlans = ref<MealPlan[]>([]);
 const isLoading = ref(true);
+const showConfirmDialog = ref(false);
 
 const weekRows = computed<DayRow[]>(() =>
   weekDays.value.map((d) => {
@@ -85,6 +96,11 @@ const navigateToUpdate = (mealPlan: MealPlan, plannedMealItem: PlannedMealItem) 
       mealItemId: plannedMealItem.mealItem.id,
     },
   });
+};
+
+const doDelete = (plannedMealItem: PlannedMealItem) => {
+  showConfirmDialog.value = false;
+  console.log('doDelete', plannedMealItem);
 };
 
 watch(weekStartDate, loadMealPlans, { immediate: true });

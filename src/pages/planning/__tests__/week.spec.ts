@@ -1,3 +1,4 @@
+import ConfirmDialog from '@/components/core/ConfirmDialog.vue';
 import DailySummaryCard from '@/components/planning/DailySummaryCard.vue';
 import { TEST_MEAL_PLAN, TEST_MEAL_PLANS } from '@/data/__tests__/test-data';
 import { useMealPlansData } from '@/data/meal-plans';
@@ -214,6 +215,39 @@ describe('week', () => {
           mealItemId: plannedMealItem.mealItem.id,
         },
       });
+    });
+  });
+
+  describe('delete event', () => {
+    const plannedMealItemFor = (
+      mealPlan: (typeof TEST_MEAL_PLANS)[number],
+      mealIndex = 0,
+      itemIndex = 0,
+    ): PlannedMealItem => {
+      const meal = mealPlan.meals[mealIndex]!;
+      return {
+        mealItem: meal.items[itemIndex]!,
+        mealDate: mealPlan.date,
+        mealType: meal.type,
+      };
+    };
+
+    const emitDeleteFromCard = (mealPlan: (typeof TEST_MEAL_PLANS)[number], plannedMealItem: PlannedMealItem) => {
+      const card = wrapper.findAllComponents(DailySummaryCard).find((c) => c.props('mealPlan')?.id === mealPlan.id);
+      expect(card).toBeDefined();
+      card!.vm.$emit('delete', plannedMealItem);
+    };
+
+    it('displays the confirmation dialog', async () => {
+      const mealPlan = TEST_MEAL_PLANS.find((plan) => plan.date === '2025-12-29')!;
+      const plannedMealItem = plannedMealItemFor(mealPlan, 1, 0);
+      (useMealPlansData().getMealPlansForPeriod as Mock).mockResolvedValue([mealPlan]);
+      wrapper = await renderPage();
+
+      emitDeleteFromCard(mealPlan, plannedMealItem);
+      await flushPromises();
+
+      expect(wrapper.findComponent(ConfirmDialog).exists()).toBe(true);
     });
   });
 });
