@@ -320,6 +320,18 @@ describe('week', () => {
         const { removeMealItemFromMealPlan } = useMealPlansData();
         expect(removeMealItemFromMealPlan).toHaveBeenCalledExactlyOnceWith(secondDayItem);
       });
+
+      it('does not remove again if confirm is emitted twice', async () => {
+        await renderAndEmitDelete();
+        const confirmDialog = wrapper.findComponent(ConfirmDialog);
+        confirmDialog.vm.$emit('confirm');
+        await flushPromises();
+        confirmDialog.vm.$emit('confirm');
+        await flushPromises();
+
+        const { removeMealItemFromMealPlan } = useMealPlansData();
+        expect(removeMealItemFromMealPlan).toHaveBeenCalledExactlyOnceWith(plannedMealItem);
+      });
     });
 
     describe('on deny', () => {

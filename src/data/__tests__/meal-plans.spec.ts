@@ -1,5 +1,5 @@
 import type { MealItem, PlannedMealItem } from '@/models/meal';
-import { addDoc, collection, deleteDoc, doc, updateDoc, writeBatch } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, runTransaction, updateDoc, writeBatch } from 'firebase/firestore';
 import { type Mock, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ref } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
@@ -28,6 +28,7 @@ vi.mock('firebase/firestore', async () => {
       set: vi.fn().mockReturnThis(),
       commit: vi.fn().mockResolvedValue(undefined),
     })),
+    runTransaction: vi.fn(),
     getDocs: vi.fn().mockResolvedValue([]),
     getDoc: vi.fn().mockResolvedValue({ exists: vi.fn().mockResolvedValue(false) }),
     doc: vi.fn().mockImplementation((dbOrCol: any, ...paths: string[]) => {
@@ -908,11 +909,51 @@ describe('Meal Plans Data Service', () => {
   });
 
   describe('remove meal item from meal plan', () => {
+    type MockTransaction = {
+      get: Mock;
+      update: Mock;
+      delete: Mock;
+    };
+
+    let transaction: MockTransaction;
+
     const seedMealPlans = (plans = TEST_MEAL_PLANS) => {
       const mealPlans = ref(structuredClone(plans));
       (mealPlans as any).promise = { value: Promise.resolve() };
       (useCollection as Mock).mockReturnValueOnce(mealPlans);
     };
+
+    const snapshotOf = (plan: { date: string; meals: unknown[] }, exists = true) => ({
+      exists: () => exists,
+      data: () => (exists ? { date: plan.date, meals: structuredClone(plan.meals) } : undefined),
+    });
+
+    const seedTransactionSnapshot = (plan: { date: string; meals: unknown[] }, exists = true) => {
+      transaction.get.mockResolvedValue(snapshotOf(plan, exists));
+    };
+
+    const getTransaction = (): MockTransaction => {
+      expect(runTransaction).toHaveBeenCalledOnce();
+      expect(runTransaction).toHaveBeenCalledWith({ id: 42, name: 'my fake fire store' }, expect.any(Function));
+      return transaction;
+    };
+
+    const expectNoDirectWrites = () => {
+      expect(updateDoc).not.toHaveBeenCalled();
+      expect(addDoc).not.toHaveBeenCalled();
+      expect(deleteDoc).not.toHaveBeenCalled();
+    };
+
+    beforeEach(() => {
+      transaction = {
+        get: vi.fn().mockResolvedValue(snapshotOf({ date: '', meals: [] }, false)),
+        update: vi.fn(),
+        delete: vi.fn(),
+      };
+      vi.mocked(runTransaction).mockImplementation(async (_db, updateFunction) => {
+        await updateFunction(transaction);
+      });
+    });
 
     describe('when no meal plan exists for the date', () => {
       const plannedMealItem: PlannedMealItem = {
@@ -930,18 +971,51 @@ describe('Meal Plans Data Service', () => {
         vi.mocked(console.error).mockRestore();
       });
 
-      it('does not update, add, or delete a meal plan document', async () => {
+      it('does not start a transaction or write a meal plan document', async () => {
         const { removeMealItemFromMealPlan } = useMealPlansData();
         await removeMealItemFromMealPlan(plannedMealItem);
-        expect(updateDoc).not.toHaveBeenCalled();
-        expect(addDoc).not.toHaveBeenCalled();
-        expect(deleteDoc).not.toHaveBeenCalled();
+        expect(runTransaction).not.toHaveBeenCalled();
+        expectNoDirectWrites();
       });
 
       it('logs an error', async () => {
         const { removeMealItemFromMealPlan } = useMealPlansData();
         await removeMealItemFromMealPlan(plannedMealItem);
         expect(console.error).toHaveBeenCalledExactlyOnceWith('Meal plan not found for date:', '2099-01-01');
+      });
+    });
+
+    describe('when the meal plan document no longer exists', () => {
+      const existingPlan = TEST_MEAL_PLANS[0]!;
+      const plannedMealItem: PlannedMealItem = {
+        mealDate: existingPlan.date,
+        mealType: 'Breakfast',
+        mealItem: existingPlan.meals[0]!.items[0]!,
+      };
+
+      beforeEach(() => {
+        seedMealPlans();
+        seedTransactionSnapshot(existingPlan, false);
+        vi.spyOn(console, 'error').mockImplementation(() => {});
+      });
+
+      afterEach(() => {
+        vi.mocked(console.error).mockRestore();
+      });
+
+      it('does not update or delete the meal plan document', async () => {
+        const { removeMealItemFromMealPlan } = useMealPlansData();
+        await removeMealItemFromMealPlan(plannedMealItem);
+        const txn = getTransaction();
+        expect(txn.update).not.toHaveBeenCalled();
+        expect(txn.delete).not.toHaveBeenCalled();
+        expectNoDirectWrites();
+      });
+
+      it('logs an error', async () => {
+        const { removeMealItemFromMealPlan } = useMealPlansData();
+        await removeMealItemFromMealPlan(plannedMealItem);
+        expect(console.error).toHaveBeenCalledExactlyOnceWith('Meal plan not found for date:', existingPlan.date);
       });
     });
 
@@ -954,35 +1028,44 @@ describe('Meal Plans Data Service', () => {
         mealItem: itemToRemove,
       };
 
-      beforeEach(() => seedMealPlans());
+      beforeEach(() => {
+        seedMealPlans();
+        seedTransactionSnapshot(existingPlan);
+      });
 
-      it('obtains a reference to the doc', async () => {
+      it('obtains a reference to the doc and reads it in the transaction', async () => {
         const { removeMealItemFromMealPlan } = useMealPlansData();
         await removeMealItemFromMealPlan(plannedMealItem);
         expect(doc).toHaveBeenCalledOnce();
         expect(doc).toHaveBeenCalledWith({ id: 42, name: 'my fake fire store' }, `meal-plans/${existingPlan.id}`);
+        const txn = getTransaction();
+        expect(txn.get).toHaveBeenCalledOnce();
+        expect(txn.get).toHaveBeenCalledWith(`42:doc:meal-plans/${existingPlan.id}`);
       });
 
       it('updates the meal plan without the item', async () => {
         const { id, ...planFields } = existingPlan;
         const { removeMealItemFromMealPlan } = useMealPlansData();
         await removeMealItemFromMealPlan(plannedMealItem);
-        expect(updateDoc).toHaveBeenCalledOnce();
-        expect(updateDoc).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
-          ...planFields,
+        const txn = getTransaction();
+        expect(txn.update).toHaveBeenCalledOnce();
+        expect(txn.update).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+          date: planFields.date,
           meals: planFields.meals.map((meal) =>
             meal.type === 'Breakfast'
               ? { ...meal, items: meal.items.filter((item) => item.id !== itemToRemove.id) }
               : meal,
           ),
         });
+        expectNoDirectWrites();
       });
 
       it('leaves remaining items and other meals unchanged', async () => {
         const { removeMealItemFromMealPlan } = useMealPlansData();
         await removeMealItemFromMealPlan(plannedMealItem);
-        expect(updateDoc).toHaveBeenCalledOnce();
-        const updatedFields = (updateDoc as Mock).mock.calls[0]?.[1];
+        const txn = getTransaction();
+        expect(txn.update).toHaveBeenCalledOnce();
+        const updatedFields = txn.update.mock.calls[0]?.[1];
         const breakfast = updatedFields.meals.find((meal: { type: string }) => meal.type === 'Breakfast');
         expect(breakfast.items).toEqual([existingPlan.meals[0]!.items[1]]);
         expect(updatedFields.meals.filter((meal: { type: string }) => meal.type !== 'Breakfast')).toEqual(
@@ -993,9 +1076,33 @@ describe('Meal Plans Data Service', () => {
       it('does not add or delete a meal plan document', async () => {
         const { removeMealItemFromMealPlan } = useMealPlansData();
         await removeMealItemFromMealPlan(plannedMealItem);
-        expect(updateDoc).toHaveBeenCalledOnce();
-        expect(addDoc).not.toHaveBeenCalled();
-        expect(deleteDoc).not.toHaveBeenCalled();
+        const txn = getTransaction();
+        expect(txn.update).toHaveBeenCalledOnce();
+        expect(txn.delete).not.toHaveBeenCalled();
+        expectNoDirectWrites();
+      });
+
+      it('applies the removal to the document state read in the transaction', async () => {
+        const { id, ...planFields } = existingPlan;
+        const extraItem = { ...itemToRemove, id: 'item-concurrent-1', name: 'Concurrent Item' };
+        const snapshotMeals = planFields.meals.map((meal) =>
+          meal.type === 'Breakfast' ? { ...meal, items: [...meal.items, extraItem] } : meal,
+        );
+        seedTransactionSnapshot({ date: planFields.date, meals: snapshotMeals });
+
+        const { removeMealItemFromMealPlan } = useMealPlansData();
+        await removeMealItemFromMealPlan(plannedMealItem);
+
+        const txn = getTransaction();
+        expect(txn.update).toHaveBeenCalledOnce();
+        expect(txn.update).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+          date: planFields.date,
+          meals: snapshotMeals.map((meal) =>
+            meal.type === 'Breakfast'
+              ? { ...meal, items: meal.items.filter((item) => item.id !== itemToRemove.id) }
+              : meal,
+          ),
+        });
       });
     });
 
@@ -1008,25 +1115,31 @@ describe('Meal Plans Data Service', () => {
         mealItem: itemToRemove,
       };
 
-      beforeEach(() => seedMealPlans());
+      beforeEach(() => {
+        seedMealPlans();
+        seedTransactionSnapshot(existingPlan);
+      });
 
       it('removes the empty meal from the plan', async () => {
         const { id, ...planFields } = existingPlan;
         const { removeMealItemFromMealPlan } = useMealPlansData();
         await removeMealItemFromMealPlan(plannedMealItem);
-        expect(updateDoc).toHaveBeenCalledOnce();
-        expect(updateDoc).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
-          ...planFields,
+        const txn = getTransaction();
+        expect(txn.update).toHaveBeenCalledOnce();
+        expect(txn.update).toHaveBeenCalledWith(`42:doc:meal-plans/${id}`, {
+          date: planFields.date,
           meals: planFields.meals.filter((meal) => meal.type !== 'Snack'),
         });
+        expectNoDirectWrites();
       });
 
       it('does not delete the meal plan document', async () => {
         const { removeMealItemFromMealPlan } = useMealPlansData();
         await removeMealItemFromMealPlan(plannedMealItem);
-        expect(updateDoc).toHaveBeenCalledOnce();
-        expect(deleteDoc).not.toHaveBeenCalled();
-        expect(addDoc).not.toHaveBeenCalled();
+        const txn = getTransaction();
+        expect(txn.update).toHaveBeenCalledOnce();
+        expect(txn.delete).not.toHaveBeenCalled();
+        expectNoDirectWrites();
       });
     });
 
@@ -1056,21 +1169,26 @@ describe('Meal Plans Data Service', () => {
         mealItem: soloItem,
       };
 
-      beforeEach(() => seedMealPlans([soloPlan]));
+      beforeEach(() => {
+        seedMealPlans([soloPlan]);
+        seedTransactionSnapshot(soloPlan);
+      });
 
       it('deletes the meal plan document', async () => {
         const { removeMealItemFromMealPlan } = useMealPlansData();
         await removeMealItemFromMealPlan(plannedMealItem);
-        expect(deleteDoc).toHaveBeenCalledOnce();
-        expect(deleteDoc).toHaveBeenCalledWith('42:doc:meal-plans/mp-solo');
+        const txn = getTransaction();
+        expect(txn.delete).toHaveBeenCalledOnce();
+        expect(txn.delete).toHaveBeenCalledWith('42:doc:meal-plans/mp-solo');
       });
 
       it('does not update or add a meal plan document', async () => {
         const { removeMealItemFromMealPlan } = useMealPlansData();
         await removeMealItemFromMealPlan(plannedMealItem);
-        expect(deleteDoc).toHaveBeenCalledOnce();
-        expect(updateDoc).not.toHaveBeenCalled();
-        expect(addDoc).not.toHaveBeenCalled();
+        const txn = getTransaction();
+        expect(txn.delete).toHaveBeenCalledOnce();
+        expect(txn.update).not.toHaveBeenCalled();
+        expectNoDirectWrites();
       });
     });
   });

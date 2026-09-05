@@ -109,9 +109,11 @@ const confirmDelete = (plannedMealItem: PlannedMealItem) => {
 };
 
 const doDelete = async () => {
+  const item = mealItemToDelete.value;
+  mealItemToDelete.value = null;
   showConfirmDialog.value = false;
-  if (mealItemToDelete.value) {
-    await removeMealItemFromMealPlan(mealItemToDelete.value);
+  if (item) {
+    await removeMealItemFromMealPlan(item);
     await refreshMealPlans();
   }
 };
