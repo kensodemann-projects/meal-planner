@@ -26,9 +26,6 @@ const validateDateParams = (to: RouteLocationNormalized) => {
   if ((to.path === '/planning/week' || to.path === '/planning/add') && !isValidDateQueryParam(to.query.weekStartDate)) {
     return '/error';
   }
-  if (to.path === '/planning/day' && !isValidDateQueryParam(to.query.dt)) {
-    return '/error';
-  }
 };
 
 const router = createRouter({
