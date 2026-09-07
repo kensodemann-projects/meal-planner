@@ -1,5 +1,11 @@
 # meal-planner
 
+## 2.0.0
+
+### Major Changes
+
+- a234d6a: Update the planning workflow to ensure a more streamlined experience with fewer clicks required.
+
 ## 1.1.0
 
 ### Minor Changes
