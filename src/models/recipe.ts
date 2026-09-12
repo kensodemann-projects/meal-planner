@@ -47,8 +47,11 @@ export interface RecipeStep {
   instruction: string;
 }
 
+export type RecipeKind = 'homemade' | 'prepared';
+
 export interface Recipe extends Nutrition {
   id?: string;
+  kind: RecipeKind;
   name: string;
   description: string | null;
   category: RecipeCategory;
