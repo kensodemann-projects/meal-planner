@@ -3,6 +3,8 @@ import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestor
 import { computed } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
 
+export const GENERIC_RESTAURANT_SOURCE_ID = 'restaurant';
+
 export const useSourcesData = () => {
   const db = useFirestore();
   const path = 'sources';
