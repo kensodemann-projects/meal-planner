@@ -2,4 +2,4 @@
 'meal-planner': patch
 ---
 
-Remove dead code.
+Remove unused EditableItem type.
