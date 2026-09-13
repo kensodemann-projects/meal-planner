@@ -29,6 +29,6 @@ export const validationRules = {
   },
   mustBeUnique: (existingValues: string[], msg?: string) => (value: string | null | undefined) => {
     const found = existingValues.find((v) => v === value);
-    return !found || `"${value}" already exists`;
+    return !found || msg || `"${value}" already exists`;
   },
 };

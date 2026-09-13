@@ -227,5 +227,12 @@ describe('Validation Rules', () => {
       expect(validationRules.mustBeUnique(['foo', 'bar', 'baz'])('bar')).toBe('"bar" already exists');
       expect(validationRules.mustBeUnique(['binky', 'dinky', 'doo'])('binky')).toBe('"binky" already exists');
     });
+
+    it('returns the specified message if there is one', () => {
+      expect(validationRules.mustBeUnique(['foo', 'bar', 'baz'], 'The thing exists')('bar')).toBe('The thing exists');
+      expect(
+        validationRules.mustBeUnique(['binky', 'dinky', 'doo'], 'This doll is already in the collection')('binky'),
+      ).toBe('This doll is already in the collection');
+    });
   });
 });
