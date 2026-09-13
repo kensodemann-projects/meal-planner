@@ -241,5 +241,10 @@ describe('Validation Rules', () => {
       expect(validationRules.mustBeUnique(['FOO', 'BaR', 'baZ'])('bAR')).toBe('"bAR" already exists');
       expect(validationRules.mustBeUnique(['bINky', 'DinkY', 'DOO'])('Binky')).toBe('"Binky" already exists');
     });
+
+    it('trims whitespace', () => {
+      expect(validationRules.mustBeUnique(['foo', ' bar  ', 'baz'])('bar')).toBe('"bar" already exists');
+      expect(validationRules.mustBeUnique(['binky', 'dinky', 'doo'])('  binky ')).toBe('"binky" already exists');
+    });
   });
 });
