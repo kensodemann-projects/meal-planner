@@ -207,4 +207,11 @@ describe('Validation Rules', () => {
       expect(validationRules.mustBeLessThan(10, 'Bad value')(NaN)).toBe('Bad value');
     });
   });
+
+  describe('mustBeUnique', () => {
+    it('returns true if value is null or undefined', () => {
+      expect(validationRules.mustBeUnique(['foo', 'bar', 'baz'])(undefined)).toBe(true);
+      expect(validationRules.mustBeUnique(['foo', 'bar', 'baz'])(null)).toBe(true);
+    });
+  });
 });
