@@ -213,5 +213,19 @@ describe('Validation Rules', () => {
       expect(validationRules.mustBeUnique(['foo', 'bar', 'baz'])(undefined)).toBe(true);
       expect(validationRules.mustBeUnique(['foo', 'bar', 'baz'])(null)).toBe(true);
     });
+
+    it('returns true if there are no existing values', () => {
+      expect(validationRules.mustBeUnique([])('foo')).toBe(true);
+    });
+
+    it('returns true if the value is unique', () => {
+      expect(validationRules.mustBeUnique(['foo', 'bar', 'baz'])('bob')).toBe(true);
+      expect(validationRules.mustBeUnique(['binky', 'dinky', 'doo'])('butts')).toBe(true);
+    });
+
+    it('returns the default message if the value is not unique', () => {
+      expect(validationRules.mustBeUnique(['foo', 'bar', 'baz'])('bar')).toBe('"bar" already exists');
+      expect(validationRules.mustBeUnique(['binky', 'dinky', 'doo'])('binky')).toBe('"binky" already exists');
+    });
   });
 });

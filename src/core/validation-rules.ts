@@ -28,6 +28,7 @@ export const validationRules = {
     return value < max || msg || `Must be less than ${max}`;
   },
   mustBeUnique: (existingValues: string[], msg?: string) => (value: string | null | undefined) => {
-    return true;
+    const found = existingValues.find((v) => v === value);
+    return !found || `"${value}" already exists`;
   },
 };
