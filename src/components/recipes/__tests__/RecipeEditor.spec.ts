@@ -5,6 +5,7 @@ import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 
 vi.mock('@/core/nutrition-generator');
+vi.mock('@/data/recipes');
 
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
@@ -18,6 +19,9 @@ import {
   textFieldIsRequired,
 } from '../../__tests__/test-utils';
 import StepEditorRow from '../StepEditorRow.vue';
+import { useRecipesData } from '@/data/recipes.ts';
+import type { Ref } from 'vue';
+import { TEST_RECIPES } from '@/data/__tests__/test-data.ts';
 
 const vuetify = createVuetify({
   components,
@@ -104,6 +108,11 @@ const getNutritionInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
 describe('Recipe Editor', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
+  beforeEach(() => {
+    const { recipes } = useRecipesData();
+    (recipes as Ref<Recipe[]>).value = TEST_RECIPES;
+  });
+
   afterEach(() => {
     wrapper?.unmount();
     vi.clearAllTimers();
@@ -138,6 +147,22 @@ describe('Recipe Editor', () => {
     it('is required', async () => {
       wrapper = mountComponent();
       await textFieldIsRequired(wrapper, 'name-input');
+    });
+
+    it('must be unique', async () => {
+      wrapper = mountComponent();
+      const textField = wrapper.findComponent('[data-testid="name-input"]') as VueWrapper<components.VTextField>;
+      const input = textField.find('input');
+
+      expect(wrapper.text()).not.toContain('already exists');
+      await input.trigger('focus');
+      await input.setValue(TEST_RECIPES[0].name);
+      await input.trigger('blur');
+      expect(wrapper.text()).toContain('already exists');
+
+      await input.setValue('redrum');
+      await input.trigger('blur');
+      expect(wrapper.text()).not.toContain('already exists');
     });
   });
 

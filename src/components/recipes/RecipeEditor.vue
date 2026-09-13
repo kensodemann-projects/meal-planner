@@ -10,7 +10,7 @@
             label="Name"
             placeholder="Enter the name of the recipe..."
             v-model="name"
-            :rules="[validationRules.required]"
+            :rules="[validationRules.required, validationRules.mustBeUnique(recipeNames)]"
             data-testid="name-input"
             ref="nameInput"
           ></v-text-field>
@@ -176,6 +176,7 @@ import { validationRules } from '@/core/validation-rules';
 import { cuisines } from '@/data/cuisines';
 import { recipeCategories } from '@/data/recipe-categories';
 import { recipeDifficulties } from '@/data/recipe-difficulties';
+import { useRecipesData } from '@/data/recipes';
 import type { Nutrition } from '@/models/nutrition';
 import type { Cuisine, Recipe, RecipeCategory, RecipeDifficulty, RecipeIngredient, RecipeStep } from '@/models/recipe';
 import { computed, onMounted, ref, shallowRef } from 'vue';
@@ -185,6 +186,7 @@ const emit = defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'canc
 const props = defineProps<{ recipe?: Recipe }>();
 
 const { generateNutritionData } = useNutritionGenerator();
+const { recipes } = useRecipesData();
 
 const valid = shallowRef(false);
 const name = shallowRef<string>(props.recipe?.name || '');
@@ -211,6 +213,8 @@ const showErrorSnackbar = shallowRef(false);
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 const listChanged = shallowRef(false);
+
+const recipeNames = computed((): string[] => recipes.value.map((x) => x.name));
 
 const createIngredient = (): Partial<RecipeIngredient> => ({
   id: globalThis.crypto.randomUUID(),
