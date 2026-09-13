@@ -234,5 +234,12 @@ describe('Validation Rules', () => {
         validationRules.mustBeUnique(['binky', 'dinky', 'doo'], 'This doll is already in the collection')('binky'),
       ).toBe('This doll is already in the collection');
     });
+
+    it('is case insensitive', () => {
+      expect(validationRules.mustBeUnique(['fOo', 'BAr', 'baZ'])('bob')).toBe(true);
+      expect(validationRules.mustBeUnique(['BINKY', 'dINky', 'DOO'])('butts')).toBe(true);
+      expect(validationRules.mustBeUnique(['FOO', 'BaR', 'baZ'])('bAR')).toBe('"bAR" already exists');
+      expect(validationRules.mustBeUnique(['bINky', 'DinkY', 'DOO'])('Binky')).toBe('"Binky" already exists');
+    });
   });
 });
