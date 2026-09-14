@@ -1,23 +1,26 @@
 import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import { useNutritionGenerator } from '@/core/nutrition-generator';
+import { TEST_RECIPES } from '@/data/__tests__/test-data';
+import { useRecipesData } from '@/data/recipes';
 import type { Recipe } from '@/models/recipe';
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
-
-vi.mock('@/core/nutrition-generator');
-
+import type { Ref } from 'vue';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import IngredientEditorRow from '../IngredientEditorRow.vue';
-import RecipeEditor from '../RecipeEditor.vue';
 import {
   autocompleteIsRequired,
   numberInputIsRequired,
   numberInputMustBeZeroOrGreater,
   textFieldIsRequired,
 } from '../../__tests__/test-utils';
+import IngredientEditorRow from '../IngredientEditorRow.vue';
+import RecipeEditor from '../RecipeEditor.vue';
 import StepEditorRow from '../StepEditorRow.vue';
+
+vi.mock('@/core/nutrition-generator');
+vi.mock('@/data/recipes');
 
 const vuetify = createVuetify({
   components,
@@ -104,6 +107,11 @@ const getNutritionInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
 describe('Recipe Editor', () => {
   let wrapper: ReturnType<typeof mountComponent>;
 
+  beforeEach(() => {
+    const { recipes } = useRecipesData();
+    (recipes as Ref<Recipe[]>).value = TEST_RECIPES;
+  });
+
   afterEach(() => {
     wrapper?.unmount();
     vi.clearAllTimers();
@@ -138,6 +146,37 @@ describe('Recipe Editor', () => {
     it('is required', async () => {
       wrapper = mountComponent();
       await textFieldIsRequired(wrapper, 'name-input');
+    });
+
+    it('must be unique', async () => {
+      wrapper = mountComponent();
+      const textField = wrapper.findComponent('[data-testid="name-input"]') as VueWrapper<components.VTextField>;
+      const input = textField.find('input');
+
+      expect(wrapper.text()).not.toContain('already exists');
+      await input.trigger('focus');
+      await input.setValue(TEST_RECIPES[0].name);
+      await input.trigger('blur');
+      expect(wrapper.text()).toContain('already exists');
+
+      await input.setValue('redrum');
+      await input.trigger('blur');
+      expect(wrapper.text()).not.toContain('already exists');
+    });
+
+    it('allows the name to be reset', async () => {
+      wrapper = mountComponent({ recipe: { ...TEST_RECIPES[0] } });
+      const input = wrapper.findComponent('[data-testid="name-input"]') as VueWrapper<components.VTextField>;
+      const textField = input.find('input');
+
+      expect(wrapper.text()).not.toContain('already exists');
+      await textField.setValue(TEST_RECIPES[1].name);
+      await textField.trigger('blur');
+      expect(wrapper.text()).toContain('already exists');
+
+      await textField.setValue(TEST_RECIPES[0].name);
+      await textField.trigger('blur');
+      expect(wrapper.text()).not.toContain('already exists');
     });
   });
 

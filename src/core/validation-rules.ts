@@ -27,4 +27,9 @@ export const validationRules = {
     if (Number.isNaN(value)) return msg || `Must be a valid number less than ${max}`;
     return value < max || msg || `Must be less than ${max}`;
   },
+  mustBeUnique: (existingValues: string[], msg?: string) => (value: string | null | undefined) => {
+    const lowerValue = value?.trim().toLowerCase();
+    const found = existingValues.find((v) => v.trim().toLowerCase() === lowerValue);
+    return !found || msg || `"${value?.trim()}" already exists`;
+  },
 };

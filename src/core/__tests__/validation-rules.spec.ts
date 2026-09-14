@@ -207,4 +207,44 @@ describe('Validation Rules', () => {
       expect(validationRules.mustBeLessThan(10, 'Bad value')(NaN)).toBe('Bad value');
     });
   });
+
+  describe('mustBeUnique', () => {
+    it('returns true if value is null or undefined', () => {
+      expect(validationRules.mustBeUnique(['foo', 'bar', 'baz'])(undefined)).toBe(true);
+      expect(validationRules.mustBeUnique(['foo', 'bar', 'baz'])(null)).toBe(true);
+    });
+
+    it('returns true if there are no existing values', () => {
+      expect(validationRules.mustBeUnique([])('foo')).toBe(true);
+    });
+
+    it('returns true if the value is unique', () => {
+      expect(validationRules.mustBeUnique(['foo', 'bar', 'baz'])('bob')).toBe(true);
+      expect(validationRules.mustBeUnique(['binky', 'dinky', 'doo'])('butts')).toBe(true);
+    });
+
+    it('returns the default message if the value is not unique', () => {
+      expect(validationRules.mustBeUnique(['foo', 'bar', 'baz'])('bar')).toBe('"bar" already exists');
+      expect(validationRules.mustBeUnique(['binky', 'dinky', 'doo'])('binky')).toBe('"binky" already exists');
+    });
+
+    it('returns the specified message if there is one', () => {
+      expect(validationRules.mustBeUnique(['foo', 'bar', 'baz'], 'The thing exists')('bar')).toBe('The thing exists');
+      expect(
+        validationRules.mustBeUnique(['binky', 'dinky', 'doo'], 'This doll is already in the collection')('binky'),
+      ).toBe('This doll is already in the collection');
+    });
+
+    it('is case insensitive', () => {
+      expect(validationRules.mustBeUnique(['fOo', 'BAr', 'baZ'])('bob')).toBe(true);
+      expect(validationRules.mustBeUnique(['BINKY', 'dINky', 'DOO'])('butts')).toBe(true);
+      expect(validationRules.mustBeUnique(['FOO', 'BaR', 'baZ'])('bAR')).toBe('"bAR" already exists');
+      expect(validationRules.mustBeUnique(['bINky', 'DinkY', 'DOO'])('Binky')).toBe('"Binky" already exists');
+    });
+
+    it('trims whitespace', () => {
+      expect(validationRules.mustBeUnique(['foo', ' bar  ', 'baz'])('bar')).toBe('"bar" already exists');
+      expect(validationRules.mustBeUnique(['binky', 'dinky', 'doo'])('  binky ')).toBe('"binky" already exists');
+    });
+  });
 });
