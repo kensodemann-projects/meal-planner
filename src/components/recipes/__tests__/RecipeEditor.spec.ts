@@ -1,27 +1,26 @@
 import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import { useNutritionGenerator } from '@/core/nutrition-generator';
+import { TEST_RECIPES } from '@/data/__tests__/test-data';
+import { useRecipesData } from '@/data/recipes';
 import type { Recipe } from '@/models/recipe';
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
-
-vi.mock('@/core/nutrition-generator');
-vi.mock('@/data/recipes');
-
+import type { Ref } from 'vue';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import IngredientEditorRow from '../IngredientEditorRow.vue';
-import RecipeEditor from '../RecipeEditor.vue';
 import {
   autocompleteIsRequired,
   numberInputIsRequired,
   numberInputMustBeZeroOrGreater,
   textFieldIsRequired,
 } from '../../__tests__/test-utils';
+import IngredientEditorRow from '../IngredientEditorRow.vue';
+import RecipeEditor from '../RecipeEditor.vue';
 import StepEditorRow from '../StepEditorRow.vue';
-import { useRecipesData } from '@/data/recipes.ts';
-import type { Ref } from 'vue';
-import { TEST_RECIPES } from '@/data/__tests__/test-data.ts';
+
+vi.mock('@/core/nutrition-generator');
+vi.mock('@/data/recipes');
 
 const vuetify = createVuetify({
   components,
