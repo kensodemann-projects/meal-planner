@@ -164,6 +164,21 @@ describe('Recipe Editor', () => {
       await input.trigger('blur');
       expect(wrapper.text()).not.toContain('already exists');
     });
+
+    it('allows the name to be reset', async () => {
+      wrapper = mountComponent({ recipe: { ...TEST_RECIPES[0] } });
+      const input = wrapper.findComponent('[data-testid="name-input"]') as VueWrapper<components.VTextField>;
+      const textField = input.find('input');
+
+      expect(wrapper.text()).not.toContain('already exists');
+      await textField.setValue(TEST_RECIPES[1].name);
+      await textField.trigger('blur');
+      expect(wrapper.text()).toContain('already exists');
+
+      await textField.setValue(TEST_RECIPES[0].name);
+      await textField.trigger('blur');
+      expect(wrapper.text()).not.toContain('already exists');
+    });
   });
 
   describe('category', () => {

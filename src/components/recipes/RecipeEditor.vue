@@ -214,7 +214,7 @@ const showErrorSnackbar = shallowRef(false);
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 const listChanged = shallowRef(false);
 
-const recipeNames = computed((): string[] => recipes.value.map((x) => x.name));
+const recipeNames = computed((): string[] => recipes.value.filter((x) => x.id !== props.recipe?.id).map((x) => x.name));
 
 const createIngredient = (): Partial<RecipeIngredient> => ({
   id: globalThis.crypto.randomUUID(),
