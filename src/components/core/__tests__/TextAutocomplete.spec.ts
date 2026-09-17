@@ -47,7 +47,7 @@ describe('TextAutocomplete', () => {
   describe('Tab key — selectFirstItem', () => {
     it('selects the first matching item on Tab when search matches', async () => {
       wrapper = createWrapper();
-      const input = wrapper.find('input');
+      const input = wrapper.find('input[role="combobox"]');
 
       await input.setValue('ap');
       await input.trigger('keydown.tab');
@@ -57,7 +57,7 @@ describe('TextAutocomplete', () => {
 
     it('matching is case-insensitive', async () => {
       wrapper = createWrapper();
-      const input = wrapper.find('input');
+      const input = wrapper.find('input[role="combobox"]');
 
       await input.setValue('BAN');
       await input.trigger('keydown.tab');
@@ -67,7 +67,7 @@ describe('TextAutocomplete', () => {
 
     it('sets modelValue to null on Tab when search is empty', async () => {
       wrapper = createWrapper({}, 'Apple');
-      const input = wrapper.find('input');
+      const input = wrapper.find('input[role="combobox"]');
 
       await input.setValue('');
       await input.trigger('keydown.tab');
@@ -78,7 +78,7 @@ describe('TextAutocomplete', () => {
 
     it('sets modelValue to null on Tab when search matches nothing', async () => {
       wrapper = createWrapper({}, 'Apple');
-      const input = wrapper.find('input');
+      const input = wrapper.find('input[role="combobox"]');
 
       await input.setValue('zzz');
       await input.trigger('keydown.tab');

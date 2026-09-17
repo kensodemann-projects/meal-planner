@@ -103,7 +103,7 @@ describe('MealItemEditor', () => {
       it('selects the first matching date when the search text matches', async () => {
         wrapper = mountComponent({ weekStartDate: '2026-08-30' });
         const dateInput = wrapper.findComponent('[data-testid="date-input"]') as VueWrapper<components.VAutocomplete>;
-        const input = dateInput.find('input');
+        const input = dateInput.find('input[role="combobox"]');
         await input.setValue('wednesday');
         await input.trigger('keydown.tab');
         // 'wednesday' only matches 'Wednesday, September 2'
@@ -113,7 +113,7 @@ describe('MealItemEditor', () => {
       it('selects the first matching date when the search text matches multiple items', async () => {
         wrapper = mountComponent({ weekStartDate: '2026-08-30' });
         const dateInput = wrapper.findComponent('[data-testid="date-input"]') as VueWrapper<components.VAutocomplete>;
-        const input = dateInput.find('input');
+        const input = dateInput.find('input[role="combobox"]');
         await input.setValue('september');
         await input.trigger('keydown.tab');
         // 'September 1' through 'September 5' match; first is 2026-09-01
@@ -123,7 +123,7 @@ describe('MealItemEditor', () => {
       it('does not select any date when the search text is empty', async () => {
         wrapper = mountComponent({ weekStartDate: '2026-08-30' });
         const dateInput = wrapper.findComponent('[data-testid="date-input"]') as VueWrapper<components.VAutocomplete>;
-        const input = dateInput.find('input');
+        const input = dateInput.find('input[role="combobox"]');
         await input.trigger('keydown.tab');
         expect(dateInput.props('modelValue')).toBeNull();
       });
@@ -131,7 +131,7 @@ describe('MealItemEditor', () => {
       it('does not select any date when the search text does not match any date', async () => {
         wrapper = mountComponent({ weekStartDate: '2026-08-30' });
         const dateInput = wrapper.findComponent('[data-testid="date-input"]') as VueWrapper<components.VAutocomplete>;
-        const input = dateInput.find('input');
+        const input = dateInput.find('input[role="combobox"]');
         await input.setValue('zzz');
         await input.trigger('keydown.tab');
         expect(dateInput.props('modelValue')).toBeNull();
@@ -178,7 +178,7 @@ describe('MealItemEditor', () => {
         const mealTypeInput = wrapper.findComponent(
           '[data-testid="meal-type-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = mealTypeInput.find('input');
+        const input = mealTypeInput.find('input[role="combobox"]');
         await input.setValue('lunch');
         await input.trigger('keydown.tab');
         // 'lunch' only matches 'Lunch'
@@ -190,7 +190,7 @@ describe('MealItemEditor', () => {
         const mealTypeInput = wrapper.findComponent(
           '[data-testid="meal-type-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = mealTypeInput.find('input');
+        const input = mealTypeInput.find('input[role="combobox"]');
         await input.setValue('s');
         await input.trigger('keydown.tab');
         // 'Breakfast' and 'Snack' match; first is 'Breakfast'
@@ -202,7 +202,7 @@ describe('MealItemEditor', () => {
         const mealTypeInput = wrapper.findComponent(
           '[data-testid="meal-type-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = mealTypeInput.find('input');
+        const input = mealTypeInput.find('input[role="combobox"]');
         await input.trigger('keydown.tab');
         expect(mealTypeInput.props('modelValue')).toBeNull();
       });
@@ -212,7 +212,7 @@ describe('MealItemEditor', () => {
         const mealTypeInput = wrapper.findComponent(
           '[data-testid="meal-type-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = mealTypeInput.find('input');
+        const input = mealTypeInput.find('input[role="combobox"]');
         await input.setValue('zzz');
         await input.trigger('keydown.tab');
         expect(mealTypeInput.props('modelValue')).toBeNull();
@@ -331,7 +331,7 @@ describe('MealItemEditor', () => {
         const recipeInput = wrapper.findComponent(
           '[data-testid="recipe-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = recipeInput.find('input');
+        const input = recipeInput.find('input[role="combobox"]');
         await input.setValue('oats');
         await input.trigger('keydown.tab');
         // 'oats' only matches 'Overnight Oats' (id: '4')
@@ -343,7 +343,7 @@ describe('MealItemEditor', () => {
         const recipeInput = wrapper.findComponent(
           '[data-testid="recipe-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = recipeInput.find('input');
+        const input = recipeInput.find('input[role="combobox"]');
         await input.setValue('classic');
         await input.trigger('keydown.tab');
         // 'Classic Spaghetti Carbonara' and 'Classic Fudgy Brownies' match; first is id '1'
@@ -355,7 +355,7 @@ describe('MealItemEditor', () => {
         const recipeInput = wrapper.findComponent(
           '[data-testid="recipe-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = recipeInput.find('input');
+        const input = recipeInput.find('input[role="combobox"]');
         await input.trigger('keydown.tab');
         expect(recipeInput.props('modelValue')).toBeNull();
       });
@@ -365,7 +365,7 @@ describe('MealItemEditor', () => {
         const recipeInput = wrapper.findComponent(
           '[data-testid="recipe-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = recipeInput.find('input');
+        const input = recipeInput.find('input[role="combobox"]');
         await input.setValue('zzz');
         await input.trigger('keydown.tab');
         expect(recipeInput.props('modelValue')).toBeNull();

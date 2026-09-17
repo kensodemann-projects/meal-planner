@@ -627,7 +627,7 @@ describe('SettingsEditor', () => {
         const weekStartDayInput = wrapper.findComponent(
           '[data-testid="week-start-day-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = weekStartDayInput.find('input');
+        const input = weekStartDayInput.find('input[role="combobox"]');
         await input.setValue('sun');
         await input.trigger('keydown.tab');
         // 'sun' only matches 'Sunday' (value: 0)
@@ -639,7 +639,7 @@ describe('SettingsEditor', () => {
         const weekStartDayInput = wrapper.findComponent(
           '[data-testid="week-start-day-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = weekStartDayInput.find('input');
+        const input = weekStartDayInput.find('input[role="combobox"]');
         await input.setValue('tu');
         await input.trigger('keydown.tab');
         // 'Tuesday' and 'Saturday' both match 'tu'; first is 'Tuesday' (value: 2)
@@ -651,7 +651,7 @@ describe('SettingsEditor', () => {
         const weekStartDayInput = wrapper.findComponent(
           '[data-testid="week-start-day-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = weekStartDayInput.find('input');
+        const input = weekStartDayInput.find('input[role="combobox"]');
         await input.trigger('keydown.tab');
         expect(weekStartDayInput.props('modelValue')).toBeNull();
       });
@@ -661,7 +661,7 @@ describe('SettingsEditor', () => {
         const weekStartDayInput = wrapper.findComponent(
           '[data-testid="week-start-day-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = weekStartDayInput.find('input');
+        const input = weekStartDayInput.find('input[role="combobox"]');
         await input.setValue('zzz');
         await input.trigger('keydown.tab');
         expect(weekStartDayInput.props('modelValue')).toBeNull();

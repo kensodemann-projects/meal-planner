@@ -201,7 +201,7 @@ describe('Recipe Editor', () => {
         const categoryInput = wrapper.findComponent(
           '[data-testid="category-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = categoryInput.find('input');
+        const input = categoryInput.find('input[role="combobox"]');
         await input.setValue('bre');
         await input.trigger('keydown.tab');
         expect(categoryInput.props('modelValue')).toBe('Breakfast');
@@ -212,7 +212,7 @@ describe('Recipe Editor', () => {
         const categoryInput = wrapper.findComponent(
           '[data-testid="category-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = categoryInput.find('input');
+        const input = categoryInput.find('input[role="combobox"]');
         await input.setValue('sa');
         await input.trigger('keydown.tab');
         // 'Salad', 'Sauce' match 'sa'; first match is 'Salad'
@@ -224,7 +224,7 @@ describe('Recipe Editor', () => {
         const categoryInput = wrapper.findComponent(
           '[data-testid="category-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = categoryInput.find('input');
+        const input = categoryInput.find('input[role="combobox"]');
         await input.trigger('keydown.tab');
         expect(categoryInput.props('modelValue')).toBeNull();
       });
@@ -234,7 +234,7 @@ describe('Recipe Editor', () => {
         const categoryInput = wrapper.findComponent(
           '[data-testid="category-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = categoryInput.find('input');
+        const input = categoryInput.find('input[role="combobox"]');
         await input.setValue('zzz');
         await input.trigger('keydown.tab');
         expect(categoryInput.props('modelValue')).toBeNull();
@@ -263,7 +263,7 @@ describe('Recipe Editor', () => {
         const cuisineInput = wrapper.findComponent(
           '[data-testid="cuisine-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = cuisineInput.find('input');
+        const input = cuisineInput.find('input[role="combobox"]');
         await input.setValue('nc');
         await input.trigger('keydown.tab');
         expect(cuisineInput.props('modelValue')).toBe('French');
@@ -274,7 +274,7 @@ describe('Recipe Editor', () => {
         const cuisineInput = wrapper.findComponent(
           '[data-testid="cuisine-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = cuisineInput.find('input');
+        const input = cuisineInput.find('input[role="combobox"]');
         await input.setValue('n');
         await input.trigger('keydown.tab');
         expect(cuisineInput.props('modelValue')).toBe('American');
@@ -285,7 +285,7 @@ describe('Recipe Editor', () => {
         const cuisineInput = wrapper.findComponent(
           '[data-testid="cuisine-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = cuisineInput.find('input');
+        const input = cuisineInput.find('input[role="combobox"]');
         await input.trigger('keydown.tab');
         expect(cuisineInput.props('modelValue')).toBeNull();
       });
@@ -295,7 +295,7 @@ describe('Recipe Editor', () => {
         const cuisineInput = wrapper.findComponent(
           '[data-testid="cuisine-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = cuisineInput.find('input');
+        const input = cuisineInput.find('input[role="combobox"]');
         await input.setValue('zzz');
         await input.trigger('keydown.tab');
         expect(cuisineInput.props('modelValue')).toBeNull();
@@ -324,7 +324,7 @@ describe('Recipe Editor', () => {
         const difficultyInput = wrapper.findComponent(
           '[data-testid="difficulty-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = difficultyInput.find('input');
+        const input = difficultyInput.find('input[role="combobox"]');
         await input.setValue('mal');
         await input.trigger('keydown.tab');
         expect(difficultyInput.props('modelValue')).toBe('Normal');
@@ -335,7 +335,7 @@ describe('Recipe Editor', () => {
         const difficultyInput = wrapper.findComponent(
           '[data-testid="difficulty-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = difficultyInput.find('input');
+        const input = difficultyInput.find('input[role="combobox"]');
         await input.setValue('a');
         await input.trigger('keydown.tab');
         expect(difficultyInput.props('modelValue')).toBe('Easy');
@@ -346,7 +346,7 @@ describe('Recipe Editor', () => {
         const difficultyInput = wrapper.findComponent(
           '[data-testid="difficulty-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = difficultyInput.find('input');
+        const input = difficultyInput.find('input[role="combobox"]');
         await input.trigger('keydown.tab');
         expect(difficultyInput.props('modelValue')).toBeNull();
       });
@@ -356,7 +356,7 @@ describe('Recipe Editor', () => {
         const difficultyInput = wrapper.findComponent(
           '[data-testid="difficulty-input"]',
         ) as VueWrapper<components.VAutocomplete>;
-        const input = difficultyInput.find('input');
+        const input = difficultyInput.find('input[role="combobox"]');
         await input.setValue('zzz');
         await input.trigger('keydown.tab');
         expect(difficultyInput.props('modelValue')).toBeNull();
