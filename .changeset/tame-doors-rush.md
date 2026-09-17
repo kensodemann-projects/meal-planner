@@ -2,4 +2,5 @@
 'meal-planner': patch
 ---
 
-Upgrade dependencies. Note that this causes a minor behavioral change with autocompletes due to a change at the component library level.
+Upgrade dependencies.
+Tabbing out of a populated autocomplete now keeps the current selection instead of clearing it (Vuetify 4.2 search-sync).
