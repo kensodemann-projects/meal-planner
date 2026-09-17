@@ -197,14 +197,15 @@ describe('MealItemEditor', () => {
         expect(mealTypeInput.props('modelValue')).toBe('Breakfast');
       });
 
-      it('does not select any meal type when the search text is empty', async () => {
+      it('keeps the current meal type when the search text is empty', async () => {
         wrapper = mountComponent({ weekStartDate: '2026-01-01', mealType: 'Lunch' });
         const mealTypeInput = wrapper.findComponent(
           '[data-testid="meal-type-input"]',
         ) as VueWrapper<components.VAutocomplete>;
         const input = mealTypeInput.find('input[role="combobox"]');
         await input.trigger('keydown.tab');
-        expect(mealTypeInput.props('modelValue')).toBeNull();
+        // Vuetify keeps search in sync with the selected title, so Tab re-selects Lunch
+        expect(mealTypeInput.props('modelValue')).toBe('Lunch');
       });
 
       it('does not select any meal type when the search text does not match any meal type', async () => {

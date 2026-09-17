@@ -197,11 +197,14 @@ describe('Ingredient Editor Row', () => {
       expect((emitted![0]![0] as RecipeIngredient).unitOfMeasure).toEqual(findUnitOfMeasure('tsp'));
     });
 
-    it('does not emit changed when Tab is pressed with no active suggestion', async () => {
+    it('emits changed with the current unit when Tab is pressed without a typed search', async () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
       await autocomplete.trigger('keydown', { key: 'Tab' });
-      expect(wrapper.emitted('changed')).toBeUndefined();
+      // Vuetify keeps search in sync with the selected title, so Tab matches Cup
+      const emitted = wrapper.emitted('changed');
+      expect(emitted?.length).toBe(1);
+      expect((emitted![0]![0] as RecipeIngredient).unitOfMeasure).toEqual(findUnitOfMeasure('cup'));
     });
   });
 

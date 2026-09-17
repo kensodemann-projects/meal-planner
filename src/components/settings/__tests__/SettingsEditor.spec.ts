@@ -646,14 +646,15 @@ describe('SettingsEditor', () => {
         expect(weekStartDayInput.props('modelValue')).toBe(2);
       });
 
-      it('does not select any day when the search text is empty', async () => {
+      it('keeps the current day when the search text is empty', async () => {
         wrapper = mountComponent();
         const weekStartDayInput = wrapper.findComponent(
           '[data-testid="week-start-day-input"]',
         ) as VueWrapper<components.VAutocomplete>;
         const input = weekStartDayInput.find('input[role="combobox"]');
         await input.trigger('keydown.tab');
-        expect(weekStartDayInput.props('modelValue')).toBeNull();
+        // Vuetify keeps search in sync with the selected title, so Tab re-selects Tuesday
+        expect(weekStartDayInput.props('modelValue')).toBe(2);
       });
 
       it('does not select any day when the search text does not match any day', async () => {

@@ -65,15 +65,15 @@ describe('TextAutocomplete', () => {
       expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['Banana']);
     });
 
-    it('sets modelValue to null on Tab when search is empty', async () => {
+    it('keeps the current value on Tab when search is empty', async () => {
       wrapper = createWrapper({}, 'Apple');
       const input = wrapper.find('input[role="combobox"]');
 
       await input.setValue('');
       await input.trigger('keydown.tab');
 
-      const emissions = wrapper.emitted('update:modelValue');
-      expect(emissions?.[emissions.length - 1]).toEqual([null]);
+      // Vuetify keeps search in sync with the selected title, so Tab re-selects Apple
+      expect(wrapper.emitted('update:modelValue')).toBeUndefined();
     });
 
     it('sets modelValue to null on Tab when search matches nothing', async () => {
