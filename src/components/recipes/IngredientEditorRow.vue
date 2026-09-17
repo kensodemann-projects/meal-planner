@@ -107,7 +107,7 @@ const findUomSuggestion = (search: string): UnitOfMeasure | null => {
 
 const onUomTab = () => {
   const unitOfMeasure = findUomSuggestion(uomSearch.value);
-  if (!unitOfMeasure) return;
+  if (!unitOfMeasure || unitOfMeasure.id === props.ingredient.unitOfMeasure?.id) return;
   emit('changed', { ...props.ingredient, unitOfMeasure });
 };
 

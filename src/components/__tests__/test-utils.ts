@@ -93,7 +93,7 @@ export const numberInputMustBeZeroOrGreater = async <T>(wrapper: VueWrapper<T>, 
 
 export const autocompleteIsRequired = async <T>(wrapper: VueWrapper<T>, testId: string) => {
   const autocomplete = wrapper.findComponent(`[data-testid="${testId}"]`) as VueWrapper<components.VAutocomplete>;
-  const input = autocomplete.find('input');
+  const input = autocomplete.find('input[role="combobox"]');
 
   expect(wrapper.text()).not.toContain('Required');
   await input.trigger('focus');

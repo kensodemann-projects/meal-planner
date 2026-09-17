@@ -138,7 +138,7 @@ describe('Recipes List Page', () => {
           const categoryInput = wrapper.findComponent(
             '[data-testid="filter-category"]',
           ) as VueWrapper<components.VAutocomplete>;
-          const input = categoryInput.find('input');
+          const input = categoryInput.find('input[role="combobox"]');
           await input.setValue('bev');
           await input.trigger('keydown.tab');
           expect(categoryInput.props('modelValue')).toBe('Beverage');
@@ -148,7 +148,7 @@ describe('Recipes List Page', () => {
           const categoryInput = wrapper.findComponent(
             '[data-testid="filter-category"]',
           ) as VueWrapper<components.VAutocomplete>;
-          const input = categoryInput.find('input');
+          const input = categoryInput.find('input[role="combobox"]');
           await input.setValue('bre');
           await input.trigger('keydown.tab');
           // 'Breakfast' and 'Bread' both match 'bre'; first is 'Breakfast'
@@ -159,7 +159,7 @@ describe('Recipes List Page', () => {
           const categoryInput = wrapper.findComponent(
             '[data-testid="filter-category"]',
           ) as VueWrapper<components.VAutocomplete>;
-          const input = categoryInput.find('input');
+          const input = categoryInput.find('input[role="combobox"]');
           await input.trigger('keydown.tab');
           expect(categoryInput.props('modelValue')).toBeNull();
         });
@@ -168,7 +168,7 @@ describe('Recipes List Page', () => {
           const categoryInput = wrapper.findComponent(
             '[data-testid="filter-category"]',
           ) as VueWrapper<components.VAutocomplete>;
-          const input = categoryInput.find('input');
+          const input = categoryInput.find('input[role="combobox"]');
           await input.setValue('zzz');
           await input.trigger('keydown.tab');
           expect(categoryInput.props('modelValue')).toBeNull();
@@ -202,7 +202,7 @@ describe('Recipes List Page', () => {
           const cuisineInput = wrapper.findComponent(
             '[data-testid="filter-cuisine"]',
           ) as VueWrapper<components.VAutocomplete>;
-          const input = cuisineInput.find('input');
+          const input = cuisineInput.find('input[role="combobox"]');
           await input.setValue('nc');
           await input.trigger('keydown.tab');
           expect(cuisineInput.props('modelValue')).toBe('French');
@@ -212,7 +212,7 @@ describe('Recipes List Page', () => {
           const cuisineInput = wrapper.findComponent(
             '[data-testid="filter-cuisine"]',
           ) as VueWrapper<components.VAutocomplete>;
-          const input = cuisineInput.find('input');
+          const input = cuisineInput.find('input[role="combobox"]');
           await input.setValue('n');
           await input.trigger('keydown.tab');
           // 'American', 'Chinese', 'Indian', 'Japanese', etc. all match 'n'; first is 'American'
@@ -223,7 +223,7 @@ describe('Recipes List Page', () => {
           const cuisineInput = wrapper.findComponent(
             '[data-testid="filter-cuisine"]',
           ) as VueWrapper<components.VAutocomplete>;
-          const input = cuisineInput.find('input');
+          const input = cuisineInput.find('input[role="combobox"]');
           await input.trigger('keydown.tab');
           expect(cuisineInput.props('modelValue')).toBeNull();
         });
@@ -232,7 +232,7 @@ describe('Recipes List Page', () => {
           const cuisineInput = wrapper.findComponent(
             '[data-testid="filter-cuisine"]',
           ) as VueWrapper<components.VAutocomplete>;
-          const input = cuisineInput.find('input');
+          const input = cuisineInput.find('input[role="combobox"]');
           await input.setValue('zzz');
           await input.trigger('keydown.tab');
           expect(cuisineInput.props('modelValue')).toBeNull();
@@ -286,7 +286,7 @@ describe('Recipes List Page', () => {
           const calorieInput = wrapper.findComponent(
             '[data-testid="filter-calorie-range"]',
           ) as VueWrapper<components.VAutocomplete>;
-          const input = calorieInput.find('input');
+          const input = calorieInput.find('input[role="combobox"]');
           await input.setValue('751');
           await input.trigger('keydown.tab');
           // '751' only matches '751-1000' (id: 3)
@@ -297,7 +297,7 @@ describe('Recipes List Page', () => {
           const calorieInput = wrapper.findComponent(
             '[data-testid="filter-calorie-range"]',
           ) as VueWrapper<components.VAutocomplete>;
-          const input = calorieInput.find('input');
+          const input = calorieInput.find('input[role="combobox"]');
           await input.setValue('5');
           await input.trigger('keydown.tab');
           // '5' matches '0-500' (id: 1) and '501-750' (id: 2); first is '0-500'
@@ -308,7 +308,7 @@ describe('Recipes List Page', () => {
           const calorieInput = wrapper.findComponent(
             '[data-testid="filter-calorie-range"]',
           ) as VueWrapper<components.VAutocomplete>;
-          const input = calorieInput.find('input');
+          const input = calorieInput.find('input[role="combobox"]');
           await input.trigger('keydown.tab');
           expect(calorieInput.props('modelValue')).toBeNull();
         });
@@ -317,7 +317,7 @@ describe('Recipes List Page', () => {
           const calorieInput = wrapper.findComponent(
             '[data-testid="filter-calorie-range"]',
           ) as VueWrapper<components.VAutocomplete>;
-          const input = calorieInput.find('input');
+          const input = calorieInput.find('input[role="combobox"]');
           await input.setValue('zzz');
           await input.trigger('keydown.tab');
           expect(calorieInput.props('modelValue')).toBeNull();

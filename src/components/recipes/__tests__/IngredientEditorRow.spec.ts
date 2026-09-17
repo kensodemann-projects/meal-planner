@@ -129,7 +129,7 @@ describe('Ingredient Editor Row', () => {
     it('clears inline suggestion when search becomes empty', async () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
-      const input = autocomplete.find('input');
+      const input = autocomplete.find('input[role="combobox"]');
 
       await input.setValue('Te');
       await flushPromises();
@@ -139,10 +139,10 @@ describe('Ingredient Editor Row', () => {
       expect((input.element as HTMLInputElement).value).toBe('');
     });
 
-    it('does not set inline suggestion when no match exists', async () => {
+    it('does not set the inline suggestion when no match exists', async () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
-      const input = autocomplete.find('input');
+      const input = autocomplete.find('input[role="combobox"]');
 
       await input.setValue('xyz');
       await flushPromises();
@@ -153,7 +153,7 @@ describe('Ingredient Editor Row', () => {
     it('does not set inline suggestion when the full name is already typed', async () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
-      const input = autocomplete.find('input');
+      const input = autocomplete.find('input[role="combobox"]');
 
       await input.setValue('Teaspoon');
       await flushPromises();
@@ -164,7 +164,7 @@ describe('Ingredient Editor Row', () => {
     it('emits changed with the matched unit of measure when Tab is pressed', async () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
-      const input = autocomplete.find('input');
+      const input = autocomplete.find('input[role="combobox"]');
       await input.setValue('Te');
       await flushPromises();
       await autocomplete.trigger('keydown', { key: 'Tab' });
@@ -176,7 +176,7 @@ describe('Ingredient Editor Row', () => {
     it('emits changed with the matched unit when the full name is typed and Tab is pressed', async () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
-      const input = autocomplete.find('input');
+      const input = autocomplete.find('input[role="combobox"]');
       await input.setValue('Teaspoon');
       await flushPromises();
       await autocomplete.trigger('keydown', { key: 'Tab' });
@@ -188,7 +188,7 @@ describe('Ingredient Editor Row', () => {
     it('emits changed with the matched unit when an abbreviation is typed and Tab is pressed', async () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
-      const input = autocomplete.find('input');
+      const input = autocomplete.find('input[role="combobox"]');
       await input.setValue('tsp');
       await flushPromises();
       await autocomplete.trigger('keydown', { key: 'Tab' });
@@ -197,7 +197,7 @@ describe('Ingredient Editor Row', () => {
       expect((emitted![0]![0] as RecipeIngredient).unitOfMeasure).toEqual(findUnitOfMeasure('tsp'));
     });
 
-    it('does not emit changed when Tab is pressed with no active suggestion', async () => {
+    it('does not emit changed when Tab matches the already selected unit', async () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
       await autocomplete.trigger('keydown', { key: 'Tab' });
