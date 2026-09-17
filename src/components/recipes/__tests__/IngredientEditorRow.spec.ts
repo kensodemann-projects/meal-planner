@@ -139,7 +139,7 @@ describe('Ingredient Editor Row', () => {
       expect((input.element as HTMLInputElement).value).toBe('');
     });
 
-    it('keeps inline suggestion when no match exists', async () => {
+    it('does not set the inline suggestion when no match exists', async () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
       const input = autocomplete.find('input[role="combobox"]');
@@ -147,7 +147,7 @@ describe('Ingredient Editor Row', () => {
       await input.setValue('xyz');
       await flushPromises();
 
-      expect((input.element as HTMLInputElement).value).toBe('cup');
+      expect((input.element as HTMLInputElement).value).toBe('xyz');
     });
 
     it('does not set inline suggestion when the full name is already typed', async () => {
