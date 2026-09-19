@@ -1,10 +1,11 @@
-import type { Cuisine, Recipe, RecipeCategory } from '@/models/recipe';
+import type { Cuisine, Recipe, RecipeCategory, RecipeKind } from '@/models/recipe';
 import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { computed } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
 
 export interface RecipeSearchCriteria {
   keywords?: string;
+  kind?: RecipeKind;
   category?: RecipeCategory;
   cuisine?: Cuisine;
   minCalories?: number;
