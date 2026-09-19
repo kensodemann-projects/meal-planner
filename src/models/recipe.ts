@@ -54,7 +54,7 @@ export interface Recipe extends Nutrition {
   name: string;
   description: string | null;
   kind: RecipeKind;
-  sourceId?: string | null;
+  sourceId?: string;
   category: RecipeCategory;
   cuisine: Cuisine;
   difficulty: RecipeDifficulty;
