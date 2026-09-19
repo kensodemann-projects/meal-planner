@@ -3,6 +3,7 @@ import type { Meal } from '@/models/meal';
 import type { MealPlan } from '@/models/meal-plan';
 import type { Portion } from '@/models/portion';
 import type { Recipe } from '@/models/recipe';
+import type { Source } from '@/models/source';
 
 export const TEST_PORTION: Portion = {
   grams: 240,
@@ -14,6 +15,29 @@ export const TEST_PORTION: Portion = {
   carbs: 35,
   protein: 5,
   fat: 35,
+};
+
+export const TEST_SOURCES: Source[] = [
+  {
+    id: 'restaurant',
+    name: 'Generic Restaurant',
+  },
+  {
+    id: 'iir00305003lfkdj',
+    name: 'BistroMD',
+  },
+  {
+    id: 'ifiii2100flk32',
+    name: 'Mini Max',
+  },
+  {
+    id: 'fiie002934009ser',
+    name: 'CookUnity',
+  },
+];
+
+export const TEST_SOURCE: Source = {
+  name: 'That new joint down the street',
 };
 
 export const TEST_RECIPES: Recipe[] = [
