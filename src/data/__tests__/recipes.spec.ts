@@ -179,6 +179,16 @@ describe('Recipe Data Service', () => {
       expect(recipeMatches(TEST_RECIPE, { keywords: 'nonexistentkeyword' })).toBe(false);
     });
 
+    it('returns true if the recipe matches the kind', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, { kind: 'homemade' })).toBe(true);
+    });
+
+    it('returns false if the recipe does not match the kind', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches(TEST_RECIPE, { kind: 'prepared' })).toBe(false);
+    });
+
     it('returns true if the recipe contains the keyword in the name', () => {
       const { recipeMatches } = useRecipesData();
       expect(recipeMatches(TEST_RECIPE, { keywords: 'Pan-Seared' })).toBe(true);

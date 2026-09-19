@@ -52,6 +52,7 @@ export const useRecipesData = () => {
     const keywords = criteria.keywords?.split(' ').filter((k) => k.trim().length > 0) || [];
     return (
       keywords.every((keyword) => recipeMatchesKeyword(recipe, keyword)) &&
+      (!criteria.kind || recipe.kind === criteria.kind) &&
       (!criteria.category || recipe.category === criteria.category) &&
       (!criteria.cuisine || recipe.cuisine === criteria.cuisine) &&
       (criteria.minCalories === undefined || recipe.calories >= criteria.minCalories) &&
