@@ -182,11 +182,19 @@ describe('Recipe Data Service', () => {
     it('returns true if the recipe matches the kind', () => {
       const { recipeMatches } = useRecipesData();
       expect(recipeMatches(TEST_RECIPE, { kind: 'homemade' })).toBe(true);
+      expect(recipeMatches({ ...TEST_RECIPE, kind: 'prepared' } as any, { kind: 'prepared' })).toBe(true);
     });
 
     it('returns false if the recipe does not match the kind', () => {
       const { recipeMatches } = useRecipesData();
       expect(recipeMatches(TEST_RECIPE, { kind: 'prepared' })).toBe(false);
+      expect(recipeMatches({ ...TEST_RECIPE, kind: 'prepared' } as any, { kind: 'homemade' })).toBe(false);
+    });
+
+    it('treats a recipe with an undefined kind as a "homemade" match', () => {
+      const { recipeMatches } = useRecipesData();
+      expect(recipeMatches({ ...TEST_RECIPE, kind: undefined } as any, { kind: 'homemade' })).toBe(true);
+      expect(recipeMatches({ ...TEST_RECIPE, kind: undefined } as any, { kind: 'prepared' })).toBe(false);
     });
 
     it('returns true if the recipe contains the keyword in the name', () => {
