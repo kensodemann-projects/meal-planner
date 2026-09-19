@@ -51,9 +51,10 @@ export type RecipeKind = 'homemade' | 'prepared';
 
 export interface Recipe extends Nutrition {
   id?: string;
-  kind: RecipeKind;
   name: string;
   description: string | null;
+  kind: RecipeKind;
+  sourceId?: string | null;
   category: RecipeCategory;
   cuisine: Cuisine;
   difficulty: RecipeDifficulty;
