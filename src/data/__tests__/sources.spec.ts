@@ -2,7 +2,7 @@ import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestor
 import { type Mock, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ref } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
-import { useSourcesData } from '../sources';
+import { GENERIC_RESTAURANT_SOURCE_ID, useSourcesData } from '../sources';
 import { TEST_SOURCE, TEST_SOURCES } from './test-data';
 
 vi.mock('firebase/firestore', async () => {
@@ -46,6 +46,10 @@ describe('Source Data Service', () => {
     useSourcesData();
     expect(collection).toHaveBeenCalledOnce();
     expect(collection).toHaveBeenCalledWith({ id: 42, name: 'my fake fire store' }, 'sources');
+  });
+
+  it('exports the generic restaurant source id', () => {
+    expect(GENERIC_RESTAURANT_SOURCE_ID).toBe('restaurant');
   });
 
   describe('add source', () => {
