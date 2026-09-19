@@ -258,6 +258,7 @@ const isModified = computed((): boolean => {
 const createRecipeFromForm = (): Recipe => ({
   name: name.value.trim(),
   description: description.value.trim() || null,
+  kind: props.recipe?.kind || 'homemade',
   category: category.value!,
   cuisine: cuisine.value!,
   difficulty: difficulty.value!,

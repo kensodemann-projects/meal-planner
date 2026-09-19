@@ -725,6 +725,7 @@ describe('Recipe Editor', () => {
           {
             name: 'Apple Pie',
             description: null,
+            kind: 'homemade',
             category: 'Dessert',
             cuisine: 'American',
             difficulty: 'Easy',
@@ -1269,6 +1270,7 @@ const BEER_CHEESE: Recipe = {
   id: 'fie039950912',
   name: 'Hearty Beer Cheese Soup',
   description: 'A rich and creamy soup combining sharp cheddar cheese with beer and savory seasonings.',
+  kind: 'homemade',
   category: 'Soup',
   cuisine: 'American',
   difficulty: 'Normal',
