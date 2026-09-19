@@ -21,6 +21,8 @@ const sources = ref<Source[]>([]);
 const error = ref<Error | null>(null);
 const loading = ref<boolean>(false);
 
+export const GENERIC_RESTAURANT_SOURCE_ID = 'restaurant';
+
 export const useSourcesData: () => SourcesData = vi.fn().mockReturnValue({
   addSource,
   error,
