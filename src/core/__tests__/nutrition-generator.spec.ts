@@ -25,6 +25,7 @@ const mockRecipe: Recipe = {
   id: 'recipe-1',
   name: 'Grilled Chicken',
   description: 'Simple grilled chicken breast',
+  kind: 'homemade',
   category: 'Poultry',
   cuisine: 'American',
   difficulty: 'Easy',

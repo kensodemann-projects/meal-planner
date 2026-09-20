@@ -47,10 +47,14 @@ export interface RecipeStep {
   instruction: string;
 }
 
+export type RecipeKind = 'homemade' | 'prepared';
+
 export interface Recipe extends Nutrition {
   id?: string;
   name: string;
   description: string | null;
+  kind: RecipeKind;
+  sourceId?: string;
   category: RecipeCategory;
   cuisine: Cuisine;
   difficulty: RecipeDifficulty;

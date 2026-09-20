@@ -1,10 +1,11 @@
-import type { Cuisine, Recipe, RecipeCategory } from '@/models/recipe';
+import type { Cuisine, Recipe, RecipeCategory, RecipeKind } from '@/models/recipe';
 import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { computed } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
 
 export interface RecipeSearchCriteria {
   keywords?: string;
+  kind?: RecipeKind;
   category?: RecipeCategory;
   cuisine?: Cuisine;
   minCalories?: number;
@@ -51,6 +52,7 @@ export const useRecipesData = () => {
     const keywords = criteria.keywords?.split(' ').filter((k) => k.trim().length > 0) || [];
     return (
       keywords.every((keyword) => recipeMatchesKeyword(recipe, keyword)) &&
+      (!criteria.kind || (recipe.kind || 'homemade') === criteria.kind) &&
       (!criteria.category || recipe.category === criteria.category) &&
       (!criteria.cuisine || recipe.cuisine === criteria.cuisine) &&
       (criteria.minCalories === undefined || recipe.calories >= criteria.minCalories) &&
