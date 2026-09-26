@@ -22,6 +22,12 @@
 
       <v-list nav>
         <v-list-item prepend-icon="mdi-cog-outline" title="Settings" value="settings" to="/settings"></v-list-item>
+        <v-list-item
+          prepend-icon="mdi-room-service-outline"
+          title="Recipe Sources"
+          value="sources"
+          to="/sources"
+        ></v-list-item>
         <v-list-item prepend-icon="mdi-logout" title="Logout" value="logout" @click="$emit('logout')"></v-list-item>
       </v-list>
     </v-navigation-drawer>

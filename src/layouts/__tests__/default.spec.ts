@@ -56,15 +56,14 @@ describe('DefaultLayout', () => {
   it('displays the menu items for this application', () => {
     wrapper = mountComponent();
     const items = wrapper.findAllComponents(components.VListItem);
-    expect(items.length).toBe(5);
+    expect(items.length).toBe(6);
     expect(items[0]?.text()).toBe('Dashboard');
     expect(items[1]?.text()).toBe('Planning & Logging');
     expect(items[2]?.text()).toBe('Recipes');
     expect(items[3]?.text()).toBe('Settings');
-    expect(items[4]?.text()).toBe('Logout');
+    expect(items[4]?.text()).toBe('Recipe Sources');
+    expect(items[5]?.text()).toBe('Logout');
   });
-
-  it.todo('includes a Sources item next to Recipes');
 
   it('calls the logout if logout is clicked', async () => {
     const { logout } = useAuthentication();
