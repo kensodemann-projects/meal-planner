@@ -64,6 +64,8 @@ describe('DefaultLayout', () => {
     expect(items[4]?.text()).toBe('Logout');
   });
 
+  it.todo('includes a Sources item next to Recipes');
+
   it('calls the logout if logout is clicked', async () => {
     const { logout } = useAuthentication();
     wrapper = mountComponent();

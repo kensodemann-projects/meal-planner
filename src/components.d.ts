@@ -41,6 +41,7 @@ declare module 'vue' {
     SelectAutocomplete: typeof import('./components/core/SelectAutocomplete.vue')['default']
     SettingsEditor: typeof import('./components/settings/SettingsEditor.vue')['default']
     SortableListEditor: typeof import('./components/core/SortableListEditor.vue')['default']
+    SourceEditor: typeof import('./components/sources/SourceEditor.vue')['default']
     StepEditorRow: typeof import('./components/recipes/StepEditorRow.vue')['default']
     ViewPageActionButtons: typeof import('./components/core/ViewPageActionButtons.vue')['default']
     WeeklySummaryCard: typeof import('./components/planning/WeeklySummaryCard.vue')['default']
