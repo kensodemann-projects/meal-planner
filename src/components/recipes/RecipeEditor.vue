@@ -25,7 +25,7 @@
 
       <v-row>
         <v-col cols="12" md="6">
-          <TextAutocomplete
+          <SelectAutocomplete
             label="Category"
             v-model="category"
             :items="recipeCategories"
@@ -35,7 +35,7 @@
         </v-col>
 
         <v-col cols="12" md="6">
-          <TextAutocomplete
+          <SelectAutocomplete
             label="Cuisine"
             v-model="cuisine"
             :items="cuisines"
@@ -56,7 +56,7 @@
         </v-col>
 
         <v-col cols="12" md="6">
-          <TextAutocomplete
+          <SelectAutocomplete
             label="Difficulty"
             v-model="difficulty"
             :items="recipeDifficulties"

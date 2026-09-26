@@ -58,15 +58,15 @@
       </v-row>
       <v-row density="compact">
         <v-col cols="12">
-          <v-autocomplete
+          <SelectAutocomplete
             label="Week Start Day"
             v-model="weekStartDay"
-            v-model:search="weekStartDaySearch"
             :items="daysOfTheWeek"
+            item-title="title"
+            item-value="value"
             :rules="[validationRules.required]"
             data-testid="week-start-day-input"
-            @keydown.tab="selectFirstMatchingDay"
-          ></v-autocomplete>
+          />
         </v-col>
       </v-row>
     </v-container>
@@ -113,16 +113,6 @@ const maxDailySodium = shallowRef<number>(props.settings.maxDailySodium);
 const maxDailySugar = shallowRef<number>(props.settings.maxDailySugar);
 const tolerance = shallowRef<number>(props.settings.tolerance);
 const weekStartDay = shallowRef<number | null>(props.settings.weekStartDay);
-const weekStartDaySearch = shallowRef<string>('');
-
-const selectFirstMatchingDay = () => {
-  if (!weekStartDaySearch.value) {
-    weekStartDay.value = null;
-    return;
-  }
-  const match = daysOfTheWeek.find((day) => day.title.toLowerCase().includes(weekStartDaySearch.value.toLowerCase()));
-  weekStartDay.value = match?.value ?? null;
-};
 
 const isModified = computed(() => {
   return (
