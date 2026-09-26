@@ -16,7 +16,7 @@
 
       <v-row density="compact">
         <v-col cols="12" md="4">
-          <TextAutocomplete
+          <SelectAutocomplete
             label="Category"
             v-model="categoryFilter"
             :items="recipeCategories"
@@ -26,7 +26,7 @@
         </v-col>
 
         <v-col cols="12" md="4">
-          <TextAutocomplete
+          <SelectAutocomplete
             label="Cuisine"
             v-model="cuisineFilter"
             :items="cuisines"
@@ -36,7 +36,7 @@
         </v-col>
 
         <v-col cols="12" md="4">
-          <TextAutocomplete
+          <SelectAutocomplete
             label="Calorie Range"
             v-model="calorieFilterId"
             :items="calorieRanges"

@@ -5,7 +5,7 @@
         <v-container fluid>
           <v-row>
             <v-col cols="12" md="6">
-              <TextAutocomplete
+              <SelectAutocomplete
                 label="Select Date"
                 v-model="mealDate"
                 :items="weekDates"
@@ -16,7 +16,7 @@
               />
             </v-col>
             <v-col cols="12" md="6">
-              <TextAutocomplete
+              <SelectAutocomplete
                 label="Select Meal Type"
                 v-model="mealType"
                 :items="mealTypes"
@@ -27,7 +27,7 @@
           </v-row>
           <v-row>
             <v-col cols="12" md="6">
-              <TextAutocomplete
+              <SelectAutocomplete
                 label="Select Recipe"
                 v-model="recipeId"
                 :items="recipes"

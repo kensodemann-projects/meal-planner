@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import TextAutocomplete from '../TextAutocomplete.vue';
+import SelectAutocomplete from '../SelectAutocomplete.vue';
 
 const vuetify = createVuetify({ components, directives });
 
@@ -14,13 +14,13 @@ const defaultProps = {
 };
 
 const createWrapper = (props: Record<string, unknown> = {}, modelValue: unknown = null) => {
-  return mount(TextAutocomplete, {
+  return mount(SelectAutocomplete, {
     props: { ...defaultProps, ...props, modelValue },
     global: { plugins: [vuetify] },
   });
 };
 
-describe('TextAutocomplete', () => {
+describe('SelectAutocomplete', () => {
   let wrapper: VueWrapper<any>;
 
   afterEach(() => wrapper?.unmount());

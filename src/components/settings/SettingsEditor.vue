@@ -58,7 +58,7 @@
       </v-row>
       <v-row density="compact">
         <v-col cols="12">
-          <TextAutocomplete
+          <SelectAutocomplete
             label="Week Start Day"
             v-model="weekStartDay"
             :items="daysOfTheWeek"
