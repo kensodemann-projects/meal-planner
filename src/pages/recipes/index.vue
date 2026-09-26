@@ -36,17 +36,15 @@
         </v-col>
 
         <v-col cols="12" md="4">
-          <v-autocomplete
+          <TextAutocomplete
             label="Calorie Range"
             v-model="calorieFilterId"
-            v-model:search="calorieFilterSearch"
             :items="calorieRanges"
             item-title="label"
             item-value="id"
             data-testid="filter-calorie-range"
             clearable
-            @keydown.tab="selectFirstMatchingCalorieRange"
-          ></v-autocomplete>
+          />
         </v-col>
       </v-row>
 
@@ -108,15 +106,6 @@ const searchKeywords = shallowRef('');
 const categoryFilter = shallowRef<RecipeCategory>();
 const cuisineFilter = shallowRef<Cuisine>();
 const calorieFilterId = shallowRef<number | null>();
-const calorieFilterSearch = shallowRef<string>('');
-
-const selectFirstMatchingCalorieRange = () => {
-  if (!calorieFilterSearch.value) return;
-  const matchingRange = calorieRanges.find((range) =>
-    range.label.toLowerCase().includes(calorieFilterSearch.value.toLowerCase()),
-  );
-  calorieFilterId.value = matchingRange ? matchingRange.id : null;
-};
 
 const filteredRecipes = computed<Recipe[]>(() => {
   const selectedCalorieRange = calorieRanges.find((range) => range.id === calorieFilterId.value);
