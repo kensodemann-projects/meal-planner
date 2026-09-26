@@ -129,6 +129,34 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/sources/': RouteRecordInfo<
+      '/sources/',
+      '/sources',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/sources/[id]/': RouteRecordInfo<
+      '/sources/[id]/',
+      '/sources/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
+      | never
+    >,
+    '/sources/[id]/update': RouteRecordInfo<
+      '/sources/[id]/update',
+      '/sources/:id/update',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
+      | never
+    >,
+    '/sources/add': RouteRecordInfo<
+      '/sources/add',
+      '/sources/add',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
   }
 
   /**
@@ -249,6 +277,38 @@ declare module 'vue-router/auto-routes' {
     'src/pages/settings.vue': {
       routes:
         | '/settings'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/sources/index.vue': {
+      routes:
+        | '/sources/'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/sources/[id]/index.vue': {
+      routes:
+        | '/sources/[id]/'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/sources/[id]/update.vue': {
+      routes:
+        | '/sources/[id]/update'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/sources/add.vue': {
+      routes:
+        | '/sources/add'
       views:
         | never
       pathParamNames:
