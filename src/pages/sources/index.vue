@@ -13,6 +13,16 @@
       </template>
     </v-list-item>
   </v-list>
+
+  <v-fab
+    color="primary"
+    icon="mdi-plus"
+    variant="tonal"
+    location="bottom end"
+    absolute
+    @click="router.push('/sources/add')"
+    data-testid="add-button"
+  ></v-fab>
 </template>
 
 <script setup lang="ts">

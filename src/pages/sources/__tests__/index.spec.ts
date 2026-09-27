@@ -107,7 +107,13 @@ describe('Sources List Page', () => {
   });
 
   describe('add button', () => {
-    it.todo('navigates to the source add page');
+    it('navigates to the source add page', () => {
+      const router = useRouter();
+      wrapper = mountPage();
+      const addButton = wrapper.findComponent(components.VFab);
+      addButton.trigger('click');
+      expect(router.push).toHaveBeenCalledExactlyOnceWith('/sources/add');
+    });
   });
 
   describe('empty state message', () => {
