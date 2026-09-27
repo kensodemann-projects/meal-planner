@@ -130,9 +130,8 @@ describe('Sources List Page', () => {
         await button.trigger('click');
         const confirmDialog = wrapper.findComponent(ConfirmDialog);
         confirmDialog.vm.$emit('confirm');
-        expect(true).toBe(true);
-        // const { removeSource } = useSourcesData();
-        // expect(removeSource).toHaveBeenCalledExactlyOnceWith('88f933fiieo');
+        const { removeSource } = useSourcesData();
+        expect(removeSource).toHaveBeenCalledExactlyOnceWith('1004399v09asdfkfe2');
       });
     });
   });

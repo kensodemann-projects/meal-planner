@@ -40,7 +40,7 @@ import type { Source } from '@/models/source';
 import { ref, shallowRef } from 'vue';
 import { useRouter } from 'vue-router';
 
-const { loading, sources } = useSourcesData();
+const { loading, sources, removeSource } = useSourcesData();
 const router = useRouter();
 const showConfirmDialog = shallowRef(false);
 const selectedSource = ref<Source | null>(null);
@@ -51,6 +51,6 @@ const confirmRemove = (source: Source) => {
 };
 
 const doRemove = () => {
-  console.log('doRemove', selectedSource.value);
+  removeSource(selectedSource.value!.id!);
 };
 </script>
