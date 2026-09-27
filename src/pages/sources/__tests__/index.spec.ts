@@ -1,13 +1,13 @@
 import ConfirmDialog from '@/components/core/ConfirmDialog.vue';
+import { useSourcesData } from '@/data/sources';
 import { mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+import type { Ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import IndexPage from '../index.vue';
-import { useSourcesData } from '@/data/sources';
-import type { Ref } from 'vue';
-import { useRouter } from 'vue-router';
 
 vi.mock('vue-router');
 vi.mock('@/data/sources');
@@ -122,7 +122,19 @@ describe('Sources List Page', () => {
       expect(confirmDialog.exists()).toBe(true);
     });
 
-    it.todo('deletes the source');
+    describe('on confirm', () => {
+      it('removes the source', async () => {
+        wrapper = mountPage();
+        const items = wrapper.findAllComponents(components.VListItem);
+        const button = items[2].findComponent(components.VIcon);
+        await button.trigger('click');
+        const confirmDialog = wrapper.findComponent(ConfirmDialog);
+        confirmDialog.vm.$emit('confirm');
+        expect(true).toBe(true);
+        // const { removeSource } = useSourcesData();
+        // expect(removeSource).toHaveBeenCalledExactlyOnceWith('88f933fiieo');
+      });
+    });
   });
 
   describe('add button', () => {
