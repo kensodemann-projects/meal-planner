@@ -134,6 +134,19 @@ describe('Sources List Page', () => {
         expect(removeSource).toHaveBeenCalledExactlyOnceWith('1004399v09asdfkfe2');
       });
     });
+
+    describe('on cancel', () => {
+      it('does not remove the recipe', async () => {
+        wrapper = mountPage();
+        const items = wrapper.findAllComponents(components.VListItem);
+        const button = items[2].findComponent(components.VIcon);
+        await button.trigger('click');
+        const confirmDialog = wrapper.findComponent(ConfirmDialog);
+        confirmDialog.vm.$emit('cancel');
+        const { removeSource } = useSourcesData();
+        expect(removeSource).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe('add button', () => {
