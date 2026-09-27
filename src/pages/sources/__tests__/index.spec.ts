@@ -1,3 +1,4 @@
+import ConfirmDialog from '@/components/core/ConfirmDialog.vue';
 import { mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { createVuetify } from 'vuetify';
@@ -102,7 +103,25 @@ describe('Sources List Page', () => {
   });
 
   describe('delete button', () => {
-    it.todo('renders unless the source is the generic restaurant');
+    it('renders unless the source is the generic restaurant', () => {
+      wrapper = mountPage();
+      const items = wrapper.findAllComponents(components.VListItem);
+      expect(items[0].findComponent(components.VIcon).exists()).toBe(false);
+      expect(items[1].findComponent(components.VIcon).exists()).toBe(true);
+      expect(items[2].findComponent(components.VIcon).exists()).toBe(true);
+      expect(items[3].findComponent(components.VIcon).exists()).toBe(true);
+      expect(items[4].findComponent(components.VIcon).exists()).toBe(true);
+    });
+
+    it('confirms the delete with the user', async () => {
+      wrapper = mountPage();
+      const items = wrapper.findAllComponents(components.VListItem);
+      const button = items[2].findComponent(components.VIcon);
+      await button.trigger('click');
+      const confirmDialog = wrapper.findComponent(ConfirmDialog);
+      expect(confirmDialog.exists()).toBe(true);
+    });
+
     it.todo('deletes the source');
   });
 
