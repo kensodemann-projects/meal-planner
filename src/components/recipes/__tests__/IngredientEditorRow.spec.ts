@@ -190,7 +190,7 @@ describe('Ingredient Editor Row', () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
       const input = autocomplete.find('input[role="combobox"]');
-      (input.element as HTMLInputElement).value = 'Teaspoon';
+      (input.element as HTMLInputElement).value = 'tsp';
       await input.trigger('input');
       await flushPromises();
       await autocomplete.trigger('keydown', { key: 'Tab' });
