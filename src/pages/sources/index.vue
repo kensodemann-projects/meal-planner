@@ -52,5 +52,6 @@ const confirmRemove = (source: Source) => {
 
 const doRemove = () => {
   removeSource(selectedSource.value!.id!);
+  showConfirmDialog.value = false;
 };
 </script>

@@ -1,6 +1,6 @@
 import ConfirmDialog from '@/components/core/ConfirmDialog.vue';
 import { useSourcesData } from '@/data/sources';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import type { Ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -133,6 +133,17 @@ describe('Sources List Page', () => {
         const { removeSource } = useSourcesData();
         expect(removeSource).toHaveBeenCalledExactlyOnceWith('1004399v09asdfkfe2');
       });
+
+      it('hides the confirm dialog', async () => {
+        wrapper = mountPage();
+        const items = wrapper.findAllComponents(components.VListItem);
+        const button = items[2].findComponent(components.VIcon);
+        await button.trigger('click');
+        const confirmDialog = wrapper.findComponent(ConfirmDialog);
+        confirmDialog.vm.$emit('confirm');
+        await flushPromises();
+        expect(wrapper.findComponent(ConfirmDialog).isVisible()).toBe(false);
+      });
     });
 
     describe('on cancel', () => {
@@ -145,6 +156,17 @@ describe('Sources List Page', () => {
         confirmDialog.vm.$emit('cancel');
         const { removeSource } = useSourcesData();
         expect(removeSource).not.toHaveBeenCalled();
+      });
+
+      it('hides the confirm dialog', async () => {
+        wrapper = mountPage();
+        const items = wrapper.findAllComponents(components.VListItem);
+        const button = items[2].findComponent(components.VIcon);
+        await button.trigger('click');
+        const confirmDialog = wrapper.findComponent(ConfirmDialog);
+        confirmDialog.vm.$emit('cancel');
+        await flushPromises();
+        expect(wrapper.findComponent(ConfirmDialog).isVisible()).toBe(false);
       });
     });
   });
