@@ -1,4 +1,6 @@
 <template>
+  <h1 class="text-center">Sources for Recipes</h1>
+
   <v-list>
     <v-list-item v-for="source in sources" :key="source.id" @click="console.log('main item clicked')"
       >{{ source.name }}

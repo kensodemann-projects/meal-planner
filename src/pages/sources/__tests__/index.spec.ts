@@ -27,7 +27,10 @@ describe('Sources List Page', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it.todo('has a title');
+  it('has a title', () => {
+    wrapper = mountPage();
+    expect(wrapper.find('h1').text()).toBe('Sources for Recipes');
+  });
 
   it.todo('displays each source');
 
