@@ -13,6 +13,10 @@ Templates for Feature, Task, and Bug issues are in `.github/ISSUE_TEMPLATE/`. Re
 
 ## Pull Request Reviews
 
+### Merge practice
+
+Pull requests are squash-merged. Intermediate commits, including many titled "WIP", are normal working history and do not land on the base branch. Do not flag commit count, WIP prefixes, or commit-message polish as a review issue. Review the resulting diff.
+
 ### Comment Format
 
 **Issue:** Describe what needs attention  
