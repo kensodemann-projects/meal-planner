@@ -5,6 +5,7 @@ import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import IndexPage from '../index.vue';
 import { useSourcesData } from '@/data/sources';
+import type { Ref } from 'vue';
 
 vi.mock('@/data/sources');
 
@@ -18,7 +19,7 @@ describe('Sources List Page', () => {
   let wrapper: ReturnType<typeof mountPage>;
 
   beforeEach(() => {
-    const { sources } = useSourcesData();
+    const { loading, sources } = useSourcesData();
     sources.value = [
       {
         name: 'Generic Restaurant',
@@ -41,6 +42,7 @@ describe('Sources List Page', () => {
         id: '1004399v09asdfkfe4',
       },
     ];
+    (loading as Ref<boolean>).value = false;
   });
 
   afterEach(() => {
@@ -61,6 +63,20 @@ describe('Sources List Page', () => {
     expect(wrapper.find('h1').text()).toBe('Sources for Recipes');
   });
 
+  it('shows a loading indicator while sources are being fetched', () => {
+    const { loading } = useSourcesData();
+    (loading as Ref<boolean>).value = true;
+    wrapper = mountPage();
+    expect(wrapper.findComponent(components.VProgressCircular).exists()).toBe(true);
+    expect(wrapper.findComponent(components.VList).exists()).toBe(false);
+  });
+
+  it('hides the loading indicator once sources have loaded', () => {
+    wrapper = mountPage();
+    expect(wrapper.findComponent(components.VProgressCircular).exists()).toBe(false);
+    expect(wrapper.findComponent(components.VList).exists()).toBe(true);
+  });
+
   it('displays each source', () => {
     wrapper = mountPage();
     const items = wrapper.findAllComponents(components.VListItem);
@@ -72,33 +88,38 @@ describe('Sources List Page', () => {
     expect(items[4].text()).toBe('Peapod');
   });
 
-  it.todo('displays the matching sources');
-
   it.todo('navigates to the given source on click');
+
+  describe('delete button', () => {
+    it.todo('renders unless the source is the generic restaurant');
+    it.todo('deletes the source');
+  });
 
   describe('add button', () => {
     it.todo('navigates to the source add page');
   });
 
-  describe('search', () => {
-    it.todo('renders');
-
-    it.todo('re-runs the filter on new search text');
-
-    describe('source count', () => {
-      it.todo('displays the source count');
-
-      it.todo('displays the filtered count');
+  describe('empty state message', () => {
+    it('is displayed when there are no sources and not loading', () => {
+      const { sources } = useSourcesData();
+      sources.value = [];
+      wrapper = mountPage();
+      expect(wrapper.findComponent(components.VList).exists()).toBe(false);
+      expect(wrapper.find('h2').text()).toBe('No sources found');
     });
-  });
 
-  describe('empty state', () => {
-    it.todo('displays a message when there are no sources and not loading');
+    it('is not displayed when loading', () => {
+      const { loading, sources } = useSourcesData();
+      sources.value = [];
+      (loading as Ref<boolean>).value = true;
+      wrapper = mountPage();
+      expect(wrapper.findComponent(components.VList).exists()).toBe(false);
+      expect(wrapper.find('h2').exists()).toBe(false);
+    });
 
-    it.todo('displays a message when sources are loaded but no matches are found');
-
-    it.todo('does not display a message when loading');
-
-    it.todo('does not display a message when there are matching sources');
+    it('is not displayed when sources exist', () => {
+      wrapper = mountPage();
+      expect(wrapper.find('h2').exists()).toBe(false);
+    });
   });
 });
