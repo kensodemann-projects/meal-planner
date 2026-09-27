@@ -12,22 +12,7 @@
 </template>
 
 <script setup lang="ts">
-const sources = [
-  {
-    name: 'Generic Restaurant',
-    id: 'restaurant',
-  },
-  {
-    name: 'Item #1',
-    id: '1004399v09asdfkfe',
-  },
-  {
-    name: 'Item #2',
-    id: '1004399v09asdfkfe2',
-  },
-  {
-    name: 'Item #3',
-    id: '1004399v09asdfkfe3',
-  },
-];
+import { useSourcesData } from '@/data/sources';
+
+const { sources } = useSourcesData();
 </script>
