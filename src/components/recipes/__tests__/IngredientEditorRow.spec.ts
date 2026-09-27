@@ -177,7 +177,8 @@ describe('Ingredient Editor Row', () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
       const input = autocomplete.find('input[role="combobox"]');
-      await input.setValue('Teaspoon');
+      (input.element as HTMLInputElement).value = 'Teaspoon';
+      await input.trigger('input');
       await flushPromises();
       await autocomplete.trigger('keydown', { key: 'Tab' });
       const emitted = wrapper.emitted('changed');
@@ -189,7 +190,8 @@ describe('Ingredient Editor Row', () => {
       wrapper = mountComponent({ ingredient: TEST_INGREDIENTS[1]! });
       const autocomplete = wrapper.findComponent('[data-testid="unit-of-measure-input"]');
       const input = autocomplete.find('input[role="combobox"]');
-      await input.setValue('tsp');
+      (input.element as HTMLInputElement).value = 'Teaspoon';
+      await input.trigger('input');
       await flushPromises();
       await autocomplete.trigger('keydown', { key: 'Tab' });
       const emitted = wrapper.emitted('changed');
