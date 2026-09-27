@@ -6,7 +6,7 @@
   <h2 v-else-if="sources.length === 0">No sources found</h2>
 
   <v-list v-else>
-    <v-list-item v-for="source in sources" :key="source.id" @click="console.log('main item clicked')"
+    <v-list-item v-for="source in sources" :key="source.id" @click="router.push(`/sources/${source.id}/update`)"
       >{{ source.name }}
       <template v-if="source.id !== 'restaurant'" #append>
         <v-icon icon="mdi-close" @click.stop="console.log('append item clicked')" />
@@ -17,6 +17,8 @@
 
 <script setup lang="ts">
 import { useSourcesData } from '@/data/sources';
+import { useRouter } from 'vue-router';
 
 const { loading, sources } = useSourcesData();
+const router = useRouter();
 </script>

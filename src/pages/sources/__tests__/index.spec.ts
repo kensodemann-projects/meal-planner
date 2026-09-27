@@ -1,12 +1,14 @@
 import { mount } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import IndexPage from '../index.vue';
 import { useSourcesData } from '@/data/sources';
 import type { Ref } from 'vue';
+import { useRouter } from 'vue-router';
 
+vi.mock('vue-router');
 vi.mock('@/data/sources');
 
 const vuetify = createVuetify({
@@ -19,6 +21,9 @@ describe('Sources List Page', () => {
   let wrapper: ReturnType<typeof mountPage>;
 
   beforeEach(() => {
+    (useRouter as Mock).mockReturnValue({
+      push: vi.fn(),
+    });
     const { loading, sources } = useSourcesData();
     sources.value = [
       {
@@ -88,7 +93,13 @@ describe('Sources List Page', () => {
     expect(items[4].text()).toBe('Peapod');
   });
 
-  it.todo('navigates to the given source on click');
+  it('navigates to the given source on click', () => {
+    const router = useRouter();
+    wrapper = mountPage();
+    const items = wrapper.findAllComponents(components.VListItem);
+    items[2].trigger('click');
+    expect(router.push).toHaveBeenCalledExactlyOnceWith('/sources/1004399v09asdfkfe2/update');
+  });
 
   describe('delete button', () => {
     it.todo('renders unless the source is the generic restaurant');
