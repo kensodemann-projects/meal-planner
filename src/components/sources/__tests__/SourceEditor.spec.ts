@@ -90,13 +90,36 @@ describe('Source Editor', () => {
     });
   });
 
+  describe('initialization', () => {
+    describe('for create', () => {
+      it('initializes the name with a blank value', () => {
+        wrapper = mountComponent();
+        const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
+        expect(input.element.value).toBe('');
+      });
+    });
+
+    describe('for update', () => {
+      it('initializes the name with the source value', () => {
+        wrapper = mountComponent({ source: TEST_SOURCES[1] });
+        const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
+        expect(input.element.value).toBe(TEST_SOURCES[1].name);
+      });
+    });
+  });
+
   describe('cancel button', () => {
     it('exists', () => {
       wrapper = mountComponent();
       expect(wrapper.findComponent('[data-testid="cancel-button"]').exists()).toBe(true);
     });
 
-    it.todo('emits cancel on click');
+    it('emits cancel on click', async () => {
+      wrapper = mountComponent();
+      const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]');
+      await cancelButton.trigger('click');
+      expect(wrapper.emitted('cancel')).toBeDefined();
+    });
   });
 
   describe('save button', () => {

@@ -33,7 +33,7 @@ import { computed, shallowRef } from 'vue';
 const props = defineProps<{ source?: Source }>();
 
 const valid = shallowRef(false);
-const name = shallowRef('');
+const name = shallowRef(props.source?.name ?? '');
 const isModified = shallowRef(false);
 
 const { sources } = useSourcesData();
