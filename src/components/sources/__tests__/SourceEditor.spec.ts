@@ -129,17 +129,17 @@ describe('Source Editor', () => {
     });
 
     describe('for create', () => {
-      it.todo('initializes the name with a blank value');
-
       it.todo('is disabled until the name is filled in');
 
-      it.todo('emits the entered name on click');
+      it.todo('emits the updated source data on click');
     });
 
     describe('for update', () => {
-      it.todo('initializes the name with the source value');
+      it.todo('is disabled until the name is filled in');
 
-      it.todo('emits the entered name on click');
+      it.todo('is disabled if the source data is not modified');
+
+      it.todo('emits the updated source data on click');
     });
   });
 });
