@@ -26,16 +26,21 @@
 
 <script setup lang="ts">
 import { validationRules } from '@/core/validation-rules';
-import { shallowRef } from 'vue';
+import { useSourcesData } from '@/data/sources';
+import type { Source } from '@/models/source';
+import { computed, shallowRef } from 'vue';
+
+const props = defineProps<{ source?: Source }>();
 
 const valid = shallowRef(false);
 const name = shallowRef('');
 const isModified = shallowRef(false);
 
+const { sources } = useSourcesData();
+
 const save = () => {
   console.log('save');
 };
 
-//const recipeNames = computed((): string[] => recipes.value.filter((x) => x.id !== props.recipe?.id).map((x) => x.name));
-const sourceNames = [] as string[];
+const sourceNames = computed((): string[] => sources.value.filter((x) => x.id !== props.source?.id).map((x) => x.name));
 </script>

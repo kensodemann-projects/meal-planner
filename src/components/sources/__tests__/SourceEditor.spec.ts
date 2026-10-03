@@ -1,9 +1,16 @@
+import { textFieldIsRequired } from '@/components/__tests__/test-utils.ts';
+import { TEST_SOURCES } from '@/data/__tests__/test-data.ts';
+import { useSourcesData } from '@/data/sources.ts';
+import type { Source } from '@/models/source.ts';
 import { mount, VueWrapper } from '@vue/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Ref } from 'vue';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import SourceEditor from '../SourceEditor.vue';
+
+vi.mock('@/data/sources');
 
 const vuetify = createVuetify({
   components,
@@ -13,6 +20,11 @@ const mountComponent = (props = {}) => mount(SourceEditor, { props, global: { pl
 
 describe('Source Editor', () => {
   let wrapper: ReturnType<typeof mountComponent>;
+
+  beforeEach(() => {
+    const { sources } = useSourcesData();
+    (sources as Ref<Source[]>).value = TEST_SOURCES;
+  });
 
   afterEach(() => {
     wrapper?.unmount();
@@ -35,11 +47,47 @@ describe('Source Editor', () => {
       expect(input.props('label')).toBe('Name');
     });
 
-    it.todo('is required');
+    it('is required', async () => {
+      wrapper = mountComponent();
+      await textFieldIsRequired(wrapper, 'name-input');
+    });
 
-    it.todo('must be unique ignoring case');
+    it('must be unique ignoring case', async () => {
+      wrapper = mountComponent();
+      const textField = wrapper.findComponent('[data-testid="name-input"]') as VueWrapper<components.VTextField>;
+      const input = textField.find('input');
 
-    it.todo('allows the current name when renaming');
+      expect(wrapper.text()).not.toContain('already exists');
+      await input.trigger('focus');
+      await input.setValue(TEST_SOURCES[1].name);
+      await input.trigger('blur');
+      expect(wrapper.text()).toContain('already exists');
+      await input.setValue(TEST_SOURCES[1].name.toUpperCase());
+      await input.trigger('blur');
+      expect(wrapper.text()).toContain('already exists');
+      await input.setValue(TEST_SOURCES[1].name.toLowerCase());
+      await input.trigger('blur');
+      expect(wrapper.text()).toContain('already exists');
+
+      await input.setValue('redrum');
+      await input.trigger('blur');
+      expect(wrapper.text()).not.toContain('already exists');
+    });
+
+    it('allows the current name when renaming', async () => {
+      wrapper = mountComponent({ source: TEST_SOURCES[1] });
+      const textField = wrapper.findComponent('[data-testid="name-input"]') as VueWrapper<components.VTextField>;
+      const input = textField.find('input');
+
+      expect(wrapper.text()).not.toContain('already exists');
+      await input.trigger('focus');
+      await input.setValue(TEST_SOURCES[2].name);
+      await input.trigger('blur');
+      expect(wrapper.text()).toContain('already exists');
+      await input.setValue(TEST_SOURCES[1].name);
+      await input.trigger('blur');
+      expect(wrapper.text()).not.toContain('already exists');
+    });
   });
 
   describe('cancel button', () => {
