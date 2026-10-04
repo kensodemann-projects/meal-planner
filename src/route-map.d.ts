@@ -136,13 +136,6 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
-    '/sources/[id]/': RouteRecordInfo<
-      '/sources/[id]/',
-      '/sources/:id',
-      { id: ParamValue<true> },
-      { id: ParamValue<false> },
-      | never
-    >,
     '/sources/[id]/update': RouteRecordInfo<
       '/sources/[id]/update',
       '/sources/:id/update',
@@ -285,14 +278,6 @@ declare module 'vue-router/auto-routes' {
     'src/pages/sources/index.vue': {
       routes:
         | '/sources/'
-      views:
-        | never
-      pathParamNames:
-        | never
-    }
-    'src/pages/sources/[id]/index.vue': {
-      routes:
-        | '/sources/[id]/'
       views:
         | never
       pathParamNames:
