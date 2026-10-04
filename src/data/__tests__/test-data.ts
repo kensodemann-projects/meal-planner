@@ -34,6 +34,15 @@ export const TEST_SOURCES: Source[] = [
     id: 'fiie002934009ser',
     name: 'CookUnity',
   },
+  // Leave these sources unreferenced by TEST_RECIPES. They exist so tests can cover sources that no recipe uses.
+  {
+    id: 'hngr00t91aa20plq8',
+    name: 'Hungryroot',
+  },
+  {
+    id: 'brgrkng44cc81rmt2',
+    name: 'Burger King',
+  },
 ];
 
 export const TEST_SOURCE: Source = {
