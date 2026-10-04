@@ -11,7 +11,9 @@ const router = useRouter();
 const { addSource } = useSourcesData();
 
 const saveSource = async (source: Source) => {
-  await addSource(source);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { id: _ignored, ...fields } = source;
+  await addSource(fields);
   router.replace('/sources');
 };
 </script>

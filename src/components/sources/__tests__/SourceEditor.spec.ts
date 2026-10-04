@@ -148,7 +148,7 @@ describe('Source Editor', () => {
         await flushPromises();
         await saveButton.trigger('click');
         expect(wrapper.emitted('save')).toBeDefined();
-        expect(wrapper.emitted('save')).toEqual([[{ id: undefined, name: 'Somewhere Else' }]]);
+        expect(wrapper.emitted('save')).toEqual([[{ name: 'Somewhere Else' }]]);
       });
     });
 
