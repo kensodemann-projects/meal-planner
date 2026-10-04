@@ -31,16 +31,16 @@ import type { Source } from '@/models/source';
 import { computed, shallowRef } from 'vue';
 
 const props = defineProps<{ source?: Source }>();
+const emit = defineEmits<{ (event: 'save', payload: Source): void; (event: 'cancel'): void }>();
 
 const valid = shallowRef(false);
 const name = shallowRef(props.source?.name ?? '');
-const isModified = shallowRef(false);
 
 const { sources } = useSourcesData();
+const sourceNames = computed((): string[] => sources.value.filter((x) => x.id !== props.source?.id).map((x) => x.name));
+const isModified = computed((): boolean => (props.source ? name.value !== props.source.name : true));
 
 const save = () => {
-  console.log('save');
+  emit('save', { id: props.source?.id, name: name.value });
 };
-
-const sourceNames = computed((): string[] => sources.value.filter((x) => x.id !== props.source?.id).map((x) => x.name));
 </script>

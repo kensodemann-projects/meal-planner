@@ -2,7 +2,7 @@ import { textFieldIsRequired } from '@/components/__tests__/test-utils.ts';
 import { TEST_SOURCES } from '@/data/__tests__/test-data.ts';
 import { useSourcesData } from '@/data/sources.ts';
 import type { Source } from '@/models/source.ts';
-import { mount, VueWrapper } from '@vue/test-utils';
+import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Ref } from 'vue';
 import { createVuetify } from 'vuetify';
@@ -54,8 +54,7 @@ describe('Source Editor', () => {
 
     it('must be unique ignoring case', async () => {
       wrapper = mountComponent();
-      const textField = wrapper.findComponent('[data-testid="name-input"]') as VueWrapper<components.VTextField>;
-      const input = textField.find('input');
+      const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
 
       expect(wrapper.text()).not.toContain('already exists');
       await input.trigger('focus');
@@ -76,8 +75,7 @@ describe('Source Editor', () => {
 
     it('allows the current name when renaming', async () => {
       wrapper = mountComponent({ source: TEST_SOURCES[1] });
-      const textField = wrapper.findComponent('[data-testid="name-input"]') as VueWrapper<components.VTextField>;
-      const input = textField.find('input');
+      const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
 
       expect(wrapper.text()).not.toContain('already exists');
       await input.trigger('focus');
@@ -129,17 +127,63 @@ describe('Source Editor', () => {
     });
 
     describe('for create', () => {
-      it.todo('is disabled until the name is filled in');
+      it('is disabled until all valid data is filled in', async () => {
+        wrapper = mountComponent();
+        const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        expect(saveButton.attributes('disabled')).toBeDefined();
+        await input.setValue(TEST_SOURCES[1].name);
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeDefined();
+        await input.setValue('something else');
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
 
-      it.todo('emits the updated source data on click');
+      it('emits the updated source data on click', async () => {
+        wrapper = mountComponent();
+        const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        await input.setValue('Somewhere Else');
+        await flushPromises();
+        await saveButton.trigger('click');
+        expect(wrapper.emitted('save')).toBeDefined();
+        expect(wrapper.emitted('save')).toEqual([[{ id: undefined, name: 'Somewhere Else' }]]);
+      });
     });
 
     describe('for update', () => {
-      it.todo('is disabled until the name is filled in');
+      it('is disabled if a field is invalid', async () => {
+        wrapper = mountComponent({ source: TEST_SOURCES[1] });
+        const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeDefined();
+        await input.setValue('');
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeDefined();
+      });
 
-      it.todo('is disabled if the source data is not modified');
+      it('is disabled until the source data is modified', async () => {
+        wrapper = mountComponent({ source: TEST_SOURCES[1] });
+        const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        expect(saveButton.attributes('disabled')).toBeDefined();
+        await input.setValue('something else');
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
 
-      it.todo('emits the updated source data on click');
+      it('emits the updated source data on click', async () => {
+        wrapper = mountComponent({ source: TEST_SOURCES[1] });
+        const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        await input.setValue('Something Else');
+        await flushPromises();
+        await saveButton.trigger('click');
+        expect(wrapper.emitted('save')).toBeDefined();
+        expect(wrapper.emitted('save')).toEqual([[{ id: TEST_SOURCES[1].id, name: 'Something Else' }]]);
+      });
     });
   });
 });

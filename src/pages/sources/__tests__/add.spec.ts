@@ -5,6 +5,8 @@ import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import AddPage from '../add.vue';
 
+vi.mock('@/data/sources');
+
 const vuetify = createVuetify({
   components,
   directives,
