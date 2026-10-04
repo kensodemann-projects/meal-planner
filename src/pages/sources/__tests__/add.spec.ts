@@ -61,7 +61,7 @@ describe('Source Add Page', () => {
       wrapper = mountPage();
       const editor = wrapper.findComponent(SourceEditor);
       editor.vm.$emit('save', { id: undefined, name: 'Somewhere Else' });
-      expect(addSource).toHaveBeenCalledExactlyOnceWith({ id: undefined, name: 'Somewhere Else' });
+      expect(addSource).toHaveBeenCalledExactlyOnceWith({ name: 'Somewhere Else' });
     });
 
     it('navigates to the source list page', async () => {

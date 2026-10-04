@@ -5,11 +5,10 @@
         <v-col cols="12">
           <v-text-field
             label="Name"
-            placeholder="Enter the name of the recipe..."
+            placeholder="Enter the name of the food source..."
             v-model="name"
             :rules="[validationRules.required, validationRules.mustBeUnique(sourceNames)]"
             data-testid="name-input"
-            ref="nameInput"
           ></v-text-field>
         </v-col>
       </v-row>

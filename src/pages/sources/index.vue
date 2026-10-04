@@ -8,7 +8,7 @@
   <v-list v-else>
     <v-list-item v-for="source in sources" :key="source.id" @click="router.push(`/sources/${source.id}/update`)"
       >{{ source.name }}
-      <template v-if="source.id !== 'restaurant'" #append>
+      <template v-if="source.id !== GENERIC_RESTAURANT_SOURCE_ID" #append>
         <v-icon icon="mdi-close" @click.stop="confirmRemove(source)" />
       </template>
     </v-list-item>
@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { useSourcesData } from '@/data/sources';
+import { GENERIC_RESTAURANT_SOURCE_ID, useSourcesData } from '@/data/sources';
 import type { Source } from '@/models/source';
 import { ref, shallowRef } from 'vue';
 import { useRouter } from 'vue-router';
