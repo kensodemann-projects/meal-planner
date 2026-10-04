@@ -81,6 +81,7 @@ export default defineConfig({
       NODE_OPTIONS: '--localstorage-file=./vite-storage',
     },
     environment: 'jsdom',
+    pool: 'vmThreads',
     server: {
       deps: {
         inline: ['vuetify'],
