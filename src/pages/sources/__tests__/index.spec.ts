@@ -1,7 +1,8 @@
 import ConfirmDialog from '@/components/core/ConfirmDialog.vue';
+import NotificationDialog from '@/components/core/NotificationDialog.vue';
 import { TEST_RECIPES, TEST_SOURCES } from '@/data/__tests__/test-data.ts';
 import { useRecipesData } from '@/data/recipes';
-import { useSourcesData } from '@/data/sources';
+import { GENERIC_RESTAURANT_SOURCE_ID, useSourcesData } from '@/data/sources';
 import type { Recipe } from '@/models/recipe';
 import type { Source } from '@/models/source';
 import { flushPromises, mount } from '@vue/test-utils';
@@ -104,6 +105,43 @@ describe('Sources List Page', () => {
       await button.trigger('click');
       const confirmDialog = wrapper.findComponent(ConfirmDialog);
       expect(confirmDialog.exists()).toBe(true);
+    });
+
+    describe('when the source is used in a recipe', () => {
+      const usedSourceIndex = TEST_SOURCES.findIndex(
+        (source) =>
+          source.id !== GENERIC_RESTAURANT_SOURCE_ID && TEST_RECIPES.some((recipe) => recipe.sourceId === source.id),
+      );
+
+      it('displays a notification and does not display the confirmation dialog', async () => {
+        wrapper = mountPage();
+        const items = wrapper.findAllComponents(components.VListItem);
+        const button = items[usedSourceIndex].findComponent(components.VIcon);
+        await button.trigger('click');
+        await flushPromises();
+        expect(wrapper.findComponent(NotificationDialog).exists()).toBe(true);
+        expect(wrapper.findComponent(ConfirmDialog).exists()).toBe(false);
+      });
+
+      it('does not delete the source after the notification is dismissed', async () => {
+        wrapper = mountPage();
+        const items = wrapper.findAllComponents(components.VListItem);
+        const button = items[usedSourceIndex].findComponent(components.VIcon);
+        await button.trigger('click');
+        wrapper.findComponent(NotificationDialog).vm.$emit('confirm');
+        await flushPromises();
+        const { removeSource } = useSourcesData();
+        expect(removeSource).not.toHaveBeenCalled();
+      });
+    });
+
+    it('does not display a notification when the source is not used', async () => {
+      wrapper = mountPage();
+      const items = wrapper.findAllComponents(components.VListItem);
+      const button = items[TEST_SOURCES.length - 1].findComponent(components.VIcon);
+      await button.trigger('click');
+      await flushPromises();
+      expect(wrapper.findComponent(NotificationDialog).exists()).toBe(false);
     });
 
     describe('on confirm', () => {
