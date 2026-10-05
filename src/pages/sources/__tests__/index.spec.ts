@@ -1,5 +1,9 @@
 import ConfirmDialog from '@/components/core/ConfirmDialog.vue';
+import { TEST_RECIPES, TEST_SOURCES } from '@/data/__tests__/test-data.ts';
+import { useRecipesData } from '@/data/recipes';
 import { useSourcesData } from '@/data/sources';
+import type { Recipe } from '@/models/recipe';
+import type { Source } from '@/models/source';
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import type { Ref } from 'vue';
@@ -10,6 +14,7 @@ import * as directives from 'vuetify/directives';
 import IndexPage from '../index.vue';
 
 vi.mock('vue-router');
+vi.mock('@/data/recipes');
 vi.mock('@/data/sources');
 
 const vuetify = createVuetify({
@@ -25,29 +30,10 @@ describe('Sources List Page', () => {
     (useRouter as Mock).mockReturnValue({
       push: vi.fn(),
     });
+    const { recipes } = useRecipesData();
     const { loading, sources } = useSourcesData();
-    sources.value = [
-      {
-        name: 'Generic Restaurant',
-        id: 'restaurant',
-      },
-      {
-        name: 'Hungryroot',
-        id: '1004399v09asdfkfe1',
-      },
-      {
-        name: 'Instacart',
-        id: '1004399v09asdfkfe2',
-      },
-      {
-        name: 'Kroger',
-        id: '1004399v09asdfkfe3',
-      },
-      {
-        name: 'Peapod',
-        id: '1004399v09asdfkfe4',
-      },
-    ];
+    (recipes.value as Recipe[]) = TEST_RECIPES;
+    (sources.value as Source[]) = TEST_SOURCES;
     (loading as Ref<boolean>).value = false;
   });
 
@@ -86,12 +72,10 @@ describe('Sources List Page', () => {
   it('displays each source', () => {
     wrapper = mountPage();
     const items = wrapper.findAllComponents(components.VListItem);
-    expect(items.length).toBe(5);
-    expect(items[0].text()).toBe('Generic Restaurant');
-    expect(items[1].text()).toBe('Hungryroot');
-    expect(items[2].text()).toBe('Instacart');
-    expect(items[3].text()).toBe('Kroger');
-    expect(items[4].text()).toBe('Peapod');
+    expect(items.length).toBe(TEST_SOURCES.length);
+    for (let i = 0; i < TEST_SOURCES.length; i++) {
+      expect(items[i].text()).toBe(TEST_SOURCES[i].name);
+    }
   });
 
   it('navigates to the given source on click', () => {
@@ -99,7 +83,7 @@ describe('Sources List Page', () => {
     wrapper = mountPage();
     const items = wrapper.findAllComponents(components.VListItem);
     items[2].trigger('click');
-    expect(router.push).toHaveBeenCalledExactlyOnceWith('/sources/1004399v09asdfkfe2/update');
+    expect(router.push).toHaveBeenCalledExactlyOnceWith(`/sources/${TEST_SOURCES[2].id}/update`);
   });
 
   describe('delete button', () => {
@@ -131,7 +115,7 @@ describe('Sources List Page', () => {
         const confirmDialog = wrapper.findComponent(ConfirmDialog);
         confirmDialog.vm.$emit('confirm');
         const { removeSource } = useSourcesData();
-        expect(removeSource).toHaveBeenCalledExactlyOnceWith('1004399v09asdfkfe2');
+        expect(removeSource).toHaveBeenCalledExactlyOnceWith(TEST_SOURCES[2].id);
       });
 
       it('hides the confirm dialog', async () => {
