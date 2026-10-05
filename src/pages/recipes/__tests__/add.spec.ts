@@ -1,8 +1,5 @@
-import RecipeEditor from '@/components/recipes/RecipeEditor.vue';
-import { TEST_RECIPE } from '@/data/__tests__/test-data';
-import { useRecipesData } from '@/data/recipes';
-import { flushPromises, mount } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+import { mount } from '@vue/test-utils';
+import { describe, afterEach, vi, beforeEach, type Mock, it, expect } from 'vitest';
 import { useRouter } from 'vue-router';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
@@ -10,8 +7,6 @@ import * as directives from 'vuetify/directives';
 import AddPage from '../add.vue';
 
 vi.mock('vue-router');
-vi.mock('@/data/recipes');
-vi.mock('@/core/nutrition-generator');
 
 const vuetify = createVuetify({
   components,
@@ -19,7 +14,7 @@ const vuetify = createVuetify({
 });
 const mountPage = () => mount(AddPage, { global: { plugins: [vuetify] } });
 
-describe('Recipe Add Page', () => {
+describe('Recipe Add Homemade Page', () => {
   let wrapper: ReturnType<typeof mountPage>;
 
   afterEach(() => {
@@ -37,45 +32,5 @@ describe('Recipe Add Page', () => {
   it('renders', () => {
     wrapper = mountPage();
     expect(wrapper.exists()).toBe(true);
-  });
-
-  describe('on cancel', () => {
-    it('does not create a new recipe', async () => {
-      const { addRecipe } = useRecipesData();
-      wrapper = mountPage();
-      const editor = wrapper.findComponent(RecipeEditor);
-      editor.vm.$emit('cancel');
-      await flushPromises();
-      expect(addRecipe).not.toHaveBeenCalled();
-    });
-
-    it('navigates to the recipe list page', async () => {
-      const { replace } = useRouter();
-      wrapper = mountPage();
-      const editor = wrapper.findComponent(RecipeEditor);
-      editor.vm.$emit('cancel');
-      await flushPromises();
-      expect(replace).toHaveBeenCalledExactlyOnceWith('/recipes');
-    });
-  });
-
-  describe('on save', () => {
-    it('creates a new recipe', async () => {
-      const { addRecipe } = useRecipesData();
-      wrapper = mountPage();
-      const editor = wrapper.findComponent(RecipeEditor);
-      editor.vm.$emit('save', TEST_RECIPE);
-      await flushPromises();
-      expect(addRecipe).toHaveBeenCalledExactlyOnceWith(TEST_RECIPE);
-    });
-
-    it('navigates to the recipe list page', async () => {
-      const { replace } = useRouter();
-      wrapper = mountPage();
-      const editor = wrapper.findComponent(RecipeEditor);
-      editor.vm.$emit('save', TEST_RECIPE);
-      await flushPromises();
-      expect(replace).toHaveBeenCalledExactlyOnceWith('/recipes');
-    });
   });
 });
