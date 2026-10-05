@@ -23,6 +23,14 @@
     />
   </v-dialog>
 
+  <v-dialog v-model="showNotificationDialog" max-width="600px" data-testid="notification-dialog">
+    <NotificationDialog
+      message="This source is used in recipes and cannot be deleted."
+      type="error"
+      @confirm="showNotificationDialog = false"
+    />
+  </v-dialog>
+
   <v-fab
     color="primary"
     icon="mdi-plus"
@@ -35,17 +43,25 @@
 </template>
 
 <script setup lang="ts">
+import { useRecipesData } from '@/data/recipes';
 import { GENERIC_RESTAURANT_SOURCE_ID, useSourcesData } from '@/data/sources';
 import type { Source } from '@/models/source';
 import { ref, shallowRef } from 'vue';
 import { useRouter } from 'vue-router';
 
 const { loading, sources, removeSource } = useSourcesData();
+const { recipes } = useRecipesData();
 const router = useRouter();
 const showConfirmDialog = shallowRef(false);
 const selectedSource = ref<Source | null>(null);
+const showNotificationDialog = ref(false);
 
 const confirmRemove = (source: Source) => {
+  const isUsed = recipes.value.some((recipe) => recipe.sourceId === source.id);
+  if (isUsed) {
+    showNotificationDialog.value = true;
+    return;
+  }
   selectedSource.value = source;
   showConfirmDialog.value = true;
 };
