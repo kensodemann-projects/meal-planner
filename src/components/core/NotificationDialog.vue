@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title data-testid="title">Are you sure?</v-card-title>
+    <v-card-title data-testid="title">{{ title }}</v-card-title>
     <v-card-text data-testid="body">
       <div class="d-flex ga-4 align-center">
         <div><v-icon :icon="icons[type]" size="64" :color="type" /></div>
@@ -24,6 +24,6 @@ const icons: Record<MessageType, string> = {
   info: 'mdi-information',
 };
 
-withDefaults(defineProps<{ message: string; type?: MessageType }>(), { type: 'info' });
+withDefaults(defineProps<{ message: string; title: string; type?: MessageType }>(), { type: 'info' });
 defineEmits(['confirm']);
 </script>

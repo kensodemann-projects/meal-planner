@@ -25,6 +25,7 @@
 
   <v-dialog v-model="showNotificationDialog" max-width="600px" data-testid="notification-dialog">
     <NotificationDialog
+      title="Source in use"
       message="This source is used in recipes and cannot be deleted."
       type="error"
       @confirm="showNotificationDialog = false"

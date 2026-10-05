@@ -7,8 +7,8 @@ import NotificationDialog, { type MessageType } from '../NotificationDialog.vue'
 
 describe('Notification Dialog', () => {
   const vuetify = createVuetify({ components, directives });
-  const mountComponent = (message: string, type?: MessageType) =>
-    mount(NotificationDialog, { global: { plugins: [vuetify] }, props: { message, ...(type ? { type } : {}) } });
+  const mountComponent = (message: string, type?: MessageType, title = 'Notification') =>
+    mount(NotificationDialog, { global: { plugins: [vuetify] }, props: { message, title, ...(type ? { type } : {}) } });
 
   let wrapper: ReturnType<typeof mountComponent>;
 
@@ -24,6 +24,12 @@ describe('Notification Dialog', () => {
     const message = 'This is the message that I will display.';
     wrapper = mountComponent(message);
     expect(wrapper.find('[data-testid="body"]').text()).toBe(message);
+  });
+
+  it('displays the title', () => {
+    const title = 'Source in use';
+    wrapper = mountComponent('This is the message that I will display.', undefined, title);
+    expect(wrapper.find('[data-testid="title"]').text()).toBe(title);
   });
 
   it('emits confirm on ok pressed', async () => {
