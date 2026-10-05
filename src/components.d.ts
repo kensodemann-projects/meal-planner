@@ -23,6 +23,7 @@ declare module 'vue' {
     MealItemEditor: typeof import('./components/meals/MealItemEditor.vue')['default']
     MealItemListItem: typeof import('./components/meals/MealItemListItem.vue')['default']
     ModifyButton: typeof import('./components/core/buttons/ModifyButton.vue')['default']
+    NotificationDialog: typeof import('./components/core/NotificationDialog.vue')['default']
     NutrientMaxRow: typeof import('./components/settings/NutrientMaxRow.vue')['default']
     NutrientRangeRow: typeof import('./components/settings/NutrientRangeRow.vue')['default']
     NutritionalStatusMarker: typeof import('./components/core/NutritionalStatusMarker.vue')['default']
