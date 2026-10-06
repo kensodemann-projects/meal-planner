@@ -1,5 +1,6 @@
+import CancelButton from '@/components/core/buttons/CancelButton.vue';
 import { mount } from '@vue/test-utils';
-import { describe, afterEach, vi, beforeEach, type Mock, it, expect } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { useRouter } from 'vue-router';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
@@ -26,7 +27,7 @@ describe('Recipe Add Page', () => {
   });
 
   beforeEach(() => {
-    (useRouter as Mock).mockReturnValue({ push: vi.fn() });
+    (useRouter as Mock).mockReturnValue({ push: vi.fn(), replace: vi.fn() });
   });
 
   it('renders', () => {
@@ -47,6 +48,15 @@ describe('Recipe Add Page', () => {
       wrapper = mountPage();
       await wrapper.findComponent('[data-testid="choice-prepared"]').trigger('click');
       expect(push).toHaveBeenCalledExactlyOnceWith('/recipes/add-prepared');
+    });
+  });
+
+  describe('on cancel', () => {
+    it('navigates to the recipe list page', async () => {
+      const { replace } = useRouter();
+      wrapper = mountPage();
+      await wrapper.findComponent(CancelButton).trigger('click');
+      expect(replace).toHaveBeenCalledExactlyOnceWith('/recipes');
     });
   });
 });
