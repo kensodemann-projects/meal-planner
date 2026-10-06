@@ -91,17 +91,22 @@ describe('Sources List Page', () => {
     it('renders unless the source is the generic restaurant', () => {
       wrapper = mountPage();
       const items = wrapper.findAllComponents(components.VListItem);
-      expect(items[0].findComponent(components.VIcon).exists()).toBe(false);
-      expect(items[1].findComponent(components.VIcon).exists()).toBe(true);
-      expect(items[2].findComponent(components.VIcon).exists()).toBe(true);
-      expect(items[3].findComponent(components.VIcon).exists()).toBe(true);
-      expect(items[4].findComponent(components.VIcon).exists()).toBe(true);
+      for (let i = 0; i < TEST_SOURCES.length; i++) {
+        expect(items[i].findComponent(components.VIcon).exists()).toBe(
+          TEST_SOURCES[i].id !== GENERIC_RESTAURANT_SOURCE_ID,
+        );
+      }
     });
+
+    const unusedSourceIndex = TEST_SOURCES.findIndex(
+      (source) =>
+        source.id !== GENERIC_RESTAURANT_SOURCE_ID && TEST_RECIPES.every((recipe) => recipe.sourceId !== source.id),
+    );
 
     it('confirms the delete with the user', async () => {
       wrapper = mountPage();
       const items = wrapper.findAllComponents(components.VListItem);
-      const button = items[TEST_SOURCES.length - 1].findComponent(components.VIcon);
+      const button = items[unusedSourceIndex].findComponent(components.VIcon);
       await button.trigger('click');
       const confirmDialog = wrapper.findComponent(ConfirmDialog);
       expect(confirmDialog.exists()).toBe(true);
@@ -138,7 +143,7 @@ describe('Sources List Page', () => {
     it('does not display a notification when the source is not used', async () => {
       wrapper = mountPage();
       const items = wrapper.findAllComponents(components.VListItem);
-      const button = items[TEST_SOURCES.length - 1].findComponent(components.VIcon);
+      const button = items[unusedSourceIndex].findComponent(components.VIcon);
       await button.trigger('click');
       await flushPromises();
       expect(wrapper.findComponent(NotificationDialog).exists()).toBe(false);
@@ -148,18 +153,18 @@ describe('Sources List Page', () => {
       it('removes the source', async () => {
         wrapper = mountPage();
         const items = wrapper.findAllComponents(components.VListItem);
-        const button = items[TEST_SOURCES.length - 1].findComponent(components.VIcon);
+        const button = items[unusedSourceIndex].findComponent(components.VIcon);
         await button.trigger('click');
         const confirmDialog = wrapper.findComponent(ConfirmDialog);
         confirmDialog.vm.$emit('confirm');
         const { removeSource } = useSourcesData();
-        expect(removeSource).toHaveBeenCalledExactlyOnceWith(TEST_SOURCES[TEST_SOURCES.length - 1].id);
+        expect(removeSource).toHaveBeenCalledExactlyOnceWith(TEST_SOURCES[unusedSourceIndex].id);
       });
 
       it('hides the confirm dialog', async () => {
         wrapper = mountPage();
         const items = wrapper.findAllComponents(components.VListItem);
-        const button = items[TEST_SOURCES.length - 1].findComponent(components.VIcon);
+        const button = items[unusedSourceIndex].findComponent(components.VIcon);
         await button.trigger('click');
         const confirmDialog = wrapper.findComponent(ConfirmDialog);
         confirmDialog.vm.$emit('confirm');
@@ -172,7 +177,7 @@ describe('Sources List Page', () => {
       it('does not remove the recipe', async () => {
         wrapper = mountPage();
         const items = wrapper.findAllComponents(components.VListItem);
-        const button = items[TEST_SOURCES.length - 1].findComponent(components.VIcon);
+        const button = items[unusedSourceIndex].findComponent(components.VIcon);
         await button.trigger('click');
         const confirmDialog = wrapper.findComponent(ConfirmDialog);
         confirmDialog.vm.$emit('cancel');
@@ -183,7 +188,7 @@ describe('Sources List Page', () => {
       it('hides the confirm dialog', async () => {
         wrapper = mountPage();
         const items = wrapper.findAllComponents(components.VListItem);
-        const button = items[TEST_SOURCES.length - 1].findComponent(components.VIcon);
+        const button = items[unusedSourceIndex].findComponent(components.VIcon);
         await button.trigger('click');
         const confirmDialog = wrapper.findComponent(ConfirmDialog);
         confirmDialog.vm.$emit('cancel');
