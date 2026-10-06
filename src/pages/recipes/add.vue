@@ -1,17 +1,71 @@
 <template>
-  <RecipeEditor @cancel="router.replace('/recipes')" @save="saveRecipe" />
+  <h1 class="text-center">Pick a Recipe Type</h1>
+  <v-container fluid>
+    <v-row>
+      <v-col cols="12" md="6">
+        <v-card
+          link
+          hover
+          role="button"
+          tabindex="0"
+          data-testid="choice-homemade"
+          @click="chooseRecipeType('/recipes/add-homemade')"
+          @keydown="onChoiceKeydown('/recipes/add-homemade', $event)"
+        >
+          <v-card-text>
+            <div class="d-flex align-center ga-2">
+              <v-icon size="x-large" icon="mdi-gas-burner"></v-icon>
+              <div>
+                <div class="text-title-large">Homemade</div>
+                <div>Simple to complex, some assembly is required.</div>
+              </div>
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-card
+          link
+          hover
+          role="button"
+          tabindex="0"
+          data-testid="choice-prepared"
+          @click="chooseRecipeType('/recipes/add-prepared')"
+          @keydown="onChoiceKeydown('/recipes/add-prepared', $event)"
+        >
+          <v-card-text>
+            <div class="d-flex align-center ga-2">
+              <v-icon size="x-large" icon="mdi-chef-hat"></v-icon>
+              <div>
+                <div class="text-title-large">Prepared</div>
+                <div>Premade meals from a delivery service or restaurant.</div>
+              </div>
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
+
+  <v-container fluid>
+    <v-row class="pa-4" justify="end">
+      <CancelButton class="mr-4" @click="router.replace('/recipes')" />
+    </v-row>
+  </v-container>
 </template>
 
 <script setup lang="ts">
-import { useRecipesData } from '@/data/recipes';
-import type { Recipe } from '@/models/recipe';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const { addRecipe } = useRecipesData();
 
-const saveRecipe = async (recipe: Recipe) => {
-  await addRecipe(recipe);
-  router.replace('/recipes');
+const chooseRecipeType = (path: string) => {
+  router.replace(path);
+};
+
+const onChoiceKeydown = (path: string, event: KeyboardEvent) => {
+  if (event.key !== 'Enter' && event.key !== ' ') return;
+  event.preventDefault();
+  chooseRecipeType(path);
 };
 </script>

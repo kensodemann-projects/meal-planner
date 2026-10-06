@@ -122,6 +122,20 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/recipes/add-homemade': RouteRecordInfo<
+      '/recipes/add-homemade',
+      '/recipes/add-homemade',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/recipes/add-prepared': RouteRecordInfo<
+      '/recipes/add-prepared',
+      '/recipes/add-prepared',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     '/settings': RouteRecordInfo<
       '/settings',
       '/settings',
@@ -262,6 +276,22 @@ declare module 'vue-router/auto-routes' {
     'src/pages/recipes/add.vue': {
       routes:
         | '/recipes/add'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/recipes/add-homemade.vue': {
+      routes:
+        | '/recipes/add-homemade'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/recipes/add-prepared.vue': {
+      routes:
+        | '/recipes/add-prepared'
       views:
         | never
       pathParamNames:
