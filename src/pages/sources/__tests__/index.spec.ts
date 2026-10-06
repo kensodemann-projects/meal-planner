@@ -1,5 +1,10 @@
 import ConfirmDialog from '@/components/core/ConfirmDialog.vue';
-import { useSourcesData } from '@/data/sources';
+import NotificationDialog from '@/components/core/NotificationDialog.vue';
+import { TEST_RECIPES, TEST_SOURCES } from '@/data/__tests__/test-data.ts';
+import { useRecipesData } from '@/data/recipes';
+import { GENERIC_RESTAURANT_SOURCE_ID, useSourcesData } from '@/data/sources';
+import type { Recipe } from '@/models/recipe';
+import type { Source } from '@/models/source';
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import type { Ref } from 'vue';
@@ -10,6 +15,7 @@ import * as directives from 'vuetify/directives';
 import IndexPage from '../index.vue';
 
 vi.mock('vue-router');
+vi.mock('@/data/recipes');
 vi.mock('@/data/sources');
 
 const vuetify = createVuetify({
@@ -25,30 +31,13 @@ describe('Sources List Page', () => {
     (useRouter as Mock).mockReturnValue({
       push: vi.fn(),
     });
-    const { loading, sources } = useSourcesData();
-    sources.value = [
-      {
-        name: 'Generic Restaurant',
-        id: 'restaurant',
-      },
-      {
-        name: 'Hungryroot',
-        id: '1004399v09asdfkfe1',
-      },
-      {
-        name: 'Instacart',
-        id: '1004399v09asdfkfe2',
-      },
-      {
-        name: 'Kroger',
-        id: '1004399v09asdfkfe3',
-      },
-      {
-        name: 'Peapod',
-        id: '1004399v09asdfkfe4',
-      },
-    ];
-    (loading as Ref<boolean>).value = false;
+    const { loading: recipesLoading, error: recipesError, recipes } = useRecipesData();
+    const { loading: sourcesLoading, sources } = useSourcesData();
+    (recipes.value as Recipe[]) = TEST_RECIPES;
+    (recipesError as Ref<Error | null>).value = null;
+    (recipesLoading as Ref<boolean>).value = false;
+    (sources.value as Source[]) = TEST_SOURCES;
+    (sourcesLoading as Ref<boolean>).value = false;
   });
 
   afterEach(() => {
@@ -77,6 +66,14 @@ describe('Sources List Page', () => {
     expect(wrapper.findComponent(components.VList).exists()).toBe(false);
   });
 
+  it('shows a loading indicator while recipes are being fetched', () => {
+    const { loading } = useRecipesData();
+    (loading as Ref<boolean>).value = true;
+    wrapper = mountPage();
+    expect(wrapper.findComponent(components.VProgressCircular).exists()).toBe(true);
+    expect(wrapper.findComponent(components.VList).exists()).toBe(false);
+  });
+
   it('hides the loading indicator once sources have loaded', () => {
     wrapper = mountPage();
     expect(wrapper.findComponent(components.VProgressCircular).exists()).toBe(false);
@@ -86,12 +83,10 @@ describe('Sources List Page', () => {
   it('displays each source', () => {
     wrapper = mountPage();
     const items = wrapper.findAllComponents(components.VListItem);
-    expect(items.length).toBe(5);
-    expect(items[0].text()).toBe('Generic Restaurant');
-    expect(items[1].text()).toBe('Hungryroot');
-    expect(items[2].text()).toBe('Instacart');
-    expect(items[3].text()).toBe('Kroger');
-    expect(items[4].text()).toBe('Peapod');
+    expect(items.length).toBe(TEST_SOURCES.length);
+    for (let i = 0; i < TEST_SOURCES.length; i++) {
+      expect(items[i].text()).toBe(TEST_SOURCES[i].name);
+    }
   });
 
   it('navigates to the given source on click', () => {
@@ -99,45 +94,97 @@ describe('Sources List Page', () => {
     wrapper = mountPage();
     const items = wrapper.findAllComponents(components.VListItem);
     items[2].trigger('click');
-    expect(router.push).toHaveBeenCalledExactlyOnceWith('/sources/1004399v09asdfkfe2/update');
+    expect(router.push).toHaveBeenCalledExactlyOnceWith(`/sources/${TEST_SOURCES[2].id}/update`);
   });
 
   describe('delete button', () => {
     it('renders unless the source is the generic restaurant', () => {
       wrapper = mountPage();
       const items = wrapper.findAllComponents(components.VListItem);
-      expect(items[0].findComponent(components.VIcon).exists()).toBe(false);
-      expect(items[1].findComponent(components.VIcon).exists()).toBe(true);
-      expect(items[2].findComponent(components.VIcon).exists()).toBe(true);
-      expect(items[3].findComponent(components.VIcon).exists()).toBe(true);
-      expect(items[4].findComponent(components.VIcon).exists()).toBe(true);
+      for (let i = 0; i < TEST_SOURCES.length; i++) {
+        expect(items[i].findComponent(components.VIcon).exists()).toBe(
+          TEST_SOURCES[i].id !== GENERIC_RESTAURANT_SOURCE_ID,
+        );
+      }
     });
+
+    it('does not render the delete button if recipes fail to load', () => {
+      const { error } = useRecipesData();
+      (error as Ref<Error | null>).value = new Error('failed to load recipes');
+      wrapper = mountPage();
+      const items = wrapper.findAllComponents(components.VListItem);
+      for (const item of items) {
+        expect(item.findComponent(components.VIcon).exists()).toBe(false);
+      }
+    });
+
+    const unusedSourceIndex = TEST_SOURCES.findIndex(
+      (source) =>
+        source.id !== GENERIC_RESTAURANT_SOURCE_ID && TEST_RECIPES.every((recipe) => recipe.sourceId !== source.id),
+    );
 
     it('confirms the delete with the user', async () => {
       wrapper = mountPage();
       const items = wrapper.findAllComponents(components.VListItem);
-      const button = items[2].findComponent(components.VIcon);
+      const button = items[unusedSourceIndex].findComponent(components.VIcon);
       await button.trigger('click');
       const confirmDialog = wrapper.findComponent(ConfirmDialog);
       expect(confirmDialog.exists()).toBe(true);
+    });
+
+    describe('when the source is used in a recipe', () => {
+      const usedSourceIndex = TEST_SOURCES.findIndex(
+        (source) =>
+          source.id !== GENERIC_RESTAURANT_SOURCE_ID && TEST_RECIPES.some((recipe) => recipe.sourceId === source.id),
+      );
+
+      it('displays a notification and does not display the confirmation dialog', async () => {
+        wrapper = mountPage();
+        const items = wrapper.findAllComponents(components.VListItem);
+        const button = items[usedSourceIndex].findComponent(components.VIcon);
+        await button.trigger('click');
+        await flushPromises();
+        expect(wrapper.findComponent(NotificationDialog).exists()).toBe(true);
+        expect(wrapper.findComponent(ConfirmDialog).exists()).toBe(false);
+      });
+
+      it('does not delete the source after the notification is dismissed', async () => {
+        wrapper = mountPage();
+        const items = wrapper.findAllComponents(components.VListItem);
+        const button = items[usedSourceIndex].findComponent(components.VIcon);
+        await button.trigger('click');
+        wrapper.findComponent(NotificationDialog).vm.$emit('confirm');
+        await flushPromises();
+        const { removeSource } = useSourcesData();
+        expect(removeSource).not.toHaveBeenCalled();
+      });
+    });
+
+    it('does not display a notification when the source is not used', async () => {
+      wrapper = mountPage();
+      const items = wrapper.findAllComponents(components.VListItem);
+      const button = items[unusedSourceIndex].findComponent(components.VIcon);
+      await button.trigger('click');
+      await flushPromises();
+      expect(wrapper.findComponent(NotificationDialog).exists()).toBe(false);
     });
 
     describe('on confirm', () => {
       it('removes the source', async () => {
         wrapper = mountPage();
         const items = wrapper.findAllComponents(components.VListItem);
-        const button = items[2].findComponent(components.VIcon);
+        const button = items[unusedSourceIndex].findComponent(components.VIcon);
         await button.trigger('click');
         const confirmDialog = wrapper.findComponent(ConfirmDialog);
         confirmDialog.vm.$emit('confirm');
         const { removeSource } = useSourcesData();
-        expect(removeSource).toHaveBeenCalledExactlyOnceWith('1004399v09asdfkfe2');
+        expect(removeSource).toHaveBeenCalledExactlyOnceWith(TEST_SOURCES[unusedSourceIndex].id);
       });
 
       it('hides the confirm dialog', async () => {
         wrapper = mountPage();
         const items = wrapper.findAllComponents(components.VListItem);
-        const button = items[2].findComponent(components.VIcon);
+        const button = items[unusedSourceIndex].findComponent(components.VIcon);
         await button.trigger('click');
         const confirmDialog = wrapper.findComponent(ConfirmDialog);
         confirmDialog.vm.$emit('confirm');
@@ -150,7 +197,7 @@ describe('Sources List Page', () => {
       it('does not remove the recipe', async () => {
         wrapper = mountPage();
         const items = wrapper.findAllComponents(components.VListItem);
-        const button = items[2].findComponent(components.VIcon);
+        const button = items[unusedSourceIndex].findComponent(components.VIcon);
         await button.trigger('click');
         const confirmDialog = wrapper.findComponent(ConfirmDialog);
         confirmDialog.vm.$emit('cancel');
@@ -161,7 +208,7 @@ describe('Sources List Page', () => {
       it('hides the confirm dialog', async () => {
         wrapper = mountPage();
         const items = wrapper.findAllComponents(components.VListItem);
-        const button = items[2].findComponent(components.VIcon);
+        const button = items[unusedSourceIndex].findComponent(components.VIcon);
         await button.trigger('click');
         const confirmDialog = wrapper.findComponent(ConfirmDialog);
         confirmDialog.vm.$emit('cancel');
@@ -178,6 +225,22 @@ describe('Sources List Page', () => {
       const addButton = wrapper.findComponent(components.VFab);
       addButton.trigger('click');
       expect(router.push).toHaveBeenCalledExactlyOnceWith('/sources/add');
+    });
+  });
+
+  describe('recipes error message', () => {
+    const message = 'Recipes have failed to load, deletion of sources is disabled';
+
+    it('is displayed when recipes fail to load', () => {
+      const { error } = useRecipesData();
+      (error as Ref<Error | null>).value = new Error('failed to load recipes');
+      wrapper = mountPage();
+      expect(wrapper.text()).toContain(message);
+    });
+
+    it('is not displayed when there is no recipes error', () => {
+      wrapper = mountPage();
+      expect(wrapper.text()).not.toContain(message);
     });
   });
 
