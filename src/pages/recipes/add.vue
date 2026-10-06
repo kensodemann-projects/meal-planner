@@ -3,7 +3,7 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12" md="6">
-        <v-card @click="router.push('/recipes/add-homemade')" data-testid="choice-homemade">
+        <v-card link hover @click="router.replace('/recipes/add-homemade')" data-testid="choice-homemade">
           <v-card-text>
             <div class="d-flex align-center ga-2">
               <v-icon size="x-large" icon="mdi-gas-burner"></v-icon>
@@ -16,7 +16,7 @@
         </v-card>
       </v-col>
       <v-col cols="12" md="6">
-        <v-card @click="router.push('/recipes/add-prepared')" data-testid="choice-prepared">
+        <v-card link hover @click="router.replace('/recipes/add-prepared')" data-testid="choice-prepared">
           <v-card-text>
             <div class="d-flex align-center ga-2">
               <v-icon size="x-large" icon="mdi-chef-hat"></v-icon>
