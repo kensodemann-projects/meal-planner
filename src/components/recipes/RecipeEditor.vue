@@ -55,7 +55,7 @@
           ></v-number-input>
         </v-col>
 
-        <v-col cols="12" md="6">
+        <v-col v-if="kind === 'homemade'" cols="12" md="6">
           <SelectAutocomplete
             label="Difficulty"
             v-model="difficulty"
@@ -66,7 +66,7 @@
         </v-col>
       </v-row>
 
-      <v-row>
+      <v-row v-if="kind === 'homemade'">
         <v-col cols="12" md="6">
           <v-number-input
             label="Preparation Time (minutes)"
@@ -86,35 +86,37 @@
       </v-row>
     </v-container>
 
-    <SortableListEditor
-      v-model="ingredients"
-      title="Ingredients"
-      :validate-item="isValidIngredient"
-      :create-item="createIngredient"
-      @list-modified="listChanged = true"
-      add-prompt="Add Ingredient"
-      test-id-prefix="ingredient"
-      list-class="ingredient-list editable-list"
-    >
-      <template #item="{ item, onAddNext, onChange, onDelete }">
-        <IngredientEditorRow :ingredient="item" @add-next="onAddNext" @changed="onChange" @delete="onDelete" />
-      </template>
-    </SortableListEditor>
+    <div v-if="kind === 'homemade'">
+      <SortableListEditor
+        v-model="ingredients"
+        title="Ingredients"
+        :validate-item="isValidIngredient"
+        :create-item="createIngredient"
+        @list-modified="listChanged = true"
+        add-prompt="Add Ingredient"
+        test-id-prefix="ingredient"
+        list-class="ingredient-list editable-list"
+      >
+        <template #item="{ item, onAddNext, onChange, onDelete }">
+          <IngredientEditorRow :ingredient="item" @add-next="onAddNext" @changed="onChange" @delete="onDelete" />
+        </template>
+      </SortableListEditor>
 
-    <SortableListEditor
-      v-model="steps"
-      title="Steps"
-      :validate-item="isValidStep"
-      :create-item="createStep"
-      @list-modified="listChanged = true"
-      add-prompt="Add Step"
-      test-id-prefix="step"
-      list-class="step-list editable-list"
-    >
-      <template #item="{ item, onAddNext, onChange, onDelete }">
-        <StepEditorRow :step="item" @add-next="onAddNext" @changed="onChange" @delete="onDelete" />
-      </template>
-    </SortableListEditor>
+      <SortableListEditor
+        v-model="steps"
+        title="Steps"
+        :validate-item="isValidStep"
+        :create-item="createStep"
+        @list-modified="listChanged = true"
+        add-prompt="Add Step"
+        test-id-prefix="step"
+        list-class="step-list editable-list"
+      >
+        <template #item="{ item, onAddNext, onChange, onDelete }">
+          <StepEditorRow :step="item" @add-next="onAddNext" @changed="onChange" @delete="onDelete" />
+        </template>
+      </SortableListEditor>
+    </div>
 
     <div class="d-flex justify-space-between align-center">
       <h2>Nutritional Information Per Serving</h2>
