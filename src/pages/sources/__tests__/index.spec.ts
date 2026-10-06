@@ -113,7 +113,9 @@ describe('Sources List Page', () => {
       (error as Ref<Error | null>).value = new Error('failed to load recipes');
       wrapper = mountPage();
       const items = wrapper.findAllComponents(components.VListItem);
-      expect(items[0].findComponent(components.VIcon).exists()).toBe(false);
+      for (const item of items) {
+        expect(item.findComponent(components.VIcon).exists()).toBe(false);
+      }
     });
 
     const unusedSourceIndex = TEST_SOURCES.findIndex(
