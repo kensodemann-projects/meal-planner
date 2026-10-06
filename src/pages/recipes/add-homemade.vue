@@ -1,5 +1,5 @@
 <template>
-  <RecipeEditor @cancel="router.replace('/recipes')" @save="saveRecipe" />
+  <RecipeEditor @cancel="router.replace('/recipes/add')" @save="saveRecipe" />
 </template>
 
 <script setup lang="ts">

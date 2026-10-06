@@ -49,13 +49,13 @@ describe('Recipe Add Prepared Page', () => {
       expect(addRecipe).not.toHaveBeenCalled();
     });
 
-    it('navigates to the recipe list page', async () => {
+    it('navigates to the add recipe page', async () => {
       const { replace } = useRouter();
       wrapper = mountPage();
       const editor = wrapper.findComponent(RecipeEditor);
       editor.vm.$emit('cancel');
       await flushPromises();
-      expect(replace).toHaveBeenCalledExactlyOnceWith('/recipes');
+      expect(replace).toHaveBeenCalledExactlyOnceWith('/recipes/add');
     });
   });
 
