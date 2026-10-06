@@ -3,7 +3,15 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12" md="6">
-        <v-card link hover @click="router.replace('/recipes/add-homemade')" data-testid="choice-homemade">
+        <v-card
+          link
+          hover
+          role="button"
+          tabindex="0"
+          data-testid="choice-homemade"
+          @click="chooseRecipeType('/recipes/add-homemade')"
+          @keydown="onChoiceKeydown('/recipes/add-homemade', $event)"
+        >
           <v-card-text>
             <div class="d-flex align-center ga-2">
               <v-icon size="x-large" icon="mdi-gas-burner"></v-icon>
@@ -16,7 +24,15 @@
         </v-card>
       </v-col>
       <v-col cols="12" md="6">
-        <v-card link hover @click="router.replace('/recipes/add-prepared')" data-testid="choice-prepared">
+        <v-card
+          link
+          hover
+          role="button"
+          tabindex="0"
+          data-testid="choice-prepared"
+          @click="chooseRecipeType('/recipes/add-prepared')"
+          @keydown="onChoiceKeydown('/recipes/add-prepared', $event)"
+        >
           <v-card-text>
             <div class="d-flex align-center ga-2">
               <v-icon size="x-large" icon="mdi-chef-hat"></v-icon>
@@ -42,4 +58,14 @@
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+
+const chooseRecipeType = (path: string) => {
+  router.replace(path);
+};
+
+const onChoiceKeydown = (path: string, event: KeyboardEvent) => {
+  if (event.key !== 'Enter' && event.key !== ' ') return;
+  event.preventDefault();
+  chooseRecipeType(path);
+};
 </script>

@@ -35,6 +35,18 @@ describe('Recipe Add Page', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
+  describe('recipe type cards', () => {
+    it('exposes each choice as a keyboard button', () => {
+      wrapper = mountPage();
+
+      for (const testId of ['choice-homemade', 'choice-prepared']) {
+        const card = wrapper.find(`[data-testid="${testId}"]`);
+        expect(card.attributes('role')).toBe('button');
+        expect(card.attributes('tabindex')).toBe('0');
+      }
+    });
+  });
+
   describe('when a recipe type card is clicked', () => {
     it('navigates to the homemade recipe page', async () => {
       const { replace } = useRouter();
@@ -48,6 +60,65 @@ describe('Recipe Add Page', () => {
       wrapper = mountPage();
       await wrapper.findComponent('[data-testid="choice-prepared"]').trigger('click');
       expect(replace).toHaveBeenCalledExactlyOnceWith('/recipes/add-prepared');
+    });
+  });
+
+  describe('when a recipe type card is activated from the keyboard', () => {
+    it('navigates to the homemade recipe page when Enter is pressed', async () => {
+      const { replace } = useRouter();
+      wrapper = mountPage();
+      await wrapper.findComponent('[data-testid="choice-homemade"]').trigger('keydown', { key: 'Enter' });
+      expect(replace).toHaveBeenCalledExactlyOnceWith('/recipes/add-homemade');
+    });
+
+    it('navigates to the prepared recipe page when Enter is pressed', async () => {
+      const { replace } = useRouter();
+      wrapper = mountPage();
+      await wrapper.findComponent('[data-testid="choice-prepared"]').trigger('keydown', { key: 'Enter' });
+      expect(replace).toHaveBeenCalledExactlyOnceWith('/recipes/add-prepared');
+    });
+
+    it('navigates to the homemade recipe page and prevents scrolling when Space is pressed', async () => {
+      const { replace } = useRouter();
+      wrapper = mountPage();
+      const card = wrapper.findComponent('[data-testid="choice-homemade"]');
+      const event = new KeyboardEvent('keydown', {
+        key: ' ',
+        code: 'Space',
+        bubbles: true,
+        cancelable: true,
+      });
+
+      card.element.dispatchEvent(event);
+      await wrapper.vm.$nextTick();
+
+      expect(replace).toHaveBeenCalledExactlyOnceWith('/recipes/add-homemade');
+      expect(event.defaultPrevented).toBe(true);
+    });
+
+    it('navigates to the prepared recipe page and prevents scrolling when Space is pressed', async () => {
+      const { replace } = useRouter();
+      wrapper = mountPage();
+      const card = wrapper.findComponent('[data-testid="choice-prepared"]');
+      const event = new KeyboardEvent('keydown', {
+        key: ' ',
+        code: 'Space',
+        bubbles: true,
+        cancelable: true,
+      });
+
+      card.element.dispatchEvent(event);
+      await wrapper.vm.$nextTick();
+
+      expect(replace).toHaveBeenCalledExactlyOnceWith('/recipes/add-prepared');
+      expect(event.defaultPrevented).toBe(true);
+    });
+
+    it('does not navigate when another key is pressed', async () => {
+      const { replace } = useRouter();
+      wrapper = mountPage();
+      await wrapper.findComponent('[data-testid="choice-homemade"]').trigger('keydown', { key: 'Tab' });
+      expect(replace).not.toHaveBeenCalled();
     });
   });
 
