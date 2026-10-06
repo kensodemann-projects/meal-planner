@@ -39,6 +39,12 @@ describe('Recipe Add Prepared Page', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
+  it('passes prepared as the recipe kind', () => {
+    wrapper = mountPage();
+    const editor = wrapper.findComponent(RecipeEditor);
+    expect(editor.props('kind')).toBe('prepared');
+  });
+
   describe('on cancel', () => {
     it('does not create a new recipe', async () => {
       const { addRecipe } = useRecipesData();

@@ -178,12 +178,22 @@ import { recipeCategories } from '@/data/recipe-categories';
 import { recipeDifficulties } from '@/data/recipe-difficulties';
 import { useRecipesData } from '@/data/recipes';
 import type { Nutrition } from '@/models/nutrition';
-import type { Cuisine, Recipe, RecipeCategory, RecipeDifficulty, RecipeIngredient, RecipeStep } from '@/models/recipe';
+import type {
+  Cuisine,
+  Recipe,
+  RecipeCategory,
+  RecipeDifficulty,
+  RecipeIngredient,
+  RecipeKind,
+  RecipeStep,
+} from '@/models/recipe';
 import { computed, onMounted, ref, shallowRef } from 'vue';
 import type { VTextField } from 'vuetify/components';
 
 const emit = defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'cancel'): void }>();
-const props = defineProps<{ recipe?: Recipe }>();
+const props = withDefaults(defineProps<{ recipe?: Recipe; kind?: RecipeKind }>(), {
+  kind: ({ recipe }) => recipe?.kind || 'homemade',
+});
 
 const { generateNutritionData } = useNutritionGenerator();
 const { recipes } = useRecipesData();
@@ -258,7 +268,7 @@ const isModified = computed((): boolean => {
 const createRecipeFromForm = (): Recipe => ({
   name: name.value.trim(),
   description: description.value.trim() || null,
-  kind: props.recipe?.kind || 'homemade',
+  kind: props.kind,
   sourceId: props.recipe?.sourceId,
   category: category.value!,
   cuisine: cuisine.value!,
