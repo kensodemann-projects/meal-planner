@@ -31,11 +31,13 @@ describe('Sources List Page', () => {
     (useRouter as Mock).mockReturnValue({
       push: vi.fn(),
     });
-    const { recipes } = useRecipesData();
-    const { loading, sources } = useSourcesData();
+    const { loading: recipesLoading, error: recipesError, recipes } = useRecipesData();
+    const { loading: sourcesLoading, sources } = useSourcesData();
     (recipes.value as Recipe[]) = TEST_RECIPES;
+    (recipesError as Ref<Error | null>).value = null;
+    (recipesLoading as Ref<boolean>).value = false;
     (sources.value as Source[]) = TEST_SOURCES;
-    (loading as Ref<boolean>).value = false;
+    (sourcesLoading as Ref<boolean>).value = false;
   });
 
   afterEach(() => {
@@ -58,6 +60,14 @@ describe('Sources List Page', () => {
 
   it('shows a loading indicator while sources are being fetched', () => {
     const { loading } = useSourcesData();
+    (loading as Ref<boolean>).value = true;
+    wrapper = mountPage();
+    expect(wrapper.findComponent(components.VProgressCircular).exists()).toBe(true);
+    expect(wrapper.findComponent(components.VList).exists()).toBe(false);
+  });
+
+  it('shows a loading indicator while recipes are being fetched', () => {
+    const { loading } = useRecipesData();
     (loading as Ref<boolean>).value = true;
     wrapper = mountPage();
     expect(wrapper.findComponent(components.VProgressCircular).exists()).toBe(true);
@@ -96,6 +106,14 @@ describe('Sources List Page', () => {
           TEST_SOURCES[i].id !== GENERIC_RESTAURANT_SOURCE_ID,
         );
       }
+    });
+
+    it('does not render the delete button if recipes fail to load', () => {
+      const { error } = useRecipesData();
+      (error as Ref<Error | null>).value = new Error('failed to load recipes');
+      wrapper = mountPage();
+      const items = wrapper.findAllComponents(components.VListItem);
+      expect(items[0].findComponent(components.VIcon).exists()).toBe(false);
     });
 
     const unusedSourceIndex = TEST_SOURCES.findIndex(
@@ -205,6 +223,22 @@ describe('Sources List Page', () => {
       const addButton = wrapper.findComponent(components.VFab);
       addButton.trigger('click');
       expect(router.push).toHaveBeenCalledExactlyOnceWith('/sources/add');
+    });
+  });
+
+  describe('recipes error message', () => {
+    const message = 'Recipes have failed to load, deletion of sources is disabled';
+
+    it('is displayed when recipes fail to load', () => {
+      const { error } = useRecipesData();
+      (error as Ref<Error | null>).value = new Error('failed to load recipes');
+      wrapper = mountPage();
+      expect(wrapper.text()).toContain(message);
+    });
+
+    it('is not displayed when there is no recipes error', () => {
+      wrapper = mountPage();
+      expect(wrapper.text()).not.toContain(message);
     });
   });
 

@@ -1,14 +1,18 @@
 <template>
   <h1 class="text-center">Sources for Recipes</h1>
 
-  <v-progress-circular v-if="loading" indeterminate />
+  <div class="text-center text-error" v-if="recipesError">
+    Recipes have failed to load, deletion of sources is disabled
+  </div>
+
+  <v-progress-circular v-if="sourcesLoading || recipesLoading" indeterminate />
 
   <h2 v-else-if="sources.length === 0">No sources found</h2>
 
   <v-list v-else>
     <v-list-item v-for="source in sources" :key="source.id" @click="router.push(`/sources/${source.id}/update`)"
       >{{ source.name }}
-      <template v-if="source.id !== GENERIC_RESTAURANT_SOURCE_ID" #append>
+      <template v-if="source.id !== GENERIC_RESTAURANT_SOURCE_ID && !recipesError" #append>
         <v-icon icon="mdi-close" @click.stop="confirmRemove(source)" />
       </template>
     </v-list-item>
@@ -50,8 +54,8 @@ import type { Source } from '@/models/source';
 import { ref, shallowRef } from 'vue';
 import { useRouter } from 'vue-router';
 
-const { loading, sources, removeSource } = useSourcesData();
-const { recipes } = useRecipesData();
+const { loading: sourcesLoading, sources, removeSource } = useSourcesData();
+const { loading: recipesLoading, error: recipesError, recipes } = useRecipesData();
 const router = useRouter();
 const showConfirmDialog = shallowRef(false);
 const selectedSource = ref<Source | null>(null);
