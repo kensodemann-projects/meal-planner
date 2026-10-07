@@ -21,6 +21,7 @@ import StepEditorRow from '../StepEditorRow.vue';
 
 vi.mock('@/core/nutrition-generator');
 vi.mock('@/data/recipes');
+vi.mock('@/data/sources');
 
 const vuetify = createVuetify({
   components,

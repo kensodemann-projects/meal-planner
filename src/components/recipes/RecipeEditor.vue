@@ -55,12 +55,23 @@
           ></v-number-input>
         </v-col>
 
-        <v-col v-if="kind === 'homemade'" cols="12" md="6">
+        <v-col cols="12" md="6">
           <SelectAutocomplete
+            v-if="kind === 'homemade'"
             label="Difficulty"
             v-model="difficulty"
             :items="recipeDifficulties"
             :rules="[validationRules.required]"
+            data-testid="difficulty-input"
+          />
+          <SelectAutocomplete
+            v-else
+            label="Source"
+            v-model="sourceId"
+            :items="sources"
+            :rules="[validationRules.required]"
+            item-title="name"
+            item-value="id"
             data-testid="difficulty-input"
           />
         </v-col>
@@ -137,7 +148,13 @@
 
     <v-container fluid>
       <v-row class="pa-4" justify="end">
-        <CancelButton class="mr-4" @click="$emit('cancel')" />
+        <CancelButton
+          class="mr-4"
+          @click="
+            console.log('cancel', sourceId);
+            $emit('cancel');
+          "
+        />
         <SaveButton class="mr-4" :disabled="!(valid && isModified)" @click="save" />
       </v-row>
     </v-container>
@@ -179,6 +196,7 @@ import { cuisines } from '@/data/cuisines';
 import { recipeCategories } from '@/data/recipe-categories';
 import { recipeDifficulties } from '@/data/recipe-difficulties';
 import { useRecipesData } from '@/data/recipes';
+import { useSourcesData } from '@/data/sources';
 import type { Nutrition } from '@/models/nutrition';
 import type {
   Cuisine,
@@ -189,7 +207,7 @@ import type {
   RecipeKind,
   RecipeStep,
 } from '@/models/recipe';
-import { computed, onMounted, ref, shallowRef } from 'vue';
+import { computed, onMounted, ref, shallowRef, withDefaults } from 'vue';
 import type { VTextField } from 'vuetify/components';
 
 const emit = defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'cancel'): void }>();
@@ -199,8 +217,10 @@ const props = withDefaults(defineProps<{ recipe?: Recipe; kind?: RecipeKind }>()
 
 const { generateNutritionData } = useNutritionGenerator();
 const { recipes } = useRecipesData();
+const { sources } = useSourcesData();
 
 const valid = shallowRef(false);
+const sourceId = shallowRef<string | null>(props.recipe?.sourceId ?? null);
 const name = shallowRef<string>(props.recipe?.name || '');
 const description = shallowRef<string>(props.recipe?.description || '');
 const category = shallowRef<RecipeCategory | null>(props.recipe?.category ?? null);

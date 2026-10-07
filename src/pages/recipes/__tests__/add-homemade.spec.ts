@@ -11,6 +11,7 @@ import AddHomemadePage from '../add-homemade.vue';
 
 vi.mock('vue-router');
 vi.mock('@/data/recipes');
+vi.mock('@/data/sources');
 vi.mock('@/core/nutrition-generator');
 
 const vuetify = createVuetify({

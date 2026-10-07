@@ -11,6 +11,7 @@ import AddPreparedPage from '../add-prepared.vue';
 
 vi.mock('vue-router');
 vi.mock('@/data/recipes');
+vi.mock('@/data/sources');
 vi.mock('@/core/nutrition-generator');
 
 const vuetify = createVuetify({
