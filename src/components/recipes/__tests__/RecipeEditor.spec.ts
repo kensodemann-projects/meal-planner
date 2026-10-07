@@ -1,7 +1,9 @@
 import { findUnitOfMeasure } from '@/core/find-unit-of-measure';
 import { useNutritionGenerator } from '@/core/nutrition-generator';
-import { TEST_RECIPES } from '@/data/__tests__/test-data';
+import { TEST_PREPARED_RECIPE, TEST_RECIPES, TEST_SOURCES } from '@/data/__tests__/test-data';
 import { useRecipesData } from '@/data/recipes';
+import { useSourcesData } from '@/data/sources';
+import type { Source } from '@/models/source';
 import type { Recipe } from '@/models/recipe';
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
@@ -96,6 +98,24 @@ const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
   cookTimeMinutes: wrapper.findComponent('[data-testid="cook-time-input"]').find('input'),
 });
 
+const autocompleteLabeled = (wrapper: ReturnType<typeof mountComponent>, label: string) =>
+  wrapper.findAllComponents(components.VAutocomplete).find((field) => field.props('label') === label);
+
+const expectHomemadeFields = (wrapper: ReturnType<typeof mountComponent>) => {
+  expect(wrapper.find('[data-testid="name-input"]').exists()).toBe(true);
+  expect(wrapper.find('[data-testid="description-input"]').exists()).toBe(true);
+  expect(wrapper.find('[data-testid="category-input"]').exists()).toBe(true);
+  expect(wrapper.find('[data-testid="cuisine-input"]').exists()).toBe(true);
+  expect(wrapper.find('[data-testid="servings-input"]').exists()).toBe(true);
+  expect(autocompleteLabeled(wrapper, 'Difficulty')).toBeDefined();
+  expect(wrapper.find('[data-testid="prep-time-input"]').exists()).toBe(true);
+  expect(wrapper.find('[data-testid="cook-time-input"]').exists()).toBe(true);
+  expect(wrapper.find('[data-testid="ingredient-list-grid"]').exists()).toBe(true);
+  expect(wrapper.find('[data-testid="step-list-grid"]').exists()).toBe(true);
+  expect(wrapper.find('[data-testid="calories-input"]').exists()).toBe(true);
+  expect(autocompleteLabeled(wrapper, 'Source')).toBeUndefined();
+};
+
 const getNutritionInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
   calories: wrapper.findComponent('[data-testid="calories-input"]').find('input'),
   sodium: wrapper.findComponent('[data-testid="sodium-input"]').find('input'),
@@ -134,6 +154,48 @@ describe('Recipe Editor', () => {
     expect(subheaders[1]!.text()).toBe('Ingredients');
     expect(subheaders[2]!.text()).toBe('Steps');
     expect(subheaders[3]!.text()).toBe('Nutritional Information Per Serving');
+  });
+
+  describe('kind', () => {
+    it('shows the homemade fields and hides source when kind is homemade', () => {
+      wrapper = mountComponent({ kind: 'homemade' });
+      expectHomemadeFields(wrapper);
+    });
+
+    it('hides the homemade-only fields and shows source when kind is prepared', () => {
+      wrapper = mountComponent({ kind: 'prepared' });
+
+      expect(wrapper.find('[data-testid="name-input"]').exists()).toBe(true);
+      expect(wrapper.find('[data-testid="description-input"]').exists()).toBe(true);
+      expect(wrapper.find('[data-testid="category-input"]').exists()).toBe(true);
+      expect(wrapper.find('[data-testid="cuisine-input"]').exists()).toBe(true);
+      expect(wrapper.find('[data-testid="servings-input"]').exists()).toBe(true);
+      expect(wrapper.find('[data-testid="calories-input"]').exists()).toBe(true);
+      expect(autocompleteLabeled(wrapper, 'Source')).toBeDefined();
+
+      expect(autocompleteLabeled(wrapper, 'Difficulty')).toBeUndefined();
+      expect(wrapper.find('[data-testid="prep-time-input"]').exists()).toBe(false);
+      expect(wrapper.find('[data-testid="cook-time-input"]').exists()).toBe(false);
+      expect(wrapper.find('[data-testid="ingredient-list-grid"]').exists()).toBe(false);
+      expect(wrapper.find('[data-testid="step-list-grid"]').exists()).toBe(false);
+    });
+
+    it('behaves like homemade when kind is omitted', () => {
+      wrapper = mountComponent();
+      expectHomemadeFields(wrapper);
+    });
+  });
+
+  describe('updating a prepared recipe', () => {
+    it('initializes source from the recipe', () => {
+      const { sources } = useSourcesData();
+      (sources as Ref<Source[]>).value = TEST_SOURCES;
+      wrapper = mountComponent({ recipe: TEST_PREPARED_RECIPE });
+
+      const source = autocompleteLabeled(wrapper, 'Source');
+      expect(source).toBeDefined();
+      expect(source!.props('modelValue')).toBe(TEST_PREPARED_RECIPE.sourceId);
+    });
   });
 
   describe('name', () => {
