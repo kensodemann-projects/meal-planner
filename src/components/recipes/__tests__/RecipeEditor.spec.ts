@@ -98,6 +98,19 @@ const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
   cookTimeMinutes: wrapper.findComponent('[data-testid="cook-time-input"]').find('input'),
 });
 
+const getPreparedInputs = (wrapper: ReturnType<typeof mountComponent>) => {
+  const source = wrapper.findComponent('[data-testid="difficulty-input"]') as VueWrapper<components.VAutocomplete>;
+  if (!source.exists() || source.props('label') !== 'Source') throw new Error('Source field was not rendered');
+  return {
+    name: wrapper.findComponent('[data-testid="name-input"]').find('input'),
+    description: wrapper.findComponent('[data-testid="description-input"]').find('textarea'),
+    category: wrapper.findComponent('[data-testid="category-input"]') as VueWrapper<components.VAutocomplete>,
+    cuisine: wrapper.findComponent('[data-testid="cuisine-input"]') as VueWrapper<components.VAutocomplete>,
+    source,
+    servings: wrapper.findComponent('[data-testid="servings-input"]').find('input'),
+  };
+};
+
 const autocompleteLabeled = (wrapper: ReturnType<typeof mountComponent>, label: string) =>
   wrapper.findAllComponents(components.VAutocomplete).find((field) => field.props('label') === label);
 
@@ -183,18 +196,6 @@ describe('Recipe Editor', () => {
     it('behaves like homemade when kind is omitted', () => {
       wrapper = mountComponent();
       expectHomemadeFields(wrapper);
-    });
-  });
-
-  describe('updating a prepared recipe', () => {
-    it('initializes source from the recipe', () => {
-      const { sources } = useSourcesData();
-      (sources as Ref<Source[]>).value = TEST_SOURCES;
-      wrapper = mountComponent({ recipe: TEST_PREPARED_RECIPE });
-
-      const source = autocompleteLabeled(wrapper, 'Source');
-      expect(source).toBeDefined();
-      expect(source!.props('modelValue')).toBe(TEST_PREPARED_RECIPE.sourceId);
     });
   });
 
@@ -569,597 +570,902 @@ describe('Recipe Editor', () => {
   });
 
   describe('for create', () => {
-    beforeEach(() => {
-      wrapper = mountComponent();
-    });
-
-    it('initializes the inputs with blank values', () => {
-      const inputs = getInputs(wrapper);
-      const nutritionInputs = getNutritionInputs(wrapper);
-      expect(inputs.name.element.value).toBe('');
-      expect(inputs.description.element.value).toBe('');
-      expect(inputs.category.props('modelValue')).toBeNull();
-      expect(inputs.cuisine.props('modelValue')).toBeNull();
-      expect(inputs.difficulty.props('modelValue')).toBeNull();
-      expect(inputs.servings.element.value).toBe('');
-      expect(inputs.prepTimeMinutes.element.value).toBe('');
-      expect(inputs.cookTimeMinutes.element.value).toBe('');
-      expect(nutritionInputs.calories.element.value).toBe('');
-      expect(nutritionInputs.sodium.element.value).toBe('0');
-      expect(nutritionInputs.sugar.element.value).toBe('0');
-      expect(nutritionInputs.carbs.element.value).toBe('0');
-      expect(nutritionInputs.fat.element.value).toBe('0');
-      expect(nutritionInputs.protein.element.value).toBe('0');
-    });
-
-    describe('the ingredients list', () => {
-      it('is empty', () => {
-        const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
-        const ingredients = listArea.findAllComponents(IngredientEditorRow);
-        expect(ingredients.length).toBe(0);
+    describe('of a homemade recipe', () => {
+      beforeEach(() => {
+        wrapper = mountComponent();
       });
 
-      describe('add button', () => {
-        it('is enabled', () => {
-          const button = wrapper.find('[data-testid="add-ingredient-button"]');
-          expect(button.attributes('disabled')).toBeUndefined();
-        });
-
-        describe('on click', () => {
-          it('adds a blank ingredient', async () => {
-            const button = wrapper.find('[data-testid="add-ingredient-button"]');
-            const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
-            await button.trigger('click');
-            const ingredients = listArea.findAllComponents(IngredientEditorRow);
-            expect(ingredients.length).toBe(1);
-          });
-
-          it('becomes disabled', async () => {
-            const button = wrapper.find('[data-testid="add-ingredient-button"]');
-            expect(button.attributes('disabled')).toBeUndefined();
-            await button.trigger('click');
-            expect(button.attributes('disabled')).toBeDefined();
-          });
-
-          it('remains disabled until the blank ingredient is filled in', async () => {
-            const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
-            const button = wrapper.find('[data-testid="add-ingredient-button"]');
-            await button.trigger('click');
-            expect(button.attributes('disabled')).toBeDefined();
-            const ingredients = listArea.findAllComponents(IngredientEditorRow);
-            await ingredients[0]?.vm.$emit('changed', {
-              id: 'bd3543e0-68d4-4ba0-a1a6-29548d46464b',
-              units: 1,
-              unitOfMeasure: findUnitOfMeasure('lb'),
-              name: 'fudge',
-            });
-            expect(button.attributes('disabled')).toBeUndefined();
-          });
-        });
+      it('initializes the inputs with blank values', () => {
+        const inputs = getInputs(wrapper);
+        const nutritionInputs = getNutritionInputs(wrapper);
+        expect(inputs.name.element.value).toBe('');
+        expect(inputs.description.element.value).toBe('');
+        expect(inputs.category.props('modelValue')).toBeNull();
+        expect(inputs.cuisine.props('modelValue')).toBeNull();
+        expect(inputs.difficulty.props('modelValue')).toBeNull();
+        expect(inputs.servings.element.value).toBe('');
+        expect(inputs.prepTimeMinutes.element.value).toBe('');
+        expect(inputs.cookTimeMinutes.element.value).toBe('');
+        expect(nutritionInputs.calories.element.value).toBe('');
+        expect(nutritionInputs.sodium.element.value).toBe('0');
+        expect(nutritionInputs.sugar.element.value).toBe('0');
+        expect(nutritionInputs.carbs.element.value).toBe('0');
+        expect(nutritionInputs.fat.element.value).toBe('0');
+        expect(nutritionInputs.protein.element.value).toBe('0');
       });
 
-      describe('deleting an ingredient', () => {
-        it('removes the ingredient from the list', async () => {
-          const button = wrapper.find('[data-testid="add-ingredient-button"]');
+      describe('the ingredients list', () => {
+        it('is empty', () => {
           const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
-          await button.trigger('click');
-          let ingredients = listArea.findAllComponents(IngredientEditorRow);
-          expect(ingredients.length).toBe(1);
-          await ingredients[0]?.vm.$emit('delete');
-          ingredients = listArea.findAllComponents(IngredientEditorRow);
+          const ingredients = listArea.findAllComponents(IngredientEditorRow);
           expect(ingredients.length).toBe(0);
         });
-      });
-    });
 
-    describe('the steps list', () => {
-      it('is empty', () => {
-        const listArea = wrapper.find('[data-testid="step-list-grid"]');
-        const steps = listArea.findAllComponents(StepEditorRow);
-        expect(steps.length).toBe(0);
-      });
-
-      describe('add button', () => {
-        it('is enabled', () => {
-          const button = wrapper.find('[data-testid="add-step-button"]');
-          expect(button.attributes('disabled')).toBeUndefined();
-        });
-
-        describe('on click', () => {
-          it('adds a blank step', async () => {
-            const button = wrapper.find('[data-testid="add-step-button"]');
-            const listArea = wrapper.find('[data-testid="step-list-grid"]');
-            await button.trigger('click');
-            const steps = listArea.findAllComponents(StepEditorRow);
-            expect(steps.length).toBe(1);
-          });
-
-          it('becomes disabled', async () => {
-            const button = wrapper.find('[data-testid="add-step-button"]');
+        describe('add button', () => {
+          it('is enabled', () => {
+            const button = wrapper.find('[data-testid="add-ingredient-button"]');
             expect(button.attributes('disabled')).toBeUndefined();
-            await button.trigger('click');
-            expect(button.attributes('disabled')).toBeDefined();
           });
 
-          it('remains disabled until the blank step is filled in', async () => {
-            const listArea = wrapper.find('[data-testid="step-list-grid"]');
-            const button = wrapper.find('[data-testid="add-step-button"]');
-            await button.trigger('click');
-            expect(button.attributes('disabled')).toBeDefined();
-            const steps = listArea.findAllComponents(StepEditorRow);
-            await steps[0]?.vm.$emit('changed', {
-              id: 'bd3543e0-68d4-4ba0-a1a6-29548d46464b',
-              instruction: 'Preheat oven to 375°F (190°C).',
+          describe('on click', () => {
+            it('adds a blank ingredient', async () => {
+              const button = wrapper.find('[data-testid="add-ingredient-button"]');
+              const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
+              await button.trigger('click');
+              const ingredients = listArea.findAllComponents(IngredientEditorRow);
+              expect(ingredients.length).toBe(1);
             });
-            expect(button.attributes('disabled')).toBeUndefined();
+
+            it('becomes disabled', async () => {
+              const button = wrapper.find('[data-testid="add-ingredient-button"]');
+              expect(button.attributes('disabled')).toBeUndefined();
+              await button.trigger('click');
+              expect(button.attributes('disabled')).toBeDefined();
+            });
+
+            it('remains disabled until the blank ingredient is filled in', async () => {
+              const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
+              const button = wrapper.find('[data-testid="add-ingredient-button"]');
+              await button.trigger('click');
+              expect(button.attributes('disabled')).toBeDefined();
+              const ingredients = listArea.findAllComponents(IngredientEditorRow);
+              await ingredients[0]?.vm.$emit('changed', {
+                id: 'bd3543e0-68d4-4ba0-a1a6-29548d46464b',
+                units: 1,
+                unitOfMeasure: findUnitOfMeasure('lb'),
+                name: 'fudge',
+              });
+              expect(button.attributes('disabled')).toBeUndefined();
+            });
+          });
+        });
+
+        describe('deleting an ingredient', () => {
+          it('removes the ingredient from the list', async () => {
+            const button = wrapper.find('[data-testid="add-ingredient-button"]');
+            const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
+            await button.trigger('click');
+            let ingredients = listArea.findAllComponents(IngredientEditorRow);
+            expect(ingredients.length).toBe(1);
+            await ingredients[0]?.vm.$emit('delete');
+            ingredients = listArea.findAllComponents(IngredientEditorRow);
+            expect(ingredients.length).toBe(0);
           });
         });
       });
 
-      describe('deleting a step', () => {
-        it('removes the step from the list', async () => {
-          const button = wrapper.find('[data-testid="add-step-button"]');
+      describe('the steps list', () => {
+        it('is empty', () => {
           const listArea = wrapper.find('[data-testid="step-list-grid"]');
-          await button.trigger('click');
-          let steps = listArea.findAllComponents(StepEditorRow);
-          expect(steps.length).toBe(1);
-          await steps[0]?.vm.$emit('delete');
-          steps = listArea.findAllComponents(StepEditorRow);
+          const steps = listArea.findAllComponents(StepEditorRow);
           expect(steps.length).toBe(0);
         });
+
+        describe('add button', () => {
+          it('is enabled', () => {
+            const button = wrapper.find('[data-testid="add-step-button"]');
+            expect(button.attributes('disabled')).toBeUndefined();
+          });
+
+          describe('on click', () => {
+            it('adds a blank step', async () => {
+              const button = wrapper.find('[data-testid="add-step-button"]');
+              const listArea = wrapper.find('[data-testid="step-list-grid"]');
+              await button.trigger('click');
+              const steps = listArea.findAllComponents(StepEditorRow);
+              expect(steps.length).toBe(1);
+            });
+
+            it('becomes disabled', async () => {
+              const button = wrapper.find('[data-testid="add-step-button"]');
+              expect(button.attributes('disabled')).toBeUndefined();
+              await button.trigger('click');
+              expect(button.attributes('disabled')).toBeDefined();
+            });
+
+            it('remains disabled until the blank step is filled in', async () => {
+              const listArea = wrapper.find('[data-testid="step-list-grid"]');
+              const button = wrapper.find('[data-testid="add-step-button"]');
+              await button.trigger('click');
+              expect(button.attributes('disabled')).toBeDefined();
+              const steps = listArea.findAllComponents(StepEditorRow);
+              await steps[0]?.vm.$emit('changed', {
+                id: 'bd3543e0-68d4-4ba0-a1a6-29548d46464b',
+                instruction: 'Preheat oven to 375°F (190°C).',
+              });
+              expect(button.attributes('disabled')).toBeUndefined();
+            });
+          });
+        });
+
+        describe('deleting a step', () => {
+          it('removes the step from the list', async () => {
+            const button = wrapper.find('[data-testid="add-step-button"]');
+            const listArea = wrapper.find('[data-testid="step-list-grid"]');
+            await button.trigger('click');
+            let steps = listArea.findAllComponents(StepEditorRow);
+            expect(steps.length).toBe(1);
+            await steps[0]?.vm.$emit('delete');
+            steps = listArea.findAllComponents(StepEditorRow);
+            expect(steps.length).toBe(0);
+          });
+        });
+      });
+
+      describe('the save button', () => {
+        it('begins disabled', () => {
+          const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('emits the description if entered', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await inputs.category.setValue('Dessert');
+          await inputs.cuisine.setValue('American');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.difficulty.setValue('Easy');
+          await inputs.name.setValue('Apple Pie');
+          await inputs.servings.setValue('2');
+          await inputs.prepTimeMinutes.setValue('30');
+          await inputs.cookTimeMinutes.setValue('45');
+          await nutritionInputs.calories.setValue('325');
+          await inputs.description.setValue('  A delicious apple pie recipe.   ');
+          await saveButton.trigger('click');
+          expect(wrapper.emitted('save')).toBeTruthy();
+          expect(wrapper.emitted('save')).toHaveLength(1);
+          const emittedData = wrapper.emitted('save')?.[0]?.[0] as Recipe;
+          expect(emittedData.description).toBe('A delicious apple pie recipe.');
+        });
+
+        it('is disabled until all required fields are filled in', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await inputs.category.setValue('Dessert');
+          await inputs.cuisine.setValue('American');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.difficulty.setValue('Easy');
+          await inputs.name.setValue('Apple Pie');
+          await inputs.servings.setValue('2');
+          await inputs.prepTimeMinutes.setValue('30');
+          await inputs.cookTimeMinutes.setValue('45');
+          await nutritionInputs.calories.setValue('325');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is disabled if an invalid ingredient exists in the ingredients list', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await inputs.cuisine.setValue('American');
+          await inputs.category.setValue('Dessert');
+          await inputs.difficulty.setValue('Easy');
+          await inputs.name.setValue('Apple Pie');
+          await inputs.servings.setValue('2');
+          await inputs.prepTimeMinutes.setValue('30');
+          await inputs.cookTimeMinutes.setValue('45');
+          await nutritionInputs.calories.setValue('325');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          const button = wrapper.find('[data-testid="add-ingredient-button"]');
+          await button.trigger('click');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('is disabled if an invalid step exists in the steps list', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await inputs.category.setValue('Dessert');
+          await inputs.cuisine.setValue('American');
+          await inputs.difficulty.setValue('Easy');
+          await inputs.name.setValue('Apple Pie');
+          await inputs.servings.setValue('2');
+          await inputs.prepTimeMinutes.setValue('30');
+          await inputs.cookTimeMinutes.setValue('45');
+          await nutritionInputs.calories.setValue('325');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          const button = wrapper.find('[data-testid="add-step-button"]');
+          await button.trigger('click');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('emits the entered data on click', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await inputs.category.setValue('Dessert');
+          await inputs.cuisine.setValue('American');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.difficulty.setValue('Easy');
+          await inputs.name.setValue(' Apple Pie   ');
+          await inputs.servings.setValue('2');
+          await inputs.prepTimeMinutes.setValue('30');
+          await inputs.cookTimeMinutes.setValue('45');
+          await nutritionInputs.calories.setValue('325');
+          await saveButton.trigger('click');
+          expect(wrapper.emitted('save')).toBeTruthy();
+          expect(wrapper.emitted('save')).toHaveLength(1);
+          expect(wrapper.emitted('save')?.[0]).toEqual([
+            {
+              name: 'Apple Pie',
+              description: null,
+              kind: 'homemade',
+              category: 'Dessert',
+              cuisine: 'American',
+              difficulty: 'Easy',
+              servings: 2,
+              prepTimeMinutes: 30,
+              cookTimeMinutes: 45,
+              calories: 325,
+              sodium: 0,
+              sugar: 0,
+              carbs: 0,
+              fat: 0,
+              protein: 0,
+              ingredients: [],
+              steps: [],
+            },
+          ]);
+        });
       });
     });
 
-    describe('the save button', () => {
-      it('begins disabled', () => {
-        const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
-        expect(saveButton.attributes('disabled')).toBeDefined();
+    describe('of a prepared recipe', () => {
+      const sourceId = 'fiie002934009ser';
+
+      beforeEach(() => {
+        const { sources } = useSourcesData();
+        (sources as Ref<Source[]>).value = TEST_SOURCES;
+        wrapper = mountComponent({ kind: 'prepared' });
       });
 
-      it('is disabled until all required fields are filled in', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
+      it('initializes the inputs with blank values', () => {
+        const inputs = getPreparedInputs(wrapper);
         const nutritionInputs = getNutritionInputs(wrapper);
-        await inputs.category.setValue('Dessert');
-        await inputs.cuisine.setValue('American');
-        expect(saveButton.attributes('disabled')).toBeDefined();
-        await inputs.difficulty.setValue('Easy');
-        await inputs.name.setValue('Apple Pie');
-        await inputs.servings.setValue('2');
-        await inputs.prepTimeMinutes.setValue('30');
-        await inputs.cookTimeMinutes.setValue('45');
-        await nutritionInputs.calories.setValue('325');
-        expect(saveButton.attributes('disabled')).toBeUndefined();
+        expect(inputs.name.element.value).toBe('');
+        expect(inputs.description.element.value).toBe('');
+        expect(inputs.category.props('modelValue')).toBeNull();
+        expect(inputs.cuisine.props('modelValue')).toBeNull();
+        expect(inputs.source.props('modelValue')).toBeNull();
+        expect(inputs.servings.element.value).toBe('');
+        expect(nutritionInputs.calories.element.value).toBe('');
+        expect(nutritionInputs.sodium.element.value).toBe('0');
+        expect(nutritionInputs.sugar.element.value).toBe('0');
+        expect(nutritionInputs.carbs.element.value).toBe('0');
+        expect(nutritionInputs.fat.element.value).toBe('0');
+        expect(nutritionInputs.protein.element.value).toBe('0');
+        expect(autocompleteLabeled(wrapper, 'Difficulty')).toBeUndefined();
+        expect(wrapper.find('[data-testid="prep-time-input"]').exists()).toBe(false);
+        expect(wrapper.find('[data-testid="cook-time-input"]').exists()).toBe(false);
+        expect(wrapper.find('[data-testid="ingredient-list-grid"]').exists()).toBe(false);
+        expect(wrapper.find('[data-testid="step-list-grid"]').exists()).toBe(false);
       });
 
-      it('is disabled if an invalid ingredient exists in the ingredients list', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
-        const nutritionInputs = getNutritionInputs(wrapper);
-        await inputs.cuisine.setValue('American');
-        await inputs.category.setValue('Dessert');
-        await inputs.difficulty.setValue('Easy');
-        await inputs.name.setValue('Apple Pie');
-        await inputs.servings.setValue('2');
-        await inputs.prepTimeMinutes.setValue('30');
-        await inputs.cookTimeMinutes.setValue('45');
-        await nutritionInputs.calories.setValue('325');
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-        const button = wrapper.find('[data-testid="add-ingredient-button"]');
-        await button.trigger('click');
-        expect(saveButton.attributes('disabled')).toBeDefined();
-      });
+      describe('the save button', () => {
+        it('begins disabled', () => {
+          const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
 
-      it('is disabled if an invalid step exists in the steps list', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
-        const nutritionInputs = getNutritionInputs(wrapper);
-        await inputs.category.setValue('Dessert');
-        await inputs.cuisine.setValue('American');
-        await inputs.difficulty.setValue('Easy');
-        await inputs.name.setValue('Apple Pie');
-        await inputs.servings.setValue('2');
-        await inputs.prepTimeMinutes.setValue('30');
-        await inputs.cookTimeMinutes.setValue('45');
-        await nutritionInputs.calories.setValue('325');
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-        const button = wrapper.find('[data-testid="add-step-button"]');
-        await button.trigger('click');
-        expect(saveButton.attributes('disabled')).toBeDefined();
-      });
+        it('is disabled until all required fields are filled in', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getPreparedInputs(wrapper);
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await inputs.category.setValue('Seafood');
+          await inputs.cuisine.setValue('Japanese');
+          await inputs.name.setValue('Black Cod Bowl');
+          await inputs.servings.setValue('1');
+          await nutritionInputs.calories.setValue('540');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.source.setValue(sourceId);
+          await flushPromises();
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
 
-      it('emits the entered data on click', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
-        const nutritionInputs = getNutritionInputs(wrapper);
-        await inputs.category.setValue('Dessert');
-        await inputs.cuisine.setValue('American');
-        expect(saveButton.attributes('disabled')).toBeDefined();
-        await inputs.difficulty.setValue('Easy');
-        await inputs.name.setValue(' Apple Pie   ');
-        await inputs.servings.setValue('2');
-        await inputs.prepTimeMinutes.setValue('30');
-        await inputs.cookTimeMinutes.setValue('45');
-        await nutritionInputs.calories.setValue('325');
-        await saveButton.trigger('click');
-        expect(wrapper.emitted('save')).toBeTruthy();
-        expect(wrapper.emitted('save')).toHaveLength(1);
-        expect(wrapper.emitted('save')?.[0]).toEqual([
-          {
-            name: 'Apple Pie',
-            description: null,
-            kind: 'homemade',
-            category: 'Dessert',
-            cuisine: 'American',
-            difficulty: 'Easy',
-            servings: 2,
-            prepTimeMinutes: 30,
-            cookTimeMinutes: 45,
-            calories: 325,
-            sodium: 0,
-            sugar: 0,
-            carbs: 0,
-            fat: 0,
-            protein: 0,
-            ingredients: [],
-            steps: [],
-          },
-        ]);
-      });
+        it('emits the description if entered', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getPreparedInputs(wrapper);
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await inputs.category.setValue('Seafood');
+          await inputs.cuisine.setValue('Japanese');
+          await inputs.source.setValue(sourceId);
+          await inputs.name.setValue('Black Cod Bowl');
+          await inputs.servings.setValue('1');
+          await nutritionInputs.calories.setValue('540');
+          await inputs.description.setValue('  Chef-prepared miso cod over forbidden rice.   ');
+          await saveButton.trigger('click');
+          expect(wrapper.emitted('save')).toBeTruthy();
+          expect(wrapper.emitted('save')).toHaveLength(1);
+          const emittedData = wrapper.emitted('save')?.[0]?.[0] as Recipe;
+          expect(emittedData.description).toBe('Chef-prepared miso cod over forbidden rice.');
+        });
 
-      it('emits the entered description if entered', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
-        const nutritionInputs = getNutritionInputs(wrapper);
-        await inputs.category.setValue('Dessert');
-        await inputs.cuisine.setValue('American');
-        expect(saveButton.attributes('disabled')).toBeDefined();
-        await inputs.difficulty.setValue('Easy');
-        await inputs.name.setValue('Apple Pie');
-        await inputs.servings.setValue('2');
-        await inputs.prepTimeMinutes.setValue('30');
-        await inputs.cookTimeMinutes.setValue('45');
-        await nutritionInputs.calories.setValue('325');
-        await inputs.description.setValue('  A delicious apple pie recipe.   ');
-        await saveButton.trigger('click');
-        expect(wrapper.emitted('save')).toBeTruthy();
-        expect(wrapper.emitted('save')).toHaveLength(1);
-        const emittedData = wrapper.emitted('save')?.[0]?.[0] as Recipe;
-        expect(emittedData.description).toBe('A delicious apple pie recipe.');
+        it('emits the entered data on click', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getPreparedInputs(wrapper);
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await inputs.category.setValue('Seafood');
+          await inputs.cuisine.setValue('Japanese');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.source.setValue(sourceId);
+          await inputs.name.setValue('  Black Cod Bowl  ');
+          await inputs.servings.setValue('1');
+          await nutritionInputs.calories.setValue('540');
+          await saveButton.trigger('click');
+          expect(wrapper.emitted('save')).toBeTruthy();
+          expect(wrapper.emitted('save')).toHaveLength(1);
+          expect(wrapper.emitted('save')?.[0]).toEqual([
+            {
+              name: 'Black Cod Bowl',
+              description: null,
+              kind: 'prepared',
+              sourceId,
+              category: 'Seafood',
+              cuisine: 'Japanese',
+              difficulty: 'Easy',
+              servings: 1,
+              prepTimeMinutes: 0,
+              cookTimeMinutes: 0,
+              calories: 540,
+              sodium: 0,
+              sugar: 0,
+              carbs: 0,
+              fat: 0,
+              protein: 0,
+              ingredients: [],
+              steps: [],
+            },
+          ]);
+        });
       });
     });
   });
 
   describe('for update', () => {
-    beforeEach(() => {
-      wrapper = mountComponent({ recipe: BEER_CHEESE });
-    });
-
-    it('initializes the inputs with recipe values', () => {
-      const inputs = getInputs(wrapper);
-      const nutritionInputs = getNutritionInputs(wrapper);
-      expect(inputs.name.element.value).toBe(BEER_CHEESE.name);
-      expect(inputs.category.props('modelValue')).toBe(BEER_CHEESE.category);
-      expect(inputs.cuisine.props('modelValue')).toBe(BEER_CHEESE.cuisine);
-      expect(inputs.difficulty.props('modelValue')).toBe(BEER_CHEESE.difficulty);
-      expect(inputs.servings.element.value).toBe(BEER_CHEESE.servings.toString());
-      expect(inputs.prepTimeMinutes.element.value).toBe(BEER_CHEESE.prepTimeMinutes.toString());
-      expect(inputs.cookTimeMinutes.element.value).toBe(BEER_CHEESE.cookTimeMinutes.toString());
-      expect(nutritionInputs.calories.element.value).toBe(BEER_CHEESE.calories.toString());
-      expect(nutritionInputs.sodium.element.value).toBe(BEER_CHEESE.sodium.toString());
-      expect(nutritionInputs.sugar.element.value).toBe(BEER_CHEESE.sugar.toString());
-      expect(nutritionInputs.carbs.element.value).toBe(BEER_CHEESE.carbs.toString());
-      expect(nutritionInputs.fat.element.value).toBe(BEER_CHEESE.fat.toString());
-      expect(nutritionInputs.protein.element.value).toBe(BEER_CHEESE.protein.toString());
-    });
-
-    describe('the ingredients list', () => {
-      it('contains each ingredient', () => {
-        const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
-        const ingredients = listArea.findAllComponents(IngredientEditorRow);
-        expect(ingredients.length).toBe(BEER_CHEESE.ingredients.length);
+    describe('of a homemade recipe', () => {
+      beforeEach(() => {
+        wrapper = mountComponent({ recipe: BEER_CHEESE });
       });
 
-      describe('add button', () => {
-        it('is enabled', () => {
-          const button = wrapper.find('[data-testid="add-ingredient-button"]');
-          expect(button.attributes('disabled')).toBeUndefined();
-        });
-
-        describe('on click', () => {
-          it('adds a blank ingredient', async () => {
-            const button = wrapper.find('[data-testid="add-ingredient-button"]');
-            const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
-            await button.trigger('click');
-            const ingredients = listArea.findAllComponents(IngredientEditorRow);
-            expect(ingredients.length).toBe(BEER_CHEESE.ingredients.length + 1);
-          });
-
-          it('becomes disabled', async () => {
-            const button = wrapper.find('[data-testid="add-ingredient-button"]');
-            expect(button.attributes('disabled')).toBeUndefined();
-            await button.trigger('click');
-            expect(button.attributes('disabled')).toBeDefined();
-          });
-
-          it('remains disabled until the blank ingredient is filled in', async () => {
-            const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
-            const button = wrapper.find('[data-testid="add-ingredient-button"]');
-            await button.trigger('click');
-            expect(button.attributes('disabled')).toBeDefined();
-            const ingredients = listArea.findAllComponents(IngredientEditorRow);
-            await ingredients[ingredients.length - 1]?.vm.$emit('changed', {
-              id: '0e8e3d4e-396d-42e8-aed6-fc8be1892c9e',
-              units: 1,
-              unitOfMeasure: findUnitOfMeasure('lb'),
-              name: 'fudge',
-            });
-            expect(button.attributes('disabled')).toBeUndefined();
-          });
-        });
+      it('initializes the inputs with recipe values', () => {
+        const inputs = getInputs(wrapper);
+        const nutritionInputs = getNutritionInputs(wrapper);
+        expect(inputs.name.element.value).toBe(BEER_CHEESE.name);
+        expect(inputs.category.props('modelValue')).toBe(BEER_CHEESE.category);
+        expect(inputs.cuisine.props('modelValue')).toBe(BEER_CHEESE.cuisine);
+        expect(inputs.difficulty.props('modelValue')).toBe(BEER_CHEESE.difficulty);
+        expect(inputs.servings.element.value).toBe(BEER_CHEESE.servings.toString());
+        expect(inputs.prepTimeMinutes.element.value).toBe(BEER_CHEESE.prepTimeMinutes.toString());
+        expect(inputs.cookTimeMinutes.element.value).toBe(BEER_CHEESE.cookTimeMinutes.toString());
+        expect(nutritionInputs.calories.element.value).toBe(BEER_CHEESE.calories.toString());
+        expect(nutritionInputs.sodium.element.value).toBe(BEER_CHEESE.sodium.toString());
+        expect(nutritionInputs.sugar.element.value).toBe(BEER_CHEESE.sugar.toString());
+        expect(nutritionInputs.carbs.element.value).toBe(BEER_CHEESE.carbs.toString());
+        expect(nutritionInputs.fat.element.value).toBe(BEER_CHEESE.fat.toString());
+        expect(nutritionInputs.protein.element.value).toBe(BEER_CHEESE.protein.toString());
       });
 
-      describe('deleting an ingredient', () => {
-        it('removes the ingredient from the list', async () => {
+      describe('the ingredients list', () => {
+        it('contains each ingredient', () => {
           const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
-          let ingredients = listArea.findAllComponents(IngredientEditorRow);
-          const originalCount = BEER_CHEESE.ingredients.length;
-          expect(ingredients.length).toBe(originalCount);
-          await ingredients[2]?.vm.$emit('delete');
-          ingredients = listArea.findAllComponents(IngredientEditorRow);
-          expect(ingredients.length).toBe(originalCount - 1);
-        });
-      });
-    });
-
-    describe('the steps list', () => {
-      it('contains each step', () => {
-        const listArea = wrapper.find('[data-testid="step-list-grid"]');
-        const steps = listArea.findAllComponents(StepEditorRow);
-        expect(steps.length).toBe(BEER_CHEESE.steps.length);
-      });
-
-      describe('add button', () => {
-        it('is enabled', () => {
-          const button = wrapper.find('[data-testid="add-step-button"]');
-          expect(button.attributes('disabled')).toBeUndefined();
+          const ingredients = listArea.findAllComponents(IngredientEditorRow);
+          expect(ingredients.length).toBe(BEER_CHEESE.ingredients.length);
         });
 
-        describe('on click', () => {
-          it('adds a blank step', async () => {
-            const button = wrapper.find('[data-testid="add-step-button"]');
-            const listArea = wrapper.find('[data-testid="step-list-grid"]');
-            await button.trigger('click');
-            const steps = listArea.findAllComponents(StepEditorRow);
-            expect(steps.length).toBe(BEER_CHEESE.steps.length + 1);
-          });
-
-          it('becomes disabled', async () => {
-            const button = wrapper.find('[data-testid="add-step-button"]');
+        describe('add button', () => {
+          it('is enabled', () => {
+            const button = wrapper.find('[data-testid="add-ingredient-button"]');
             expect(button.attributes('disabled')).toBeUndefined();
-            await button.trigger('click');
-            expect(button.attributes('disabled')).toBeDefined();
           });
 
-          it('remains disabled until the blank step is filled in', async () => {
-            const listArea = wrapper.find('[data-testid="step-list-grid"]');
-            const button = wrapper.find('[data-testid="add-step-button"]');
-            await button.trigger('click');
-            expect(button.attributes('disabled')).toBeDefined();
-            const steps = listArea.findAllComponents(StepEditorRow);
-            await steps[steps.length - 1]?.vm.$emit('changed', {
-              id: '0e8e3d4e-396d-42e8-aed6-fc8be1892c9e',
-              instruction: 'Mix thoroughly.',
+          describe('on click', () => {
+            it('adds a blank ingredient', async () => {
+              const button = wrapper.find('[data-testid="add-ingredient-button"]');
+              const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
+              await button.trigger('click');
+              const ingredients = listArea.findAllComponents(IngredientEditorRow);
+              expect(ingredients.length).toBe(BEER_CHEESE.ingredients.length + 1);
             });
-            expect(button.attributes('disabled')).toBeUndefined();
+
+            it('becomes disabled', async () => {
+              const button = wrapper.find('[data-testid="add-ingredient-button"]');
+              expect(button.attributes('disabled')).toBeUndefined();
+              await button.trigger('click');
+              expect(button.attributes('disabled')).toBeDefined();
+            });
+
+            it('remains disabled until the blank ingredient is filled in', async () => {
+              const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
+              const button = wrapper.find('[data-testid="add-ingredient-button"]');
+              await button.trigger('click');
+              expect(button.attributes('disabled')).toBeDefined();
+              const ingredients = listArea.findAllComponents(IngredientEditorRow);
+              await ingredients[ingredients.length - 1]?.vm.$emit('changed', {
+                id: '0e8e3d4e-396d-42e8-aed6-fc8be1892c9e',
+                units: 1,
+                unitOfMeasure: findUnitOfMeasure('lb'),
+                name: 'fudge',
+              });
+              expect(button.attributes('disabled')).toBeUndefined();
+            });
+          });
+        });
+
+        describe('deleting an ingredient', () => {
+          it('removes the ingredient from the list', async () => {
+            const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
+            let ingredients = listArea.findAllComponents(IngredientEditorRow);
+            const originalCount = BEER_CHEESE.ingredients.length;
+            expect(ingredients.length).toBe(originalCount);
+            await ingredients[2]?.vm.$emit('delete');
+            ingredients = listArea.findAllComponents(IngredientEditorRow);
+            expect(ingredients.length).toBe(originalCount - 1);
           });
         });
       });
 
-      describe('deleting a step', () => {
-        it('removes the step from the list', async () => {
+      describe('the steps list', () => {
+        it('contains each step', () => {
           const listArea = wrapper.find('[data-testid="step-list-grid"]');
-          let steps = listArea.findAllComponents(StepEditorRow);
-          const originalCount = BEER_CHEESE.steps.length;
-          expect(steps.length).toBe(originalCount);
-          await steps[2]?.vm.$emit('delete');
-          steps = listArea.findAllComponents(StepEditorRow);
-          expect(steps.length).toBe(originalCount - 1);
+          const steps = listArea.findAllComponents(StepEditorRow);
+          expect(steps.length).toBe(BEER_CHEESE.steps.length);
+        });
+
+        describe('add button', () => {
+          it('is enabled', () => {
+            const button = wrapper.find('[data-testid="add-step-button"]');
+            expect(button.attributes('disabled')).toBeUndefined();
+          });
+
+          describe('on click', () => {
+            it('adds a blank step', async () => {
+              const button = wrapper.find('[data-testid="add-step-button"]');
+              const listArea = wrapper.find('[data-testid="step-list-grid"]');
+              await button.trigger('click');
+              const steps = listArea.findAllComponents(StepEditorRow);
+              expect(steps.length).toBe(BEER_CHEESE.steps.length + 1);
+            });
+
+            it('becomes disabled', async () => {
+              const button = wrapper.find('[data-testid="add-step-button"]');
+              expect(button.attributes('disabled')).toBeUndefined();
+              await button.trigger('click');
+              expect(button.attributes('disabled')).toBeDefined();
+            });
+
+            it('remains disabled until the blank step is filled in', async () => {
+              const listArea = wrapper.find('[data-testid="step-list-grid"]');
+              const button = wrapper.find('[data-testid="add-step-button"]');
+              await button.trigger('click');
+              expect(button.attributes('disabled')).toBeDefined();
+              const steps = listArea.findAllComponents(StepEditorRow);
+              await steps[steps.length - 1]?.vm.$emit('changed', {
+                id: '0e8e3d4e-396d-42e8-aed6-fc8be1892c9e',
+                instruction: 'Mix thoroughly.',
+              });
+              expect(button.attributes('disabled')).toBeUndefined();
+            });
+          });
+        });
+
+        describe('deleting a step', () => {
+          it('removes the step from the list', async () => {
+            const listArea = wrapper.find('[data-testid="step-list-grid"]');
+            let steps = listArea.findAllComponents(StepEditorRow);
+            const originalCount = BEER_CHEESE.steps.length;
+            expect(steps.length).toBe(originalCount);
+            await steps[2]?.vm.$emit('delete');
+            steps = listArea.findAllComponents(StepEditorRow);
+            expect(steps.length).toBe(originalCount - 1);
+          });
+        });
+      });
+
+      describe('the save button', () => {
+        it('begins disabled', () => {
+          const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('begins disabled for a recipe with a null description', () => {
+          const nullDescWrapper = mountComponent({ recipe: { ...BEER_CHEESE, description: null } });
+          const saveButton = nullDescWrapper.findComponent(
+            '[data-testid="save-button"]',
+          ) as VueWrapper<components.VBtn>;
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('is enabled if the name value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          await inputs.name.setValue('Apple Pie');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the description value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          await inputs.description.setValue('Fudge covered pickles with apples in a pie crust');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the category value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          await inputs.name.setValue(BEER_CHEESE.name);
+          await inputs.category.setValue('Dessert');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the cuisine value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          await inputs.name.setValue(BEER_CHEESE.name);
+          await inputs.cuisine.setValue('Italian');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the difficulty value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          await inputs.name.setValue(BEER_CHEESE.name);
+          await inputs.difficulty.setValue('Easy');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the servings value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          await inputs.servings.setValue('8');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the prep time value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          await inputs.prepTimeMinutes.setValue('20');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the cook time value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          await inputs.cookTimeMinutes.setValue('45');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the calories value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await nutritionInputs.calories.setValue('500');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the sodium value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await nutritionInputs.sodium.setValue('900');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the sugar value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await nutritionInputs.sugar.setValue('10');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the carbs value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await nutritionInputs.carbs.setValue('30');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the fat value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await nutritionInputs.fat.setValue('35');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the protein value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await nutritionInputs.protein.setValue('20');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if an ingredient is changed', async () => {
+          const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          const ingredients = listArea.findAllComponents(IngredientEditorRow);
+          await ingredients[2]?.vm.$emit('changed', {
+            id: '3d56a852-d60c-453d-ba8b-61e8091c07aa',
+            units: 1,
+            unitOfMeasure: findUnitOfMeasure('lb'),
+            name: 'fudge',
+          });
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if an ingredient is deleted', async () => {
+          const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          const ingredients = listArea.findAllComponents(IngredientEditorRow);
+          await ingredients[2]?.vm.$emit('delete');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is disabled if an invalid ingredient exists in the ingredients list', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          await inputs.name.setValue('Apple Pie');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          const button = wrapper.find('[data-testid="add-ingredient-button"]');
+          await button.trigger('click');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('is disabled if an invalid step exists in the steps list', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          await inputs.name.setValue('Apple Pie');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          const button = wrapper.find('[data-testid="add-step-button"]');
+          await button.trigger('click');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('emits the entered data on click', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await inputs.category.setValue('Dessert');
+          await inputs.difficulty.setValue('Normal');
+          await inputs.name.setValue('Apple Pie');
+          await nutritionInputs.calories.setValue('325');
+          await saveButton.trigger('click');
+          expect(wrapper.emitted('save')).toBeTruthy();
+          expect(wrapper.emitted('save')).toHaveLength(1);
+          const emittedData = wrapper.emitted('save')?.[0]?.[0] as Recipe;
+          expect(emittedData.id).toBe('fie039950912');
+          expect(emittedData.name).toBe('Apple Pie');
+          expect(emittedData.description).toBe(BEER_CHEESE.description);
+          expect(emittedData.category).toBe('Dessert');
+          expect(emittedData.cuisine).toBe(BEER_CHEESE.cuisine);
+          expect(emittedData.difficulty).toBe('Normal');
+          expect(emittedData.servings).toBe(BEER_CHEESE.servings);
+          expect(emittedData.prepTimeMinutes).toBe(BEER_CHEESE.prepTimeMinutes);
+          expect(emittedData.cookTimeMinutes).toBe(BEER_CHEESE.cookTimeMinutes);
+          expect(emittedData.calories).toBe(325);
+          expect(emittedData.sodium).toBe(BEER_CHEESE.sodium);
+          expect(emittedData.sugar).toBe(BEER_CHEESE.sugar);
+          expect(emittedData.carbs).toBe(BEER_CHEESE.carbs);
+          expect(emittedData.fat).toBe(BEER_CHEESE.fat);
+          expect(emittedData.protein).toBe(BEER_CHEESE.protein);
+          expect(emittedData.steps).toEqual([...BEER_CHEESE.steps]);
+          expect(emittedData.ingredients.length).toBe(BEER_CHEESE.ingredients.length);
+          emittedData.ingredients.forEach((ingredient, index) => {
+            expect(ingredient.id).toBeDefined();
+            expect(typeof ingredient.id).toBe('string');
+            expect(ingredient.name).toBe(BEER_CHEESE.ingredients[index]!.name);
+            expect(ingredient.units).toBe(BEER_CHEESE.ingredients[index]!.units);
+            expect(ingredient.unitOfMeasure).toEqual(BEER_CHEESE.ingredients[index]!.unitOfMeasure);
+          });
         });
       });
     });
 
-    describe('the save button', () => {
-      it('begins disabled', () => {
-        const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
-        expect(saveButton.attributes('disabled')).toBeDefined();
+    describe('of a prepared recipe', () => {
+      const prepared: Recipe = { ...TEST_PREPARED_RECIPE, id: 'prepared-99' };
+      const nextSourceId = 'iir00305003lfkdj';
+
+      beforeEach(() => {
+        const { sources } = useSourcesData();
+        (sources as Ref<Source[]>).value = TEST_SOURCES;
+        wrapper = mountComponent({ recipe: prepared });
       });
 
-      it('begins disabled for a recipe with a null description', () => {
-        const nullDescWrapper = mountComponent({ recipe: { ...BEER_CHEESE, description: null } });
-        const saveButton = nullDescWrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
-        expect(saveButton.attributes('disabled')).toBeDefined();
-      });
-
-      it('is enabled if the name value is changed', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
-        await inputs.name.setValue('Apple Pie');
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if the description value is changed', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
-        await inputs.description.setValue('Fudge covered pickles with apples in a pie crust');
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if the category value is changed', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
-        await inputs.name.setValue(BEER_CHEESE.name);
-        await inputs.category.setValue('Dessert');
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if the cuisine value is changed', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
-        await inputs.name.setValue(BEER_CHEESE.name);
-        await inputs.cuisine.setValue('Italian');
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if the difficulty value is changed', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
-        await inputs.name.setValue(BEER_CHEESE.name);
-        await inputs.difficulty.setValue('Easy');
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if the servings value is changed', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
-        await inputs.servings.setValue('8');
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if the prep time value is changed', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
-        await inputs.prepTimeMinutes.setValue('20');
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if the cook time value is changed', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
-        await inputs.cookTimeMinutes.setValue('45');
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if the calories value is changed', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+      it('initializes the inputs with recipe values', () => {
+        const inputs = getPreparedInputs(wrapper);
         const nutritionInputs = getNutritionInputs(wrapper);
-        await nutritionInputs.calories.setValue('500');
-        expect(saveButton.attributes('disabled')).toBeUndefined();
+        expect(inputs.name.element.value).toBe(prepared.name);
+        expect(inputs.description.element.value).toBe(prepared.description);
+        expect(inputs.category.props('modelValue')).toBe(prepared.category);
+        expect(inputs.cuisine.props('modelValue')).toBe(prepared.cuisine);
+        expect(inputs.source.props('modelValue')).toBe(prepared.sourceId);
+        expect(inputs.servings.element.value).toBe(prepared.servings.toString());
+        expect(nutritionInputs.calories.element.value).toBe(prepared.calories.toString());
+        expect(nutritionInputs.sodium.element.value).toBe(prepared.sodium.toString());
+        expect(nutritionInputs.sugar.element.value).toBe(prepared.sugar.toString());
+        expect(nutritionInputs.carbs.element.value).toBe(prepared.carbs.toString());
+        expect(nutritionInputs.fat.element.value).toBe(prepared.fat.toString());
+        expect(nutritionInputs.protein.element.value).toBe(prepared.protein.toString());
+        expect(autocompleteLabeled(wrapper, 'Difficulty')).toBeUndefined();
+        expect(wrapper.find('[data-testid="prep-time-input"]').exists()).toBe(false);
+        expect(wrapper.find('[data-testid="cook-time-input"]').exists()).toBe(false);
+        expect(wrapper.find('[data-testid="ingredient-list-grid"]').exists()).toBe(false);
+        expect(wrapper.find('[data-testid="step-list-grid"]').exists()).toBe(false);
       });
 
-      it('is enabled if the sodium value is changed', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const nutritionInputs = getNutritionInputs(wrapper);
-        await nutritionInputs.sodium.setValue('900');
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if the sugar value is changed', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const nutritionInputs = getNutritionInputs(wrapper);
-        await nutritionInputs.sugar.setValue('10');
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if the carbs value is changed', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const nutritionInputs = getNutritionInputs(wrapper);
-        await nutritionInputs.carbs.setValue('30');
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if the fat value is changed', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const nutritionInputs = getNutritionInputs(wrapper);
-        await nutritionInputs.fat.setValue('35');
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if the protein value is changed', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const nutritionInputs = getNutritionInputs(wrapper);
-        await nutritionInputs.protein.setValue('20');
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
-
-      it('is enabled if an ingredient is changed', async () => {
-        const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        expect(saveButton.attributes('disabled')).toBeDefined();
-        const ingredients = listArea.findAllComponents(IngredientEditorRow);
-        await ingredients[2]?.vm.$emit('changed', {
-          id: '3d56a852-d60c-453d-ba8b-61e8091c07aa',
-          units: 1,
-          unitOfMeasure: findUnitOfMeasure('lb'),
-          name: 'fudge',
+      describe('the save button', () => {
+        it('begins disabled', () => {
+          const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
+          expect(saveButton.attributes('disabled')).toBeDefined();
         });
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
 
-      it('is enabled if an ingredient is deleted', async () => {
-        const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        expect(saveButton.attributes('disabled')).toBeDefined();
-        const ingredients = listArea.findAllComponents(IngredientEditorRow);
-        await ingredients[2]?.vm.$emit('delete');
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-      });
+        it('begins disabled for a recipe with a null description', () => {
+          const nullDescWrapper = mountComponent({ recipe: { ...prepared, description: null } });
+          const saveButton = nullDescWrapper.findComponent(
+            '[data-testid="save-button"]',
+          ) as VueWrapper<components.VBtn>;
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
 
-      it('is disabled if an invalid ingredient exists in the ingredients list', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
-        await inputs.name.setValue('Apple Pie');
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-        const button = wrapper.find('[data-testid="add-ingredient-button"]');
-        await button.trigger('click');
-        expect(saveButton.attributes('disabled')).toBeDefined();
-      });
+        it('is enabled if the name value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getPreparedInputs(wrapper);
+          await inputs.name.setValue('Updated Black Cod');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
 
-      it('is disabled if an invalid step exists in the steps list', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
-        await inputs.name.setValue('Apple Pie');
-        expect(saveButton.attributes('disabled')).toBeUndefined();
-        const button = wrapper.find('[data-testid="add-step-button"]');
-        await button.trigger('click');
-        expect(saveButton.attributes('disabled')).toBeDefined();
-      });
+        it('is enabled if the description value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getPreparedInputs(wrapper);
+          await inputs.description.setValue('Reheated until hot.');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
 
-      it('emits the entered data on click', async () => {
-        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-        const inputs = getInputs(wrapper);
-        const nutritionInputs = getNutritionInputs(wrapper);
-        await inputs.category.setValue('Dessert');
-        await inputs.difficulty.setValue('Normal');
-        await inputs.name.setValue('Apple Pie');
-        await nutritionInputs.calories.setValue('325');
-        await saveButton.trigger('click');
-        expect(wrapper.emitted('save')).toBeTruthy();
-        expect(wrapper.emitted('save')).toHaveLength(1);
-        const emittedData = wrapper.emitted('save')?.[0]?.[0] as Recipe;
-        expect(emittedData.id).toBe('fie039950912');
-        expect(emittedData.name).toBe('Apple Pie');
-        expect(emittedData.description).toBe(BEER_CHEESE.description);
-        expect(emittedData.category).toBe('Dessert');
-        expect(emittedData.cuisine).toBe(BEER_CHEESE.cuisine);
-        expect(emittedData.difficulty).toBe('Normal');
-        expect(emittedData.servings).toBe(BEER_CHEESE.servings);
-        expect(emittedData.prepTimeMinutes).toBe(BEER_CHEESE.prepTimeMinutes);
-        expect(emittedData.cookTimeMinutes).toBe(BEER_CHEESE.cookTimeMinutes);
-        expect(emittedData.calories).toBe(325);
-        expect(emittedData.sodium).toBe(BEER_CHEESE.sodium);
-        expect(emittedData.sugar).toBe(BEER_CHEESE.sugar);
-        expect(emittedData.carbs).toBe(BEER_CHEESE.carbs);
-        expect(emittedData.fat).toBe(BEER_CHEESE.fat);
-        expect(emittedData.protein).toBe(BEER_CHEESE.protein);
-        expect(emittedData.steps).toEqual([...BEER_CHEESE.steps]);
-        expect(emittedData.ingredients.length).toBe(BEER_CHEESE.ingredients.length);
-        emittedData.ingredients.forEach((ingredient, index) => {
-          expect(ingredient.id).toBeDefined();
-          expect(typeof ingredient.id).toBe('string');
-          expect(ingredient.name).toBe(BEER_CHEESE.ingredients[index]!.name);
-          expect(ingredient.units).toBe(BEER_CHEESE.ingredients[index]!.units);
-          expect(ingredient.unitOfMeasure).toEqual(BEER_CHEESE.ingredients[index]!.unitOfMeasure);
+        it('is enabled if the category value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getPreparedInputs(wrapper);
+          await inputs.name.setValue(prepared.name);
+          await inputs.category.setValue('Poultry');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the cuisine value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getPreparedInputs(wrapper);
+          await inputs.name.setValue(prepared.name);
+          await inputs.cuisine.setValue('Italian');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the source value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getPreparedInputs(wrapper);
+          await inputs.name.setValue(prepared.name);
+          await inputs.source.setValue(nextSourceId);
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the servings value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getPreparedInputs(wrapper);
+          await inputs.servings.setValue('2');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the calories value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await nutritionInputs.calories.setValue('600');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the sodium value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await nutritionInputs.sodium.setValue('900');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the sugar value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await nutritionInputs.sugar.setValue('10');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the carbs value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await nutritionInputs.carbs.setValue('30');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the fat value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await nutritionInputs.fat.setValue('35');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is enabled if the protein value is changed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await nutritionInputs.protein.setValue('20');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('emits the entered data on click', async () => {
+          wrapper.unmount();
+          wrapper = mountComponent({
+            recipe: {
+              ...prepared,
+              difficulty: 'Advanced',
+              prepTimeMinutes: 15,
+              cookTimeMinutes: 20,
+              ingredients: [
+                {
+                  id: 'ingredient-1',
+                  units: 1,
+                  unitOfMeasure: findUnitOfMeasure('cup'),
+                  name: 'Rice',
+                },
+              ],
+              steps: [{ id: 'step-1', instruction: 'Heat and serve.' }],
+            },
+          });
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getPreparedInputs(wrapper);
+          const nutritionInputs = getNutritionInputs(wrapper);
+          await inputs.category.setValue('Poultry');
+          await inputs.source.setValue(nextSourceId);
+          await inputs.name.setValue('  Updated Black Cod  ');
+          await nutritionInputs.calories.setValue('600');
+          await saveButton.trigger('click');
+          expect(wrapper.emitted('save')).toBeTruthy();
+          expect(wrapper.emitted('save')).toHaveLength(1);
+          expect(wrapper.emitted('save')?.[0]).toEqual([
+            {
+              id: prepared.id,
+              name: 'Updated Black Cod',
+              description: prepared.description,
+              kind: 'prepared',
+              sourceId: nextSourceId,
+              category: 'Poultry',
+              cuisine: prepared.cuisine,
+              difficulty: 'Easy',
+              servings: prepared.servings,
+              prepTimeMinutes: 0,
+              cookTimeMinutes: 0,
+              calories: 600,
+              sodium: prepared.sodium,
+              sugar: prepared.sugar,
+              carbs: prepared.carbs,
+              fat: prepared.fat,
+              protein: prepared.protein,
+              ingredients: [],
+              steps: [],
+            },
+          ]);
         });
       });
     });

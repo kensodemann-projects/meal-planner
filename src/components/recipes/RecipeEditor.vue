@@ -148,13 +148,7 @@
 
     <v-container fluid>
       <v-row class="pa-4" justify="end">
-        <CancelButton
-          class="mr-4"
-          @click="
-            console.log('cancel', sourceId);
-            $emit('cancel');
-          "
-        />
+        <CancelButton class="mr-4" @click="$emit('cancel')" />
         <SaveButton class="mr-4" :disabled="!(valid && isModified)" @click="save" />
       </v-row>
     </v-container>
@@ -278,6 +272,7 @@ const isModified = computed((): boolean => {
     props.recipe.servings !== servings.value ||
     props.recipe.prepTimeMinutes !== prepTimeMinutes.value ||
     props.recipe.cookTimeMinutes !== cookTimeMinutes.value ||
+    (sourceId.value !== null && props.recipe.sourceId !== sourceId.value) ||
     props.recipe.calories !== nutrition.value.calories ||
     props.recipe.sodium !== nutrition.value.sodium ||
     props.recipe.sugar !== nutrition.value.sugar ||
@@ -287,26 +282,47 @@ const isModified = computed((): boolean => {
   );
 });
 
-const createRecipeFromForm = (): Recipe => ({
-  name: name.value.trim(),
-  description: description.value.trim() || null,
-  kind: props.kind,
-  sourceId: props.recipe?.sourceId,
-  category: category.value!,
-  cuisine: cuisine.value!,
-  difficulty: difficulty.value!,
-  servings: servings.value!,
-  prepTimeMinutes: prepTimeMinutes.value!,
-  cookTimeMinutes: cookTimeMinutes.value!,
-  calories: nutrition.value.calories!,
-  sodium: nutrition.value.sodium!,
-  sugar: nutrition.value.sugar!,
-  carbs: nutrition.value.carbs!,
-  fat: nutrition.value.fat!,
-  protein: nutrition.value.protein!,
-  ingredients: ingredients.value.filter(isValidIngredient),
-  steps: steps.value.filter(isValidStep),
-});
+const createRecipeFromForm = (): Recipe =>
+  props.kind === 'homemade'
+    ? {
+        name: name.value.trim(),
+        description: description.value.trim() || null,
+        kind: props.kind,
+        category: category.value!,
+        cuisine: cuisine.value!,
+        difficulty: difficulty.value!,
+        servings: servings.value!,
+        prepTimeMinutes: prepTimeMinutes.value!,
+        cookTimeMinutes: cookTimeMinutes.value!,
+        calories: nutrition.value.calories!,
+        sodium: nutrition.value.sodium!,
+        sugar: nutrition.value.sugar!,
+        carbs: nutrition.value.carbs!,
+        fat: nutrition.value.fat!,
+        protein: nutrition.value.protein!,
+        ingredients: ingredients.value.filter(isValidIngredient),
+        steps: steps.value.filter(isValidStep),
+      }
+    : {
+        name: name.value.trim(),
+        description: description.value.trim() || null,
+        kind: props.kind,
+        sourceId: sourceId.value!,
+        category: category.value!,
+        cuisine: cuisine.value!,
+        difficulty: 'Easy',
+        servings: servings.value!,
+        prepTimeMinutes: 0,
+        cookTimeMinutes: 0,
+        calories: nutrition.value.calories!,
+        sodium: nutrition.value.sodium!,
+        sugar: nutrition.value.sugar!,
+        carbs: nutrition.value.carbs!,
+        fat: nutrition.value.fat!,
+        protein: nutrition.value.protein!,
+        ingredients: [],
+        steps: [],
+      };
 
 const save = () => {
   const recipe = createRecipeFromForm();
