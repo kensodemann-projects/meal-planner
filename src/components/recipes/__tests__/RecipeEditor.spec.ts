@@ -4,7 +4,7 @@ import { TEST_PREPARED_RECIPE, TEST_RECIPES, TEST_SOURCES } from '@/data/__tests
 import { useRecipesData } from '@/data/recipes';
 import { useSourcesData } from '@/data/sources';
 import type { Source } from '@/models/source';
-import type { Recipe } from '@/models/recipe';
+import type { Recipe, RecipeKind } from '@/models/recipe';
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import type { Ref } from 'vue';
@@ -99,7 +99,7 @@ const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
 });
 
 const getPreparedInputs = (wrapper: ReturnType<typeof mountComponent>) => {
-  const source = wrapper.findComponent('[data-testid="difficulty-input"]') as VueWrapper<components.VAutocomplete>;
+  const source = wrapper.findComponent('[data-testid="source-input"]') as VueWrapper<components.VAutocomplete>;
   if (!source.exists() || source.props('label') !== 'Source') throw new Error('Source field was not rendered');
   return {
     name: wrapper.findComponent('[data-testid="name-input"]').find('input'),
@@ -1484,11 +1484,21 @@ describe('Recipe Editor', () => {
       });
     };
 
-    const setupValidState = async (w: ReturnType<typeof mountComponent>) => {
-      const inputs = getInputs(w);
+    const setupValidState = async (w: ReturnType<typeof mountComponent>, kind: RecipeKind = 'homemade') => {
+      if (kind === 'homemade') {
+        const inputs = getInputs(w);
+        await inputs.name.setValue('Test Recipe');
+        await inputs.servings.setValue('4');
+        await addValidIngredient(w);
+        return;
+      }
+
+      const { sources } = useSourcesData();
+      (sources as Ref<Source[]>).value = TEST_SOURCES;
+      const inputs = getPreparedInputs(w);
       await inputs.name.setValue('Test Recipe');
       await inputs.servings.setValue('4');
-      await addValidIngredient(w);
+      await inputs.source.setValue(TEST_SOURCES[0]!.id);
     };
 
     it('renders', () => {
@@ -1506,29 +1516,6 @@ describe('Recipe Editor', () => {
       expect(button.attributes('disabled')).toBeDefined();
     });
 
-    it('is disabled when there are no valid ingredients', async () => {
-      wrapper = mountComponent();
-      const inputs = getInputs(wrapper);
-      await inputs.name.setValue('Test Recipe');
-      await inputs.servings.setValue('4');
-      const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
-      expect(button.attributes('disabled')).toBeDefined();
-    });
-
-    it('is disabled when an ingredient row exists but is invalid', async () => {
-      wrapper = mountComponent();
-      const inputs = getInputs(wrapper);
-      await inputs.name.setValue('Test Recipe');
-      await inputs.servings.setValue('4');
-
-      const addIngredientButton = wrapper.find('[data-testid="add-ingredient-button"]');
-      await addIngredientButton.trigger('click');
-      await flushPromises();
-
-      const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
-      expect(button.attributes('disabled')).toBeDefined();
-    });
-
     it('is disabled when servings is missing', async () => {
       wrapper = mountComponent();
       const inputs = getInputs(wrapper);
@@ -1538,11 +1525,54 @@ describe('Recipe Editor', () => {
       expect(button.attributes('disabled')).toBeDefined();
     });
 
-    it('is enabled when name, valid ingredients, and servings are all present', async () => {
-      wrapper = mountComponent();
-      await setupValidState(wrapper);
-      const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
-      expect(button.attributes('disabled')).toBeUndefined();
+    describe('for a homemade recipe', () => {
+      it('is disabled when there are no valid ingredients', async () => {
+        wrapper = mountComponent();
+        const inputs = getInputs(wrapper);
+        await inputs.name.setValue('Test Recipe');
+        await inputs.servings.setValue('4');
+        const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+        expect(button.attributes('disabled')).toBeDefined();
+      });
+
+      it('is disabled when an ingredient row exists but is invalid', async () => {
+        wrapper = mountComponent();
+        const inputs = getInputs(wrapper);
+        await inputs.name.setValue('Test Recipe');
+        await inputs.servings.setValue('4');
+
+        const addIngredientButton = wrapper.find('[data-testid="add-ingredient-button"]');
+        await addIngredientButton.trigger('click');
+        await flushPromises();
+
+        const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+        expect(button.attributes('disabled')).toBeDefined();
+      });
+
+      it('is enabled when name, valid ingredients, and servings are all present', async () => {
+        wrapper = mountComponent();
+        await setupValidState(wrapper);
+        const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+        expect(button.attributes('disabled')).toBeUndefined();
+      });
+    });
+
+    describe('for a prepared recipe', () => {
+      it('is disabled when source is missing', async () => {
+        wrapper = mountComponent({ kind: 'prepared' });
+        const inputs = getPreparedInputs(wrapper);
+        await inputs.name.setValue('Test Recipe');
+        await inputs.servings.setValue('4');
+        const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+        expect(button.attributes('disabled')).toBeDefined();
+      });
+
+      it('is enabled when name, source, and servings are all present', async () => {
+        wrapper = mountComponent({ kind: 'prepared' });
+        await setupValidState(wrapper, 'prepared');
+        const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+        expect(button.attributes('disabled')).toBeUndefined();
+      });
     });
 
     describe('on click', () => {

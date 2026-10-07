@@ -72,7 +72,7 @@
             :rules="[validationRules.required]"
             item-title="name"
             item-value="id"
-            data-testid="difficulty-input"
+            data-testid="source-input"
           />
         </v-col>
       </v-row>
@@ -333,8 +333,11 @@ const save = () => {
 
 const disableNutritionButton = computed(() => {
   return (
-    !servings.value || servings.value <= 0 || name.value.trim() === '' || !ingredients.value.some(isValidIngredient)
-    // steps.value.length === 0
+    !servings.value ||
+    servings.value <= 0 ||
+    name.value.trim() === '' ||
+    (props.kind === 'prepared' && !sourceId.value) ||
+    (props.kind === 'homemade' && !ingredients.value.some(isValidIngredient))
   );
 });
 
