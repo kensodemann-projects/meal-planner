@@ -1,4 +1,4 @@
-import { TEST_PORTION, TEST_RECIPE } from '@/data/__tests__/test-data';
+import { TEST_PORTION, TEST_HOMEMADE_RECIPE } from '@/data/__tests__/test-data';
 import type { Nutrition } from '@/models/nutrition';
 import type { Settings } from '@/models/settings';
 import { mount } from '@vue/test-utils';
@@ -59,13 +59,13 @@ describe('NutritionData', () => {
   });
 
   it('displays the data from the test recipe', () => {
-    wrapper = mountComponent({ value: TEST_RECIPE });
-    expect(wrapper.text()).toContain(`Calories: ${TEST_RECIPE.calories}`);
-    expect(wrapper.text()).toContain(`Sodium: ${TEST_RECIPE.sodium}mg`);
-    expect(wrapper.text()).toContain(`Sugar: ${TEST_RECIPE.sugar}g`);
-    expect(wrapper.text()).toContain(`Carbs: ${TEST_RECIPE.carbs}g`);
-    expect(wrapper.text()).toContain(`Fat: ${TEST_RECIPE.fat}g`);
-    expect(wrapper.text()).toContain(`Protein: ${TEST_RECIPE.protein}g`);
+    wrapper = mountComponent({ value: TEST_HOMEMADE_RECIPE });
+    expect(wrapper.text()).toContain(`Calories: ${TEST_HOMEMADE_RECIPE.calories}`);
+    expect(wrapper.text()).toContain(`Sodium: ${TEST_HOMEMADE_RECIPE.sodium}mg`);
+    expect(wrapper.text()).toContain(`Sugar: ${TEST_HOMEMADE_RECIPE.sugar}g`);
+    expect(wrapper.text()).toContain(`Carbs: ${TEST_HOMEMADE_RECIPE.carbs}g`);
+    expect(wrapper.text()).toContain(`Fat: ${TEST_HOMEMADE_RECIPE.fat}g`);
+    expect(wrapper.text()).toContain(`Protein: ${TEST_HOMEMADE_RECIPE.protein}g`);
   });
 
   describe.each([

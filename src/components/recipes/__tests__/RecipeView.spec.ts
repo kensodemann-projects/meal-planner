@@ -1,4 +1,4 @@
-import { TEST_RECIPE } from '@/data/__tests__/test-data';
+import { TEST_HOMEMADE_RECIPE } from '@/data/__tests__/test-data';
 import type { Recipe } from '@/models/recipe';
 import { DOMWrapper, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -11,7 +11,7 @@ const vuetify = createVuetify({
   components,
   directives,
 });
-const mountComponent = (props: { recipe: Recipe } = { recipe: { ...TEST_RECIPE, id: 'test-132' } }) =>
+const mountComponent = (props: { recipe: Recipe } = { recipe: { ...TEST_HOMEMADE_RECIPE, id: 'test-132' } }) =>
   mount(RecipeView, { props, global: { plugins: [vuetify] } });
 
 describe('RecipeView', () => {
@@ -34,7 +34,7 @@ describe('RecipeView', () => {
     wrapper = mountComponent();
     const header = wrapper.find('h1');
     expect(header.exists()).toBe(true);
-    expect(header.text()).toBe(TEST_RECIPE.name);
+    expect(header.text()).toBe(TEST_HOMEMADE_RECIPE.name);
   });
 
   describe('the description section', () => {
@@ -55,26 +55,26 @@ describe('RecipeView', () => {
     });
 
     it('renders the description', () => {
-      expect(section.text()).toContain(TEST_RECIPE.description);
+      expect(section.text()).toContain(TEST_HOMEMADE_RECIPE.description);
     });
 
     it('renders chips for the category and cuisine', () => {
       const chips = section.findAllComponents(components.VChip);
       expect(chips.length).toBe(2);
-      expect(chips[0].text()).toBe(TEST_RECIPE.cuisine);
-      expect(chips[1].text()).toBe(TEST_RECIPE.category);
+      expect(chips[0].text()).toBe(TEST_HOMEMADE_RECIPE.cuisine);
+      expect(chips[1].text()).toBe(TEST_HOMEMADE_RECIPE.category);
     });
 
     it('renders the difficulty', () => {
-      expect(section.text()).toContain(`Difficulty: ${TEST_RECIPE.difficulty}`);
+      expect(section.text()).toContain(`Difficulty: ${TEST_HOMEMADE_RECIPE.difficulty}`);
     });
 
     it('renders the prep time', () => {
-      expect(section.text()).toContain(`Prep Time: ${TEST_RECIPE.prepTimeMinutes} minutes`);
+      expect(section.text()).toContain(`Prep Time: ${TEST_HOMEMADE_RECIPE.prepTimeMinutes} minutes`);
     });
 
     it('renders the cook time', () => {
-      expect(section.text()).toContain(`Cook Time: ${TEST_RECIPE.cookTimeMinutes} minutes`);
+      expect(section.text()).toContain(`Cook Time: ${TEST_HOMEMADE_RECIPE.cookTimeMinutes} minutes`);
     });
   });
 
@@ -99,8 +99,8 @@ describe('RecipeView', () => {
     it('lists the ingredients', () => {
       const lists = section.findAll('ul');
       const listItems = lists[0]?.findAll('li').map((li) => li.text());
-      expect(listItems?.length).toBe(TEST_RECIPE.ingredients.length);
-      TEST_RECIPE.ingredients.forEach((ingredient, index) => {
+      expect(listItems?.length).toBe(TEST_HOMEMADE_RECIPE.ingredients.length);
+      TEST_HOMEMADE_RECIPE.ingredients.forEach((ingredient, index) => {
         expect(listItems?.[index]).toContain(ingredient.name);
       });
     });
@@ -127,8 +127,8 @@ describe('RecipeView', () => {
     it('lists the steps', () => {
       const lists = section.findAll('ol');
       const listItems = lists[0]?.findAll('li').map((li) => li.text());
-      expect(listItems?.length).toBe(TEST_RECIPE.steps.length);
-      TEST_RECIPE.steps.forEach((step, index) => {
+      expect(listItems?.length).toBe(TEST_HOMEMADE_RECIPE.steps.length);
+      TEST_HOMEMADE_RECIPE.steps.forEach((step, index) => {
         expect(listItems?.[index]).toBe(step.instruction);
       });
     });
@@ -154,12 +154,12 @@ describe('RecipeView', () => {
 
     it('displays the nutritional information', () => {
       const text = section.text();
-      expect(text).toContain(`Calories: ${TEST_RECIPE.calories}`);
-      expect(text).toContain(`Sodium: ${TEST_RECIPE.sodium}mg`);
-      expect(text).toContain(`Sugar: ${TEST_RECIPE.sugar}g`);
-      expect(text).toContain(`Carbs: ${TEST_RECIPE.carbs}g`);
-      expect(text).toContain(`Fat: ${TEST_RECIPE.fat}g`);
-      expect(text).toContain(`Protein: ${TEST_RECIPE.protein}g`);
+      expect(text).toContain(`Calories: ${TEST_HOMEMADE_RECIPE.calories}`);
+      expect(text).toContain(`Sodium: ${TEST_HOMEMADE_RECIPE.sodium}mg`);
+      expect(text).toContain(`Sugar: ${TEST_HOMEMADE_RECIPE.sugar}g`);
+      expect(text).toContain(`Carbs: ${TEST_HOMEMADE_RECIPE.carbs}g`);
+      expect(text).toContain(`Fat: ${TEST_HOMEMADE_RECIPE.fat}g`);
+      expect(text).toContain(`Protein: ${TEST_HOMEMADE_RECIPE.protein}g`);
     });
   });
 });

@@ -3,7 +3,7 @@ import { type Mock, afterEach, beforeEach, describe, expect, it, vi } from 'vite
 import { ref } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
 import { useRecipesData } from '../recipes';
-import { TEST_RECIPE, TEST_RECIPES } from './test-data';
+import { TEST_HOMEMADE_RECIPE, TEST_RECIPES } from './test-data';
 
 vi.mock('firebase/firestore', async () => {
   const actual = (await vi.importActual('firebase/firestore')) as any;
@@ -51,15 +51,15 @@ describe('Recipe Data Service', () => {
   describe('add recipe', () => {
     it('adds the recipe doc', () => {
       const { addRecipe } = useRecipesData();
-      addRecipe(TEST_RECIPE);
+      addRecipe(TEST_HOMEMADE_RECIPE);
       expect(addDoc).toHaveBeenCalledOnce();
-      expect(addDoc).toHaveBeenCalledWith('42:col:recipes', TEST_RECIPE);
+      expect(addDoc).toHaveBeenCalledWith('42:col:recipes', TEST_HOMEMADE_RECIPE);
     });
 
     it('resolves the recipe ID', async () => {
       const { addRecipe } = useRecipesData();
       (addDoc as Mock).mockResolvedValueOnce({ id: 'Hiir00r93999430ddkf' });
-      expect(await addRecipe(TEST_RECIPE)).toBe('Hiir00r93999430ddkf');
+      expect(await addRecipe(TEST_HOMEMADE_RECIPE)).toBe('Hiir00r93999430ddkf');
     });
   });
 
@@ -100,7 +100,7 @@ describe('Recipe Data Service', () => {
   describe('update recipe', () => {
     it('obtains a reference to the doc', () => {
       const { updateRecipe } = useRecipesData();
-      updateRecipe('43334-22343-893', TEST_RECIPE);
+      updateRecipe('43334-22343-893', TEST_HOMEMADE_RECIPE);
       expect(doc).toHaveBeenCalledOnce();
       expect(doc).toHaveBeenCalledWith({ id: 42, name: 'my fake fire store' }, 'recipes/43334-22343-893');
     });
@@ -108,14 +108,14 @@ describe('Recipe Data Service', () => {
     it('updates the recipe document', () => {
       const { updateRecipe } = useRecipesData();
       updateRecipe('43334-22343-893', {
-        ...TEST_RECIPE,
+        ...TEST_HOMEMADE_RECIPE,
         calories: 600,
         sodium: 800,
         servings: 15,
       });
       expect(updateDoc).toHaveBeenCalledOnce();
       expect(updateDoc).toHaveBeenCalledWith('42:doc:recipes/43334-22343-893', {
-        ...TEST_RECIPE,
+        ...TEST_HOMEMADE_RECIPE,
         calories: 600,
         sodium: 800,
         servings: 15,
@@ -170,123 +170,139 @@ describe('Recipe Data Service', () => {
   describe('recipe matches', () => {
     it('returns true if there are no filter parameters', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, { keywords: '' })).toBe(true);
-      expect(recipeMatches(TEST_RECIPE, {})).toBe(true);
+      expect(recipeMatches(TEST_HOMEMADE_RECIPE, { keywords: '' })).toBe(true);
+      expect(recipeMatches(TEST_HOMEMADE_RECIPE, {})).toBe(true);
     });
 
     it('returns false if the recipe does not match the keyword', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, { keywords: 'nonexistentkeyword' })).toBe(false);
+      expect(recipeMatches(TEST_HOMEMADE_RECIPE, { keywords: 'nonexistentkeyword' })).toBe(false);
     });
 
     it('returns true if the recipe matches the kind', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, { kind: 'homemade' })).toBe(true);
-      expect(recipeMatches({ ...TEST_RECIPE, kind: 'prepared' }, { kind: 'prepared' })).toBe(true);
+      expect(recipeMatches(TEST_HOMEMADE_RECIPE, { kind: 'homemade' })).toBe(true);
+      expect(recipeMatches({ ...TEST_HOMEMADE_RECIPE, kind: 'prepared' }, { kind: 'prepared' })).toBe(true);
     });
 
     it('returns false if the recipe does not match the kind', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, { kind: 'prepared' })).toBe(false);
-      expect(recipeMatches({ ...TEST_RECIPE, kind: 'prepared' }, { kind: 'homemade' })).toBe(false);
+      expect(recipeMatches(TEST_HOMEMADE_RECIPE, { kind: 'prepared' })).toBe(false);
+      expect(recipeMatches({ ...TEST_HOMEMADE_RECIPE, kind: 'prepared' }, { kind: 'homemade' })).toBe(false);
     });
 
     it('treats a recipe with an undefined kind as a "homemade" match', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches({ ...TEST_RECIPE, kind: undefined } as any, { kind: 'homemade' })).toBe(true);
-      expect(recipeMatches({ ...TEST_RECIPE, kind: undefined } as any, { kind: 'prepared' })).toBe(false);
+      expect(recipeMatches({ ...TEST_HOMEMADE_RECIPE, kind: undefined } as any, { kind: 'homemade' })).toBe(true);
+      expect(recipeMatches({ ...TEST_HOMEMADE_RECIPE, kind: undefined } as any, { kind: 'prepared' })).toBe(false);
     });
 
     it('returns true if the recipe contains the keyword in the name', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, { keywords: 'Pan-Seared' })).toBe(true);
-      expect(recipeMatches(TEST_RECIPE, { keywords: 'pAN-sEAREd' })).toBe(true);
+      expect(recipeMatches(TEST_HOMEMADE_RECIPE, { keywords: 'Pan-Seared' })).toBe(true);
+      expect(recipeMatches(TEST_HOMEMADE_RECIPE, { keywords: 'pAN-sEAREd' })).toBe(true);
     });
 
     it('returns true if the recipe contains the keyword in the description', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, { keywords: 'caramelized' })).toBe(true);
-      expect(recipeMatches(TEST_RECIPE, { keywords: 'CarAmeliZEd' })).toBe(true);
+      expect(recipeMatches(TEST_HOMEMADE_RECIPE, { keywords: 'caramelized' })).toBe(true);
+      expect(recipeMatches(TEST_HOMEMADE_RECIPE, { keywords: 'CarAmeliZEd' })).toBe(true);
     });
 
     it('returns true if the recipe contains the keyword in an ingredient name', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, { keywords: 'olive' })).toBe(true);
-      expect(recipeMatches(TEST_RECIPE, { keywords: 'OliVE' })).toBe(true);
+      expect(recipeMatches(TEST_HOMEMADE_RECIPE, { keywords: 'olive' })).toBe(true);
+      expect(recipeMatches(TEST_HOMEMADE_RECIPE, { keywords: 'OliVE' })).toBe(true);
     });
 
     it('returns true if the recipe contains the keywords in the name, but not together', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, { keywords: 'Pan-Seared sauce' })).toBe(true);
+      expect(recipeMatches(TEST_HOMEMADE_RECIPE, { keywords: 'Pan-Seared sauce' })).toBe(true);
     });
 
     it('returns true if the recipe contains the keywords in the description, but not together', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, { keywords: 'caramelized simple' })).toBe(true);
+      expect(recipeMatches(TEST_HOMEMADE_RECIPE, { keywords: 'caramelized simple' })).toBe(true);
     });
 
     it('returns true if the keywords are spread between name, description, and ingredients', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, { keywords: 'olive Pan-seared simple' })).toBe(true);
+      expect(recipeMatches(TEST_HOMEMADE_RECIPE, { keywords: 'olive Pan-seared simple' })).toBe(true);
     });
 
     it('returns false if most but not all keywords match', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, { keywords: 'olive bogus Pan-seared simple' })).toBe(false);
+      expect(recipeMatches(TEST_HOMEMADE_RECIPE, { keywords: 'olive bogus Pan-seared simple' })).toBe(false);
     });
 
     it('returns true if the category matches', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, { category: TEST_RECIPE.category })).toBe(true);
+      expect(recipeMatches(TEST_HOMEMADE_RECIPE, { category: TEST_HOMEMADE_RECIPE.category })).toBe(true);
     });
 
     it('returns false if the category does not match', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, { category: 'Lamb' })).toBe(false);
+      expect(recipeMatches(TEST_HOMEMADE_RECIPE, { category: 'Lamb' })).toBe(false);
     });
 
     it('returns true if the category and keywords match', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, { category: TEST_RECIPE.category, keywords: TEST_RECIPE.name })).toBe(true);
+      expect(
+        recipeMatches(TEST_HOMEMADE_RECIPE, {
+          category: TEST_HOMEMADE_RECIPE.category,
+          keywords: TEST_HOMEMADE_RECIPE.name,
+        }),
+      ).toBe(true);
     });
 
     it('returns false if the category matches but keywords do not', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, { category: TEST_RECIPE.category, keywords: 'BogusKeyword' })).toBe(false);
+      expect(
+        recipeMatches(TEST_HOMEMADE_RECIPE, { category: TEST_HOMEMADE_RECIPE.category, keywords: 'BogusKeyword' }),
+      ).toBe(false);
     });
 
     it('returns false if the keyword matches but the category does not', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, { category: 'Lamb', keywords: TEST_RECIPE.name })).toBe(false);
+      expect(recipeMatches(TEST_HOMEMADE_RECIPE, { category: 'Lamb', keywords: TEST_HOMEMADE_RECIPE.name })).toBe(
+        false,
+      );
     });
 
     it('returns true if the cuisine matches', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, { cuisine: TEST_RECIPE.cuisine })).toBe(true);
+      expect(recipeMatches(TEST_HOMEMADE_RECIPE, { cuisine: TEST_HOMEMADE_RECIPE.cuisine })).toBe(true);
     });
 
     it('returns false if the cuisine does not match', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, { cuisine: 'American' })).toBe(false);
+      expect(recipeMatches(TEST_HOMEMADE_RECIPE, { cuisine: 'American' })).toBe(false);
     });
 
     it('returns true if the cuisine and keywords match', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, { cuisine: TEST_RECIPE.cuisine, keywords: TEST_RECIPE.name })).toBe(true);
+      expect(
+        recipeMatches(TEST_HOMEMADE_RECIPE, {
+          cuisine: TEST_HOMEMADE_RECIPE.cuisine,
+          keywords: TEST_HOMEMADE_RECIPE.name,
+        }),
+      ).toBe(true);
     });
 
     it('returns false if the cuisine matches but keywords do not', () => {
       const { recipeMatches } = useRecipesData();
-      expect(recipeMatches(TEST_RECIPE, { cuisine: TEST_RECIPE.cuisine, keywords: 'BogusKeyword' })).toBe(false);
+      expect(
+        recipeMatches(TEST_HOMEMADE_RECIPE, { cuisine: TEST_HOMEMADE_RECIPE.cuisine, keywords: 'BogusKeyword' }),
+      ).toBe(false);
     });
 
     it('returns true if the cuisine, category, and keywords match', () => {
       const { recipeMatches } = useRecipesData();
       expect(
-        recipeMatches(TEST_RECIPE, {
-          cuisine: TEST_RECIPE.cuisine,
-          category: TEST_RECIPE.category,
-          keywords: TEST_RECIPE.name,
+        recipeMatches(TEST_HOMEMADE_RECIPE, {
+          cuisine: TEST_HOMEMADE_RECIPE.cuisine,
+          category: TEST_HOMEMADE_RECIPE.category,
+          keywords: TEST_HOMEMADE_RECIPE.name,
         }),
       ).toBe(true);
     });
@@ -294,10 +310,10 @@ describe('Recipe Data Service', () => {
     it('returns false if the cuisine and keywords match but not the category', () => {
       const { recipeMatches } = useRecipesData();
       expect(
-        recipeMatches(TEST_RECIPE, {
-          cuisine: TEST_RECIPE.cuisine,
+        recipeMatches(TEST_HOMEMADE_RECIPE, {
+          cuisine: TEST_HOMEMADE_RECIPE.cuisine,
           category: 'Lamb',
-          keywords: TEST_RECIPE.name,
+          keywords: TEST_HOMEMADE_RECIPE.name,
         }),
       ).toBe(false);
     });
@@ -305,10 +321,10 @@ describe('Recipe Data Service', () => {
     it('returns false if the category and keywords match but not the cuisine', () => {
       const { recipeMatches } = useRecipesData();
       expect(
-        recipeMatches(TEST_RECIPE, {
+        recipeMatches(TEST_HOMEMADE_RECIPE, {
           cuisine: 'American',
-          category: TEST_RECIPE.category,
-          keywords: TEST_RECIPE.name,
+          category: TEST_HOMEMADE_RECIPE.category,
+          keywords: TEST_HOMEMADE_RECIPE.name,
         }),
       ).toBe(false);
     });
@@ -316,9 +332,9 @@ describe('Recipe Data Service', () => {
     it('returns false if the cuisine and category match but not the keywords', () => {
       const { recipeMatches } = useRecipesData();
       expect(
-        recipeMatches(TEST_RECIPE, {
-          cuisine: TEST_RECIPE.cuisine,
-          category: TEST_RECIPE.category,
+        recipeMatches(TEST_HOMEMADE_RECIPE, {
+          cuisine: TEST_HOMEMADE_RECIPE.cuisine,
+          category: TEST_HOMEMADE_RECIPE.category,
           keywords: 'BogusKeyword',
         }),
       ).toBe(false);
@@ -327,9 +343,9 @@ describe('Recipe Data Service', () => {
     it('returns true if the calories are in range', () => {
       const { recipeMatches } = useRecipesData();
       expect(
-        recipeMatches(TEST_RECIPE, {
-          minCalories: TEST_RECIPE.calories - 100,
-          maxCalories: TEST_RECIPE.calories + 100,
+        recipeMatches(TEST_HOMEMADE_RECIPE, {
+          minCalories: TEST_HOMEMADE_RECIPE.calories - 100,
+          maxCalories: TEST_HOMEMADE_RECIPE.calories + 100,
         }),
       ).toBe(true);
     });
@@ -337,9 +353,9 @@ describe('Recipe Data Service', () => {
     it('returns false if the calories are too high', () => {
       const { recipeMatches } = useRecipesData();
       expect(
-        recipeMatches(TEST_RECIPE, {
+        recipeMatches(TEST_HOMEMADE_RECIPE, {
           minCalories: 0,
-          maxCalories: TEST_RECIPE.calories - 1,
+          maxCalories: TEST_HOMEMADE_RECIPE.calories - 1,
         }),
       ).toBe(false);
     });
@@ -347,9 +363,9 @@ describe('Recipe Data Service', () => {
     it('returns false if the calories are too low', () => {
       const { recipeMatches } = useRecipesData();
       expect(
-        recipeMatches(TEST_RECIPE, {
-          minCalories: TEST_RECIPE.calories + 1,
-          maxCalories: TEST_RECIPE.calories + 100,
+        recipeMatches(TEST_HOMEMADE_RECIPE, {
+          minCalories: TEST_HOMEMADE_RECIPE.calories + 1,
+          maxCalories: TEST_HOMEMADE_RECIPE.calories + 100,
         }),
       ).toBe(false);
     });
@@ -357,12 +373,12 @@ describe('Recipe Data Service', () => {
     it('returns true if all parameters match', () => {
       const { recipeMatches } = useRecipesData();
       expect(
-        recipeMatches(TEST_RECIPE, {
-          cuisine: TEST_RECIPE.cuisine,
-          category: TEST_RECIPE.category,
-          keywords: TEST_RECIPE.name,
-          minCalories: TEST_RECIPE.calories - 100,
-          maxCalories: TEST_RECIPE.calories + 100,
+        recipeMatches(TEST_HOMEMADE_RECIPE, {
+          cuisine: TEST_HOMEMADE_RECIPE.cuisine,
+          category: TEST_HOMEMADE_RECIPE.category,
+          keywords: TEST_HOMEMADE_RECIPE.name,
+          minCalories: TEST_HOMEMADE_RECIPE.calories - 100,
+          maxCalories: TEST_HOMEMADE_RECIPE.calories + 100,
         }),
       ).toBe(true);
     });
@@ -370,12 +386,12 @@ describe('Recipe Data Service', () => {
     it('returns false if all match except cuisine', () => {
       const { recipeMatches } = useRecipesData();
       expect(
-        recipeMatches(TEST_RECIPE, {
+        recipeMatches(TEST_HOMEMADE_RECIPE, {
           cuisine: 'American',
-          category: TEST_RECIPE.category,
-          keywords: TEST_RECIPE.name,
-          minCalories: TEST_RECIPE.calories - 100,
-          maxCalories: TEST_RECIPE.calories + 100,
+          category: TEST_HOMEMADE_RECIPE.category,
+          keywords: TEST_HOMEMADE_RECIPE.name,
+          minCalories: TEST_HOMEMADE_RECIPE.calories - 100,
+          maxCalories: TEST_HOMEMADE_RECIPE.calories + 100,
         }),
       ).toBe(false);
     });
@@ -383,12 +399,12 @@ describe('Recipe Data Service', () => {
     it('returns false if all parameters match except category', () => {
       const { recipeMatches } = useRecipesData();
       expect(
-        recipeMatches(TEST_RECIPE, {
-          cuisine: TEST_RECIPE.cuisine,
+        recipeMatches(TEST_HOMEMADE_RECIPE, {
+          cuisine: TEST_HOMEMADE_RECIPE.cuisine,
           category: 'Lamb',
-          keywords: TEST_RECIPE.name,
-          minCalories: TEST_RECIPE.calories - 100,
-          maxCalories: TEST_RECIPE.calories + 100,
+          keywords: TEST_HOMEMADE_RECIPE.name,
+          minCalories: TEST_HOMEMADE_RECIPE.calories - 100,
+          maxCalories: TEST_HOMEMADE_RECIPE.calories + 100,
         }),
       ).toBe(false);
     });
@@ -396,12 +412,12 @@ describe('Recipe Data Service', () => {
     it('returns false if all parameters match except keywords', () => {
       const { recipeMatches } = useRecipesData();
       expect(
-        recipeMatches(TEST_RECIPE, {
-          cuisine: TEST_RECIPE.cuisine,
-          category: TEST_RECIPE.category,
+        recipeMatches(TEST_HOMEMADE_RECIPE, {
+          cuisine: TEST_HOMEMADE_RECIPE.cuisine,
+          category: TEST_HOMEMADE_RECIPE.category,
           keywords: 'BogusKeyword',
-          minCalories: TEST_RECIPE.calories - 100,
-          maxCalories: TEST_RECIPE.calories + 100,
+          minCalories: TEST_HOMEMADE_RECIPE.calories - 100,
+          maxCalories: TEST_HOMEMADE_RECIPE.calories + 100,
         }),
       ).toBe(false);
     });
@@ -409,12 +425,12 @@ describe('Recipe Data Service', () => {
     it('returns false if all parameters match except calories', () => {
       const { recipeMatches } = useRecipesData();
       expect(
-        recipeMatches(TEST_RECIPE, {
-          cuisine: TEST_RECIPE.cuisine,
-          category: TEST_RECIPE.category,
-          keywords: TEST_RECIPE.name,
-          minCalories: TEST_RECIPE.calories + 1,
-          maxCalories: TEST_RECIPE.calories + 100,
+        recipeMatches(TEST_HOMEMADE_RECIPE, {
+          cuisine: TEST_HOMEMADE_RECIPE.cuisine,
+          category: TEST_HOMEMADE_RECIPE.category,
+          keywords: TEST_HOMEMADE_RECIPE.name,
+          minCalories: TEST_HOMEMADE_RECIPE.calories + 1,
+          maxCalories: TEST_HOMEMADE_RECIPE.calories + 100,
         }),
       ).toBe(false);
     });

@@ -1,7 +1,7 @@
 import ConfirmDialog from '@/components/core/ConfirmDialog.vue';
 import ViewPageActionButtons from '@/components/core/ViewPageActionButtons.vue';
 import RecipeView from '@/components/recipes/RecipeView.vue';
-import { TEST_RECIPE } from '@/data/__tests__/test-data';
+import { TEST_HOMEMADE_RECIPE } from '@/data/__tests__/test-data';
 import { useRecipesData } from '@/data/recipes';
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
@@ -27,7 +27,7 @@ describe('Recipe Details Page', () => {
     const { getRecipe } = useRecipesData();
     (useRoute as Mock).mockReturnValue({ params: { id: '88f933fiieo' } });
     (useRouter as Mock).mockReturnValue({ push: vi.fn(), replace: vi.fn() });
-    (getRecipe as Mock).mockResolvedValue({ ...TEST_RECIPE, id: '88f933fiieo' });
+    (getRecipe as Mock).mockResolvedValue({ ...TEST_HOMEMADE_RECIPE, id: '88f933fiieo' });
   });
 
   afterEach(() => {

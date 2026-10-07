@@ -1,4 +1,4 @@
-import { TEST_RECIPE } from '@/data/__tests__/test-data';
+import { TEST_HOMEMADE_RECIPE } from '@/data/__tests__/test-data';
 import type { Recipe } from '@/models/recipe';
 import { mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -11,7 +11,7 @@ const vuetify = createVuetify({
   components,
   directives,
 });
-const mountComponent = (props: { recipe: Recipe } = { recipe: TEST_RECIPE }) =>
+const mountComponent = (props: { recipe: Recipe } = { recipe: TEST_HOMEMADE_RECIPE }) =>
   mount(RecipeSummaryCard, { props, global: { plugins: [vuetify] } });
 
 describe('Recipe Summary Card', () => {
@@ -33,13 +33,13 @@ describe('Recipe Summary Card', () => {
   it('displays the name in the title', () => {
     wrapper = mountComponent();
     const title = wrapper.findComponent(components.VCardTitle);
-    expect(title.text()).toBe(TEST_RECIPE.name);
+    expect(title.text()).toBe(TEST_HOMEMADE_RECIPE.name);
   });
 
   it('displays the category in the subtitle', () => {
     wrapper = mountComponent();
     const subtitle = wrapper.findComponent(components.VCardSubtitle);
-    expect(subtitle.text()).toContain(TEST_RECIPE.category);
+    expect(subtitle.text()).toContain(TEST_HOMEMADE_RECIPE.category);
   });
 
   describe('the card text area', () => {
@@ -52,15 +52,17 @@ describe('Recipe Summary Card', () => {
     it('contains five chips', () => {
       const chips = cardText.findAllComponents(components.VChip);
       expect(chips).toHaveLength(5);
-      expect(chips[0]!.text()).toBe(TEST_RECIPE.cuisine);
-      expect(chips[1]!.text()).toBe(TEST_RECIPE.difficulty);
-      expect(chips[2]!.text()).toBe(String(TEST_RECIPE.servings));
-      expect(chips[3]!.text()).toBe(String(TEST_RECIPE.prepTimeMinutes + TEST_RECIPE.cookTimeMinutes));
-      expect(chips[4]!.text()).toBe(`${TEST_RECIPE.calories} kcal`);
+      expect(chips[0]!.text()).toBe(TEST_HOMEMADE_RECIPE.cuisine);
+      expect(chips[1]!.text()).toBe(TEST_HOMEMADE_RECIPE.difficulty);
+      expect(chips[2]!.text()).toBe(String(TEST_HOMEMADE_RECIPE.servings));
+      expect(chips[3]!.text()).toBe(
+        String(TEST_HOMEMADE_RECIPE.prepTimeMinutes + TEST_HOMEMADE_RECIPE.cookTimeMinutes),
+      );
+      expect(chips[4]!.text()).toBe(`${TEST_HOMEMADE_RECIPE.calories} kcal`);
     });
 
     it('displays the description', () => {
-      expect(cardText.text()).toContain(TEST_RECIPE.description);
+      expect(cardText.text()).toContain(TEST_HOMEMADE_RECIPE.description);
     });
   });
 });
