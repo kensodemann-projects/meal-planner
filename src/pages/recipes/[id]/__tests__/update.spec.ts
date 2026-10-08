@@ -1,5 +1,5 @@
 import RecipeEditor from '@/components/recipes/RecipeEditor.vue';
-import { TEST_RECIPE } from '@/data/__tests__/test-data';
+import { TEST_HOMEMADE_RECIPE } from '@/data/__tests__/test-data';
 import { useRecipesData } from '@/data/recipes';
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
@@ -11,6 +11,7 @@ import update from '../update.vue';
 
 vi.mock('vue-router');
 vi.mock('@/data/recipes');
+vi.mock('@/data/sources');
 vi.mock('@/core/nutrition-generator');
 
 const vuetify = createVuetify({
@@ -26,7 +27,7 @@ describe('update', () => {
     const { getRecipe } = useRecipesData();
     (useRoute as Mock).mockReturnValue({ params: { id: '88f933fiieo' } });
     (useRouter as Mock).mockReturnValue({ replace: vi.fn() });
-    (getRecipe as Mock).mockResolvedValue({ ...TEST_RECIPE, id: '88f933fiieo' });
+    (getRecipe as Mock).mockResolvedValue({ ...TEST_HOMEMADE_RECIPE, id: '88f933fiieo' });
   });
 
   afterEach(() => {
@@ -84,10 +85,10 @@ describe('update', () => {
       wrapper = mountPage();
       await flushPromises();
       const editor = wrapper.findComponent(RecipeEditor);
-      editor.vm.$emit('save', { ...TEST_RECIPE, name: 'this is a modified name', id: '88f933fiieo' });
+      editor.vm.$emit('save', { ...TEST_HOMEMADE_RECIPE, name: 'this is a modified name', id: '88f933fiieo' });
       await flushPromises();
       expect(updateRecipe).toHaveBeenCalledExactlyOnceWith('88f933fiieo', {
-        ...TEST_RECIPE,
+        ...TEST_HOMEMADE_RECIPE,
         name: 'this is a modified name',
       });
     });
@@ -97,7 +98,7 @@ describe('update', () => {
       wrapper = mountPage();
       await flushPromises();
       const editor = wrapper.findComponent(RecipeEditor);
-      editor.vm.$emit('save', { ...TEST_RECIPE, name: 'this is a modified name', id: '88f933fiieo' });
+      editor.vm.$emit('save', { ...TEST_HOMEMADE_RECIPE, name: 'this is a modified name', id: '88f933fiieo' });
       await flushPromises();
       expect(router.replace).toHaveBeenCalledExactlyOnceWith('/recipes/88f933fiieo');
     });

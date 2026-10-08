@@ -1,5 +1,5 @@
 import RecipeEditor from '@/components/recipes/RecipeEditor.vue';
-import { TEST_RECIPE } from '@/data/__tests__/test-data';
+import { TEST_HOMEMADE_RECIPE } from '@/data/__tests__/test-data';
 import { useRecipesData } from '@/data/recipes';
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
@@ -11,6 +11,7 @@ import AddHomemadePage from '../add-homemade.vue';
 
 vi.mock('vue-router');
 vi.mock('@/data/recipes');
+vi.mock('@/data/sources');
 vi.mock('@/core/nutrition-generator');
 
 const vuetify = createVuetify({
@@ -39,6 +40,12 @@ describe('Recipe Add Homemade Page', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
+  it('passes homemade as the recipe kind', () => {
+    wrapper = mountPage();
+    const editor = wrapper.findComponent(RecipeEditor);
+    expect(editor.props('kind')).toBe('homemade');
+  });
+
   describe('on cancel', () => {
     it('does not create a new recipe', async () => {
       const { addRecipe } = useRecipesData();
@@ -64,16 +71,16 @@ describe('Recipe Add Homemade Page', () => {
       const { addRecipe } = useRecipesData();
       wrapper = mountPage();
       const editor = wrapper.findComponent(RecipeEditor);
-      editor.vm.$emit('save', TEST_RECIPE);
+      editor.vm.$emit('save', TEST_HOMEMADE_RECIPE);
       await flushPromises();
-      expect(addRecipe).toHaveBeenCalledExactlyOnceWith(TEST_RECIPE);
+      expect(addRecipe).toHaveBeenCalledExactlyOnceWith(TEST_HOMEMADE_RECIPE);
     });
 
     it('navigates to the recipe list page', async () => {
       const { replace } = useRouter();
       wrapper = mountPage();
       const editor = wrapper.findComponent(RecipeEditor);
-      editor.vm.$emit('save', TEST_RECIPE);
+      editor.vm.$emit('save', TEST_HOMEMADE_RECIPE);
       await flushPromises();
       expect(replace).toHaveBeenCalledExactlyOnceWith('/recipes');
     });

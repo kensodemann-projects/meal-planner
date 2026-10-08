@@ -57,16 +57,27 @@
 
         <v-col cols="12" md="6">
           <SelectAutocomplete
+            v-if="kind === 'homemade'"
             label="Difficulty"
             v-model="difficulty"
             :items="recipeDifficulties"
             :rules="[validationRules.required]"
             data-testid="difficulty-input"
           />
+          <SelectAutocomplete
+            v-else
+            label="Source"
+            v-model="sourceId"
+            :items="sources"
+            :rules="[validationRules.required]"
+            item-title="name"
+            item-value="id"
+            data-testid="source-input"
+          />
         </v-col>
       </v-row>
 
-      <v-row>
+      <v-row v-if="kind === 'homemade'">
         <v-col cols="12" md="6">
           <v-number-input
             label="Preparation Time (minutes)"
@@ -86,35 +97,37 @@
       </v-row>
     </v-container>
 
-    <SortableListEditor
-      v-model="ingredients"
-      title="Ingredients"
-      :validate-item="isValidIngredient"
-      :create-item="createIngredient"
-      @list-modified="listChanged = true"
-      add-prompt="Add Ingredient"
-      test-id-prefix="ingredient"
-      list-class="ingredient-list editable-list"
-    >
-      <template #item="{ item, onAddNext, onChange, onDelete }">
-        <IngredientEditorRow :ingredient="item" @add-next="onAddNext" @changed="onChange" @delete="onDelete" />
-      </template>
-    </SortableListEditor>
+    <div v-if="kind === 'homemade'">
+      <SortableListEditor
+        v-model="ingredients"
+        title="Ingredients"
+        :validate-item="isValidIngredient"
+        :create-item="createIngredient"
+        @list-modified="listChanged = true"
+        add-prompt="Add Ingredient"
+        test-id-prefix="ingredient"
+        list-class="ingredient-list editable-list"
+      >
+        <template #item="{ item, onAddNext, onChange, onDelete }">
+          <IngredientEditorRow :ingredient="item" @add-next="onAddNext" @changed="onChange" @delete="onDelete" />
+        </template>
+      </SortableListEditor>
 
-    <SortableListEditor
-      v-model="steps"
-      title="Steps"
-      :validate-item="isValidStep"
-      :create-item="createStep"
-      @list-modified="listChanged = true"
-      add-prompt="Add Step"
-      test-id-prefix="step"
-      list-class="step-list editable-list"
-    >
-      <template #item="{ item, onAddNext, onChange, onDelete }">
-        <StepEditorRow :step="item" @add-next="onAddNext" @changed="onChange" @delete="onDelete" />
-      </template>
-    </SortableListEditor>
+      <SortableListEditor
+        v-model="steps"
+        title="Steps"
+        :validate-item="isValidStep"
+        :create-item="createStep"
+        @list-modified="listChanged = true"
+        add-prompt="Add Step"
+        test-id-prefix="step"
+        list-class="step-list editable-list"
+      >
+        <template #item="{ item, onAddNext, onChange, onDelete }">
+          <StepEditorRow :step="item" @add-next="onAddNext" @changed="onChange" @delete="onDelete" />
+        </template>
+      </SortableListEditor>
+    </div>
 
     <div class="d-flex justify-space-between align-center">
       <h2>Nutritional Information Per Serving</h2>
@@ -177,18 +190,31 @@ import { cuisines } from '@/data/cuisines';
 import { recipeCategories } from '@/data/recipe-categories';
 import { recipeDifficulties } from '@/data/recipe-difficulties';
 import { useRecipesData } from '@/data/recipes';
+import { useSourcesData } from '@/data/sources';
 import type { Nutrition } from '@/models/nutrition';
-import type { Cuisine, Recipe, RecipeCategory, RecipeDifficulty, RecipeIngredient, RecipeStep } from '@/models/recipe';
+import type {
+  Cuisine,
+  Recipe,
+  RecipeCategory,
+  RecipeDifficulty,
+  RecipeIngredient,
+  RecipeKind,
+  RecipeStep,
+} from '@/models/recipe';
 import { computed, onMounted, ref, shallowRef } from 'vue';
 import type { VTextField } from 'vuetify/components';
 
 const emit = defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'cancel'): void }>();
-const props = defineProps<{ recipe?: Recipe }>();
+const props = withDefaults(defineProps<{ recipe?: Recipe; kind?: RecipeKind }>(), {
+  kind: ({ recipe }) => recipe?.kind || 'homemade',
+});
 
 const { generateNutritionData } = useNutritionGenerator();
 const { recipes } = useRecipesData();
+const { sources } = useSourcesData();
 
 const valid = shallowRef(false);
+const sourceId = shallowRef<string | null>(props.recipe?.sourceId ?? null);
 const name = shallowRef<string>(props.recipe?.name || '');
 const description = shallowRef<string>(props.recipe?.description || '');
 const category = shallowRef<RecipeCategory | null>(props.recipe?.category ?? null);
@@ -246,6 +272,7 @@ const isModified = computed((): boolean => {
     props.recipe.servings !== servings.value ||
     props.recipe.prepTimeMinutes !== prepTimeMinutes.value ||
     props.recipe.cookTimeMinutes !== cookTimeMinutes.value ||
+    (props.recipe.sourceId ?? null) !== sourceId.value ||
     props.recipe.calories !== nutrition.value.calories ||
     props.recipe.sodium !== nutrition.value.sodium ||
     props.recipe.sugar !== nutrition.value.sugar ||
@@ -255,26 +282,47 @@ const isModified = computed((): boolean => {
   );
 });
 
-const createRecipeFromForm = (): Recipe => ({
-  name: name.value.trim(),
-  description: description.value.trim() || null,
-  kind: props.recipe?.kind || 'homemade',
-  sourceId: props.recipe?.sourceId,
-  category: category.value!,
-  cuisine: cuisine.value!,
-  difficulty: difficulty.value!,
-  servings: servings.value!,
-  prepTimeMinutes: prepTimeMinutes.value!,
-  cookTimeMinutes: cookTimeMinutes.value!,
-  calories: nutrition.value.calories!,
-  sodium: nutrition.value.sodium!,
-  sugar: nutrition.value.sugar!,
-  carbs: nutrition.value.carbs!,
-  fat: nutrition.value.fat!,
-  protein: nutrition.value.protein!,
-  ingredients: ingredients.value.filter(isValidIngredient),
-  steps: steps.value.filter(isValidStep),
-});
+const createRecipeFromForm = (): Recipe =>
+  props.kind === 'homemade'
+    ? {
+        name: name.value.trim(),
+        description: description.value.trim() || null,
+        kind: props.kind,
+        category: category.value!,
+        cuisine: cuisine.value!,
+        difficulty: difficulty.value!,
+        servings: servings.value!,
+        prepTimeMinutes: prepTimeMinutes.value!,
+        cookTimeMinutes: cookTimeMinutes.value!,
+        calories: nutrition.value.calories!,
+        sodium: nutrition.value.sodium!,
+        sugar: nutrition.value.sugar!,
+        carbs: nutrition.value.carbs!,
+        fat: nutrition.value.fat!,
+        protein: nutrition.value.protein!,
+        ingredients: ingredients.value.filter(isValidIngredient),
+        steps: steps.value.filter(isValidStep),
+      }
+    : {
+        name: name.value.trim(),
+        description: description.value.trim() || null,
+        kind: props.kind,
+        sourceId: sourceId.value!,
+        category: category.value!,
+        cuisine: cuisine.value!,
+        difficulty: 'Easy',
+        servings: servings.value!,
+        prepTimeMinutes: 0,
+        cookTimeMinutes: 0,
+        calories: nutrition.value.calories!,
+        sodium: nutrition.value.sodium!,
+        sugar: nutrition.value.sugar!,
+        carbs: nutrition.value.carbs!,
+        fat: nutrition.value.fat!,
+        protein: nutrition.value.protein!,
+        ingredients: [],
+        steps: [],
+      };
 
 const save = () => {
   const recipe = createRecipeFromForm();
@@ -285,8 +333,11 @@ const save = () => {
 
 const disableNutritionButton = computed(() => {
   return (
-    !servings.value || servings.value <= 0 || name.value.trim() === '' || !ingredients.value.some(isValidIngredient)
-    // steps.value.length === 0
+    !servings.value ||
+    servings.value <= 0 ||
+    name.value.trim() === '' ||
+    (props.kind === 'prepared' && !sourceId.value) ||
+    (props.kind === 'homemade' && !ingredients.value.some(isValidIngredient))
   );
 });
 

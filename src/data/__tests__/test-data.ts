@@ -2379,7 +2379,7 @@ export const TEST_RECIPES: Recipe[] = [
   },
 ];
 
-export const TEST_RECIPE: Recipe = {
+export const TEST_HOMEMADE_RECIPE: Recipe = {
   name: 'Pan-Seared Scallops with Lemon-Butter Sauce',
   description: 'Perfectly caramelized sea scallops served with a simple, bright lemon-butter reduction.',
   kind: 'homemade',
@@ -2446,6 +2446,27 @@ export const TEST_RECIPE: Recipe = {
       instruction: 'Spoon the lemon-butter sauce over the scallops and serve immediately.',
     },
   ],
+};
+
+export const TEST_PREPARED_RECIPE: Recipe = {
+  name: 'Miso-Glazed Black Cod with Forbidden Rice',
+  description: 'CookUnity chef-prepared miso-marinated black cod over forbidden rice with sautéed bok choy.',
+  kind: 'prepared',
+  sourceId: 'fiie002934009ser',
+  category: 'Seafood',
+  cuisine: 'Japanese',
+  difficulty: 'Easy',
+  servings: 1,
+  prepTimeMinutes: 0,
+  cookTimeMinutes: 0,
+  calories: 540,
+  sodium: 860,
+  sugar: 9,
+  carbs: 48,
+  fat: 16,
+  protein: 36,
+  ingredients: [],
+  steps: [],
 };
 
 export const TEST_MEAL_PLANS: MealPlan[] = [
