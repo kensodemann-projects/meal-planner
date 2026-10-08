@@ -189,7 +189,7 @@ const FILLED_STEP: RecipeStep = {
   instruction: 'Preheat oven to 375°F (190°C).',
 };
 
-const describeEditableList = <T extends object>(
+const registerEditableListTests = <T extends object>(
   getWrapper: () => EditorWrapper,
   options: {
     title: string;
@@ -534,7 +534,7 @@ describe('Recipe Editor', () => {
         expect(nutritionInputs.protein.element.value).toBe('0');
       });
 
-      describeEditableList(() => wrapper, {
+      registerEditableListTests(() => wrapper, {
         title: 'the ingredients list',
         noun: 'ingredient',
         testIdPrefix: 'ingredient',
@@ -544,7 +544,7 @@ describe('Recipe Editor', () => {
         filledItem: FILLED_INGREDIENT,
       });
 
-      describeEditableList(() => wrapper, {
+      registerEditableListTests(() => wrapper, {
         title: 'the steps list',
         noun: 'step',
         testIdPrefix: 'step',
@@ -786,7 +786,7 @@ describe('Recipe Editor', () => {
         expect(nutritionInputs.protein.element.value).toBe(BEER_CHEESE.protein.toString());
       });
 
-      describeEditableList(() => wrapper, {
+      registerEditableListTests(() => wrapper, {
         title: 'the ingredients list',
         noun: 'ingredient',
         testIdPrefix: 'ingredient',
@@ -796,7 +796,7 @@ describe('Recipe Editor', () => {
         filledItem: FILLED_INGREDIENT,
       });
 
-      describeEditableList(() => wrapper, {
+      registerEditableListTests(() => wrapper, {
         title: 'the steps list',
         noun: 'step',
         testIdPrefix: 'step',
