@@ -197,6 +197,11 @@ describe('Recipe Editor', () => {
       wrapper = mountComponent();
       expectHomemadeFields(wrapper);
     });
+
+    it('treats a stored recipe with no kind as homemade', () => {
+      wrapper = mountComponent({ recipe: { ...BEER_CHEESE, kind: undefined } });
+      expectHomemadeFields(wrapper);
+    });
   });
 
   describe('name', () => {

@@ -201,7 +201,7 @@ import type {
   RecipeKind,
   RecipeStep,
 } from '@/models/recipe';
-import { computed, onMounted, ref, shallowRef, withDefaults } from 'vue';
+import { computed, onMounted, ref, shallowRef } from 'vue';
 import type { VTextField } from 'vuetify/components';
 
 const emit = defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'cancel'): void }>();
@@ -272,7 +272,7 @@ const isModified = computed((): boolean => {
     props.recipe.servings !== servings.value ||
     props.recipe.prepTimeMinutes !== prepTimeMinutes.value ||
     props.recipe.cookTimeMinutes !== cookTimeMinutes.value ||
-    (sourceId.value !== null && props.recipe.sourceId !== sourceId.value) ||
+    (props.recipe.sourceId ?? null) !== sourceId.value ||
     props.recipe.calories !== nutrition.value.calories ||
     props.recipe.sodium !== nutrition.value.sodium ||
     props.recipe.sugar !== nutrition.value.sugar ||
