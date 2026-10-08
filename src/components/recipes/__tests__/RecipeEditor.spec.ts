@@ -356,23 +356,6 @@ const BEER_CHEESE: Recipe = {
   ],
 };
 
-const HOMEMADE_SAVE_CHANGES = [
-  { field: 'name', value: 'Apple Pie' },
-  { field: 'description', value: 'Fudge covered pickles with apples in a pie crust' },
-  { field: 'category', value: 'Dessert' },
-  { field: 'cuisine', value: 'Italian' },
-  { field: 'difficulty', value: 'Easy' },
-  { field: 'servings', value: '8' },
-  { field: 'prepTimeMinutes', value: '20' },
-  { field: 'cookTimeMinutes', value: '45' },
-  { field: 'calories', value: '500' },
-  { field: 'sodium', value: '900' },
-  { field: 'sugar', value: '10' },
-  { field: 'carbs', value: '30' },
-  { field: 'fat', value: '35' },
-  { field: 'protein', value: '20' },
-] as const;
-
 describe('Recipe Editor', () => {
   let wrapper: EditorWrapper;
 
@@ -824,7 +807,23 @@ describe('Recipe Editor', () => {
       });
 
       describe('the save button', () => {
-        const saveChanges = () => asFieldSetters({ ...getInputs(wrapper), ...getNutritionInputs(wrapper) });
+        const HOMEMADE_FIELD_CHANGES = [
+          { field: 'name', value: 'Apple Pie' },
+          { field: 'description', value: 'Fudge covered pickles with apples in a pie crust' },
+          { field: 'category', value: 'Dessert' },
+          { field: 'cuisine', value: 'Italian' },
+          { field: 'difficulty', value: 'Easy' },
+          { field: 'servings', value: '8' },
+          { field: 'prepTimeMinutes', value: '20' },
+          { field: 'cookTimeMinutes', value: '45' },
+          { field: 'calories', value: '500' },
+          { field: 'sodium', value: '900' },
+          { field: 'sugar', value: '10' },
+          { field: 'carbs', value: '30' },
+          { field: 'fat', value: '35' },
+          { field: 'protein', value: '20' },
+        ] as const;
+        const getFieldSetters = () => asFieldSetters({ ...getInputs(wrapper), ...getNutritionInputs(wrapper) });
 
         it('begins disabled', () => {
           const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
@@ -838,9 +837,9 @@ describe('Recipe Editor', () => {
           expect(saveButton.attributes('disabled')).toBeDefined();
         });
 
-        it.each(HOMEMADE_SAVE_CHANGES)('is enabled if the $field value is changed', async ({ field, value }) => {
+        it.each(HOMEMADE_FIELD_CHANGES)('is enabled if the $field value is changed', async ({ field, value }) => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          await saveChanges()[field].setValue(value);
+          await getFieldSetters()[field].setValue(value);
           expect(saveButton.attributes('disabled')).toBeUndefined();
         });
 
@@ -930,20 +929,6 @@ describe('Recipe Editor', () => {
     describe('prepared', () => {
       const prepared: Recipe = { ...TEST_PREPARED_RECIPE, id: 'prepared-99' };
       const nextSourceId = 'iir00305003lfkdj';
-      const preparedSaveChanges = [
-        { field: 'name', value: 'Updated Black Cod' },
-        { field: 'description', value: 'Reheated until hot.' },
-        { field: 'category', value: 'Poultry' },
-        { field: 'cuisine', value: 'Italian' },
-        { field: 'source', value: nextSourceId },
-        { field: 'servings', value: '2' },
-        { field: 'calories', value: '600' },
-        { field: 'sodium', value: '900' },
-        { field: 'sugar', value: '10' },
-        { field: 'carbs', value: '30' },
-        { field: 'fat', value: '35' },
-        { field: 'protein', value: '20' },
-      ] as const;
 
       beforeEach(() => {
         const { sources } = useSourcesData();
@@ -974,7 +959,21 @@ describe('Recipe Editor', () => {
       });
 
       describe('the save button', () => {
-        const saveChanges = () => asFieldSetters({ ...getPreparedInputs(wrapper), ...getNutritionInputs(wrapper) });
+        const PREPARED_FIELD_CHANGES = [
+          { field: 'name', value: 'Updated Black Cod' },
+          { field: 'description', value: 'Reheated until hot.' },
+          { field: 'category', value: 'Poultry' },
+          { field: 'cuisine', value: 'Italian' },
+          { field: 'source', value: nextSourceId },
+          { field: 'servings', value: '2' },
+          { field: 'calories', value: '600' },
+          { field: 'sodium', value: '900' },
+          { field: 'sugar', value: '10' },
+          { field: 'carbs', value: '30' },
+          { field: 'fat', value: '35' },
+          { field: 'protein', value: '20' },
+        ] as const;
+        const getFieldSetters = () => asFieldSetters({ ...getPreparedInputs(wrapper), ...getNutritionInputs(wrapper) });
 
         it('begins disabled', () => {
           const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
@@ -988,9 +987,9 @@ describe('Recipe Editor', () => {
           expect(saveButton.attributes('disabled')).toBeDefined();
         });
 
-        it.each(preparedSaveChanges)('is enabled if the $field value is changed', async ({ field, value }) => {
+        it.each(PREPARED_FIELD_CHANGES)('is enabled if the $field value is changed', async ({ field, value }) => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          await saveChanges()[field].setValue(value);
+          await getFieldSetters()[field].setValue(value);
           expect(saveButton.attributes('disabled')).toBeUndefined();
         });
 
