@@ -4,10 +4,10 @@ import { TEST_PREPARED_RECIPE, TEST_RECIPES, TEST_SOURCES } from '@/data/__tests
 import { useRecipesData } from '@/data/recipes';
 import { useSourcesData } from '@/data/sources';
 import type { Source } from '@/models/source';
-import type { Recipe, RecipeKind } from '@/models/recipe';
+import type { Recipe, RecipeIngredient, RecipeKind, RecipeStep } from '@/models/recipe';
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
-import type { Ref } from 'vue';
+import type { Component, Ref } from 'vue';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -87,7 +87,10 @@ const mountComponent = (props = {}) =>
     },
   });
 
-const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
+type EditorWrapper = ReturnType<typeof mountComponent>;
+type FieldSetter = { setValue: (value: string) => Promise<void> };
+
+const getInputs = (wrapper: EditorWrapper) => ({
   name: wrapper.findComponent('[data-testid="name-input"]').find('input'),
   description: wrapper.findComponent('[data-testid="description-input"]').find('textarea'),
   category: wrapper.findComponent('[data-testid="category-input"]') as VueWrapper<components.VAutocomplete>,
@@ -98,7 +101,7 @@ const getInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
   cookTimeMinutes: wrapper.findComponent('[data-testid="cook-time-input"]').find('input'),
 });
 
-const getPreparedInputs = (wrapper: ReturnType<typeof mountComponent>) => {
+const getPreparedInputs = (wrapper: EditorWrapper) => {
   const source = wrapper.findComponent('[data-testid="source-input"]') as VueWrapper<components.VAutocomplete>;
   if (!source.exists() || source.props('label') !== 'Source') throw new Error('Source field was not rendered');
   return {
@@ -111,10 +114,10 @@ const getPreparedInputs = (wrapper: ReturnType<typeof mountComponent>) => {
   };
 };
 
-const autocompleteLabeled = (wrapper: ReturnType<typeof mountComponent>, label: string) =>
+const autocompleteLabeled = (wrapper: EditorWrapper, label: string) =>
   wrapper.findAllComponents(components.VAutocomplete).find((field) => field.props('label') === label);
 
-const expectHomemadeFields = (wrapper: ReturnType<typeof mountComponent>) => {
+const expectHomemadeFields = (wrapper: EditorWrapper) => {
   expect(wrapper.find('[data-testid="name-input"]').exists()).toBe(true);
   expect(wrapper.find('[data-testid="description-input"]').exists()).toBe(true);
   expect(wrapper.find('[data-testid="category-input"]').exists()).toBe(true);
@@ -129,7 +132,7 @@ const expectHomemadeFields = (wrapper: ReturnType<typeof mountComponent>) => {
   expect(autocompleteLabeled(wrapper, 'Source')).toBeUndefined();
 };
 
-const getNutritionInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
+const getNutritionInputs = (wrapper: EditorWrapper) => ({
   calories: wrapper.findComponent('[data-testid="calories-input"]').find('input'),
   sodium: wrapper.findComponent('[data-testid="sodium-input"]').find('input'),
   sugar: wrapper.findComponent('[data-testid="sugar-input"]').find('input'),
@@ -138,8 +141,223 @@ const getNutritionInputs = (wrapper: ReturnType<typeof mountComponent>) => ({
   protein: wrapper.findComponent('[data-testid="protein-input"]').find('input'),
 });
 
+const asFieldSetters = (fields: Record<string, FieldSetter>) => fields;
+
+const fillHomemade = async (wrapper: EditorWrapper, options?: { name?: string; description?: string }) => {
+  const inputs = getInputs(wrapper);
+  const nutritionInputs = getNutritionInputs(wrapper);
+  await inputs.category.setValue('Dessert');
+  await inputs.cuisine.setValue('American');
+  await inputs.difficulty.setValue('Easy');
+  await inputs.name.setValue(options?.name ?? 'Apple Pie');
+  await inputs.servings.setValue('2');
+  await inputs.prepTimeMinutes.setValue('30');
+  await inputs.cookTimeMinutes.setValue('45');
+  await nutritionInputs.calories.setValue('325');
+  if (options?.description !== undefined) {
+    await inputs.description.setValue(options.description);
+  }
+};
+
+const fillPrepared = async (
+  wrapper: EditorWrapper,
+  sourceId: string,
+  options?: { name?: string; description?: string },
+) => {
+  const inputs = getPreparedInputs(wrapper);
+  const nutritionInputs = getNutritionInputs(wrapper);
+  await inputs.category.setValue('Seafood');
+  await inputs.cuisine.setValue('Japanese');
+  await inputs.source.setValue(sourceId);
+  await inputs.name.setValue(options?.name ?? 'Black Cod Bowl');
+  await inputs.servings.setValue('1');
+  await nutritionInputs.calories.setValue('540');
+  if (options?.description !== undefined) {
+    await inputs.description.setValue(options.description);
+  }
+};
+
+const FILLED_INGREDIENT: RecipeIngredient = {
+  id: 'bd3543e0-68d4-4ba0-a1a6-29548d46464b',
+  units: 1,
+  unitOfMeasure: findUnitOfMeasure('lb'),
+  name: 'fudge',
+};
+
+const FILLED_STEP: RecipeStep = {
+  id: 'bd3543e0-68d4-4ba0-a1a6-29548d46464b',
+  instruction: 'Preheat oven to 375°F (190°C).',
+};
+
+const registerEditableListTests = <T extends object>(
+  getWrapper: () => EditorWrapper,
+  options: {
+    title: string;
+    noun: string;
+    testIdPrefix: string;
+    row: Component;
+    prop: string;
+    initialItems: readonly T[];
+    filledItem: T;
+  },
+) => {
+  const { title, noun, testIdPrefix, row, prop, initialItems, filledItem } = options;
+
+  describe(title, () => {
+    const listRows = () => getWrapper().find(`[data-testid="${testIdPrefix}-list-grid"]`).findAllComponents(row);
+    const addButton = () => getWrapper().find(`[data-testid="add-${testIdPrefix}-button"]`);
+
+    if (initialItems.length === 0) {
+      it('is empty', () => {
+        expect(listRows().length).toBe(0);
+      });
+    } else {
+      it(`contains each ${noun}`, () => {
+        const rows = listRows();
+        expect(rows.length).toBe(initialItems.length);
+        rows.forEach((listRow: VueWrapper, index: number) => {
+          const rowProps = listRow.props() as Record<string, unknown>;
+          expect(rowProps[prop]).toEqual(initialItems[index]);
+        });
+      });
+    }
+
+    it('has add enabled', () => {
+      expect(addButton().attributes('disabled')).toBeUndefined();
+    });
+
+    it(`adds a blank ${noun}`, async () => {
+      await addButton().trigger('click');
+      expect(listRows().length).toBe(initialItems.length + 1);
+    });
+
+    it(`disables add when the blank ${noun} is added`, async () => {
+      expect(addButton().attributes('disabled')).toBeUndefined();
+      await addButton().trigger('click');
+      expect(addButton().attributes('disabled')).toBeDefined();
+    });
+
+    it(`enables add once the blank ${noun} is filled in`, async () => {
+      await addButton().trigger('click');
+      expect(addButton().attributes('disabled')).toBeDefined();
+      const rows = listRows();
+      await rows[rows.length - 1]?.vm.$emit('changed', filledItem);
+      expect(addButton().attributes('disabled')).toBeUndefined();
+    });
+
+    it(`removes the ${noun} from the list`, async () => {
+      if (initialItems.length === 0) {
+        await addButton().trigger('click');
+        let rows = listRows();
+        expect(rows.length).toBe(1);
+        await rows[0]?.vm.$emit('delete');
+        rows = listRows();
+        expect(rows.length).toBe(0);
+        return;
+      }
+
+      let rows = listRows();
+      expect(rows.length).toBe(initialItems.length);
+      await rows[2]?.vm.$emit('delete');
+      rows = listRows();
+      expect(rows.length).toBe(initialItems.length - 1);
+    });
+  });
+};
+
+const BEER_CHEESE: Recipe = {
+  id: 'fie039950912',
+  name: 'Hearty Beer Cheese Soup',
+  description: 'A rich and creamy soup combining sharp cheddar cheese with beer and savory seasonings.',
+  kind: 'homemade',
+  category: 'Soup',
+  cuisine: 'American',
+  difficulty: 'Normal',
+  servings: 6,
+  prepTimeMinutes: 15,
+  cookTimeMinutes: 30,
+  calories: 410,
+  sodium: 680,
+  sugar: 5,
+  carbs: 22,
+  fat: 30,
+  protein: 15,
+  ingredients: [
+    {
+      id: 'c01d5817-8101-4a72-8173-4b303e8dafde',
+      units: 0.25,
+      unitOfMeasure: findUnitOfMeasure('cup'),
+      name: 'Unsalted Butter',
+    },
+    {
+      id: '1fe0060d-7762-4f6a-a3ac-a8eaf98078a9',
+      units: 0.25,
+      unitOfMeasure: findUnitOfMeasure('cup'),
+      name: 'All-Purpose Flour',
+    },
+    {
+      id: '3d56a852-d60c-453d-ba8b-61e8091c07aa',
+      units: 0.5,
+      unitOfMeasure: findUnitOfMeasure('cup'),
+      name: 'Chopped Onion',
+    },
+    {
+      id: 'd8c1ddab-dd3f-4edf-bb60-75991b199247',
+      units: 3,
+      unitOfMeasure: findUnitOfMeasure('cup'),
+      name: 'Chicken Broth',
+    },
+    {
+      id: 'a0d9b316-32b4-44b3-b0aa-d7f139477a44',
+      units: 12,
+      unitOfMeasure: findUnitOfMeasure('floz'),
+      name: 'Lager or Pale Ale Beer',
+    },
+    {
+      id: '88706b21-246b-419a-8b20-de5a964ed1f9',
+      units: 8,
+      unitOfMeasure: findUnitOfMeasure('oz'),
+      name: 'Sharp Cheddar Cheese, shredded',
+    },
+    {
+      id: 'df8f184a-7cea-4f75-a72d-aa4333ec3e9c',
+      units: 1,
+      unitOfMeasure: findUnitOfMeasure('cup'),
+      name: 'Heavy Cream',
+    },
+  ],
+  steps: [
+    {
+      id: 'a5c9a7b3-6f4e-5d9a-fc6d-4a9c1a3e5f7b',
+      instruction: 'In a large pot, melt butter over medium heat. Add onion and cook until softened, about 5 minutes.',
+    },
+    {
+      id: 'b6d0a8c4-7a5f-6e0b-ad7e-5a0d2a4f6a8c',
+      instruction: 'Whisk in the flour and cook for 1 minute to create a roux.',
+    },
+    {
+      id: 'c7e1a9b5-8b6a-7f1c-be8f-6a1e3a5a7b9d',
+      instruction: 'Slowly whisk in the chicken broth and then the beer, ensuring no lumps remain.',
+    },
+    {
+      id: 'd8f2a0b6-9c7b-8a2d-cf9a-7a2f4a6b8c0e',
+      instruction: 'Bring the soup to a simmer and cook for 10 minutes, stirring occasionally.',
+    },
+    {
+      id: 'e9a3a1a7-0d8c-9b3e-da0b-8a3a5a7c9d1f',
+      instruction:
+        'Reduce heat to low. Stir in the heavy cream and then gradually add the shredded cheese, stirring constantly until fully melted and smooth.',
+    },
+    {
+      id: 'f0b4a2a8-1e9d-0c4f-eb1c-9a4b6a8d0e2a',
+      instruction:
+        'Do not boil after adding cheese. Season with salt, pepper, and a dash of hot sauce if desired. Serve hot.',
+    },
+  ],
+};
+
 describe('Recipe Editor', () => {
-  let wrapper: ReturnType<typeof mountComponent>;
+  let wrapper: EditorWrapper;
 
   beforeEach(() => {
     const { recipes } = useRecipesData();
@@ -148,434 +366,151 @@ describe('Recipe Editor', () => {
 
   afterEach(() => {
     wrapper?.unmount();
-    vi.clearAllTimers();
-    try {
-      vi.useRealTimers();
-    } catch {}
   });
 
-  it('renders', () => {
-    const wrapper = mountComponent();
-    expect(wrapper.exists()).toBe(true);
-  });
-
-  it('includes the proper sub-sections', () => {
-    wrapper = mountComponent();
-    const subheaders = wrapper.findAll('h2');
-    expect(subheaders.length).toBe(4);
-    expect(subheaders[0]!.text()).toBe('Basic Information');
-    expect(subheaders[1]!.text()).toBe('Ingredients');
-    expect(subheaders[2]!.text()).toBe('Steps');
-    expect(subheaders[3]!.text()).toBe('Nutritional Information Per Serving');
-  });
-
-  describe('kind', () => {
-    it('shows the homemade fields and hides source when kind is homemade', () => {
-      wrapper = mountComponent({ kind: 'homemade' });
-      expectHomemadeFields(wrapper);
-    });
-
-    it('hides the homemade-only fields and shows source when kind is prepared', () => {
-      wrapper = mountComponent({ kind: 'prepared' });
-
-      expect(wrapper.find('[data-testid="name-input"]').exists()).toBe(true);
-      expect(wrapper.find('[data-testid="description-input"]').exists()).toBe(true);
-      expect(wrapper.find('[data-testid="category-input"]').exists()).toBe(true);
-      expect(wrapper.find('[data-testid="cuisine-input"]').exists()).toBe(true);
-      expect(wrapper.find('[data-testid="servings-input"]').exists()).toBe(true);
-      expect(wrapper.find('[data-testid="calories-input"]').exists()).toBe(true);
-      expect(autocompleteLabeled(wrapper, 'Source')).toBeDefined();
-
-      expect(autocompleteLabeled(wrapper, 'Difficulty')).toBeUndefined();
-      expect(wrapper.find('[data-testid="prep-time-input"]').exists()).toBe(false);
-      expect(wrapper.find('[data-testid="cook-time-input"]').exists()).toBe(false);
-      expect(wrapper.find('[data-testid="ingredient-list-grid"]').exists()).toBe(false);
-      expect(wrapper.find('[data-testid="step-list-grid"]').exists()).toBe(false);
-    });
-
-    it('behaves like homemade when kind is omitted', () => {
-      wrapper = mountComponent();
-      expectHomemadeFields(wrapper);
-    });
-
-    it('treats a stored recipe with no kind as homemade', () => {
-      wrapper = mountComponent({ recipe: { ...BEER_CHEESE, kind: undefined } });
-      expectHomemadeFields(wrapper);
-    });
-  });
-
-  describe('name', () => {
-    it('exists', () => {
-      wrapper = mountComponent();
-      const input = wrapper.findComponent('[data-testid="name-input"]') as VueWrapper<components.VTextField>;
-      expect(input.exists()).toBe(true);
-      expect(input.props('label')).toBe('Name');
-    });
-
-    it('is required', async () => {
-      wrapper = mountComponent();
-      await textFieldIsRequired(wrapper, 'name-input');
-    });
-
-    it('must be unique', async () => {
-      wrapper = mountComponent();
-      const textField = wrapper.findComponent('[data-testid="name-input"]') as VueWrapper<components.VTextField>;
-      const input = textField.find('input');
-
-      expect(wrapper.text()).not.toContain('already exists');
-      await input.trigger('focus');
-      await input.setValue(TEST_RECIPES[0].name);
-      await input.trigger('blur');
-      expect(wrapper.text()).toContain('already exists');
-
-      await input.setValue('redrum');
-      await input.trigger('blur');
-      expect(wrapper.text()).not.toContain('already exists');
-    });
-
-    it('allows the name to be reset', async () => {
-      wrapper = mountComponent({ recipe: { ...TEST_RECIPES[0] } });
-      const input = wrapper.findComponent('[data-testid="name-input"]') as VueWrapper<components.VTextField>;
-      const textField = input.find('input');
-
-      expect(wrapper.text()).not.toContain('already exists');
-      await textField.setValue(TEST_RECIPES[1].name);
-      await textField.trigger('blur');
-      expect(wrapper.text()).toContain('already exists');
-
-      await textField.setValue(TEST_RECIPES[0].name);
-      await textField.trigger('blur');
-      expect(wrapper.text()).not.toContain('already exists');
-    });
-  });
-
-  describe('category', () => {
+  describe('rendering', () => {
     it('renders', () => {
       wrapper = mountComponent();
-      const categoryInput = wrapper.findComponent(
-        '[data-testid="category-input"]',
-      ) as VueWrapper<components.VAutocomplete>;
-      expect(categoryInput.exists()).toBe(true);
-      expect(categoryInput.props('label')).toBe('Category');
+      expect(wrapper.exists()).toBe(true);
     });
 
-    it('is required', async () => {
-      wrapper = mountComponent();
-      await autocompleteIsRequired(wrapper, 'category-input');
+    describe('homemade', () => {
+      it('shows the homemade fields and hides source when kind is homemade', () => {
+        wrapper = mountComponent({ kind: 'homemade' });
+        expectHomemadeFields(wrapper);
+      });
+
+      it('behaves like homemade when kind is omitted', () => {
+        wrapper = mountComponent();
+        expectHomemadeFields(wrapper);
+      });
+
+      it('treats a stored recipe with no kind as homemade', () => {
+        wrapper = mountComponent({ recipe: { ...BEER_CHEESE, kind: undefined } });
+        expectHomemadeFields(wrapper);
+      });
+
+      it('includes the homemade sub-sections', () => {
+        wrapper = mountComponent();
+        const subheaders = wrapper.findAll('h2');
+        expect(subheaders.length).toBe(4);
+        expect(subheaders[0]!.text()).toBe('Basic Information');
+        expect(subheaders[1]!.text()).toBe('Ingredients');
+        expect(subheaders[2]!.text()).toBe('Steps');
+        expect(subheaders[3]!.text()).toBe('Nutritional Information Per Serving');
+      });
     });
 
-    describe('tab key behavior', () => {
-      it('selects the first matching category when the search text matches', async () => {
-        wrapper = mountComponent();
-        const categoryInput = wrapper.findComponent(
-          '[data-testid="category-input"]',
-        ) as VueWrapper<components.VAutocomplete>;
-        const input = categoryInput.find('input[role="combobox"]');
-        await input.setValue('bre');
-        await input.trigger('keydown.tab');
-        expect(categoryInput.props('modelValue')).toBe('Breakfast');
-      });
+    describe('prepared', () => {
+      it('hides the homemade-only fields and shows source when kind is prepared', () => {
+        wrapper = mountComponent({ kind: 'prepared' });
 
-      it('selects the first matching category when the search text matches multiple items', async () => {
-        wrapper = mountComponent();
-        const categoryInput = wrapper.findComponent(
-          '[data-testid="category-input"]',
-        ) as VueWrapper<components.VAutocomplete>;
-        const input = categoryInput.find('input[role="combobox"]');
-        await input.setValue('sa');
-        await input.trigger('keydown.tab');
-        // 'Salad', 'Sauce' match 'sa'; first match is 'Salad'
-        expect(categoryInput.props('modelValue')).toBe('Salad');
-      });
+        expect(wrapper.find('[data-testid="name-input"]').exists()).toBe(true);
+        expect(wrapper.find('[data-testid="description-input"]').exists()).toBe(true);
+        expect(wrapper.find('[data-testid="category-input"]').exists()).toBe(true);
+        expect(wrapper.find('[data-testid="cuisine-input"]').exists()).toBe(true);
+        expect(wrapper.find('[data-testid="servings-input"]').exists()).toBe(true);
+        expect(wrapper.find('[data-testid="calories-input"]').exists()).toBe(true);
+        expect(autocompleteLabeled(wrapper, 'Source')).toBeDefined();
 
-      it('does not select any category when the search text is empty', async () => {
-        wrapper = mountComponent();
-        const categoryInput = wrapper.findComponent(
-          '[data-testid="category-input"]',
-        ) as VueWrapper<components.VAutocomplete>;
-        const input = categoryInput.find('input[role="combobox"]');
-        await input.trigger('keydown.tab');
-        expect(categoryInput.props('modelValue')).toBeNull();
-      });
-
-      it('does not select any category when the search text does not match any category', async () => {
-        wrapper = mountComponent();
-        const categoryInput = wrapper.findComponent(
-          '[data-testid="category-input"]',
-        ) as VueWrapper<components.VAutocomplete>;
-        const input = categoryInput.find('input[role="combobox"]');
-        await input.setValue('zzz');
-        await input.trigger('keydown.tab');
-        expect(categoryInput.props('modelValue')).toBeNull();
+        expect(autocompleteLabeled(wrapper, 'Difficulty')).toBeUndefined();
+        expect(wrapper.find('[data-testid="prep-time-input"]').exists()).toBe(false);
+        expect(wrapper.find('[data-testid="cook-time-input"]').exists()).toBe(false);
+        expect(wrapper.find('[data-testid="ingredient-list-grid"]').exists()).toBe(false);
+        expect(wrapper.find('[data-testid="step-list-grid"]').exists()).toBe(false);
       });
     });
   });
 
-  describe('cuisine', () => {
-    it('renders', () => {
+  describe('validation', () => {
+    beforeEach(() => {
       wrapper = mountComponent();
-      const cuisineInput = wrapper.findComponent(
-        '[data-testid="cuisine-input"]',
-      ) as VueWrapper<components.VAutocomplete>;
-      expect(cuisineInput.exists()).toBe(true);
-      expect(cuisineInput.props('label')).toBe('Cuisine');
     });
 
-    it('is required', async () => {
-      wrapper = mountComponent();
-      await autocompleteIsRequired(wrapper, 'cuisine-input');
-    });
-
-    describe('tab key behavior', () => {
-      it('selects the first matching cuisine when the search text matches', async () => {
-        wrapper = mountComponent();
-        const cuisineInput = wrapper.findComponent(
-          '[data-testid="cuisine-input"]',
-        ) as VueWrapper<components.VAutocomplete>;
-        const input = cuisineInput.find('input[role="combobox"]');
-        await input.setValue('nc');
-        await input.trigger('keydown.tab');
-        expect(cuisineInput.props('modelValue')).toBe('French');
+    describe('name', () => {
+      it('is required', async () => {
+        await textFieldIsRequired(wrapper, 'name-input');
       });
 
-      it('selects the first matching cuisine when the search text matches multiple items', async () => {
-        wrapper = mountComponent();
-        const cuisineInput = wrapper.findComponent(
-          '[data-testid="cuisine-input"]',
-        ) as VueWrapper<components.VAutocomplete>;
-        const input = cuisineInput.find('input[role="combobox"]');
-        await input.setValue('n');
-        await input.trigger('keydown.tab');
-        expect(cuisineInput.props('modelValue')).toBe('American');
+      it('must be unique', async () => {
+        const textField = wrapper.findComponent('[data-testid="name-input"]') as VueWrapper<components.VTextField>;
+        const input = textField.find('input');
+
+        expect(wrapper.text()).not.toContain('already exists');
+        await input.trigger('focus');
+        await input.setValue(TEST_RECIPES[0].name);
+        await input.trigger('blur');
+        expect(wrapper.text()).toContain('already exists');
+
+        await input.setValue('redrum');
+        await input.trigger('blur');
+        expect(wrapper.text()).not.toContain('already exists');
       });
 
-      it('does select any the cuisine when the search text is empty', async () => {
-        wrapper = mountComponent();
-        const cuisineInput = wrapper.findComponent(
-          '[data-testid="cuisine-input"]',
-        ) as VueWrapper<components.VAutocomplete>;
-        const input = cuisineInput.find('input[role="combobox"]');
-        await input.trigger('keydown.tab');
-        expect(cuisineInput.props('modelValue')).toBeNull();
-      });
+      it('allows the name to be reset', async () => {
+        wrapper.unmount();
+        wrapper = mountComponent({ recipe: { ...TEST_RECIPES[0] } });
+        const input = wrapper.findComponent('[data-testid="name-input"]') as VueWrapper<components.VTextField>;
+        const textField = input.find('input');
 
-      it('does not select any cuisine when the search text does not match any cuisine', async () => {
-        wrapper = mountComponent();
-        const cuisineInput = wrapper.findComponent(
-          '[data-testid="cuisine-input"]',
-        ) as VueWrapper<components.VAutocomplete>;
-        const input = cuisineInput.find('input[role="combobox"]');
-        await input.setValue('zzz');
-        await input.trigger('keydown.tab');
-        expect(cuisineInput.props('modelValue')).toBeNull();
-      });
-    });
-  });
+        expect(wrapper.text()).not.toContain('already exists');
+        await textField.setValue(TEST_RECIPES[1].name);
+        await textField.trigger('blur');
+        expect(wrapper.text()).toContain('already exists');
 
-  describe('difficulty', () => {
-    it('renders', () => {
-      wrapper = mountComponent();
-      const difficultyInput = wrapper.findComponent(
-        '[data-testid="difficulty-input"]',
-      ) as VueWrapper<components.VAutocomplete>;
-      expect(difficultyInput.exists()).toBe(true);
-      expect(difficultyInput.props('label')).toBe('Difficulty');
-    });
-
-    it('is required', async () => {
-      wrapper = mountComponent();
-      await autocompleteIsRequired(wrapper, 'difficulty-input');
-    });
-
-    describe('tab key behavior', () => {
-      it('selects the first matching difficulty when the search text matches', async () => {
-        wrapper = mountComponent();
-        const difficultyInput = wrapper.findComponent(
-          '[data-testid="difficulty-input"]',
-        ) as VueWrapper<components.VAutocomplete>;
-        const input = difficultyInput.find('input[role="combobox"]');
-        await input.setValue('mal');
-        await input.trigger('keydown.tab');
-        expect(difficultyInput.props('modelValue')).toBe('Normal');
-      });
-
-      it('selects the first matching difficulty when the search text matches multiple items', async () => {
-        wrapper = mountComponent();
-        const difficultyInput = wrapper.findComponent(
-          '[data-testid="difficulty-input"]',
-        ) as VueWrapper<components.VAutocomplete>;
-        const input = difficultyInput.find('input[role="combobox"]');
-        await input.setValue('a');
-        await input.trigger('keydown.tab');
-        expect(difficultyInput.props('modelValue')).toBe('Easy');
-      });
-
-      it('does not select any difficulty when the search text is empty', async () => {
-        wrapper = mountComponent();
-        const difficultyInput = wrapper.findComponent(
-          '[data-testid="difficulty-input"]',
-        ) as VueWrapper<components.VAutocomplete>;
-        const input = difficultyInput.find('input[role="combobox"]');
-        await input.trigger('keydown.tab');
-        expect(difficultyInput.props('modelValue')).toBeNull();
-      });
-
-      it('does not select any difficulty when the search text does not match any difficulty', async () => {
-        wrapper = mountComponent();
-        const difficultyInput = wrapper.findComponent(
-          '[data-testid="difficulty-input"]',
-        ) as VueWrapper<components.VAutocomplete>;
-        const input = difficultyInput.find('input[role="combobox"]');
-        await input.setValue('zzz');
-        await input.trigger('keydown.tab');
-        expect(difficultyInput.props('modelValue')).toBeNull();
-      });
-    });
-  });
-
-  describe('servings', () => {
-    it('exists', () => {
-      wrapper = mountComponent();
-      const input = wrapper.findComponent('[data-testid="servings-input"]') as VueWrapper<components.VNumberInput>;
-      expect(input.exists()).toBe(true);
-      expect(input.props('label')).toBe('Servings');
-    });
-
-    it('is required', async () => {
-      wrapper = mountComponent();
-      await numberInputIsRequired(wrapper, 'servings-input');
-    });
-  });
-
-  describe('prep time', () => {
-    it('exists', () => {
-      wrapper = mountComponent();
-      const input = wrapper.findComponent('[data-testid="prep-time-input"]') as VueWrapper<components.VNumberInput>;
-      expect(input.exists()).toBe(true);
-      expect(input.props('label')).toBe('Preparation Time (minutes)');
-    });
-
-    it('is required', async () => {
-      wrapper = mountComponent();
-      await numberInputIsRequired(wrapper, 'prep-time-input');
-    });
-
-    it('must be zero or greater', async () => {
-      wrapper = mountComponent();
-      await numberInputMustBeZeroOrGreater(wrapper, 'prep-time-input');
-    });
-  });
-
-  describe('cook time', () => {
-    it('exists', () => {
-      wrapper = mountComponent();
-      const input = wrapper.findComponent('[data-testid="cook-time-input"]') as VueWrapper<components.VNumberInput>;
-      expect(input.exists()).toBe(true);
-      expect(input.props('label')).toBe('Cooking Time (minutes)');
-    });
-
-    it('is required', async () => {
-      wrapper = mountComponent();
-      await numberInputIsRequired(wrapper, 'cook-time-input');
-    });
-
-    it('must be zero or greater', async () => {
-      wrapper = mountComponent();
-      await numberInputMustBeZeroOrGreater(wrapper, 'cook-time-input');
-    });
-  });
-
-  describe('NutritionEditorRows integration', () => {
-    it('renders NutritionEditorRows component', () => {
-      wrapper = mountComponent();
-      const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
-      expect(nutritionEditor.exists()).toBe(true);
-    });
-
-    it('passes nutrition data to NutritionEditorRows', () => {
-      const recipe: Partial<Recipe> = {
-        name: 'Test Recipe',
-        calories: 250,
-        sodium: 400,
-        sugar: 12,
-        carbs: 30,
-        fat: 8,
-        protein: 15,
-        ingredients: [],
-        steps: [],
-      };
-      wrapper = mountComponent({ recipe });
-      const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
-      expect(nutritionEditor.props('modelValue')).toMatchObject({
-        calories: 250,
-        sodium: 400,
-        sugar: 12,
-        carbs: 30,
-        fat: 8,
-        protein: 15,
+        await textField.setValue(TEST_RECIPES[0].name);
+        await textField.trigger('blur');
+        expect(wrapper.text()).not.toContain('already exists');
       });
     });
 
-    it('updates internal state when NutritionEditorRows emits changes', async () => {
-      const recipe: Partial<Recipe> = {
-        name: 'Test Recipe',
-        calories: 250,
-        sodium: 400,
-        sugar: 12,
-        carbs: 30,
-        fat: 8,
-        protein: 15,
-        ingredients: [],
-        steps: [],
-      };
-      wrapper = mountComponent({ recipe });
-      const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
+    describe('category', () => {
+      it('is required', async () => {
+        await autocompleteIsRequired(wrapper, 'category-input');
+      });
+    });
 
-      await nutritionEditor.vm.$emit('update:modelValue', {
-        calories: 300,
-        sodium: 500,
-        sugar: 15,
-        carbs: 35,
-        fat: 10,
-        protein: 20,
+    describe('cuisine', () => {
+      it('is required', async () => {
+        await autocompleteIsRequired(wrapper, 'cuisine-input');
+      });
+    });
+
+    describe('difficulty', () => {
+      it('is required', async () => {
+        await autocompleteIsRequired(wrapper, 'difficulty-input');
+      });
+    });
+
+    describe('servings', () => {
+      it('is required', async () => {
+        await numberInputIsRequired(wrapper, 'servings-input');
+      });
+    });
+
+    describe('prep time', () => {
+      it('is required', async () => {
+        await numberInputIsRequired(wrapper, 'prep-time-input');
       });
 
-      const updatedProps = nutritionEditor.props('modelValue');
-      expect(updatedProps.calories).toBe(300);
-      expect(updatedProps.sodium).toBe(500);
-      expect(updatedProps.sugar).toBe(15);
-      expect(updatedProps.carbs).toBe(35);
-      expect(updatedProps.fat).toBe(10);
-      expect(updatedProps.protein).toBe(20);
-    });
-  });
-
-  describe('cancel button', () => {
-    it('renders', () => {
-      wrapper = mountComponent();
-      const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
-      expect(cancelButton.exists()).toBe(true);
+      it('must be zero or greater', async () => {
+        await numberInputMustBeZeroOrGreater(wrapper, 'prep-time-input');
+      });
     });
 
-    it('emits the "cancel" event on click', async () => {
-      wrapper = mountComponent();
-      const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
-      await cancelButton.trigger('click');
-      expect(wrapper.emitted('cancel')).toBeTruthy();
-      expect(wrapper.emitted('cancel')).toHaveLength(1);
-    });
-  });
+    describe('cook time', () => {
+      it('is required', async () => {
+        await numberInputIsRequired(wrapper, 'cook-time-input');
+      });
 
-  describe('save button', () => {
-    it('renders', () => {
-      wrapper = mountComponent();
-      const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
-      expect(saveButton.exists()).toBe(true);
+      it('must be zero or greater', async () => {
+        await numberInputMustBeZeroOrGreater(wrapper, 'cook-time-input');
+      });
     });
   });
 
   describe('for create', () => {
-    describe('of a homemade recipe', () => {
+    describe('homemade', () => {
       beforeEach(() => {
         wrapper = mountComponent();
       });
@@ -599,122 +534,24 @@ describe('Recipe Editor', () => {
         expect(nutritionInputs.protein.element.value).toBe('0');
       });
 
-      describe('the ingredients list', () => {
-        it('is empty', () => {
-          const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
-          const ingredients = listArea.findAllComponents(IngredientEditorRow);
-          expect(ingredients.length).toBe(0);
-        });
-
-        describe('add button', () => {
-          it('is enabled', () => {
-            const button = wrapper.find('[data-testid="add-ingredient-button"]');
-            expect(button.attributes('disabled')).toBeUndefined();
-          });
-
-          describe('on click', () => {
-            it('adds a blank ingredient', async () => {
-              const button = wrapper.find('[data-testid="add-ingredient-button"]');
-              const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
-              await button.trigger('click');
-              const ingredients = listArea.findAllComponents(IngredientEditorRow);
-              expect(ingredients.length).toBe(1);
-            });
-
-            it('becomes disabled', async () => {
-              const button = wrapper.find('[data-testid="add-ingredient-button"]');
-              expect(button.attributes('disabled')).toBeUndefined();
-              await button.trigger('click');
-              expect(button.attributes('disabled')).toBeDefined();
-            });
-
-            it('remains disabled until the blank ingredient is filled in', async () => {
-              const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
-              const button = wrapper.find('[data-testid="add-ingredient-button"]');
-              await button.trigger('click');
-              expect(button.attributes('disabled')).toBeDefined();
-              const ingredients = listArea.findAllComponents(IngredientEditorRow);
-              await ingredients[0]?.vm.$emit('changed', {
-                id: 'bd3543e0-68d4-4ba0-a1a6-29548d46464b',
-                units: 1,
-                unitOfMeasure: findUnitOfMeasure('lb'),
-                name: 'fudge',
-              });
-              expect(button.attributes('disabled')).toBeUndefined();
-            });
-          });
-        });
-
-        describe('deleting an ingredient', () => {
-          it('removes the ingredient from the list', async () => {
-            const button = wrapper.find('[data-testid="add-ingredient-button"]');
-            const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
-            await button.trigger('click');
-            let ingredients = listArea.findAllComponents(IngredientEditorRow);
-            expect(ingredients.length).toBe(1);
-            await ingredients[0]?.vm.$emit('delete');
-            ingredients = listArea.findAllComponents(IngredientEditorRow);
-            expect(ingredients.length).toBe(0);
-          });
-        });
+      registerEditableListTests(() => wrapper, {
+        title: 'the ingredients list',
+        noun: 'ingredient',
+        testIdPrefix: 'ingredient',
+        row: IngredientEditorRow,
+        prop: 'ingredient',
+        initialItems: [],
+        filledItem: FILLED_INGREDIENT,
       });
 
-      describe('the steps list', () => {
-        it('is empty', () => {
-          const listArea = wrapper.find('[data-testid="step-list-grid"]');
-          const steps = listArea.findAllComponents(StepEditorRow);
-          expect(steps.length).toBe(0);
-        });
-
-        describe('add button', () => {
-          it('is enabled', () => {
-            const button = wrapper.find('[data-testid="add-step-button"]');
-            expect(button.attributes('disabled')).toBeUndefined();
-          });
-
-          describe('on click', () => {
-            it('adds a blank step', async () => {
-              const button = wrapper.find('[data-testid="add-step-button"]');
-              const listArea = wrapper.find('[data-testid="step-list-grid"]');
-              await button.trigger('click');
-              const steps = listArea.findAllComponents(StepEditorRow);
-              expect(steps.length).toBe(1);
-            });
-
-            it('becomes disabled', async () => {
-              const button = wrapper.find('[data-testid="add-step-button"]');
-              expect(button.attributes('disabled')).toBeUndefined();
-              await button.trigger('click');
-              expect(button.attributes('disabled')).toBeDefined();
-            });
-
-            it('remains disabled until the blank step is filled in', async () => {
-              const listArea = wrapper.find('[data-testid="step-list-grid"]');
-              const button = wrapper.find('[data-testid="add-step-button"]');
-              await button.trigger('click');
-              expect(button.attributes('disabled')).toBeDefined();
-              const steps = listArea.findAllComponents(StepEditorRow);
-              await steps[0]?.vm.$emit('changed', {
-                id: 'bd3543e0-68d4-4ba0-a1a6-29548d46464b',
-                instruction: 'Preheat oven to 375°F (190°C).',
-              });
-              expect(button.attributes('disabled')).toBeUndefined();
-            });
-          });
-        });
-
-        describe('deleting a step', () => {
-          it('removes the step from the list', async () => {
-            const button = wrapper.find('[data-testid="add-step-button"]');
-            const listArea = wrapper.find('[data-testid="step-list-grid"]');
-            await button.trigger('click');
-            let steps = listArea.findAllComponents(StepEditorRow);
-            expect(steps.length).toBe(1);
-            await steps[0]?.vm.$emit('delete');
-            steps = listArea.findAllComponents(StepEditorRow);
-            expect(steps.length).toBe(0);
-          });
-        });
+      registerEditableListTests(() => wrapper, {
+        title: 'the steps list',
+        noun: 'step',
+        testIdPrefix: 'step',
+        row: StepEditorRow,
+        prop: 'step',
+        initialItems: [],
+        filledItem: FILLED_STEP,
       });
 
       describe('the save button', () => {
@@ -725,18 +562,7 @@ describe('Recipe Editor', () => {
 
         it('emits the description if entered', async () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const inputs = getInputs(wrapper);
-          const nutritionInputs = getNutritionInputs(wrapper);
-          await inputs.category.setValue('Dessert');
-          await inputs.cuisine.setValue('American');
-          expect(saveButton.attributes('disabled')).toBeDefined();
-          await inputs.difficulty.setValue('Easy');
-          await inputs.name.setValue('Apple Pie');
-          await inputs.servings.setValue('2');
-          await inputs.prepTimeMinutes.setValue('30');
-          await inputs.cookTimeMinutes.setValue('45');
-          await nutritionInputs.calories.setValue('325');
-          await inputs.description.setValue('  A delicious apple pie recipe.   ');
+          await fillHomemade(wrapper, { description: '  A delicious apple pie recipe.   ' });
           await saveButton.trigger('click');
           expect(wrapper.emitted('save')).toBeTruthy();
           expect(wrapper.emitted('save')).toHaveLength(1);
@@ -747,31 +573,16 @@ describe('Recipe Editor', () => {
         it('is disabled until all required fields are filled in', async () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
           const inputs = getInputs(wrapper);
-          const nutritionInputs = getNutritionInputs(wrapper);
           await inputs.category.setValue('Dessert');
           await inputs.cuisine.setValue('American');
           expect(saveButton.attributes('disabled')).toBeDefined();
-          await inputs.difficulty.setValue('Easy');
-          await inputs.name.setValue('Apple Pie');
-          await inputs.servings.setValue('2');
-          await inputs.prepTimeMinutes.setValue('30');
-          await inputs.cookTimeMinutes.setValue('45');
-          await nutritionInputs.calories.setValue('325');
+          await fillHomemade(wrapper);
           expect(saveButton.attributes('disabled')).toBeUndefined();
         });
 
         it('is disabled if an invalid ingredient exists in the ingredients list', async () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const inputs = getInputs(wrapper);
-          const nutritionInputs = getNutritionInputs(wrapper);
-          await inputs.cuisine.setValue('American');
-          await inputs.category.setValue('Dessert');
-          await inputs.difficulty.setValue('Easy');
-          await inputs.name.setValue('Apple Pie');
-          await inputs.servings.setValue('2');
-          await inputs.prepTimeMinutes.setValue('30');
-          await inputs.cookTimeMinutes.setValue('45');
-          await nutritionInputs.calories.setValue('325');
+          await fillHomemade(wrapper);
           expect(saveButton.attributes('disabled')).toBeUndefined();
           const button = wrapper.find('[data-testid="add-ingredient-button"]');
           await button.trigger('click');
@@ -780,16 +591,7 @@ describe('Recipe Editor', () => {
 
         it('is disabled if an invalid step exists in the steps list', async () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const inputs = getInputs(wrapper);
-          const nutritionInputs = getNutritionInputs(wrapper);
-          await inputs.category.setValue('Dessert');
-          await inputs.cuisine.setValue('American');
-          await inputs.difficulty.setValue('Easy');
-          await inputs.name.setValue('Apple Pie');
-          await inputs.servings.setValue('2');
-          await inputs.prepTimeMinutes.setValue('30');
-          await inputs.cookTimeMinutes.setValue('45');
-          await nutritionInputs.calories.setValue('325');
+          await fillHomemade(wrapper);
           expect(saveButton.attributes('disabled')).toBeUndefined();
           const button = wrapper.find('[data-testid="add-step-button"]');
           await button.trigger('click');
@@ -798,17 +600,7 @@ describe('Recipe Editor', () => {
 
         it('emits the entered data on click', async () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const inputs = getInputs(wrapper);
-          const nutritionInputs = getNutritionInputs(wrapper);
-          await inputs.category.setValue('Dessert');
-          await inputs.cuisine.setValue('American');
-          expect(saveButton.attributes('disabled')).toBeDefined();
-          await inputs.difficulty.setValue('Easy');
-          await inputs.name.setValue(' Apple Pie   ');
-          await inputs.servings.setValue('2');
-          await inputs.prepTimeMinutes.setValue('30');
-          await inputs.cookTimeMinutes.setValue('45');
-          await nutritionInputs.calories.setValue('325');
+          await fillHomemade(wrapper, { name: ' Apple Pie   ' });
           await saveButton.trigger('click');
           expect(wrapper.emitted('save')).toBeTruthy();
           expect(wrapper.emitted('save')).toHaveLength(1);
@@ -837,7 +629,7 @@ describe('Recipe Editor', () => {
       });
     });
 
-    describe('of a prepared recipe', () => {
+    describe('prepared', () => {
       const sourceId = 'fiie002934009ser';
 
       beforeEach(() => {
@@ -891,15 +683,9 @@ describe('Recipe Editor', () => {
 
         it('emits the description if entered', async () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const inputs = getPreparedInputs(wrapper);
-          const nutritionInputs = getNutritionInputs(wrapper);
-          await inputs.category.setValue('Seafood');
-          await inputs.cuisine.setValue('Japanese');
-          await inputs.source.setValue(sourceId);
-          await inputs.name.setValue('Black Cod Bowl');
-          await inputs.servings.setValue('1');
-          await nutritionInputs.calories.setValue('540');
-          await inputs.description.setValue('  Chef-prepared miso cod over forbidden rice.   ');
+          await fillPrepared(wrapper, sourceId, {
+            description: '  Chef-prepared miso cod over forbidden rice.   ',
+          });
           await saveButton.trigger('click');
           expect(wrapper.emitted('save')).toBeTruthy();
           expect(wrapper.emitted('save')).toHaveLength(1);
@@ -909,15 +695,7 @@ describe('Recipe Editor', () => {
 
         it('emits the entered data on click', async () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const inputs = getPreparedInputs(wrapper);
-          const nutritionInputs = getNutritionInputs(wrapper);
-          await inputs.category.setValue('Seafood');
-          await inputs.cuisine.setValue('Japanese');
-          expect(saveButton.attributes('disabled')).toBeDefined();
-          await inputs.source.setValue(sourceId);
-          await inputs.name.setValue('  Black Cod Bowl  ');
-          await inputs.servings.setValue('1');
-          await nutritionInputs.calories.setValue('540');
+          await fillPrepared(wrapper, sourceId, { name: '  Black Cod Bowl  ' });
           await saveButton.trigger('click');
           expect(wrapper.emitted('save')).toBeTruthy();
           expect(wrapper.emitted('save')).toHaveLength(1);
@@ -949,7 +727,42 @@ describe('Recipe Editor', () => {
   });
 
   describe('for update', () => {
-    describe('of a homemade recipe', () => {
+    describe('nutrition', () => {
+      it('updates internal state when NutritionEditorRows emits changes', async () => {
+        const recipe: Partial<Recipe> = {
+          name: 'Test Recipe',
+          calories: 250,
+          sodium: 400,
+          sugar: 12,
+          carbs: 30,
+          fat: 8,
+          protein: 15,
+          ingredients: [],
+          steps: [],
+        };
+        wrapper = mountComponent({ recipe });
+        const nutritionEditor = wrapper.findComponent({ name: 'NutritionEditorRows' });
+
+        await nutritionEditor.vm.$emit('update:modelValue', {
+          calories: 300,
+          sodium: 500,
+          sugar: 15,
+          carbs: 35,
+          fat: 10,
+          protein: 20,
+        });
+
+        const updatedProps = nutritionEditor.props('modelValue');
+        expect(updatedProps.calories).toBe(300);
+        expect(updatedProps.sodium).toBe(500);
+        expect(updatedProps.sugar).toBe(15);
+        expect(updatedProps.carbs).toBe(35);
+        expect(updatedProps.fat).toBe(10);
+        expect(updatedProps.protein).toBe(20);
+      });
+    });
+
+    describe('homemade', () => {
       beforeEach(() => {
         wrapper = mountComponent({ recipe: BEER_CHEESE });
       });
@@ -958,6 +771,7 @@ describe('Recipe Editor', () => {
         const inputs = getInputs(wrapper);
         const nutritionInputs = getNutritionInputs(wrapper);
         expect(inputs.name.element.value).toBe(BEER_CHEESE.name);
+        expect(inputs.description.element.value).toBe(BEER_CHEESE.description);
         expect(inputs.category.props('modelValue')).toBe(BEER_CHEESE.category);
         expect(inputs.cuisine.props('modelValue')).toBe(BEER_CHEESE.cuisine);
         expect(inputs.difficulty.props('modelValue')).toBe(BEER_CHEESE.difficulty);
@@ -972,234 +786,60 @@ describe('Recipe Editor', () => {
         expect(nutritionInputs.protein.element.value).toBe(BEER_CHEESE.protein.toString());
       });
 
-      describe('the ingredients list', () => {
-        it('contains each ingredient', () => {
-          const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
-          const ingredients = listArea.findAllComponents(IngredientEditorRow);
-          expect(ingredients.length).toBe(BEER_CHEESE.ingredients.length);
-        });
-
-        describe('add button', () => {
-          it('is enabled', () => {
-            const button = wrapper.find('[data-testid="add-ingredient-button"]');
-            expect(button.attributes('disabled')).toBeUndefined();
-          });
-
-          describe('on click', () => {
-            it('adds a blank ingredient', async () => {
-              const button = wrapper.find('[data-testid="add-ingredient-button"]');
-              const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
-              await button.trigger('click');
-              const ingredients = listArea.findAllComponents(IngredientEditorRow);
-              expect(ingredients.length).toBe(BEER_CHEESE.ingredients.length + 1);
-            });
-
-            it('becomes disabled', async () => {
-              const button = wrapper.find('[data-testid="add-ingredient-button"]');
-              expect(button.attributes('disabled')).toBeUndefined();
-              await button.trigger('click');
-              expect(button.attributes('disabled')).toBeDefined();
-            });
-
-            it('remains disabled until the blank ingredient is filled in', async () => {
-              const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
-              const button = wrapper.find('[data-testid="add-ingredient-button"]');
-              await button.trigger('click');
-              expect(button.attributes('disabled')).toBeDefined();
-              const ingredients = listArea.findAllComponents(IngredientEditorRow);
-              await ingredients[ingredients.length - 1]?.vm.$emit('changed', {
-                id: '0e8e3d4e-396d-42e8-aed6-fc8be1892c9e',
-                units: 1,
-                unitOfMeasure: findUnitOfMeasure('lb'),
-                name: 'fudge',
-              });
-              expect(button.attributes('disabled')).toBeUndefined();
-            });
-          });
-        });
-
-        describe('deleting an ingredient', () => {
-          it('removes the ingredient from the list', async () => {
-            const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
-            let ingredients = listArea.findAllComponents(IngredientEditorRow);
-            const originalCount = BEER_CHEESE.ingredients.length;
-            expect(ingredients.length).toBe(originalCount);
-            await ingredients[2]?.vm.$emit('delete');
-            ingredients = listArea.findAllComponents(IngredientEditorRow);
-            expect(ingredients.length).toBe(originalCount - 1);
-          });
-        });
+      registerEditableListTests(() => wrapper, {
+        title: 'the ingredients list',
+        noun: 'ingredient',
+        testIdPrefix: 'ingredient',
+        row: IngredientEditorRow,
+        prop: 'ingredient',
+        initialItems: BEER_CHEESE.ingredients,
+        filledItem: FILLED_INGREDIENT,
       });
 
-      describe('the steps list', () => {
-        it('contains each step', () => {
-          const listArea = wrapper.find('[data-testid="step-list-grid"]');
-          const steps = listArea.findAllComponents(StepEditorRow);
-          expect(steps.length).toBe(BEER_CHEESE.steps.length);
-        });
-
-        describe('add button', () => {
-          it('is enabled', () => {
-            const button = wrapper.find('[data-testid="add-step-button"]');
-            expect(button.attributes('disabled')).toBeUndefined();
-          });
-
-          describe('on click', () => {
-            it('adds a blank step', async () => {
-              const button = wrapper.find('[data-testid="add-step-button"]');
-              const listArea = wrapper.find('[data-testid="step-list-grid"]');
-              await button.trigger('click');
-              const steps = listArea.findAllComponents(StepEditorRow);
-              expect(steps.length).toBe(BEER_CHEESE.steps.length + 1);
-            });
-
-            it('becomes disabled', async () => {
-              const button = wrapper.find('[data-testid="add-step-button"]');
-              expect(button.attributes('disabled')).toBeUndefined();
-              await button.trigger('click');
-              expect(button.attributes('disabled')).toBeDefined();
-            });
-
-            it('remains disabled until the blank step is filled in', async () => {
-              const listArea = wrapper.find('[data-testid="step-list-grid"]');
-              const button = wrapper.find('[data-testid="add-step-button"]');
-              await button.trigger('click');
-              expect(button.attributes('disabled')).toBeDefined();
-              const steps = listArea.findAllComponents(StepEditorRow);
-              await steps[steps.length - 1]?.vm.$emit('changed', {
-                id: '0e8e3d4e-396d-42e8-aed6-fc8be1892c9e',
-                instruction: 'Mix thoroughly.',
-              });
-              expect(button.attributes('disabled')).toBeUndefined();
-            });
-          });
-        });
-
-        describe('deleting a step', () => {
-          it('removes the step from the list', async () => {
-            const listArea = wrapper.find('[data-testid="step-list-grid"]');
-            let steps = listArea.findAllComponents(StepEditorRow);
-            const originalCount = BEER_CHEESE.steps.length;
-            expect(steps.length).toBe(originalCount);
-            await steps[2]?.vm.$emit('delete');
-            steps = listArea.findAllComponents(StepEditorRow);
-            expect(steps.length).toBe(originalCount - 1);
-          });
-        });
+      registerEditableListTests(() => wrapper, {
+        title: 'the steps list',
+        noun: 'step',
+        testIdPrefix: 'step',
+        row: StepEditorRow,
+        prop: 'step',
+        initialItems: BEER_CHEESE.steps,
+        filledItem: FILLED_STEP,
       });
 
       describe('the save button', () => {
+        const HOMEMADE_FIELD_CHANGES = [
+          { field: 'name', value: 'Apple Pie' },
+          { field: 'description', value: 'Fudge covered pickles with apples in a pie crust' },
+          { field: 'category', value: 'Dessert' },
+          { field: 'cuisine', value: 'Italian' },
+          { field: 'difficulty', value: 'Easy' },
+          { field: 'servings', value: '8' },
+          { field: 'prepTimeMinutes', value: '20' },
+          { field: 'cookTimeMinutes', value: '45' },
+          { field: 'calories', value: '500' },
+          { field: 'sodium', value: '900' },
+          { field: 'sugar', value: '10' },
+          { field: 'carbs', value: '30' },
+          { field: 'fat', value: '35' },
+          { field: 'protein', value: '20' },
+        ] as const;
+        const getFieldSetters = () => asFieldSetters({ ...getInputs(wrapper), ...getNutritionInputs(wrapper) });
+
         it('begins disabled', () => {
           const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
           expect(saveButton.attributes('disabled')).toBeDefined();
         });
 
         it('begins disabled for a recipe with a null description', () => {
-          const nullDescWrapper = mountComponent({ recipe: { ...BEER_CHEESE, description: null } });
-          const saveButton = nullDescWrapper.findComponent(
-            '[data-testid="save-button"]',
-          ) as VueWrapper<components.VBtn>;
+          wrapper.unmount();
+          wrapper = mountComponent({ recipe: { ...BEER_CHEESE, description: null } });
+          const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
           expect(saveButton.attributes('disabled')).toBeDefined();
         });
 
-        it('is enabled if the name value is changed', async () => {
+        it.each(HOMEMADE_FIELD_CHANGES)('is enabled if the $field value is changed', async ({ field, value }) => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const inputs = getInputs(wrapper);
-          await inputs.name.setValue('Apple Pie');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the description value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const inputs = getInputs(wrapper);
-          await inputs.description.setValue('Fudge covered pickles with apples in a pie crust');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the category value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const inputs = getInputs(wrapper);
-          await inputs.name.setValue(BEER_CHEESE.name);
-          await inputs.category.setValue('Dessert');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the cuisine value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const inputs = getInputs(wrapper);
-          await inputs.name.setValue(BEER_CHEESE.name);
-          await inputs.cuisine.setValue('Italian');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the difficulty value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const inputs = getInputs(wrapper);
-          await inputs.name.setValue(BEER_CHEESE.name);
-          await inputs.difficulty.setValue('Easy');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the servings value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const inputs = getInputs(wrapper);
-          await inputs.servings.setValue('8');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the prep time value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const inputs = getInputs(wrapper);
-          await inputs.prepTimeMinutes.setValue('20');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the cook time value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const inputs = getInputs(wrapper);
-          await inputs.cookTimeMinutes.setValue('45');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the calories value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const nutritionInputs = getNutritionInputs(wrapper);
-          await nutritionInputs.calories.setValue('500');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the sodium value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const nutritionInputs = getNutritionInputs(wrapper);
-          await nutritionInputs.sodium.setValue('900');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the sugar value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const nutritionInputs = getNutritionInputs(wrapper);
-          await nutritionInputs.sugar.setValue('10');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the carbs value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const nutritionInputs = getNutritionInputs(wrapper);
-          await nutritionInputs.carbs.setValue('30');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the fat value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const nutritionInputs = getNutritionInputs(wrapper);
-          await nutritionInputs.fat.setValue('35');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the protein value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const nutritionInputs = getNutritionInputs(wrapper);
-          await nutritionInputs.protein.setValue('20');
+          await getFieldSetters()[field].setValue(value);
           expect(saveButton.attributes('disabled')).toBeUndefined();
         });
 
@@ -1286,7 +926,7 @@ describe('Recipe Editor', () => {
       });
     });
 
-    describe('of a prepared recipe', () => {
+    describe('prepared', () => {
       const prepared: Recipe = { ...TEST_PREPARED_RECIPE, id: 'prepared-99' };
       const nextSourceId = 'iir00305003lfkdj';
 
@@ -1319,103 +959,37 @@ describe('Recipe Editor', () => {
       });
 
       describe('the save button', () => {
+        const PREPARED_FIELD_CHANGES = [
+          { field: 'name', value: 'Updated Black Cod' },
+          { field: 'description', value: 'Reheated until hot.' },
+          { field: 'category', value: 'Poultry' },
+          { field: 'cuisine', value: 'Italian' },
+          { field: 'source', value: nextSourceId },
+          { field: 'servings', value: '2' },
+          { field: 'calories', value: '600' },
+          { field: 'sodium', value: '900' },
+          { field: 'sugar', value: '10' },
+          { field: 'carbs', value: '30' },
+          { field: 'fat', value: '35' },
+          { field: 'protein', value: '20' },
+        ] as const;
+        const getFieldSetters = () => asFieldSetters({ ...getPreparedInputs(wrapper), ...getNutritionInputs(wrapper) });
+
         it('begins disabled', () => {
           const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
           expect(saveButton.attributes('disabled')).toBeDefined();
         });
 
         it('begins disabled for a recipe with a null description', () => {
-          const nullDescWrapper = mountComponent({ recipe: { ...prepared, description: null } });
-          const saveButton = nullDescWrapper.findComponent(
-            '[data-testid="save-button"]',
-          ) as VueWrapper<components.VBtn>;
+          wrapper.unmount();
+          wrapper = mountComponent({ recipe: { ...prepared, description: null } });
+          const saveButton = wrapper.findComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
           expect(saveButton.attributes('disabled')).toBeDefined();
         });
 
-        it('is enabled if the name value is changed', async () => {
+        it.each(PREPARED_FIELD_CHANGES)('is enabled if the $field value is changed', async ({ field, value }) => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const inputs = getPreparedInputs(wrapper);
-          await inputs.name.setValue('Updated Black Cod');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the description value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const inputs = getPreparedInputs(wrapper);
-          await inputs.description.setValue('Reheated until hot.');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the category value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const inputs = getPreparedInputs(wrapper);
-          await inputs.name.setValue(prepared.name);
-          await inputs.category.setValue('Poultry');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the cuisine value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const inputs = getPreparedInputs(wrapper);
-          await inputs.name.setValue(prepared.name);
-          await inputs.cuisine.setValue('Italian');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the source value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const inputs = getPreparedInputs(wrapper);
-          await inputs.name.setValue(prepared.name);
-          await inputs.source.setValue(nextSourceId);
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the servings value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const inputs = getPreparedInputs(wrapper);
-          await inputs.servings.setValue('2');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the calories value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const nutritionInputs = getNutritionInputs(wrapper);
-          await nutritionInputs.calories.setValue('600');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the sodium value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const nutritionInputs = getNutritionInputs(wrapper);
-          await nutritionInputs.sodium.setValue('900');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the sugar value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const nutritionInputs = getNutritionInputs(wrapper);
-          await nutritionInputs.sugar.setValue('10');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the carbs value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const nutritionInputs = getNutritionInputs(wrapper);
-          await nutritionInputs.carbs.setValue('30');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the fat value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const nutritionInputs = getNutritionInputs(wrapper);
-          await nutritionInputs.fat.setValue('35');
-          expect(saveButton.attributes('disabled')).toBeUndefined();
-        });
-
-        it('is enabled if the protein value is changed', async () => {
-          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
-          const nutritionInputs = getNutritionInputs(wrapper);
-          await nutritionInputs.protein.setValue('20');
+          await getFieldSetters()[field].setValue(value);
           expect(saveButton.attributes('disabled')).toBeUndefined();
         });
 
@@ -1476,8 +1050,24 @@ describe('Recipe Editor', () => {
     });
   });
 
+  describe('cancel', () => {
+    it('renders', () => {
+      wrapper = mountComponent();
+      const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+      expect(cancelButton.exists()).toBe(true);
+    });
+
+    it('emits the "cancel" event on click', async () => {
+      wrapper = mountComponent();
+      const cancelButton = wrapper.findComponent('[data-testid="cancel-button"]') as VueWrapper<components.VBtn>;
+      await cancelButton.trigger('click');
+      expect(wrapper.emitted('cancel')).toBeTruthy();
+      expect(wrapper.emitted('cancel')).toHaveLength(1);
+    });
+  });
+
   describe('calculate nutrition button', () => {
-    const addValidIngredient = async (w: ReturnType<typeof mountComponent>) => {
+    const addValidIngredient = async (w: EditorWrapper) => {
       const addButton = w.find('[data-testid="add-ingredient-button"]');
       await addButton.trigger('click');
       const ingredientRows = w.find('[data-testid="ingredient-list-grid"]').findAllComponents(IngredientEditorRow);
@@ -1489,7 +1079,7 @@ describe('Recipe Editor', () => {
       });
     };
 
-    const setupValidState = async (w: ReturnType<typeof mountComponent>, kind: RecipeKind = 'homemade') => {
+    const setupValidState = async (w: EditorWrapper, kind: RecipeKind = 'homemade') => {
       if (kind === 'homemade') {
         const inputs = getInputs(w);
         await inputs.name.setValue('Test Recipe');
@@ -1669,94 +1259,3 @@ describe('Recipe Editor', () => {
     });
   });
 });
-
-const BEER_CHEESE: Recipe = {
-  id: 'fie039950912',
-  name: 'Hearty Beer Cheese Soup',
-  description: 'A rich and creamy soup combining sharp cheddar cheese with beer and savory seasonings.',
-  kind: 'homemade',
-  category: 'Soup',
-  cuisine: 'American',
-  difficulty: 'Normal',
-  servings: 6,
-  prepTimeMinutes: 15,
-  cookTimeMinutes: 30,
-  calories: 410,
-  sodium: 680,
-  sugar: 5,
-  carbs: 22,
-  fat: 30,
-  protein: 15,
-  ingredients: [
-    {
-      id: 'c01d5817-8101-4a72-8173-4b303e8dafde',
-      units: 0.25,
-      unitOfMeasure: findUnitOfMeasure('cup'),
-      name: 'Unsalted Butter',
-    },
-    {
-      id: '1fe0060d-7762-4f6a-a3ac-a8eaf98078a9',
-      units: 0.25,
-      unitOfMeasure: findUnitOfMeasure('cup'),
-      name: 'All-Purpose Flour',
-    },
-    {
-      id: '3d56a852-d60c-453d-ba8b-61e8091c07aa',
-      units: 0.5,
-      unitOfMeasure: findUnitOfMeasure('cup'),
-      name: 'Chopped Onion',
-    },
-    {
-      id: 'd8c1ddab-dd3f-4edf-bb60-75991b199247',
-      units: 3,
-      unitOfMeasure: findUnitOfMeasure('cup'),
-      name: 'Chicken Broth',
-    },
-    {
-      id: 'a0d9b316-32b4-44b3-b0aa-d7f139477a44',
-      units: 12,
-      unitOfMeasure: findUnitOfMeasure('floz'),
-      name: 'Lager or Pale Ale Beer',
-    },
-    {
-      id: '88706b21-246b-419a-8b20-de5a964ed1f9',
-      units: 8,
-      unitOfMeasure: findUnitOfMeasure('oz'),
-      name: 'Sharp Cheddar Cheese, shredded',
-    },
-    {
-      id: 'df8f184a-7cea-4f75-a72d-aa4333ec3e9c',
-      units: 1,
-      unitOfMeasure: findUnitOfMeasure('cup'),
-      name: 'Heavy Cream',
-    },
-  ],
-  steps: [
-    {
-      id: 'a5c9a7b3-6f4e-5d9a-fc6d-4a9c1a3e5f7b',
-      instruction: 'In a large pot, melt butter over medium heat. Add onion and cook until softened, about 5 minutes.',
-    },
-    {
-      id: 'b6d0a8c4-7a5f-6e0b-ad7e-5a0d2a4f6a8c',
-      instruction: 'Whisk in the flour and cook for 1 minute to create a roux.',
-    },
-    {
-      id: 'c7e1a9b5-8b6a-7f1c-be8f-6a1e3a5a7b9d',
-      instruction: 'Slowly whisk in the chicken broth and then the beer, ensuring no lumps remain.',
-    },
-    {
-      id: 'd8f2a0b6-9c7b-8a2d-cf9a-7a2f4a6b8c0e',
-      instruction: 'Bring the soup to a simmer and cook for 10 minutes, stirring occasionally.',
-    },
-    {
-      id: 'e9a3a1a7-0d8c-9b3e-da0b-8a3a5a7c9d1f',
-      instruction:
-        'Reduce heat to low. Stir in the heavy cream and then gradually add the shredded cheese, stirring constantly until fully melted and smooth.',
-    },
-    {
-      id: 'f0b4a2a8-1e9d-0c4f-eb1c-9a4b6a8d0e2a',
-      instruction:
-        'Do not boil after adding cheese. Season with salt, pepper, and a dash of hot sauce if desired. Serve hot.',
-    },
-  ],
-};
