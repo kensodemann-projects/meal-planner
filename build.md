@@ -1,6 +1,6 @@
 # Meal Planner — Claude Code prompts for OutSystems 11
 
-These prompts build the greenfield Reactive Web application described in `modules.md`. Each prompt changes one module. Run them in order. Review the Compare and Merge result, fix anything you do not want, publish that module, and only then run the next prompt.
+These prompts build the greenfield application described in `modules.md`. `MealPlanner` and `MealPlanner_Th` are Reactive Web modules. `Source_CS`, `Settings_CS`, `Recipe_CS`, `MealPlan_CS`, and `Planning_BL` are Service modules. Each prompt changes one module. Run them in order. Review the Compare and Merge result, fix anything you do not want, publish that module, and only then run the next prompt.
 
 The prompts assume [OutSystems MCP for O11](https://success.outsystems.com/documentation/11/outsystems_mcp/): Claude Code is the MCP host, the OutSystems skill for O11 is installed from the `outsystems11-mcp` repository, and the Service Studio MCP server is running against the module you have open. Writes are a Beta capability. Leave Write permissions on manual review so nothing merges until you accept it.
 
@@ -10,7 +10,7 @@ Do not ask the agent to publish, to open a different module, or to recreate Fire
 
 1. Install the OutSystems skill for O11 and register the Service Studio MCP server, using the endpoint shown in Edit > MCP Server. Service Studio 11.55.91 or later.
 2. Create application **Meal Planner**. In it, create empty Reactive Web modules `MealPlanner_Th` and `MealPlanner`.
-3. Create application **Meal Planner Core**. In it, create empty Reactive Web modules `Source_CS`, `Settings_CS`, `Recipe_CS`, `MealPlan_CS`, and `Planning_BL`.
+3. Create application **Meal Planner Core**. In it, create empty Service modules `Source_CS`, `Settings_CS`, `Recipe_CS`, `MealPlan_CS`, and `Planning_BL`. Do not create these as Reactive Web modules. They hold entities, static entities, structures, server actions, and timers only. Expose public Server Actions, not Service Actions: there is one consumer and one release cycle, and a meal-item change must stay in the caller's transaction.
 4. Do not add entities or screens by hand. The prompts do that.
 5. For each prompt: open that module, start a new Claude Code session, approve the Service Studio connection, paste the prompt, and wait until the agent stops.
 
@@ -66,7 +66,7 @@ Set the module description to: Theme for the shared household Meal Planner. Stat
 Open `Source_CS`. Publish nothing else first. This module has no factory references.
 
 ```text
-You are building a greenfield OutSystems 11 Reactive Web module. The module open in Service Studio must be Source_CS. If any other module is open, stop and tell me. Do not switch modules, publish, or change any other module.
+You are building a greenfield OutSystems 11 Service module. The module open in Service Studio must be Source_CS. If any other module is open, or if this module is not a Service module, stop and tell me. Do not switch modules, publish, or change any other module. Do not create screens, blocks, client actions, session variables, or local storage entities. Expose public Server Actions, not Service Actions.
 
 Use the OutSystems skill for O11 and the Service Studio MCP. Read the module before you change it. When you finish, list the public elements you created and the validation errors and warnings. Leave the result for Compare and Merge.
 
@@ -97,7 +97,7 @@ Set the module description to: Sources for prepared foods, including the protect
 Open `Settings_CS`.
 
 ```text
-You are building a greenfield OutSystems 11 Reactive Web module. The module open in Service Studio must be Settings_CS. If any other module is open, stop and tell me. Do not switch modules, publish, or change any other module.
+You are building a greenfield OutSystems 11 Service module. The module open in Service Studio must be Settings_CS. If any other module is open, or if this module is not a Service module, stop and tell me. Do not switch modules, publish, or change any other module. Do not create screens, blocks, client actions, session variables, or local storage entities. Expose public Server Actions, not Service Actions.
 
 Use the OutSystems skill for O11 and the Service Studio MCP. Read the module before you change it. When you finish, list the public elements and the validation errors and warnings. Leave the result for Compare and Merge.
 
@@ -142,7 +142,7 @@ Set the module description to: Shared daily nutrition targets and the day the we
 Publish `Source_CS` first. Open `Recipe_CS` and add a reference to the published `Source_CS` if the agent cannot see it. This prompt creates data only. Do not add create, update, delete, or search actions yet.
 
 ```text
-You are building a greenfield OutSystems 11 Reactive Web module. The module open in Service Studio must be Recipe_CS. If any other module is open, stop and tell me. Do not switch modules, publish, or change any other module.
+You are building a greenfield OutSystems 11 Service module. The module open in Service Studio must be Recipe_CS. If any other module is open, or if this module is not a Service module, stop and tell me. Do not switch modules, publish, or change any other module. Do not create screens, blocks, client actions, session variables, or local storage entities. Expose public Server Actions, not Service Actions.
 
 Use the OutSystems skill for O11 and the Service Studio MCP. Reference the published Source_CS module. If that reference is not available, stop and tell me to publish Source_CS. Read the module before you change it. This prompt is the data model only. Do not create Recipe_Create, Recipe_Update, Recipe_Delete, Recipe_Get, Recipe_Search, or Source_DeleteIfUnused. When you finish, list the entities, static records, and validation errors and warnings. Leave the result for Compare and Merge.
 
@@ -224,7 +224,7 @@ Set the module description to: Recipe library for homemade meals and prepared fo
 Stay in `Recipe_CS` after Prompt 4 is merged. Do not redesign the entities.
 
 ```text
-You are extending the OutSystems 11 module open in Service Studio. It must be Recipe_CS, and it must already contain Recipe, RecipeIngredient, RecipeStep, and the static entities from the data-model prompt. If that is not true, stop and tell me what is missing. Do not switch modules, publish, or change any other module. Do not rename or delete the entities.
+You are extending the OutSystems 11 Service module open in Service Studio. It must be Recipe_CS, and it must already contain Recipe, RecipeIngredient, RecipeStep, and the static entities from the data-model prompt. If that is not true, or if this module is not a Service module, stop and tell me what is missing. Do not switch modules, publish, or change any other module. Do not rename or delete the entities. Do not create screens, blocks, client actions, session variables, or local storage entities. Expose public Server Actions, not Service Actions.
 
 Use the OutSystems skill for O11 and the Service Studio MCP. Read the current actions before you add new ones. When you finish, list the public actions and the validation errors and warnings. Leave the result for Compare and Merge.
 
@@ -267,7 +267,7 @@ Do not add a Calculate Nutrition action and do not call an external API.
 Publish `Recipe_CS` first. Open `MealPlan_CS`.
 
 ```text
-You are building a greenfield OutSystems 11 Reactive Web module. The module open in Service Studio must be MealPlan_CS. If any other module is open, stop and tell me. Do not switch modules, publish, or change any other module.
+You are building a greenfield OutSystems 11 Service module. The module open in Service Studio must be MealPlan_CS. If any other module is open, or if this module is not a Service module, stop and tell me. Do not switch modules, publish, or change any other module. Do not create screens, blocks, client actions, session variables, or local storage entities. Expose public Server Actions, not Service Actions.
 
 Use the OutSystems skill for O11 and the Service Studio MCP. Reference the published Recipe_CS module. If that reference is not available, stop and tell me to publish Recipe_CS. Do not reference Settings_CS or Planning_BL. Read the module before you change it. When you finish, list the public elements and the validation errors and warnings. Leave the result for Compare and Merge.
 
@@ -314,7 +314,7 @@ Set the module description to: One shared meal plan per date, with breakfast, lu
 Stay in `MealPlan_CS` after Prompt 6 is merged. Publish `Recipe_CS` if this module cannot see it.
 
 ```text
-You are extending the OutSystems 11 module open in Service Studio. It must be MealPlan_CS and it must already contain MealPlan, Meal, MealItem, and MealType. If that is not true, stop and tell me what is missing. Do not switch modules, publish, or change any other module. Do not reference Settings_CS or Planning_BL.
+You are extending the OutSystems 11 Service module open in Service Studio. It must be MealPlan_CS and it must already contain MealPlan, Meal, MealItem, and MealType. If that is not true, or if this module is not a Service module, stop and tell me what is missing. Do not switch modules, publish, or change any other module. Do not reference Settings_CS or Planning_BL. Do not create screens, blocks, client actions, session variables, or local storage entities. Expose public Server Actions, not Service Actions.
 
 Use the OutSystems skill for O11 and the Service Studio MCP. Read the current actions before you add new ones. These writes stay in this module because the entities are expose-read-only to other modules. When you finish, describe the three new actions and list validation errors and warnings. Leave the result for Compare and Merge.
 
@@ -353,7 +353,7 @@ Do not add screens. Do not call an external API.
 Publish `Settings_CS`, `Recipe_CS`, and `MealPlan_CS`. Open `Planning_BL`. This prompt is calculations only.
 
 ```text
-You are building a greenfield OutSystems 11 Reactive Web module. The module open in Service Studio must be Planning_BL. If any other module is open, stop and tell me. Do not switch modules, publish, or change any other module.
+You are building a greenfield OutSystems 11 Service module. The module open in Service Studio must be Planning_BL. If any other module is open, or if this module is not a Service module, stop and tell me. Do not switch modules, publish, or change any other module. Do not create screens, blocks, client actions, session variables, or local storage entities. Expose public Server Actions, not Service Actions.
 
 Use the OutSystems skill for O11 and the Service Studio MCP. Reference the published modules Settings_CS, Recipe_CS, and MealPlan_CS. If any reference is missing, stop and name it. Read the module before you change it. This prompt adds calculations only. Do not create, move, or delete meal items. Those actions belong to MealPlan_CS. When you finish, list the public elements and the validation errors and warnings. Leave the result for Compare and Merge.
 

@@ -1,8 +1,10 @@
 Use the following documentation for information about the correct way to architect and build an OutSystems O11 application. In all cases, these are root level links and you may need to drill further into the menu of pages to find your answers:
 
-1. Architecture: https://success.outsystems.com/documentation/11/app_architecture/
-2. O11 Capabilities: https://success.outsystems.com/documentation/11/building_apps/
-3. The OutSystems MCP: https://success.outsystems.com/documentation/11/outsystems_mcp/
+1. Preliminary Getting Started Information: https://success.outsystems.com/documentation/11/getting_started/
+2. Architecture: https://success.outsystems.com/documentation/11/app_architecture/
+3. O11 Capabilities: https://success.outsystems.com/documentation/11/building_apps/
+4. The OutSystems MCP: https://success.outsystems.com/documentation/11/outsystems_mcp/
+5. More information about Service Modules: https://success.outsystems.com/documentation/11/building_apps/reusing_and_refactoring/use_services_to_expose_functionality/
 
 I want you to read the current state of this project and fully understand the code as well as what it does. I then have two tasks for you:
 
