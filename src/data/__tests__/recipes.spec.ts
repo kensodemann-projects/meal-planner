@@ -1,9 +1,11 @@
+import type { Recipe } from '@/models/recipe';
 import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { type Mock, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ref } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
 import { useRecipesData } from '../recipes';
-import { TEST_HOMEMADE_RECIPE, TEST_RECIPES } from './test-data';
+import { useSourcesData } from '../sources';
+import { TEST_HOMEMADE_RECIPE, TEST_RECIPES, TEST_SOURCES } from './test-data';
 
 vi.mock('firebase/firestore', async () => {
   const actual = (await vi.importActual('firebase/firestore')) as any;
@@ -34,6 +36,7 @@ vi.mock('vuefire', async () => {
     useFirestore: vi.fn(),
   };
 });
+vi.mock('../sources');
 
 describe('Recipe Data Service', () => {
   beforeEach(() => {
@@ -433,6 +436,71 @@ describe('Recipe Data Service', () => {
           maxCalories: TEST_HOMEMADE_RECIPE.calories + 100,
         }),
       ).toBe(false);
+    });
+
+    describe('keyword search on source and kind', () => {
+      const cookUnity = TEST_SOURCES.find((source) => source.name === 'CookUnity')!;
+      const bistroMd = TEST_SOURCES.find((source) => source.name === 'BistroMD')!;
+      const salt = TEST_HOMEMADE_RECIPE.ingredients[0]!.unitOfMeasure;
+
+      // Names, descriptions, and ingredients omit source names and kind words so a hit can only come from those fields.
+      const keywordSearchRecipes: Recipe[] = [
+        {
+          ...TEST_HOMEMADE_RECIPE,
+          id: 'home-chili',
+          name: 'Weeknight Chili',
+          description: 'Beans simmered with spice.',
+          kind: 'homemade',
+          ingredients: [{ id: 'ing-chili', units: 1, unitOfMeasure: salt, name: 'Beans' }],
+        },
+        {
+          ...TEST_HOMEMADE_RECIPE,
+          id: 'prep-cook',
+          name: 'Harissa Chicken',
+          description: 'Spiced chicken with vegetables.',
+          kind: 'prepared',
+          sourceId: cookUnity.id,
+          ingredients: [],
+          steps: [],
+        },
+        {
+          ...TEST_HOMEMADE_RECIPE,
+          id: 'prep-bistro',
+          name: 'Turkey Plate',
+          description: 'Sliced turkey with green beans.',
+          kind: 'prepared',
+          sourceId: bistroMd.id,
+          ingredients: [],
+          steps: [],
+        },
+      ];
+
+      const matchingIds = (keywords: string) => {
+        const { recipeMatches } = useRecipesData();
+        return keywordSearchRecipes.filter((recipe) => recipeMatches(recipe, { keywords })).map((recipe) => recipe.id);
+      };
+
+      beforeEach(() => {
+        const { sources } = useSourcesData();
+        sources.value = TEST_SOURCES;
+      });
+
+      afterEach(() => {
+        const { sources } = useSourcesData();
+        sources.value = [];
+      });
+
+      it('matches the recipe from the source named in the keyword', () => {
+        expect(matchingIds('bIsTrOmD')).toEqual(['prep-bistro']);
+      });
+
+      it('matches prepared recipes when the keyword is the prepared kind', () => {
+        expect(matchingIds('PrEpArEd')).toEqual(['prep-cook', 'prep-bistro']);
+      });
+
+      it('matches homemade recipes when the keyword is the homemade kind', () => {
+        expect(matchingIds('HoMeMaDe')).toEqual(['home-chili']);
+      });
     });
   });
 });
