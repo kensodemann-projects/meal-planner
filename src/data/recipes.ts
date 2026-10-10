@@ -2,6 +2,7 @@ import type { Cuisine, Recipe, RecipeCategory, RecipeKind } from '@/models/recip
 import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { computed } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
+import { useSourcesData } from './sources';
 
 export interface RecipeSearchCriteria {
   keywords?: string;
@@ -17,6 +18,8 @@ export const useRecipesData = () => {
   const path = 'recipes';
   const recipesCollection = collection(db, path);
   const recipes = useCollection<Recipe>(recipesCollection);
+
+  const { sources, loading: sourcesLoading } = useSourcesData();
 
   const loading = computed(() => recipes.pending.value);
   const error = computed(() => recipes.error.value);
@@ -39,12 +42,22 @@ export const useRecipesData = () => {
     return recipes.value.find((f) => f.id === id) || null;
   };
 
+  const recipeSourceMatchesKeyword = (recipe: Recipe, lowerSearchTerm: string): boolean => {
+    if (sourcesLoading.value) {
+      return false;
+    }
+    const source = sources.value.find((s) => s.id === recipe.sourceId);
+    return source?.name.toLowerCase().includes(lowerSearchTerm) || false;
+  };
+
   const recipeMatchesKeyword = (recipe: Recipe, keyword: string): boolean => {
     const lowerSearchTerm = keyword.toLowerCase();
     return (
       recipe.name.toLowerCase().includes(lowerSearchTerm) ||
       (recipe.description && recipe.description.toLowerCase().includes(lowerSearchTerm)) ||
-      recipe.ingredients.some((ingredient) => ingredient.name.toLowerCase().includes(lowerSearchTerm))
+      recipe.ingredients.some((ingredient) => ingredient.name.toLowerCase().includes(lowerSearchTerm)) ||
+      recipe.kind.toLowerCase() === lowerSearchTerm ||
+      recipeSourceMatchesKeyword(recipe, lowerSearchTerm)
     );
   };
 
