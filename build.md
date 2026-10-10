@@ -1,18 +1,22 @@
 # Meal Planner — Claude Code prompts for OutSystems 11
 
-These prompts build the greenfield application described in `modules.md`. `MealPlanner` and `MealPlanner_Th` are Reactive Web modules. `Source_CS`, `Settings_CS`, `Recipe_CS`, `MealPlan_CS`, and `Planning_BL` are Service modules. Each prompt changes one module. Run them in order. Review the Compare and Merge result, fix anything you do not want, publish that module, and only then run the next prompt.
+These prompts build the greenfield application described in `modules.md`. Every module belongs to the application **Meal Planner**. `MealPlanner_Th` and `MealPlanner` are Reactive Web modules. `Source_CS`, `Settings_CS`, `Recipe_CS`, `MealPlan_CS`, and `Planning_BL` are Service modules. Each prompt changes one module. Run them in order. Review the Compare and Merge result, fix anything you do not want, publish that module, and only then run the next prompt.
 
-The prompts assume [OutSystems MCP for O11](https://success.outsystems.com/documentation/11/outsystems_mcp/): Claude Code is the MCP host, the OutSystems skill for O11 is installed from the `outsystems11-mcp` repository, and the Service Studio MCP server is running against the module you have open. Writes are a Beta capability. Leave Write permissions on manual review so nothing merges until you accept it.
+The prompts assume [OutSystems MCP for O11](https://success.outsystems.com/documentation/11/outsystems_mcp/). Claude Code is the MCP host. The OutSystems skill for O11 is installed from the `outsystems11-mcp` repository. The Service Studio MCP server is running against the module you have open. Reads are generally available. Writes are a Beta capability. Leave Write permissions on **Manual review** so nothing merges until you accept it in Compare and Merge. Do not turn on automatic merge and publish.
+
+These are build prompts. They are not the read-only [prompt blueprints](https://success.outsystems.com/documentation/11/outsystems_mcp/prompt_blueprints/).
 
 Do not ask the agent to publish, to open a different module, or to recreate Firebase.
 
 ## Before the first prompt
 
-1. Install the OutSystems skill for O11 and register the Service Studio MCP server, using the endpoint shown in Edit > MCP Server. Service Studio 11.55.91 or later.
-2. Create application **Meal Planner**. In it, create empty Reactive Web modules `MealPlanner_Th` and `MealPlanner`.
-3. Create application **Meal Planner Core**. In it, create empty Service modules `Source_CS`, `Settings_CS`, `Recipe_CS`, `MealPlan_CS`, and `Planning_BL`. Do not create these as Reactive Web modules. They hold entities, static entities, structures, server actions, and timers only. Expose public Server Actions, not Service Actions: there is one consumer and one release cycle, and a meal-item change must stay in the caller's transaction.
-4. Do not add entities or screens by hand. The prompts do that.
-5. For each prompt: open that module, start a new Claude Code session, approve the Service Studio connection, paste the prompt, and wait until the agent stops.
+1. Use Service Studio 11.55.91 or later. In **Edit > MCP Server**, start the server. Register the endpoint shown in that window (`http://127.0.0.1:PORT/mcp`) in Claude Code, using the steps in the `outsystems11-mcp` README. Install the OutSystems skill for O11 before the first session.
+2. In Service Studio, select **New Application**. Choose **From scratch**, then **Reactive Web App**. Name the application **Meal Planner**. Create the app. Do not create a second application.
+3. Create `MealPlanner_Th` with module type **Reactive Web**. A theme is a Reactive Web module.
+4. Create `MealPlanner` with module type **Reactive Web**.
+5. Create `Source_CS`, `Settings_CS`, `Recipe_CS`, `MealPlan_CS`, and `Planning_BL` with module type **Service**. Do not create them as Reactive Web, and do not create them as Blank. Blank only omits the UI framework. A Service module has no screens, blocks, client actions, session variables, or local storage, and that is what these five modules are. Expose public Server Actions, not Service Actions: there is one consumer and one release cycle, and a meal-item change must stay in the caller's transaction.
+6. Do not add entities or screens by hand. The prompts do that.
+7. For each prompt: open that module, start a new Claude Code session, approve the Service Studio connection, paste the prompt, and wait until the agent stops.
 
 If a later prompt says a reference is missing, publish the producer module and refresh references before asking the agent to continue.
 
@@ -41,14 +45,14 @@ If a later prompt says a reference is missing, publish the producer module and r
 
 ## Prompt 1 — MealPlanner_Th
 
-Open `MealPlanner_Th` before you paste this.
+Open `MealPlanner_Th` before you paste this. It must be a Reactive Web module.
 
 ```text
-You are building a greenfield OutSystems 11 Reactive Web module. The module open in Service Studio must be MealPlanner_Th. If any other module is open, stop and tell me the name of the open module. Do not switch modules, publish, or change any other module.
+You are building a greenfield OutSystems 11 Reactive Web module. The module open in Service Studio must be MealPlanner_Th, and it must be a Reactive Web module. If any other module is open, or if this module is not Reactive Web, stop and tell me the name and the module type. Do not switch modules, publish, or change any other module.
 
-Use the OutSystems skill for O11 and the Service Studio MCP. Read the module before you change it. Make the smallest change that satisfies this prompt. When you finish, list what you added and the validation errors and warnings. Leave the result for Compare and Merge.
+Use the OutSystems skill for O11 and the Service Studio MCP. Read the module before you change it. Make the smallest change that satisfies this prompt. When you finish, list what you added and the validation errors and warnings. Leave the result for Compare and Merge. Do not publish.
 
-This module is the theme only. Base it on the OutSystems UI theme. Do not create screens, entities, actions, or roles.
+This module is the theme only. Base it on the OutSystems UI theme. Do not create screens, entities, actions, or roles. Do not create a menu or a login flow.
 
 Add stylesheet classes for five nutritional statuses so later screens can color a value without inventing colors:
 
@@ -63,12 +67,12 @@ Set the module description to: Theme for the shared household Meal Planner. Stat
 
 ## Prompt 2 — Source_CS
 
-Open `Source_CS`. Publish nothing else first. This module has no factory references.
+Open `Source_CS`. It must be a Service module. Publish nothing else first. This module has no factory references.
 
 ```text
 You are building a greenfield OutSystems 11 Service module. The module open in Service Studio must be Source_CS. If any other module is open, or if this module is not a Service module, stop and tell me. Do not switch modules, publish, or change any other module. Do not create screens, blocks, client actions, session variables, or local storage entities. Expose public Server Actions, not Service Actions.
 
-Use the OutSystems skill for O11 and the Service Studio MCP. Read the module before you change it. When you finish, list the public elements you created and the validation errors and warnings. Leave the result for Compare and Merge.
+Use the OutSystems skill for O11 and the Service Studio MCP. Read the module before you change it. When you finish, list the public elements you created and the validation errors and warnings. Leave the result for Compare and Merge. Do not publish.
 
 This is a core service. Data is application-wide, not per user. Do not add a UserId. Do not reference Recipe_CS or any other Meal Planner module.
 
@@ -77,15 +81,15 @@ Create public entity Source, Expose Read Only = Yes:
 - Name, Text(100), mandatory
 - IsProtected, Boolean, mandatory, default False
 
-Add a unique index on Name. Also enforce uniqueness in the actions below, case-insensitive, after trimming.
+Add a unique index on Name. Also enforce uniqueness in the actions below, case-insensitive, after trimming. The duplicate message is "{name}" already exists, using the trimmed name.
 
 Create a bootstrap timer that runs on publish and inserts one row when it is missing: Name "Generic Restaurant", IsProtected True. Do not insert a second row if that name already exists.
 
 Public server actions, all with a success flag and a user-facing message:
 
 - Source_Create(Name). Trim the name. Reject a blank name. Reject a duplicate name, ignoring case.
-- Source_Update(SourceId, Name). Same name rules. Reject the change when IsProtected is True, with the message "Generic Restaurant cannot be renamed."
-- Source_Delete(SourceId). Reject the delete when IsProtected is True, with the message "Generic Restaurant cannot be deleted." Do not query recipes. A later module decides whether a source is in use.
+- Source_Update(SourceId, Name). Same name rules. IsProtected does not block the rename.
+- Source_Delete(SourceId). Reject the delete when IsProtected is True, with the message "This source cannot be deleted." Do not query recipes. A later module decides whether a source is in use.
 
 Set the module description to: Sources for prepared foods, including the protected Generic Restaurant record.
 ```
@@ -94,12 +98,12 @@ Set the module description to: Sources for prepared foods, including the protect
 
 ## Prompt 3 — Settings_CS
 
-Open `Settings_CS`.
+Open `Settings_CS`. It must be a Service module.
 
 ```text
 You are building a greenfield OutSystems 11 Service module. The module open in Service Studio must be Settings_CS. If any other module is open, or if this module is not a Service module, stop and tell me. Do not switch modules, publish, or change any other module. Do not create screens, blocks, client actions, session variables, or local storage entities. Expose public Server Actions, not Service Actions.
 
-Use the OutSystems skill for O11 and the Service Studio MCP. Read the module before you change it. When you finish, list the public elements and the validation errors and warnings. Leave the result for Compare and Merge.
+Use the OutSystems skill for O11 and the Service Studio MCP. Read the module before you change it. When you finish, list the public elements and the validation errors and warnings. Leave the result for Compare and Merge. Do not publish.
 
 This is a core service for one shared settings record. Do not add a UserId. Do not reference any other Meal Planner module.
 
@@ -139,12 +143,12 @@ Set the module description to: Shared daily nutrition targets and the day the we
 
 ## Prompt 4 — Recipe_CS data model
 
-Publish `Source_CS` first. Open `Recipe_CS` and add a reference to the published `Source_CS` if the agent cannot see it. This prompt creates data only. Do not add create, update, delete, or search actions yet.
+Publish `Source_CS` first. Open `Recipe_CS`. It must be a Service module. Add a reference to the published `Source_CS` if the agent cannot see it. This prompt creates data only. Do not add create, update, delete, or search actions yet.
 
 ```text
 You are building a greenfield OutSystems 11 Service module. The module open in Service Studio must be Recipe_CS. If any other module is open, or if this module is not a Service module, stop and tell me. Do not switch modules, publish, or change any other module. Do not create screens, blocks, client actions, session variables, or local storage entities. Expose public Server Actions, not Service Actions.
 
-Use the OutSystems skill for O11 and the Service Studio MCP. Reference the published Source_CS module. If that reference is not available, stop and tell me to publish Source_CS. Read the module before you change it. This prompt is the data model only. Do not create Recipe_Create, Recipe_Update, Recipe_Delete, Recipe_Get, Recipe_Search, or Source_DeleteIfUnused. When you finish, list the entities, static records, and validation errors and warnings. Leave the result for Compare and Merge.
+Use the OutSystems skill for O11 and the Service Studio MCP. Reference the published Source_CS module. If that reference is not available, stop and tell me to publish Source_CS. Read the module before you change it. This prompt is the data model only. Do not create Recipe_Create, Recipe_Update, Recipe_Delete, Recipe_Get, Recipe_Search, or Source_DeleteIfUnused. When you finish, list the entities, static records, and validation errors and warnings. Leave the result for Compare and Merge. Do not publish.
 
 Data is application-wide. Do not add a UserId.
 
@@ -226,7 +230,7 @@ Stay in `Recipe_CS` after Prompt 4 is merged. Do not redesign the entities.
 ```text
 You are extending the OutSystems 11 Service module open in Service Studio. It must be Recipe_CS, and it must already contain Recipe, RecipeIngredient, RecipeStep, and the static entities from the data-model prompt. If that is not true, or if this module is not a Service module, stop and tell me what is missing. Do not switch modules, publish, or change any other module. Do not rename or delete the entities. Do not create screens, blocks, client actions, session variables, or local storage entities. Expose public Server Actions, not Service Actions.
 
-Use the OutSystems skill for O11 and the Service Studio MCP. Read the current actions before you add new ones. When you finish, list the public actions and the validation errors and warnings. Leave the result for Compare and Merge.
+Use the OutSystems skill for O11 and the Service Studio MCP. Read the current actions before you add new ones. When you finish, list the public actions and the validation errors and warnings. Leave the result for Compare and Merge. Do not publish.
 
 Add structures the actions can accept and return:
 
@@ -239,10 +243,10 @@ Public server actions. Each write action returns success and a user-facing messa
 Recipe_Create(RecipeData) and Recipe_Update(RecipeId, RecipeData):
 
 - Trim Name. Reject a blank name.
-- Reject a duplicate name, ignoring case. On update, ignore the recipe being saved.
-- Category, cuisine, kind, and servings are required. Servings must be positive.
-- Nutrition fields are required and must be zero or greater. Prep and cook must be zero or greater.
-- Homemade: store SourceId as null. Store the submitted difficulty, prep, and cook. Replace ingredients and steps with the submitted lists, in Order. Skip ingredient rows that have no units, no unit, or a blank name. Skip steps with a blank instruction. Empty lists are allowed.
+- Reject a duplicate name, ignoring case. The message is "{name}" already exists. On update, ignore the recipe being saved.
+- Category, cuisine, kind, and servings are required.
+- The six nutrition fields are required.
+- Homemade: PrepTimeMinutes and CookTimeMinutes are required and zero or greater. Store SourceId as null. Store the submitted difficulty, prep, and cook. Replace ingredients and steps with the submitted lists, in Order. Skip ingredient rows that have no units, no unit, or a blank name. Skip steps with a blank instruction. Empty lists are allowed.
 - Prepared: SourceId is required and must exist. Store difficulty as Easy, prep 0, and cook 0. Delete any ingredients and steps.
 - Update replaces child lists; it does not append.
 
@@ -264,16 +268,16 @@ Do not add a Calculate Nutrition action and do not call an external API.
 
 ## Prompt 6 — MealPlan_CS
 
-Publish `Recipe_CS` first. Open `MealPlan_CS`.
+Publish `Recipe_CS` first. Open `MealPlan_CS`. It must be a Service module.
 
 ```text
 You are building a greenfield OutSystems 11 Service module. The module open in Service Studio must be MealPlan_CS. If any other module is open, or if this module is not a Service module, stop and tell me. Do not switch modules, publish, or change any other module. Do not create screens, blocks, client actions, session variables, or local storage entities. Expose public Server Actions, not Service Actions.
 
-Use the OutSystems skill for O11 and the Service Studio MCP. Reference the published Recipe_CS module. If that reference is not available, stop and tell me to publish Recipe_CS. Do not reference Settings_CS or Planning_BL. Read the module before you change it. When you finish, list the public elements and the validation errors and warnings. Leave the result for Compare and Merge.
+Use the OutSystems skill for O11 and the Service Studio MCP. Reference the published Recipe_CS module. If that reference is not available, stop and tell me to publish Recipe_CS. Do not reference Settings_CS or Planning_BL. Read the module before you change it. When you finish, list the public elements and the validation errors and warnings. Leave the result for Compare and Merge. Do not publish.
 
 Data is application-wide. Do not add a UserId. Do not implement nutrition scaling or settings comparisons in this module.
 
-Create public static entity MealType with SortOrder. Records: Breakfast 1, Lunch 2, Dinner 3, Snack 4.
+Create public static entity MealType with records Breakfast, Lunch, Dinner, Snack.
 
 Create public entity MealPlan, Expose Read Only = Yes:
 
@@ -297,7 +301,7 @@ Index MealPlan.PlanDate, Meal.MealPlanId, MealItem.MealId, and MealItem.RecipeId
 
 Public server actions and functions only:
 
-- MealPlan_GetByDate(PlanDate) returns the plan, its meals, and its items. Return an empty result when that date has no plan.
+- MealPlan_GetByDate(PlanDate) returns the plan, its meals, and its items, in stored order. Return an empty result when that date has no plan.
 - MealPlan_GetForPeriod(StartDate, EndDate) returns the same shape for every plan whose PlanDate is inside the inclusive range.
 - MealPlan_RecipeIsUsed(RecipeId) returns true when any MealItem points at that recipe.
 - MealItem_Get(MealItemId) returns the item, its MealTypeId, and its PlanDate, or a failure when it does not exist.
@@ -316,13 +320,13 @@ Stay in `MealPlan_CS` after Prompt 6 is merged. Publish `Recipe_CS` if this modu
 ```text
 You are extending the OutSystems 11 Service module open in Service Studio. It must be MealPlan_CS and it must already contain MealPlan, Meal, MealItem, and MealType. If that is not true, or if this module is not a Service module, stop and tell me what is missing. Do not switch modules, publish, or change any other module. Do not reference Settings_CS or Planning_BL. Do not create screens, blocks, client actions, session variables, or local storage entities. Expose public Server Actions, not Service Actions.
 
-Use the OutSystems skill for O11 and the Service Studio MCP. Read the current actions before you add new ones. These writes stay in this module because the entities are expose-read-only to other modules. When you finish, describe the three new actions and list validation errors and warnings. Leave the result for Compare and Merge.
+Use the OutSystems skill for O11 and the Service Studio MCP. Read the current actions before you add new ones. These writes stay in this module because the entities are expose-read-only to other modules. When you finish, describe the three new actions and list validation errors and warnings. Leave the result for Compare and Merge. Do not publish.
 
 Add three public server actions. Each returns success and a message. Each one performs its whole change in a single server action so a move cannot leave two copies or an empty plan behind.
 
 Shared rules:
 
-- Servings must be positive. All six nutrition values are required and must be zero or greater. PlanDate, MealTypeId, and RecipeId are required. RecipeId must exist.
+- Servings must be positive. All six nutrition values are required. PlanDate, MealTypeId, and RecipeId are required. RecipeId must exist.
 - The stored item Name is the recipe name at save time. Do not update older items when a recipe is later renamed.
 - Store the Nutrition argument as the snapshot. Do not rescale it inside these actions. The screen asks Planning_BL for a proposed snapshot and may override it before save.
 - After a remove or a move, delete a meal that has no items. Then delete a plan that has no meals.
@@ -350,12 +354,12 @@ Do not add screens. Do not call an external API.
 
 ## Prompt 8 — Planning_BL calculations
 
-Publish `Settings_CS`, `Recipe_CS`, and `MealPlan_CS`. Open `Planning_BL`. This prompt is calculations only.
+Publish `Settings_CS`, `Recipe_CS`, and `MealPlan_CS`. Open `Planning_BL`. It must be a Service module. This prompt is calculations only.
 
 ```text
 You are building a greenfield OutSystems 11 Service module. The module open in Service Studio must be Planning_BL. If any other module is open, or if this module is not a Service module, stop and tell me. Do not switch modules, publish, or change any other module. Do not create screens, blocks, client actions, session variables, or local storage entities. Expose public Server Actions, not Service Actions.
 
-Use the OutSystems skill for O11 and the Service Studio MCP. Reference the published modules Settings_CS, Recipe_CS, and MealPlan_CS. If any reference is missing, stop and name it. Read the module before you change it. This prompt adds calculations only. Do not create, move, or delete meal items. Those actions belong to MealPlan_CS. When you finish, list the public elements and the validation errors and warnings. Leave the result for Compare and Merge.
+Use the OutSystems skill for O11 and the Service Studio MCP. Reference the published modules Settings_CS, Recipe_CS, and MealPlan_CS. If any reference is missing, stop and name it. Read the module before you change it. This prompt adds calculations only. Do not create, move, or delete meal items. Those actions belong to MealPlan_CS. When you finish, list the public elements and the validation errors and warnings. Leave the result for Compare and Merge. Do not publish.
 
 Create public static entity NutritionalStatus with records InZone, LowWarn, LowDanger, HighWarn, HighDanger.
 
@@ -396,23 +400,26 @@ Set the module description to: Nutrition status and weekly summaries for the sha
 
 ## Prompt 9 — MealPlanner shell
 
-Publish `MealPlanner_Th`. Open `MealPlanner`. Later prompts fill the screens. This prompt creates the shell and empty screens so navigation can be reviewed.
+Publish `MealPlanner_Th`. Open `MealPlanner`. It must be a Reactive Web module. Later prompts fill the screens. This prompt creates the shell and empty screens so navigation can be reviewed.
 
 ```text
-You are building a greenfield OutSystems 11 Reactive Web module. The module open in Service Studio must be MealPlanner. If any other module is open, stop and tell me. Do not switch modules, publish, or change any other module.
+You are building a greenfield OutSystems 11 Reactive Web module. The module open in Service Studio must be MealPlanner, and it must be a Reactive Web module. If any other module is open, or if it is not Reactive Web, stop and tell me. Do not switch modules, publish, or change any other module.
 
-Use the OutSystems skill for O11 and the Service Studio MCP. Set the module theme's base theme to MealPlanner_Th. Reference Users. If MealPlanner_Th is not available, stop and tell me to publish it. Do not reference the core modules yet. Do not create entities. Read the module before you change it. When you finish, list the screens and the validation errors and warnings. Leave the result for Compare and Merge.
+Use the OutSystems skill for O11 and the Service Studio MCP. Set the module theme's base theme to MealPlanner_Th. Reference Users. If MealPlanner_Th is not available, stop and tell me to publish it. Do not reference the core modules yet. Do not create entities. Read the module before you change it. When you finish, list the screens and the validation errors and warnings. Leave the result for Compare and Merge. Do not publish.
 
-Create site properties AppDescription = "Meal Planner" and AppVersion = "1.0.0". Set the module description to AppDescription.
+Create site properties AppDescription = "Meal Planner" and AppVersion = "2.0.0". Set the module description to AppDescription.
 
 Anonymous screens: Login and InvalidLink. Every other screen requires the Registered role.
 
 Login:
-- Email and password.
+- Title "Login to Your Account".
+- Email and password. Email is required. If it does not contain an @ and a dot, show "Invalid e-mail". Password is required.
+- The Login button stays disabled until the form is valid.
 - Call the Users login action. Read the Users module and use the real action; do not guess a name. If you cannot find it, stop.
 - On failure show "Login failed. Please try again."
 - On success navigate to Dashboard.
-- Forgot password asks for an email and calls the Users password-reset action. Success message: "Password reset email sent. Please check your inbox for further instructions. Be sure to look in your spam folder if you do not see it right away." Failure message: "Failed to send password reset email. Please try again."
+- "Forgot Password?" switches the same screen to reset mode. Title "Get Password Reset Instructions". Helper text: "Please enter your email address. If your email is associated with a valid active account, we will send an instructional email with a password reset link. Use that link to reset your password." Hide the password field. The button label is "Send Reset Instructions". Cancel returns to the login form without sending.
+- Send calls the Users password-reset action. Success message: "Password reset email sent. Please check your inbox for further instructions. Be sure to look in your spam folder if you do not see it right away." Failure message: "Failed to send password reset email. Please try again."
 
 InvalidLink, anonymous:
 - Title: "I find this failure to load to be disturbing."
@@ -420,12 +427,14 @@ InvalidLink, anonymous:
 
 Create these Registered screens with a heading and no business data yet: Dashboard, DashboardRecipes, Planning, Week, MealItemAdd, MealItemEdit, Recipes, RecipeType, RecipeDetail, RecipeEdit, Sources, SourceEdit, Settings.
 
-Week, MealItemAdd, and MealItemEdit each have an input WeekStartDate of type Date, mandatory. RecipeDetail and RecipeEdit have an input RecipeId. SourceEdit has an input SourceId. MealItemEdit also has an input MealItemId. Leave the inputs unused for now except that a missing WeekStartDate on Week redirects to InvalidLink.
+Headings: Dashboard "Today's Outlook", Planning "Planning & Logging", Week "Weekly Plan", MealItemAdd "Add Meal Item", MealItemEdit "Update Meal Item", Recipes "My Recipes", RecipeType "Pick a Recipe Type", Sources "Sources for Recipes".
+
+Week and MealItemAdd each have an input WeekStartDate of type Date, mandatory. A missing or invalid WeekStartDate on those two screens redirects to InvalidLink. MealItemEdit has an input WeekStartDate and does not redirect when it is missing. RecipeDetail and RecipeEdit have an input RecipeId. SourceEdit has an input SourceId. MealItemEdit also has an input MealItemId. Leave the inputs unused for now except for the Week and MealItemAdd redirect.
 
 Layout:
-- A menu with Dashboard, Planning & Logging, Recipes, Settings, Recipe Sources, and Logout.
+- A menu with Dashboard, Planning & Logging, Recipes, then a divider, then Settings, Recipe Sources, and Logout.
 - Logout calls the Users logout action and returns to Login.
-- On a wide screen the menu is a side menu. On a phone it collapses behind a menu button.
+- On a wide screen the menu is a permanent rail that expands on hover. On a phone the bar title is "Meal Planner" and the same menu opens from a menu button.
 - Login and InvalidLink do not show that menu.
 
 The home entry of the module opens Dashboard when the user is registered and Login otherwise.
@@ -440,27 +449,26 @@ Do not build the page contents in this prompt.
 Publish `Source_CS` and `Recipe_CS`. Open `MealPlanner`.
 
 ```text
-You are extending the OutSystems 11 module open in Service Studio. It must be MealPlanner and it must already contain the Sources and SourceEdit screens from the shell prompt. If not, stop. Do not switch modules, publish, or change any other module. Do not change Login or the menu except to make sure Recipe Sources opens Sources.
+You are extending the OutSystems 11 Reactive Web module open in Service Studio. It must be MealPlanner and it must already contain the Sources and SourceEdit screens from the shell prompt. If not, or if this module is not Reactive Web, stop. Do not switch modules, publish, or change any other module. Do not change Login or the menu except to make sure Recipe Sources opens Sources.
 
-Use the OutSystems skill for O11 and the Service Studio MCP. Reference the published Source_CS and Recipe_CS modules. If either reference is missing, stop and name it. Reuse the public actions. Do not write Source or Recipe entities from this module. When you finish, describe the two screens and list validation errors and warnings. Leave the result for Compare and Merge.
+Use the OutSystems skill for O11 and the Service Studio MCP. Reference the published Source_CS and Recipe_CS modules. If either reference is missing, stop and name it. Reuse the public actions. Do not write Source or Recipe entities from this module. When you finish, describe the two screens and list validation errors and warnings. Leave the result for Compare and Merge. Do not publish.
 
-Sources screen:
-- Title "Sources for Recipes".
+Sources screen, title "Sources for Recipes":
 - If recipes cannot be loaded, show "Recipes have failed to load, deletion of sources is disabled" and do not show delete icons.
 - While sources or the usage check are loading, show a progress indicator.
 - When the list is empty, show "No sources found".
 - Otherwise list each source name. Clicking a row opens SourceEdit for that id.
 - An add button opens SourceEdit for a new source.
-- Generic Restaurant, the protected source, has no delete icon.
+- The protected source, IsProtected True, has no delete icon. That is the Generic Restaurant row, even if it has been renamed.
 - Delete on any other source calls Source_DeleteIfUnused. When it reports the source is in use, show title "Source in use" and message "This source is used in recipes and cannot be deleted." Otherwise ask "Are you sure you want to delete {name}?" and call the action only after confirmation.
 
 SourceEdit screen:
 - Input SourceId, optional. No id means create.
-- One required name field. The name must be unique, ignoring case, among the other sources. Show the duplicate message "{name} already exists".
+- One required name field. The name must be unique, ignoring case, among the other sources. Show the duplicate message "{name}" already exists, using the trimmed name.
 - Save is disabled until the form is valid. On update it is also disabled until the name changed.
 - Save trims the name and calls Source_Create or Source_Update. Show the action's message on failure. On success return to Sources.
 - Cancel returns to Sources without saving.
-- The protected Generic Restaurant cannot be saved; show the action message if a save is attempted.
+- The protected row can be renamed. Delete remains blocked on the list.
 ```
 
 ---
@@ -470,14 +478,14 @@ SourceEdit screen:
 Publish `Settings_CS`. Open `MealPlanner`.
 
 ```text
-You are extending the OutSystems 11 module open in Service Studio. It must be MealPlanner and it must already contain the Settings screen. If not, stop. Do not switch modules, publish, or change any other module.
+You are extending the OutSystems 11 Reactive Web module open in Service Studio. It must be MealPlanner and it must already contain the Settings screen. If not, or if this module is not Reactive Web, stop. Do not switch modules, publish, or change any other module.
 
-Use the OutSystems skill for O11 and the Service Studio MCP. Reference the published Settings_CS module. If it is missing, stop. Use ApplicationSetting_Get and ApplicationSetting_Update. Do not write the entity from this module. When you finish, describe the screen and list validation errors and warnings. Leave the result for Compare and Merge.
+Use the OutSystems skill for O11 and the Service Studio MCP. Reference the published Settings_CS module. If it is missing, stop. Use ApplicationSetting_Get and ApplicationSetting_Update. Do not write the entity from this module. When you finish, describe the screen and list validation errors and warnings. Leave the result for Compare and Merge. Do not publish.
 
 Settings screen:
 - Title "{AppDescription} - v{AppVersion}" using the site properties.
 - Load the single ApplicationSetting row.
-- Fields, all required:
+- Fields, in this order, all required:
   - Minimum and maximum daily calories, protein, fat, carbs, and sodium. Units: kcal, grams, grams, grams, mg.
   - Maximum daily sugar in grams. There is no sugar minimum.
   - Tolerance percent.
@@ -486,6 +494,8 @@ Settings screen:
   - "Minimum {nutrient} must be less than maximum {nutrient}"
   - "Maximum {nutrient} must be greater than minimum {nutrient}"
   - "Tolerance must be 100 or less"
+  - "Must be a positive number" when a bound is not positive
+  - "Must be zero or greater" when tolerance is negative
 - Reset restores the values from the last successful load, not the factory defaults.
 - Save is disabled until the form is valid and at least one value differs from the loaded record.
 - Save calls ApplicationSetting_Update and shows its message on failure. On success, the loaded snapshot becomes the new reset baseline.
@@ -498,15 +508,15 @@ Settings screen:
 Publish `Recipe_CS` and `MealPlan_CS`. Open `MealPlanner`.
 
 ```text
-You are extending the OutSystems 11 module open in Service Studio. It must be MealPlanner and it must already contain Recipes, RecipeDetail, and RecipeType. If not, stop. Do not switch modules, publish, or change any other module. Do not build the recipe editor in this prompt. RecipeType may stay a heading for now.
+You are extending the OutSystems 11 Reactive Web module open in Service Studio. It must be MealPlanner and it must already contain Recipes, RecipeDetail, and RecipeType. If not, or if this module is not Reactive Web, stop. Do not switch modules, publish, or change any other module. Do not build the recipe editor in this prompt. RecipeType may stay a heading for now.
 
-Use the OutSystems skill for O11 and the Service Studio MCP. Reference the published Recipe_CS and MealPlan_CS modules. If either is missing, stop and name it. Call the public actions. Do not write recipe entities from this module. When you finish, describe the screens and list validation errors and warnings. Leave the result for Compare and Merge.
+Use the OutSystems skill for O11 and the Service Studio MCP. Reference the published Recipe_CS and MealPlan_CS modules. If either is missing, stop and name it. Call the public actions. Do not write recipe entities from this module. When you finish, describe the screens and list validation errors and warnings. Leave the result for Compare and Merge. Do not publish.
 
 Recipes screen, title "My Recipes":
-- A keyword box and three optional filters: Category, Cuisine, and Calorie Range.
+- A keyword box with placeholder "Search for a recipe..." and three optional filters: Category, Cuisine, and Calorie Range.
 - Calorie ranges: 0-500, 501-750, 751-1000, and 1001+. 1001+ has no upper bound. Do not add a kind filter.
 - Call Recipe_Search with the current filters.
-- Show "Displaying {filtered} of {total} recipe" and add an "s" when the total is not 1. The total is the unfiltered recipe count.
+- Show "Displaying {filtered} of {total} recipe" and add an "s" when the total is not 1. The total is the unfiltered recipe count. Show this even when the library is empty.
 - No recipes in the library: "No recipes found."
 - Recipes exist but none match: "No recipes match your search criteria."
 - Otherwise show cards. Each card shows the name, category, cuisine, difficulty, description, servings, prep minutes plus cook minutes, and "{calories} kcal". Clicking a card opens RecipeDetail.
@@ -530,9 +540,9 @@ RecipeDetail, input RecipeId:
 Stay in `MealPlanner` after Prompt 12 is merged.
 
 ```text
-You are extending the OutSystems 11 module open in Service Studio. It must be MealPlanner and it must already contain RecipeType, RecipeEdit, and a working RecipeDetail. If not, stop. Do not switch modules, publish, or change any other module. Do not add a Calculate Nutrition button or an external API.
+You are extending the OutSystems 11 Reactive Web module open in Service Studio. It must be MealPlanner and it must already contain RecipeType, RecipeEdit, and a working RecipeDetail. If not, or if this module is not Reactive Web, stop. Do not switch modules, publish, or change any other module. Do not add a Calculate Nutrition button or an external API.
 
-Use the OutSystems skill for O11 and the Service Studio MCP. Use Recipe_Create, Recipe_Update, Recipe_Get, Recipe_Search, and the Source entity's read-only data. When you finish, describe the screens and list validation errors and warnings. Leave the result for Compare and Merge.
+Use the OutSystems skill for O11 and the Service Studio MCP. Use Recipe_Create, Recipe_Update, Recipe_Get, Recipe_Search, and the Source entity's read-only data. When you finish, describe the screens and list validation errors and warnings. Leave the result for Compare and Merge. Do not publish.
 
 RecipeType:
 - Title "Pick a Recipe Type".
@@ -542,7 +552,7 @@ RecipeType:
 
 RecipeEdit inputs: optional RecipeId, and RecipeKindId. When RecipeId is set, load Recipe_Get and ignore the kind input in favor of the saved kind.
 
-Common fields: Name, Description, Category, Cuisine, Servings, and the six per-serving nutrients. Name is required and unique among other recipes, ignoring case. Category, cuisine, and servings are required. Servings must be positive. Nutrients are required and zero or greater. Description is optional.
+Common fields: Name, Description, Category, Cuisine, Servings, and the six per-serving nutrients. Name is required and unique among other recipes, ignoring case. The duplicate message is "{name}" already exists. Category, cuisine, and servings are required. Description is optional. Nutrients are required.
 
 Homemade also shows Difficulty, Preparation Time (minutes), Cooking Time (minutes), an ingredient list, and a step list.
 - Difficulty is required.
@@ -556,8 +566,8 @@ Prepared also shows a required Source dropdown of existing sources.
 - On save, the action stores Easy, zero times, and empty lists. Do not show those defaults as fields.
 
 Save is disabled until the form is valid. On update it is also disabled until something changed, including a list change.
-Cancel from a new recipe returns to Recipes. Cancel from an existing recipe returns to RecipeDetail.
-Save calls Recipe_Create or Recipe_Update. Show the action message on failure. On success, open RecipeDetail for the saved recipe.
+Cancel from a new recipe returns to RecipeType. Cancel from an existing recipe returns to RecipeDetail.
+Save calls Recipe_Create or Recipe_Update. Show the action message on failure. On success of a new recipe, open Recipes. On success of an existing recipe, open RecipeDetail for that recipe.
 ```
 
 ---
@@ -567,13 +577,13 @@ Save calls Recipe_Create or Recipe_Update. Show the action message on failure. O
 Publish `Planning_BL` and `Settings_CS`. Open `MealPlanner`.
 
 ```text
-You are extending the OutSystems 11 module open in Service Studio. It must be MealPlanner and it must already contain Planning and Week. If not, stop. Do not switch modules, publish, or change any other module. Do not build MealItemAdd or MealItemEdit contents in this prompt. You may link to them.
+You are extending the OutSystems 11 Reactive Web module open in Service Studio. It must be MealPlanner and it must already contain Planning and Week. If not, or if this module is not Reactive Web, stop. Do not switch modules, publish, or change any other module. Do not build MealItemAdd or MealItemEdit contents in this prompt. You may link to them.
 
-Use the OutSystems skill for O11 and the Service Studio MCP. Reference the published Planning_BL, MealPlan_CS, and Settings_CS modules. If a reference is missing, stop and name it. Call public actions. Do not write meal-plan entities from this module. When you finish, describe the screens and list validation errors and warnings. Leave the result for Compare and Merge.
+Use the OutSystems skill for O11 and the Service Studio MCP. Reference the published Planning_BL, MealPlan_CS, and Settings_CS modules. If a reference is missing, stop and name it. Call public actions. Do not write meal-plan entities from this module. When you finish, describe the screens and list validation errors and warnings. Leave the result for Compare and Merge. Do not publish.
 
 Use the theme status classes: in-zone, low-warn, low-danger, high-warn, high-danger. Protein, carbs, fat, sodium, and calories use Nutrition_RangeStatus against that nutrient's minimum and maximum. Sugar uses Nutrition_MaxOnlyStatus against the sugar maximum. Tolerance comes from application settings.
 
-A week summary shows the title, the start and end as M/d/yyyy through M/d/yyyy, "Days with Meals: {n}", and the six averages prefixed with "Average". Each nutrient shows its status marker.
+A week summary shows the title, the start and end as M/d/yyyy - M/d/yyyy, "Days with Meals: {n}", and the six averages prefixed with "Average". Each nutrient shows its status marker. In zone is a circle. Below the range is a down arrow. Above the range is an up arrow.
 
 Planning, title "Planning & Logging":
 - Section "Current Weeks" with a card "This Week" and a card "Next Week (Planning)".
@@ -586,8 +596,8 @@ Week, input WeekStartDate:
 - Title "Weekly Plan".
 - Show a progress indicator while the week's plans load.
 - Seven day cards, from WeekStartDate through the next six days. The day title is the full date. When the day has at least one meal, the title has a tooltip with that day's six nutrition totals and status markers. Otherwise the card says "No meals have been entered".
-- For each meal that has items, show the meal type, then each item's name, a nutrition tooltip of the item snapshot, an edit link, and a delete link. Show meals in Breakfast, Lunch, Dinner, Snack order.
-- Edit opens MealItemEdit with the week start, the meal item id, and the plan date. Leave that screen's form to the next prompt.
+- For each meal that has items, show the meal type, then each item's name, a nutrition tooltip of the item snapshot, an edit link, and a delete link. Show meals in the order they are stored. Do not sort them.
+- Edit opens MealItemEdit with the week start and the meal item id. Leave that screen's form to the next prompt.
 - Delete asks "Are you sure you want to delete this item from the meal?" On confirm call MealItem_Remove from MealPlan_CS and refresh the week.
 - Close goes back.
 - An add button opens MealItemAdd with this WeekStartDate.
@@ -600,33 +610,33 @@ Week, input WeekStartDate:
 Stay in `MealPlanner` after Prompt 14 is merged. Publish `Recipe_CS` if MealPlanner cannot yet read recipes.
 
 ```text
-You are extending the OutSystems 11 module open in Service Studio. It must be MealPlanner and it must already contain MealItemAdd, MealItemEdit, and a working Week screen. If not, stop. Do not switch modules, publish, or change any other module.
+You are extending the OutSystems 11 Reactive Web module open in Service Studio. It must be MealPlanner and it must already contain MealItemAdd, MealItemEdit, and a working Week screen. If not, or if this module is not Reactive Web, stop. Do not switch modules, publish, or change any other module.
 
-Use the OutSystems skill for O11 and the Service Studio MCP. MealItem_Add, MealItem_Update, and MealItem_Get are in MealPlan_CS. Nutrition_ForServings and Nutrition_Scale are in Planning_BL. Read recipes through the public Recipe entity or Recipe_Get. When you finish, describe both screens and list validation errors and warnings. Leave the result for Compare and Merge.
+Use the OutSystems skill for O11 and the Service Studio MCP. MealItem_Add, MealItem_Update, and MealItem_Get are in MealPlan_CS. Nutrition_ForServings and Nutrition_Scale are in Planning_BL. Read recipes through the public Recipe entity or Recipe_Get. When you finish, describe both screens and list validation errors and warnings. Leave the result for Compare and Merge. Do not publish.
 
 Both screens share one form:
 - Date, required, choices limited to the seven dates of WeekStartDate. Show each as "Weekday, Month day".
 - Meal type, required: Breakfast, Lunch, Dinner, Snack.
 - Recipe, required, showing recipe names.
 - Servings, required and positive. Default 1 on create.
-- The six nutrients, editable. The user may override them after they are proposed.
+- The six nutrients, required. The user may override them after they are proposed.
 
 When the user selects a recipe, set nutrition to Nutrition_ForServings for the current servings.
 When the user changes servings from a previous positive value, replace nutrition with Nutrition_Scale of the current nutrition by (new servings / previous servings). Do not jump back to the recipe baseline on a servings change.
 The values sent to save are whatever is on the form at that moment, including overrides.
 
-MealItemAdd:
+MealItemAdd, title "Add Meal Item":
+- If WeekStartDate is missing or not a real date, redirect to InvalidLink.
 - Save is disabled until the form is valid.
 - Save calls MealItem_Add. The item name is copied inside that action. On success return to Week for the same WeekStartDate.
 - Cancel returns to that Week without saving.
 
-MealItemEdit, input MealItemId:
+MealItemEdit, title "Update Meal Item", input MealItemId:
+- A missing WeekStartDate does not redirect.
 - Load MealItem_Get. If it fails, show the message and do not save.
 - Save is disabled until the form is valid and something changed: date, meal type, recipe, servings, or any nutrient.
 - Save calls MealItem_Update. A new date or meal type moves the item. On success return to Week.
 - Cancel returns to Week without saving.
-
-If WeekStartDate is missing on either screen, redirect to InvalidLink.
 ```
 
 ---
@@ -636,22 +646,22 @@ If WeekStartDate is missing on either screen, redirect to InvalidLink.
 Stay in `MealPlanner` after Prompts 14 and 15 are merged.
 
 ```text
-You are extending the OutSystems 11 module open in Service Studio. It must be MealPlanner and it must already contain Dashboard, DashboardRecipes, and a working Week screen. If not, stop. Do not switch modules, publish, or change any other module. Do not invent a finished meal-recipe browser. That page is intentionally unfinished.
+You are extending the OutSystems 11 Reactive Web module open in Service Studio. It must be MealPlanner and it must already contain Dashboard, DashboardRecipes, and a working Week screen. If not, or if this module is not Reactive Web, stop. Do not switch modules, publish, or change any other module. Do not invent a finished meal-recipe browser. That page is intentionally unfinished.
 
-Use the OutSystems skill for O11 and the Service Studio MCP. Use ApplicationSetting_Get, MealPlan_DailyNutrition, Planning_WeekRange, Planning_WeeklySummary, Nutrition_RangeStatus, and Nutrition_MaxOnlyStatus. When you finish, describe both screens and list validation errors and warnings. Leave the result for Compare and Merge.
+Use the OutSystems skill for O11 and the Service Studio MCP. Use ApplicationSetting_Get, MealPlan_DailyNutrition, Planning_WeekRange, Planning_WeeklySummary, Nutrition_RangeStatus, and Nutrition_MaxOnlyStatus. When you finish, describe both screens and list validation errors and warnings. Leave the result for Compare and Merge. Do not publish.
 
 Dashboard, title "Today's Outlook":
 - Six cards for today, in this order: Protein (g), Sugar (g), Carbs (g), Sodium (mg), Fat (g), Calories.
 - Values come from MealPlan_DailyNutrition for today's date. A day with no plan shows zeros.
 - Protein, carbs, fat, sodium, and calories use Nutrition_RangeStatus with that nutrient's minimum, maximum, and the tolerance. Sugar uses Nutrition_MaxOnlyStatus with the sugar maximum and the tolerance.
-- Color each status with the theme classes in-zone, low-warn, low-danger, high-warn, and high-danger.
-- Four more cards: Breakfast, Lunch, Dinner, and Snacks. Snacks is the label for MealType Snack. The value is that meal's calorie snapshot total, or "N/A" when that meal is absent. Clicking a card opens DashboardRecipes. Do not pass a filter that implies a finished feature.
-- Below a divider, show a "This Week" summary card and a "Next Week (Planning)" summary card, using the same summary layout as the Planning screen. Clicking a card opens Week for that start date.
+- Color each status with the theme classes in-zone, low-warn, low-danger, high-warn, and high-danger. In zone is a circle. Below the range is a down arrow. Above the range is an up arrow.
+- Four more cards: Breakfast, Lunch, Dinner, and Snacks. Snacks is the label for MealType Snack. The value is that meal's calorie snapshot total, or "N/A" when that meal is absent. Clicking a card opens DashboardRecipes and passes the meal type in lowercase: breakfast, lunch, dinner, or snack.
+- Below a divider, show a "This Week" summary card and a "Next Week (Planning)" summary card, using the same summary layout as the Planning screen, including the date range M/d/yyyy - M/d/yyyy. Clicking a card opens Week for that start date.
 - Do not show previous weeks on the dashboard.
 
 DashboardRecipes:
 - Show only this sentence: "The meal recipes page is under construction. Please check back later."
-- Do not list recipes and do not add edit actions.
+- Ignore the meal type passed on the link. Do not list recipes and do not add edit actions.
 
 Do not add a UserId anywhere. Do not call Firebase or any external nutrition service.
 ```
@@ -662,9 +672,10 @@ Do not add a UserId anywhere. Do not call Firebase or any external nutrition ser
 
 Review `MealPlanner` in the browser as a registered user:
 
-- Log in, fail a login, and send a password reset.
-- Create Generic Restaurant's neighbor source, then a prepared recipe that uses it, then a homemade recipe with ingredients.
-- Confirm the protected source cannot be deleted and a used source cannot be deleted.
+- Log in, fail a login, send a password reset, and cancel back to the login form.
+- Create a source, rename Generic Restaurant, and confirm the renamed protected source still has no delete icon.
+- Create a prepared recipe that uses a source, then a homemade recipe with ingredients. Cancel from the editor and confirm you return to Pick a Recipe Type. Save and confirm you return to the recipe list.
+- Confirm a used source cannot be deleted.
 - Add the recipes to a week, scale servings, override one nutrient, move an item to another day, and delete the last item so the plan disappears.
 - Compare today's dashboard colors with the settings ranges and the tolerance.
-- Open a meal card and confirm the placeholder is still the placeholder.
+- Open a meal card and confirm the placeholder is still the placeholder, including when the link carries a meal type.
