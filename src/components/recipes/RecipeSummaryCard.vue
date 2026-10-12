@@ -7,12 +7,13 @@
     <v-card-text class="d-flex flex-column ga-4">
       <div class="flex-grow-0">
         <v-chip size="small" color="primary">{{ recipe.cuisine }}</v-chip>
-        <v-chip size="small" color="secondary">{{ recipe.difficulty }}</v-chip>
+        <v-chip v-if="!isPrepared" size="small" color="secondary">{{ recipe.difficulty }}</v-chip>
+        <v-chip v-if="isPrepared" size="small" color="secondary">{{ source?.name }}</v-chip>
       </div>
       <div class="flex-grow-1">{{ recipe.description }}</div>
       <div class="flex-grow-0">
         <v-chip size="small" color="primary" prepend-icon="mdi-account-multiple-outline">{{ recipe.servings }}</v-chip>
-        <v-chip size="small" color="secondary" prepend-icon="mdi-clock-time-four-outline">{{
+        <v-chip v-if="!isPrepared" size="small" color="secondary" prepend-icon="mdi-clock-time-four-outline">{{
           recipe.prepTimeMinutes + recipe.cookTimeMinutes
         }}</v-chip>
         <v-chip size="small" color="tertiary" prepend-icon="mdi-fire">{{ recipe.calories }} kcal</v-chip>
@@ -23,14 +24,21 @@
 
 <script setup lang="ts">
 import type { Recipe } from '@/models/recipe';
+import { useSourcesData } from '@/data/sources';
+import { computed } from 'vue';
 
-defineProps<{
+const props = defineProps<{
   recipe: Recipe;
 }>();
 
 defineEmits<{
   (event: 'click', payload: Recipe): void;
 }>();
+
+const { sources } = useSourcesData();
+
+const isPrepared = computed(() => props.recipe.kind === 'prepared');
+const source = computed(() => sources.value.find((source) => source.id === props.recipe.sourceId));
 </script>
 
 <style scoped>
