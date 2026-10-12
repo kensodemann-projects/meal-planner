@@ -18,6 +18,7 @@ const mountPage = () => mount(IndexPage, { global: { plugins: [vuetify] } });
 
 vi.mock('vue-router');
 vi.mock('@/data/recipes');
+vi.mock('@/data/sources');
 
 describe('Recipes List Page', () => {
   let wrapper: ReturnType<typeof mountPage>;
