@@ -425,14 +425,14 @@ InvalidLink, anonymous:
 - Title: "I find this failure to load to be disturbing."
 - Subtitle: "This is not the page you are looking for."
 
-Create these Registered screens with a heading and no business data yet: Dashboard, DashboardRecipes, Planning, Week, MealItemAdd, MealItemEdit, Recipes, RecipeType, RecipeDetail, RecipeEdit, Sources, SourceEdit, Settings.
+Create these Registered screens with a heading and no business data yet: Dashboard, DashboardRecipes, Planning, Week, MealItemAdd, MealItemEdit, Recipes, RecipeType, RecipeDetail, RecipeEdit, Sources, SourceEdit, AppSettings.
 
 Headings: Dashboard "Today's Outlook", Planning "Planning & Logging", Week "Weekly Plan", MealItemAdd "Add Meal Item", MealItemEdit "Update Meal Item", Recipes "My Recipes", RecipeType "Pick a Recipe Type", Sources "Sources for Recipes".
 
 Week and MealItemAdd each have an input WeekStartDate of type Date, mandatory. A missing or invalid WeekStartDate on those two screens redirects to InvalidLink. MealItemEdit has an input WeekStartDate and does not redirect when it is missing. RecipeDetail and RecipeEdit have an input RecipeId. SourceEdit has an input SourceId. MealItemEdit also has an input MealItemId. Leave the inputs unused for now except for the Week and MealItemAdd redirect.
 
 Layout:
-- A menu with Dashboard, Planning & Logging, Recipes, then a divider, then Settings, Recipe Sources, and Logout.
+- A menu with Dashboard, Planning & Logging, Recipes, then a divider, then AppSettings, Recipe Sources, and Logout.
 - Logout calls the Users logout action and returns to Login.
 - On a wide screen the menu is a permanent rail that expands on hover. On a phone the bar title is "Meal Planner" and the same menu opens from a menu button.
 - Login and InvalidLink do not show that menu.
@@ -473,16 +473,16 @@ SourceEdit screen:
 
 ---
 
-## Prompt 11 — Settings screen
+## Prompt 11 — AppSettings screen
 
 Publish `Settings_CS`. Open `MealPlanner`.
 
 ```text
-You are extending the OutSystems 11 Reactive Web module open in Service Studio. It must be MealPlanner and it must already contain the Settings screen. If not, or if this module is not Reactive Web, stop. Do not switch modules, publish, or change any other module.
+You are extending the OutSystems 11 Reactive Web module open in Service Studio. It must be MealPlanner and it must already contain the AppSettings screen. If not, or if this module is not Reactive Web, stop. Do not switch modules, publish, or change any other module.
 
 Use the OutSystems skill for O11 and the Service Studio MCP. Reference the published Settings_CS module. If it is missing, stop. Use ApplicationSetting_Get and ApplicationSetting_Update. Do not write the entity from this module. When you finish, describe the screen and list validation errors and warnings. Leave the result for Compare and Merge. Do not publish.
 
-Settings screen:
+AppSettings screen:
 - Title "{AppDescription} - v{AppVersion}" using the site properties.
 - Load the single ApplicationSetting row.
 - Fields, in this order, all required:
