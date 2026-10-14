@@ -1,0 +1,279 @@
+Name: Greek Salad
+Description: Fresh Mediterranean salad with crisp vegetables, olives, and creamy feta cheese.
+Category: Salad
+Cuisine: Greek
+Servings: 4
+Difficulty: Easy
+Preparation Time: 15
+Cooking Time: 0
+Calories: 285
+Protein: 9
+Carbs: 14
+Fat: 23
+Sugar: 7
+Sodium: 780
+Ingredients
+Units: 2
+Unit of measure: Item
+Name: Cucumber
+Units: 4
+Unit of measure: Item
+Name: Tomatoes
+Units: 1
+Unit of measure: Item
+Name: Red onion
+Units: 1
+Unit of measure: Cup
+Name: Kalmata olives
+Units: 8
+Unit of measure: Ounce
+Name: Feta cheese
+Units: 0.25
+Unit of measure: Cup
+Name: Extra virgin olive oil
+Units: 2
+Unit of measure: Tablespoon
+Name: Red wine vinegar
+Units: 1
+Unit of measure: Teaspoon
+Name: Dried oregano
+Units: 0.5
+Unit of measure: Teaspoon
+Name: Salt
+Units: 0.25
+Unit of measure: Teaspoon
+Name: Black pepper
+Steps
+Cut cucumbers and tomatoes into large chunks.
+Slice red onion into thin half-moons.
+Combine vegetables in a large bowl with olives.
+Whisk olive oil, vinegar, oregano, salt, and pepper.
+Pour dressing over salad and toss gently.
+Top with large pieces of feta cheese.
+Let sit for 5 minutes before serving to allow flavors to meld.
+
+Name: Kung Pao Chicken
+Description: Spicy Sichuan stir-fry with tender chicken, peanuts, and dried chilies in savory sauce.
+Category: Poultry
+Cuisine: Chinese
+Servings: 4
+Difficulty: Normal
+Preparation Time: 20
+Cooking Time: 15
+Calories: 395
+Protein: 32
+Carbs: 12
+Fat: 25
+Sugar: 3
+Sodium: 920
+Ingredients
+Units: 1.5
+Unit of measure: Pound
+Name: Chicken thights
+Units: 0.5
+Unit of measure: Cup
+Name: Roated peanuts
+Units: 12
+Unit of measure: Item
+Name: Dried red chilies
+Units: 1
+Unit of measure: Teaspoon
+Name: Sichuan peppercorns
+Units: 3
+Unit of measure: Tablespoon
+Name: Soy Sauce
+Units: 2
+Unit of measure: Tablespoon
+Name: Rice vinegar
+Units: 1
+Unit of measure: Tablespoon
+Name: Sesame oil
+Units: 1
+Unit of measure: Tablespoon
+Name: Cornstarch
+Units: 4
+Unit of measure: Item
+Name: Green onions
+Units: 3
+Unit of measure: Item
+Name: Garlic
+Units: 1
+Unit of measure: Item
+Name: Ginger (about a 1 inch piece)
+Steps
+Cut chicken into 1-inch cubes. Marinate with 1 tbsp soy sauce and cornstarch.
+Mix remaining soy sauce, rice vinegar, and sesame oil for the sauce.
+Heat wok over high heat. Toast Sichuan peppercorns briefly, then set aside.
+Stir-fry chicken until golden, about 5 minutes. Remove from wok.
+Add dried chilies, garlic, and ginger. Stir-fry for 30 seconds.
+Return chicken to wok. Add sauce and peanuts.  7
+Toss until sauce thickens and coats the chicken.
+Garnish with sliced green onions and serve over rice.
+
+Name: Miso Ramen
+Description: Hearty Japanese noodle soup with rich miso broth, tender chashu pork, and soft-boiled egg.
+Category: Soup
+Cuisine: Japanese
+Servings: 4
+Difficulty: Advanced
+Preparation Time: 45
+Cooking Time: 60
+Calories: 620
+Protein: 35
+Carbs: 52
+Fat: 32
+Sugar: 6
+Sodium: 1450
+Ingredients
+Units: 14
+Unit of measure: Ounce
+Name: Ramen noodles
+Units: 1
+Unit of measure: Pound
+Name: Pork belly
+Units: 4
+Unit of measure: Tablespoon
+Name: White miso paste
+Units: 8
+Unit of measure: Cup
+Name: Chicken broth
+Units: 3
+Unit of measure: Tablespoon
+Name: Soy sauce
+Units: 2
+Unit of measure: Tablespoon
+Name: Sake
+Units: 4
+Unit of measure: Item
+Name: Eggs
+Units: 4
+Unit of measure: Item
+Name: Green onion
+Units: 4
+Unit of measure: Item
+Name: Nori sheets
+Units: 1
+Unit of measure: Cup
+Name: Corn kernels
+Units: 1
+Unit of measure: Tablespoon
+Name: Sesame oil
+Steps
+Braise pork belly in soy sauce, sake, and water for 2 hours until tender.  2
+Soft-boil eggs for 7 minutes, then marinate in soy sauce mixture.
+Heat chicken broth and whisk in miso paste until dissolved.  4
+Add sesame oil and adjust seasoning with more soy sauce if needed.
+Cook ramen noodles according to package directions.
+Slice chashu pork into 1/4-inch thick pieces.
+Divide noodles among bowls, ladle hot broth over them.
+Top with sliced pork, halved egg, corn, nori, and sliced green onions.
+
+Name: Pad Thai
+Description: Classic Thai stir-fried rice noodles with shrimp, tofu, peanuts, and tangy tamarind sauce.
+Category: Seafood
+Cuisine: Thai
+Servings: 4
+Difficulty: Normal
+Preparation Time: 25
+Cooking Time: 15
+Calories: 425
+Protein: 28
+Carbs: 48
+Fat: 14
+Sugar: 12
+Sodium: 890
+Ingredients
+Units: 8
+Unit of measure: Ounce
+Name: Rice noodles
+Units: 1
+Unit of measure: Pound
+Name: Shrimp
+Units: 4
+Unit of measure: Ounce
+Name: Firm Tofu
+Units: 2
+Unit of measure: Item
+Name: Eggs
+Units: 2
+Unit of measure: Cup
+Name: Bean sprouts
+Units: 3
+Unit of measure: Tablespoon
+Name: Tamarind paste
+Units: 3
+Unit of measure: Tablespoon
+Name: Fish sauce
+Units: 2
+Unit of measure: Tablespoon
+Name: Palm sugar
+Units: 0.25
+Unit of measure: Cup
+Name: Roasted peanuts
+Units: 4
+Unit of measure: Item
+Name: Green onions
+Units: 1
+Unit of measure: Item
+Name: Lime
+Steps
+Soak rice noodles in warm water for 30 minutes, then drain.
+Mix tamarind paste, fish sauce, and palm sugar to make the sauce.
+Heat oil in a wok over high heat. Stir-fry tofu until golden, set aside.
+Cook shrimp until pink, about 2 minutes per side. Set aside.
+Scramble eggs in the wok, then add noodles and sauce.
+Toss until noodles are coated and slightly caramelized.
+Add tofu, shrimp, bean sprouts, and green onions. Toss to combine.
+Serve topped with crushed peanuts and lime wedges.
+
+Name: Tiramisu
+Description: Classic Italian dessert with espresso-soaked ladyfingers and mascarpone cream.
+Category: Dessert
+Cuisine: Italian
+Servings: 12
+Difficulty: Normal
+Preparation Time: 30
+Cooking Time: 0
+Calories: 385
+Protein: 7
+Carbs: 32
+Fat: 24
+Sugar: 24
+Sodium: 85
+Ingredients
+Units: 36
+Unit of measure: Item
+Name: Ladyfinger cookies
+Units: 16
+Unit of measure: Ounce
+Name: Mascarpone cheese
+Units: 6
+Unit of measure: Item
+Name: Egg yolks
+Units: 0.75
+Unit of measure: Cup
+Name: Sugar
+Units: 1.5
+Unit of measure: Cup
+Name: Heavy Cream
+Units: 2
+Unit of measure: Cup
+Name: Espresso
+Units: 0.25
+Unit of measure: Cup
+Name: Kahlua or Rum
+Units: 3
+Unit of measure: Tablespoon
+Name: Cocoa powder
+Units: 1
+Unit of measure: Teaspoon
+Name: Vanilla extract
+Steps
+Brew espresso and let cool. Mix with Kahlua.
+Whisk egg yolks with sugar over double boiler until thick and pale.
+Remove from heat. Fold in mascarpone and vanilla.
+Whip heavy cream to stiff peaks. Fold into mascarpone mixture.
+Quickly dip ladyfingers in espresso mixture. Arrange in 9x13 dish.
+Spread half the mascarpone cream over ladyfingers.
+Repeat with another layer of dipped ladyfingers and remaining cream.
+Refrigerate at least 4 hours. Dust with cocoa powder before serving.
