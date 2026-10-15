@@ -13,6 +13,7 @@ import IndexPage from '../index.vue';
 
 vi.mock('vue-router');
 vi.mock('@/data/recipes');
+vi.mock('@/data/sources');
 
 const vuetify = createVuetify({
   components,
