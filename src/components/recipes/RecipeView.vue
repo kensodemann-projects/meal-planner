@@ -9,16 +9,22 @@
     </div>
     <v-container fluid>
       <v-row density="compact">
-        <v-col v-for="metadataItem in metadataItems" :key="metadataItem.label" cols="12" sm="6" md="3">
+        <v-col
+          v-for="metadataItem in metadataItems"
+          :key="metadataItem.label"
+          cols="12"
+          sm="6"
+          :md="isHomemade ? 3 : 6"
+        >
           <DetailStatCard :icon="metadataItem.icon" :label="metadataItem.label" :value="metadataItem.value" />
         </v-col>
       </v-row>
     </v-container>
   </section>
 
-  <v-divider class="my-4" />
+  <v-divider v-if="isHomemade" class="my-4" />
 
-  <v-container fluid>
+  <v-container v-if="isHomemade" fluid>
     <v-row density="compact">
       <v-col cols="12" md="6">
         <section data-testid="ingredients-section">
@@ -60,17 +66,29 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { useSourcesData } from '@/data/sources';
 import type { Recipe } from '@/models/recipe';
+import { computed } from 'vue';
 
 const props = defineProps<{ recipe: Recipe }>();
+const { sources } = useSourcesData();
 
-const metadataItems = computed(() => [
-  { icon: 'mdi-chef-hat', label: 'Difficulty', value: props.recipe.difficulty },
-  { icon: 'mdi-account-multiple-outline', label: 'Servings', value: props.recipe.servings },
-  { icon: 'mdi-clock-outline', label: 'Prep Time', value: `${props.recipe.prepTimeMinutes} minutes` },
-  { icon: 'mdi-timer-outline', label: 'Cook Time', value: `${props.recipe.cookTimeMinutes} minutes` },
-]);
+const isHomemade = computed(() => props.recipe.kind !== 'prepared');
+const sourceName = computed(() => sources.value.find((s) => s.id === props.recipe.sourceId)?.name || '');
+
+const metadataItems = computed(() =>
+  isHomemade.value
+    ? [
+        { icon: 'mdi-chef-hat', label: 'Difficulty', value: props.recipe.difficulty },
+        { icon: 'mdi-account-multiple-outline', label: 'Servings', value: props.recipe.servings },
+        { icon: 'mdi-clock-outline', label: 'Prep Time', value: `${props.recipe.prepTimeMinutes} minutes` },
+        { icon: 'mdi-timer-outline', label: 'Cook Time', value: `${props.recipe.cookTimeMinutes} minutes` },
+      ]
+    : [
+        { icon: 'mdi-chef-hat', label: 'Source', value: sourceName.value },
+        { icon: 'mdi-account-multiple-outline', label: 'Servings', value: props.recipe.servings },
+      ],
+);
 </script>
 
 <style scoped>
