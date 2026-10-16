@@ -8,7 +8,7 @@
       <div class="flex-grow-0">
         <v-chip size="small" color="primary">{{ recipe.cuisine }}</v-chip>
         <v-chip v-if="!isPrepared" size="small" color="secondary">{{ recipe.difficulty }}</v-chip>
-        <v-chip v-if="isPrepared" size="small" color="secondary">{{ source?.name }}</v-chip>
+        <v-chip v-if="isPrepared" size="small" color="secondary">{{ displayedSourceName }}</v-chip>
       </div>
       <div class="flex-grow-1">{{ recipe.description }}</div>
       <div class="flex-grow-0">
@@ -24,21 +24,19 @@
 
 <script setup lang="ts">
 import type { Recipe } from '@/models/recipe';
-import { useSourcesData } from '@/data/sources';
 import { computed } from 'vue';
 
 const props = defineProps<{
   recipe: Recipe;
+  sourceName?: string;
 }>();
 
 defineEmits<{
   (event: 'click', payload: Recipe): void;
 }>();
 
-const { sources } = useSourcesData();
-
 const isPrepared = computed(() => props.recipe.kind === 'prepared');
-const source = computed(() => sources.value.find((source) => source.id === props.recipe.sourceId));
+const displayedSourceName = computed(() => props.sourceName || 'UNKNOWN');
 </script>
 
 <style scoped>

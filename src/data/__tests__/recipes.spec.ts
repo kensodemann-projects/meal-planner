@@ -1,11 +1,12 @@
 import type { Recipe } from '@/models/recipe';
 import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { type Mock, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
 import { useRecipesData } from '../recipes';
 import { useSourcesData } from '../sources';
 import { TEST_HOMEMADE_RECIPE, TEST_RECIPES, TEST_SOURCES } from './test-data';
+import type { Source } from '@/models/source';
 
 vi.mock('firebase/firestore', async () => {
   const actual = (await vi.importActual('firebase/firestore')) as any;
@@ -198,6 +199,19 @@ describe('Recipe Data Service', () => {
       const { recipeMatches } = useRecipesData();
       expect(recipeMatches({ ...TEST_HOMEMADE_RECIPE, kind: undefined } as any, { kind: 'homemade' })).toBe(true);
       expect(recipeMatches({ ...TEST_HOMEMADE_RECIPE, kind: undefined } as any, { kind: 'prepared' })).toBe(false);
+    });
+
+    it('treats a missing kind as homemade for keyword search', () => {
+      const { recipeMatches } = useRecipesData();
+      const recipe = {
+        ...TEST_HOMEMADE_RECIPE,
+        kind: undefined,
+        name: 'Weeknight Chili',
+        description: 'Beans simmered with spice.',
+        ingredients: [],
+      } as any;
+      expect(recipeMatches(recipe, { keywords: 'homemade' })).toBe(true);
+      expect(recipeMatches(recipe, { keywords: 'prepared' })).toBe(false);
     });
 
     it('returns true if the recipe contains the keyword in the name', () => {
@@ -482,7 +496,7 @@ describe('Recipe Data Service', () => {
 
       beforeEach(() => {
         const { sources } = useSourcesData();
-        sources.value = TEST_SOURCES;
+        (sources as Ref<Source[]>).value = TEST_SOURCES;
       });
 
       afterEach(() => {

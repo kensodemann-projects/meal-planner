@@ -1,8 +1,11 @@
-import { TEST_RECIPES } from '@/data/__tests__/test-data';
+import { TEST_PREPARED_RECIPE, TEST_RECIPES, TEST_SOURCES } from '@/data/__tests__/test-data';
 import { useRecipesData } from '@/data/recipes';
+import { useSourcesData } from '@/data/sources';
 import type { Recipe } from '@/models/recipe';
+import type { Source } from '@/models/source';
 import { mount, type VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+import type { Ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
@@ -55,6 +58,49 @@ describe('Recipes List Page', () => {
     wrapper = mountPage();
     const items = wrapper.findAllComponents(RecipeSummaryCard);
     expect(items.length).toBe(TEST_RECIPES.length);
+  });
+
+  describe('source names', () => {
+    beforeEach(() => {
+      const { sources } = useSourcesData();
+      (sources as Ref<Source[]>).value = TEST_SOURCES;
+    });
+
+    afterEach(() => {
+      const { sources } = useSourcesData();
+      (sources as Ref<Source[]>).value = [];
+    });
+
+    it('passes the resolved source name to prepared recipe cards', () => {
+      wrapper = mountPage();
+      const cards = wrapper.findAllComponents(RecipeSummaryCard);
+      const prepared = TEST_RECIPES.filter((recipe) => recipe.kind === 'prepared');
+      expect(prepared.length).toBeGreaterThan(0);
+      for (const recipe of prepared) {
+        const card = cards.find((item) => item.props('recipe').id === recipe.id);
+        const sourceName = TEST_SOURCES.find((source) => source.id === recipe.sourceId)?.name;
+        expect(card?.props('sourceName')).toBe(sourceName);
+      }
+    });
+
+    it('shows the source name on a prepared recipe card', () => {
+      wrapper = mountPage();
+      const card = wrapper
+        .findAllComponents(RecipeSummaryCard)
+        .find((item) => item.props('recipe').id === 'prepared-1');
+      const chips = card!.findAllComponents(components.VChip);
+      expect(chips[1]!.text()).toBe('CookUnity');
+    });
+
+    it('shows UNKNOWN when the source cannot be found', () => {
+      const { recipes } = useRecipesData();
+      const missing: Recipe = { ...TEST_PREPARED_RECIPE, id: 'missing-source', sourceId: 'missing-source' };
+      (recipes.value as Recipe[]) = [missing];
+      wrapper = mountPage();
+      const card = wrapper.findComponent(RecipeSummaryCard);
+      expect(card.props('sourceName')).toBeUndefined();
+      expect(card.findAllComponents(components.VChip)[1]!.text()).toBe('UNKNOWN');
+    });
   });
 
   it('displays the matching recipes', () => {

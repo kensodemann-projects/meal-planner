@@ -68,7 +68,11 @@
   <v-container v-else fluid>
     <v-row density="compact">
       <v-col cols="12" md="4" v-for="recipe in filteredRecipes" :key="recipe.id">
-        <RecipeSummaryCard :recipe="recipe as Recipe" @click="router.push(`recipes/${recipe.id}`)" />
+        <RecipeSummaryCard
+          :recipe="recipe as Recipe"
+          :source-name="sourceNameFor(recipe)"
+          @click="router.push(`recipes/${recipe.id}`)"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -88,12 +92,26 @@
 import { cuisines } from '@/data/cuisines';
 import { recipeCategories } from '@/data/recipe-categories';
 import { useRecipesData } from '@/data/recipes';
+import { useSourcesData } from '@/data/sources';
 import type { Cuisine, Recipe, RecipeCategory } from '@/models/recipe';
 import { computed, shallowRef } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const { loading, recipeMatches, recipes } = useRecipesData();
+const { sources } = useSourcesData();
+
+const sourceNamesById = computed(() => {
+  const names = new Map<string, string>();
+  for (const source of sources.value) {
+    if (source.id) {
+      names.set(source.id, source.name);
+    }
+  }
+  return names;
+});
+
+const sourceNameFor = (recipe: Recipe) => (recipe.sourceId ? sourceNamesById.value.get(recipe.sourceId) : undefined);
 
 const calorieRanges = [
   { id: 1, label: '0-500', min: 0, max: 500 },
