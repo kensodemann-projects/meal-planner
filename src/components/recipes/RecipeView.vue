@@ -85,7 +85,7 @@ const metadataItems = computed(() =>
         { icon: 'mdi-timer-outline', label: 'Cook Time', value: `${props.recipe.cookTimeMinutes} minutes` },
       ]
     : [
-        { icon: 'mdi-chef-hat', label: 'Source', value: sourceName.value },
+        { icon: 'mdi-storefront', label: 'Source', value: sourceName.value },
         { icon: 'mdi-account-multiple-outline', label: 'Servings', value: props.recipe.servings },
       ],
 );

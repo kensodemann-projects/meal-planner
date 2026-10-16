@@ -201,7 +201,9 @@ describe('RecipeView', () => {
     });
 
     it('renders the source', () => {
-      expect(metadataCard(wrapper, 'Source')?.props('value')).toBe(preparedSource.name);
+      const card = metadataCard(wrapper, 'Source');
+      expect(card?.props('value')).toBe(preparedSource.name);
+      expect(card?.props('icon')).toBe('mdi-storefront');
     });
 
     it('renders the servings', () => {

@@ -56,7 +56,7 @@ export const useRecipesData = () => {
       recipe.name.toLowerCase().includes(lowerSearchTerm) ||
       (recipe.description && recipe.description.toLowerCase().includes(lowerSearchTerm)) ||
       recipe.ingredients.some((ingredient) => ingredient.name.toLowerCase().includes(lowerSearchTerm)) ||
-      recipe.kind.toLowerCase() === lowerSearchTerm ||
+      (recipe.kind || 'homemade').toLowerCase() === lowerSearchTerm ||
       recipeSourceMatchesKeyword(recipe, lowerSearchTerm)
     );
   };
