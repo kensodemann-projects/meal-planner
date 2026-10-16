@@ -1,8 +1,10 @@
 import { autocompleteIsRequired } from '@/components/__tests__/test-utils.ts';
-import { TEST_RECIPES } from '@/data/__tests__/test-data.ts';
+import { TEST_RECIPES, TEST_SOURCES } from '@/data/__tests__/test-data.ts';
 import { useRecipesData } from '@/data/recipes';
+import { useSourcesData } from '@/data/sources';
 import type { MealItem, MealType, PlannedMealItem } from '@/models/meal';
 import type { Recipe } from '@/models/recipe.ts';
+import type { Source } from '@/models/source';
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Ref } from 'vue';
@@ -12,6 +14,7 @@ import * as directives from 'vuetify/directives';
 import MealItemEditor from '../MealItemEditor.vue';
 
 vi.mock('@/data/recipes');
+vi.mock('@/data/sources');
 
 const vuetify = createVuetify({
   components,
@@ -45,6 +48,8 @@ describe('MealItemEditor', () => {
   beforeEach(() => {
     const { recipes } = useRecipesData();
     (recipes as Ref<Recipe[]>).value = TEST_RECIPES;
+    const { sources } = useSourcesData();
+    (sources as Ref<Source[]>).value = TEST_SOURCES;
     vi.clearAllMocks();
   });
 
@@ -235,6 +240,47 @@ describe('MealItemEditor', () => {
         '[data-testid="recipe-input"]',
       ) as VueWrapper<components.VAutocomplete>;
       expect(recipeSelect.props('label')).toBe('Select Recipe');
+    });
+
+    it('shows the source beside the recipe name when the source can be found', () => {
+      const { recipes } = useRecipesData();
+      const hamburger: Recipe = {
+        ...TEST_RECIPES.find((recipe) => recipe.id === 'prepared-4')!,
+        id: 'hamburger',
+        name: 'Hamburger',
+        sourceId: 'brgrkng44cc81rmt2',
+      };
+      (recipes as Ref<Recipe[]>).value = [hamburger];
+      wrapper = mountComponent();
+      const recipeSelect = wrapper.findComponent(
+        '[data-testid="recipe-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      expect(recipeSelect.props('items')).toEqual([{ id: 'hamburger', name: 'Hamburger (Burger King)' }]);
+    });
+
+    it('shows only the recipe name when the recipe has no sourceId', () => {
+      wrapper = mountComponent();
+      const recipeSelect = wrapper.findComponent(
+        '[data-testid="recipe-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      const items = recipeSelect.props('items') as { id?: string; name: string }[];
+      expect(items.find((item) => item.id === '1')).toEqual({ id: '1', name: 'Classic Spaghetti Carbonara' });
+    });
+
+    it('shows only the recipe name when the source cannot be found', () => {
+      const { recipes } = useRecipesData();
+      const recipe: Recipe = {
+        ...TEST_RECIPES.find((item) => item.id === 'prepared-1')!,
+        id: 'missing-source',
+        name: 'Hamburger',
+        sourceId: 'missing-source',
+      };
+      (recipes as Ref<Recipe[]>).value = [recipe];
+      wrapper = mountComponent();
+      const recipeSelect = wrapper.findComponent(
+        '[data-testid="recipe-input"]',
+      ) as VueWrapper<components.VAutocomplete>;
+      expect(recipeSelect.props('items')).toEqual([{ id: 'missing-source', name: 'Hamburger' }]);
     });
 
     it('is required', async () => {

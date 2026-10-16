@@ -12,6 +12,7 @@ import add from '../add.vue';
 
 vi.mock('vue-router');
 vi.mock('@/data/recipes');
+vi.mock('@/data/sources');
 vi.mock('@/data/meal-plans');
 
 const TEST_PLANNED_MEAL_ITEM: PlannedMealItem = {
