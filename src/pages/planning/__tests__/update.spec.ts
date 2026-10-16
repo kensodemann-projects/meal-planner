@@ -13,6 +13,7 @@ import update from '../update.vue';
 
 vi.mock('vue-router');
 vi.mock('@/data/recipes');
+vi.mock('@/data/sources');
 vi.mock('@/data/meal-plans');
 
 const vuetify = createVuetify({

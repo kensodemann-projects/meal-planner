@@ -30,7 +30,7 @@
               <SelectAutocomplete
                 label="Select Recipe"
                 v-model="recipeId"
-                :items="recipes"
+                :items="recipeOptions"
                 item-title="name"
                 item-value="id"
                 :rules="[validationRules.required]"
@@ -62,6 +62,7 @@
 <script setup lang="ts">
 import { validationRules } from '@/core/validation-rules';
 import { useRecipesData } from '@/data/recipes';
+import { useSourcesData } from '@/data/sources';
 import type { MealItem, MealType, PlannedMealItem } from '@/models/meal';
 import type { Nutrition } from '@/models/nutrition';
 import { addDays, format } from 'date-fns';
@@ -81,6 +82,15 @@ const nutrition = ref<Nutrition | undefined>(props.mealItem?.nutrition);
 const recipeId = shallowRef<string | undefined | null>(props.mealItem?.recipeId ?? null);
 const servings = shallowRef<number>(props.mealItem?.servings || 1);
 const { recipes } = useRecipesData();
+const { sources } = useSourcesData();
+
+const recipeOptions = computed(() =>
+  (recipes.value ?? []).map((recipe) => {
+    const source = recipe.sourceId ? sources.value?.find((item) => item.id === recipe.sourceId) : undefined;
+    const name = source ? `${recipe.name} (${source.name})` : recipe.name;
+    return { id: recipe.id, name };
+  }),
+);
 
 const weekDates = computed(() => {
   const [year, month, day] = props.weekStartDate.split('-').map(Number);
