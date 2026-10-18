@@ -40,6 +40,12 @@ Once enough has been done to justify releasing, then from the fully merged `main
 
 ## 🛠️ Tooling Notes
 
+### Agent / Cursor
+
+Install the [agent-skills](https://github.com/kensodemann/agent-skills) Cursor plugin at **user** scope (Customize → From GitHub Repository) for shared workflows: GitHub issues (`/create-bug`, `/create-feature`, `/create-task`, `/create-subtasks`), PR review (`/review-pull-request`), and Vitest workflows (`/create-tests`, `/create-tdd-test-plan`, `/create-tdd-tests`).
+
+Project rules in [`.cursor/rules/`](.cursor/rules/) cover meal-planner architecture ([`meal-planner.mdc`](.cursor/rules/meal-planner.mdc)) and the Vitest harness ([`testing.mdc`](.cursor/rules/testing.mdc)); they apply automatically or when editing specs and `PLAN.md`.
+
 ### Components
 
 Vue template files in the `src/components` folder (and sub-folders) are automatically imported.
