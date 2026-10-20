@@ -131,6 +131,23 @@ describe('Source Editor', () => {
       wrapper = mountComponent();
       await textFieldIsNotRequired(wrapper, 'url-input');
     });
+
+    it('must be an http or https URL', async () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="url-input"]').find('input');
+
+      expect(wrapper.text()).not.toContain('Must be an http or https URL');
+      await input.trigger('focus');
+      await input.setValue('example.com');
+      await input.trigger('blur');
+      expect(wrapper.text()).toContain('Must be an http or https URL');
+      await input.setValue('ftp://example.com');
+      await input.trigger('blur');
+      expect(wrapper.text()).toContain('Must be an http or https URL');
+      await input.setValue('https://example.com');
+      await input.trigger('blur');
+      expect(wrapper.text()).not.toContain('Must be an http or https URL');
+    });
   });
 
   describe('initialization', () => {
@@ -224,6 +241,19 @@ describe('Source Editor', () => {
         await input.setValue('something else');
         await flushPromises();
         expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is disabled when the url is invalid', async () => {
+        wrapper = mountComponent();
+        const nameInput = wrapper.findComponent('[data-testid="name-input"]').find('input');
+        const urlInput = wrapper.findComponent('[data-testid="url-input"]').find('input');
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        await nameInput.setValue('something else');
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+        await urlInput.setValue('not a url');
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeDefined();
       });
 
       it('emits the updated source data on click', async () => {

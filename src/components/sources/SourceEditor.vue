@@ -19,7 +19,7 @@
       </v-row>
       <v-row>
         <v-col cols="12">
-          <v-text-field label="URL" v-model="url" data-testid="url-input"></v-text-field>
+          <v-text-field label="URL" v-model="url" :rules="[validationRules.url]" data-testid="url-input"></v-text-field>
         </v-col>
       </v-row>
     </v-container>
