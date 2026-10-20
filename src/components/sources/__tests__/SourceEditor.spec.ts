@@ -332,6 +332,50 @@ describe('Source Editor', () => {
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
 
+      it('stays disabled when only surrounding whitespace changes', async () => {
+        const source = TEST_SOURCES[3];
+        wrapper = mountComponent({ source });
+        const nameInput = wrapper.findComponent('[data-testid="name-input"]').find('input');
+        const descriptionInput = wrapper.findComponent('[data-testid="description-input"]').find('textarea');
+        const urlInput = wrapper.findComponent('[data-testid="url-input"]').find('input');
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+
+        expect(saveButton.attributes('disabled')).toBeDefined();
+
+        await nameInput.setValue(`  ${source.name}  `);
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeDefined();
+
+        await nameInput.setValue(source.name);
+        await descriptionInput.setValue(`  ${source.description}  `);
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeDefined();
+
+        await descriptionInput.setValue(source.description ?? '');
+        await urlInput.setValue(`  ${source.url}  `);
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeDefined();
+      });
+
+      it('stays disabled when whitespace is entered in an empty description or url', async () => {
+        const source = sourceWithout('description');
+        wrapper = mountComponent({ source });
+        const descriptionInput = wrapper.findComponent('[data-testid="description-input"]').find('textarea');
+        const urlInput = wrapper.findComponent('[data-testid="url-input"]').find('input');
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+
+        expect(saveButton.attributes('disabled')).toBeDefined();
+
+        await descriptionInput.setValue('   ');
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeDefined();
+
+        await descriptionInput.setValue('');
+        await urlInput.setValue('   ');
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeDefined();
+      });
+
       it('emits the updated source data on click', async () => {
         wrapper = mountComponent({ source: TEST_SOURCES[1] });
         const input = wrapper.findComponent('[data-testid="name-input"]').find('input');

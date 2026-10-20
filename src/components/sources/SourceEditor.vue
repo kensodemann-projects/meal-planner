@@ -51,9 +51,9 @@ const { sources } = useSourcesData();
 const sourceNames = computed((): string[] => sources.value.filter((x) => x.id !== props.source?.id).map((x) => x.name));
 const isModified = computed((): boolean =>
   props.source
-    ? name.value !== props.source.name ||
-      description.value !== (props.source.description ?? '') ||
-      url.value !== (props.source.url ?? '')
+    ? name.value.trim() !== props.source.name ||
+      description.value.trim() !== (props.source.description ?? '') ||
+      url.value.trim() !== (props.source.url ?? '')
     : true,
 );
 
