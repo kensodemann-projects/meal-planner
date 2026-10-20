@@ -1,6 +1,6 @@
 import { textFieldIsNotRequired, textFieldIsRequired } from '@/components/__tests__/test-utils.ts';
 import { TEST_SOURCES } from '@/data/__tests__/test-data.ts';
-import { useSourcesData } from '@/data/sources.ts';
+import { GENERIC_RESTAURANT_SOURCE_ID, useSourcesData } from '@/data/sources.ts';
 import type { Source } from '@/models/source.ts';
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -17,6 +17,18 @@ const vuetify = createVuetify({
   directives,
 });
 const mountComponent = (props = {}) => mount(SourceEditor, { props, global: { plugins: [vuetify] } });
+
+const sourceWith = (property: keyof Source): Source => {
+  const source = TEST_SOURCES.find((item) => item.id !== GENERIC_RESTAURANT_SOURCE_ID && !!item[property]);
+  if (!source) throw new Error(`No TEST_SOURCES entry includes ${property}`);
+  return source;
+};
+
+const sourceWithout = (property: keyof Source): Source => {
+  const source = TEST_SOURCES.find((item) => item.id !== GENERIC_RESTAURANT_SOURCE_ID && !item[property]);
+  if (!source) throw new Error(`No TEST_SOURCES entry omits ${property}`);
+  return source;
+};
 
 describe('Source Editor', () => {
   let wrapper: ReturnType<typeof mountComponent>;
@@ -144,31 +156,36 @@ describe('Source Editor', () => {
 
     describe('for update', () => {
       it('initializes the name with the source value', () => {
-        wrapper = mountComponent({ source: TEST_SOURCES[1] });
+        const source = sourceWith('name');
+        wrapper = mountComponent({ source });
         const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
-        expect(input.element.value).toBe(TEST_SOURCES[1].name);
+        expect(input.element.value).toBe(source.name);
       });
 
       it('initializes the description with the source value', () => {
-        wrapper = mountComponent({ source: TEST_SOURCES[3] });
+        const source = sourceWith('description');
+        wrapper = mountComponent({ source });
         const input = wrapper.findComponent('[data-testid="description-input"]').find('textarea');
-        expect(input.element.value).toBe(TEST_SOURCES[3]?.description);
+        expect(input.element.value).toBe(source.description);
       });
 
       it('initializes a missing description as blank', () => {
-        wrapper = mountComponent({ source: TEST_SOURCES[4] });
+        const source = sourceWithout('description');
+        wrapper = mountComponent({ source });
         const input = wrapper.findComponent('[data-testid="description-input"]').find('textarea');
         expect(input.element.value).toBe('');
       });
 
       it('initializes the url with the source value', () => {
-        wrapper = mountComponent({ source: TEST_SOURCES[3] });
+        const source = sourceWith('url');
+        wrapper = mountComponent({ source });
         const input = wrapper.findComponent('[data-testid="url-input"]').find('input');
-        expect(input.element.value).toBe(TEST_SOURCES[3]?.url);
+        expect(input.element.value).toBe(source.url);
       });
 
       it('initializes a missing url as blank', () => {
-        wrapper = mountComponent({ source: TEST_SOURCES[1] });
+        const source = sourceWithout('url');
+        wrapper = mountComponent({ source });
         const input = wrapper.findComponent('[data-testid="url-input"]').find('input');
         expect(input.element.value).toBe('');
       });
