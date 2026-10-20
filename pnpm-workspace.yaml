@@ -5,3 +5,5 @@ allowBuilds:
   protobufjs: true
   unrs-resolver: true
   vue-demi: true
+minimumReleaseAgeExclude:
+  - vuetify@4.3.0
