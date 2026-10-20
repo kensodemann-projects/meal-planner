@@ -1,6 +1,6 @@
-import { textFieldIsRequired } from '@/components/__tests__/test-utils.ts';
+import { textFieldIsNotRequired, textFieldIsRequired } from '@/components/__tests__/test-utils.ts';
 import { TEST_SOURCES } from '@/data/__tests__/test-data.ts';
-import { useSourcesData } from '@/data/sources.ts';
+import { GENERIC_RESTAURANT_SOURCE_ID, useSourcesData } from '@/data/sources.ts';
 import type { Source } from '@/models/source.ts';
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -17,6 +17,18 @@ const vuetify = createVuetify({
   directives,
 });
 const mountComponent = (props = {}) => mount(SourceEditor, { props, global: { plugins: [vuetify] } });
+
+const sourceWith = (property: keyof Source): Source => {
+  const source = TEST_SOURCES.find((item) => item.id !== GENERIC_RESTAURANT_SOURCE_ID && !!item[property]);
+  if (!source) throw new Error(`No TEST_SOURCES entry includes ${property}`);
+  return source;
+};
+
+const sourceWithout = (property: keyof Source): Source => {
+  const source = TEST_SOURCES.find((item) => item.id !== GENERIC_RESTAURANT_SOURCE_ID && !item[property]);
+  if (!source) throw new Error(`No TEST_SOURCES entry omits ${property}`);
+  return source;
+};
 
 describe('Source Editor', () => {
   let wrapper: ReturnType<typeof mountComponent>;
@@ -88,6 +100,56 @@ describe('Source Editor', () => {
     });
   });
 
+  describe('description', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="description-input"]') as VueWrapper<components.VTextarea>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('Description');
+      expect(input.find('textarea').exists()).toBe(true);
+    });
+
+    it('is optional', async () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="description-input"]').find('textarea');
+      await input.trigger('focus');
+      await input.setValue('');
+      await input.trigger('blur');
+      expect(wrapper.text()).not.toContain('Required');
+    });
+  });
+
+  describe('url', () => {
+    it('exists', () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="url-input"]') as VueWrapper<components.VTextField>;
+      expect(input.exists()).toBe(true);
+      expect(input.props('label')).toBe('URL');
+    });
+
+    it('is optional', async () => {
+      wrapper = mountComponent();
+      await textFieldIsNotRequired(wrapper, 'url-input');
+    });
+
+    it('must be an http or https URL', async () => {
+      wrapper = mountComponent();
+      const input = wrapper.findComponent('[data-testid="url-input"]').find('input');
+
+      expect(wrapper.text()).not.toContain('Must be an http or https URL');
+      await input.trigger('focus');
+      await input.setValue('example.com');
+      await input.trigger('blur');
+      expect(wrapper.text()).toContain('Must be an http or https URL');
+      await input.setValue('ftp://example.com');
+      await input.trigger('blur');
+      expect(wrapper.text()).toContain('Must be an http or https URL');
+      await input.setValue('https://example.com');
+      await input.trigger('blur');
+      expect(wrapper.text()).not.toContain('Must be an http or https URL');
+    });
+  });
+
   describe('initialization', () => {
     describe('for create', () => {
       it('initializes the name with a blank value', () => {
@@ -95,13 +157,54 @@ describe('Source Editor', () => {
         const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
         expect(input.element.value).toBe('');
       });
+
+      it('initializes the description with a blank value', () => {
+        wrapper = mountComponent();
+        const input = wrapper.findComponent('[data-testid="description-input"]').find('textarea');
+        expect(input.element.value).toBe('');
+      });
+
+      it('initializes the url with a blank value', () => {
+        wrapper = mountComponent();
+        const input = wrapper.findComponent('[data-testid="url-input"]').find('input');
+        expect(input.element.value).toBe('');
+      });
     });
 
     describe('for update', () => {
       it('initializes the name with the source value', () => {
-        wrapper = mountComponent({ source: TEST_SOURCES[1] });
+        const source = sourceWith('name');
+        wrapper = mountComponent({ source });
         const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
-        expect(input.element.value).toBe(TEST_SOURCES[1].name);
+        expect(input.element.value).toBe(source.name);
+      });
+
+      it('initializes the description with the source value', () => {
+        const source = sourceWith('description');
+        wrapper = mountComponent({ source });
+        const input = wrapper.findComponent('[data-testid="description-input"]').find('textarea');
+        expect(input.element.value).toBe(source.description);
+      });
+
+      it('initializes a missing description as blank', () => {
+        const source = sourceWithout('description');
+        wrapper = mountComponent({ source });
+        const input = wrapper.findComponent('[data-testid="description-input"]').find('textarea');
+        expect(input.element.value).toBe('');
+      });
+
+      it('initializes the url with the source value', () => {
+        const source = sourceWith('url');
+        wrapper = mountComponent({ source });
+        const input = wrapper.findComponent('[data-testid="url-input"]').find('input');
+        expect(input.element.value).toBe(source.url);
+      });
+
+      it('initializes a missing url as blank', () => {
+        const source = sourceWithout('url');
+        wrapper = mountComponent({ source });
+        const input = wrapper.findComponent('[data-testid="url-input"]').find('input');
+        expect(input.element.value).toBe('');
       });
     });
   });
@@ -140,6 +243,19 @@ describe('Source Editor', () => {
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
 
+      it('is disabled when the url is invalid', async () => {
+        wrapper = mountComponent();
+        const nameInput = wrapper.findComponent('[data-testid="name-input"]').find('input');
+        const urlInput = wrapper.findComponent('[data-testid="url-input"]').find('input');
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        await nameInput.setValue('something else');
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+        await urlInput.setValue('not a url');
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeDefined();
+      });
+
       it('emits the updated source data on click', async () => {
         wrapper = mountComponent();
         const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
@@ -149,6 +265,51 @@ describe('Source Editor', () => {
         await saveButton.trigger('click');
         expect(wrapper.emitted('save')).toBeDefined();
         expect(wrapper.emitted('save')).toEqual([[{ name: 'Somewhere Else' }]]);
+      });
+
+      it('emits the description and url when provided', async () => {
+        wrapper = mountComponent();
+        const nameInput = wrapper.findComponent('[data-testid="name-input"]').find('input');
+        const descriptionInput = wrapper.findComponent('[data-testid="description-input"]').find('textarea');
+        const urlInput = wrapper.findComponent('[data-testid="url-input"]').find('input');
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        await nameInput.setValue('Somewhere Else');
+        await descriptionInput.setValue('A neighborhood bistro.');
+        await urlInput.setValue('https://example.com/bistro');
+        await flushPromises();
+        await saveButton.trigger('click');
+        expect(wrapper.emitted('save')).toEqual([
+          [
+            {
+              name: 'Somewhere Else',
+              description: 'A neighborhood bistro.',
+              url: 'https://example.com/bistro',
+            },
+          ],
+        ]);
+      });
+
+      it('trims description and url and omits them when blank or whitespace-only', async () => {
+        wrapper = mountComponent();
+        const nameInput = wrapper.findComponent('[data-testid="name-input"]').find('input');
+        const descriptionInput = wrapper.findComponent('[data-testid="description-input"]').find('textarea');
+        const urlInput = wrapper.findComponent('[data-testid="url-input"]').find('input');
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        await nameInput.setValue('Somewhere Else');
+        await descriptionInput.setValue('   ');
+        await urlInput.setValue('  https://example.com/bistro  ');
+        await flushPromises();
+        await saveButton.trigger('click');
+        expect(wrapper.emitted('save')).toEqual([[{ name: 'Somewhere Else', url: 'https://example.com/bistro' }]]);
+
+        await descriptionInput.setValue('  A neighborhood bistro.  ');
+        await urlInput.setValue('   ');
+        await flushPromises();
+        await saveButton.trigger('click');
+        expect(wrapper.emitted('save')).toEqual([
+          [{ name: 'Somewhere Else', url: 'https://example.com/bistro' }],
+          [{ name: 'Somewhere Else', description: 'A neighborhood bistro.' }],
+        ]);
       });
     });
 
@@ -174,6 +335,70 @@ describe('Source Editor', () => {
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
 
+      it('is enabled when only the description changes', async () => {
+        wrapper = mountComponent({ source: TEST_SOURCES[3] });
+        const input = wrapper.findComponent('[data-testid="description-input"]').find('textarea');
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        expect(saveButton.attributes('disabled')).toBeDefined();
+        await input.setValue('Updated description');
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('is enabled when only the url changes', async () => {
+        wrapper = mountComponent({ source: TEST_SOURCES[3] });
+        const input = wrapper.findComponent('[data-testid="url-input"]').find('input');
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        expect(saveButton.attributes('disabled')).toBeDefined();
+        await input.setValue('https://example.com/updated');
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('stays disabled when only surrounding whitespace changes', async () => {
+        const source = TEST_SOURCES[3];
+        wrapper = mountComponent({ source });
+        const nameInput = wrapper.findComponent('[data-testid="name-input"]').find('input');
+        const descriptionInput = wrapper.findComponent('[data-testid="description-input"]').find('textarea');
+        const urlInput = wrapper.findComponent('[data-testid="url-input"]').find('input');
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+
+        expect(saveButton.attributes('disabled')).toBeDefined();
+
+        await nameInput.setValue(`  ${source.name}  `);
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeDefined();
+
+        await nameInput.setValue(source.name);
+        await descriptionInput.setValue(`  ${source.description}  `);
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeDefined();
+
+        await descriptionInput.setValue(source.description ?? '');
+        await urlInput.setValue(`  ${source.url}  `);
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeDefined();
+      });
+
+      it('stays disabled when whitespace is entered in an empty description or url', async () => {
+        const source = sourceWithout('description');
+        wrapper = mountComponent({ source });
+        const descriptionInput = wrapper.findComponent('[data-testid="description-input"]').find('textarea');
+        const urlInput = wrapper.findComponent('[data-testid="url-input"]').find('input');
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+
+        expect(saveButton.attributes('disabled')).toBeDefined();
+
+        await descriptionInput.setValue('   ');
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeDefined();
+
+        await descriptionInput.setValue('');
+        await urlInput.setValue('   ');
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeDefined();
+      });
+
       it('emits the updated source data on click', async () => {
         wrapper = mountComponent({ source: TEST_SOURCES[1] });
         const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
@@ -182,7 +407,65 @@ describe('Source Editor', () => {
         await flushPromises();
         await saveButton.trigger('click');
         expect(wrapper.emitted('save')).toBeDefined();
-        expect(wrapper.emitted('save')).toEqual([[{ id: TEST_SOURCES[1].id, name: 'Something Else' }]]);
+        expect(wrapper.emitted('save')).toEqual([
+          [{ id: TEST_SOURCES[1].id, name: 'Something Else', description: TEST_SOURCES[1].description }],
+        ]);
+      });
+
+      it('emits the description and url when they change', async () => {
+        wrapper = mountComponent({ source: TEST_SOURCES[3] });
+        const descriptionInput = wrapper.findComponent('[data-testid="description-input"]').find('textarea');
+        const urlInput = wrapper.findComponent('[data-testid="url-input"]').find('input');
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        await descriptionInput.setValue('Updated description');
+        await urlInput.setValue('https://example.com/updated');
+        await flushPromises();
+        await saveButton.trigger('click');
+        expect(wrapper.emitted('save')).toEqual([
+          [
+            {
+              id: TEST_SOURCES[3].id,
+              name: TEST_SOURCES[3].name,
+              description: 'Updated description',
+              url: 'https://example.com/updated',
+            },
+          ],
+        ]);
+      });
+
+      it('trims description and url when saving', async () => {
+        const source = TEST_SOURCES[3];
+        wrapper = mountComponent({ source });
+        const descriptionInput = wrapper.findComponent('[data-testid="description-input"]').find('textarea');
+        const urlInput = wrapper.findComponent('[data-testid="url-input"]').find('input');
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        await descriptionInput.setValue('  Updated description  ');
+        await urlInput.setValue('  https://example.com/updated  ');
+        await flushPromises();
+        await saveButton.trigger('click');
+        expect(wrapper.emitted('save')).toEqual([
+          [
+            {
+              id: source.id,
+              name: source.name,
+              description: 'Updated description',
+              url: 'https://example.com/updated',
+            },
+          ],
+        ]);
+      });
+
+      it('omits description and url when they are cleared', async () => {
+        const source = TEST_SOURCES[3];
+        wrapper = mountComponent({ source });
+        const descriptionInput = wrapper.findComponent('[data-testid="description-input"]').find('textarea');
+        const urlInput = wrapper.findComponent('[data-testid="url-input"]').find('input');
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        await descriptionInput.setValue('   ');
+        await urlInput.setValue('');
+        await flushPromises();
+        await saveButton.trigger('click');
+        expect(wrapper.emitted('save')).toEqual([[{ id: source.id, name: source.name }]]);
       });
     });
   });

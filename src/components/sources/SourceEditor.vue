@@ -12,6 +12,16 @@
           ></v-text-field>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col cols="12">
+          <v-textarea label="Description" v-model="description" data-testid="description-input"></v-textarea>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          <v-text-field label="URL" v-model="url" :rules="[validationRules.url]" data-testid="url-input"></v-text-field>
+        </v-col>
+      </v-row>
     </v-container>
 
     <v-container fluid>
@@ -34,12 +44,25 @@ const emit = defineEmits<{ (event: 'save', payload: Source): void; (event: 'canc
 
 const valid = shallowRef(false);
 const name = shallowRef(props.source?.name ?? '');
+const description = shallowRef(props.source?.description ?? '');
+const url = shallowRef(props.source?.url ?? '');
 
 const { sources } = useSourcesData();
 const sourceNames = computed((): string[] => sources.value.filter((x) => x.id !== props.source?.id).map((x) => x.name));
-const isModified = computed((): boolean => (props.source ? name.value !== props.source.name : true));
+const isModified = computed((): boolean =>
+  props.source
+    ? name.value.trim() !== props.source.name ||
+      description.value.trim() !== (props.source.description ?? '') ||
+      url.value.trim() !== (props.source.url ?? '')
+    : true,
+);
 
 const save = () => {
-  emit('save', { id: props.source?.id, name: name.value });
+  const payload: Source = { id: props.source?.id, name: name.value };
+  const trimmedDescription = description.value.trim();
+  const trimmedUrl = url.value.trim();
+  if (trimmedDescription) payload.description = trimmedDescription;
+  if (trimmedUrl) payload.url = trimmedUrl;
+  emit('save', payload);
 };
 </script>

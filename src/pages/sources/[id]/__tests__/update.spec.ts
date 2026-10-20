@@ -86,7 +86,8 @@ describe('Source Update Page', () => {
       const editor = wrapper.findComponent(SourceEditor);
       editor.vm.$emit('save', { ...TEST_SOURCES[1]!, name: 'Somewhere Else' });
       await flushPromises();
-      expect(updateSource).toHaveBeenCalledExactlyOnceWith(SOURCE_ID, { name: 'Somewhere Else' });
+      const { id, ...data } = TEST_SOURCES[1];
+      expect(updateSource).toHaveBeenCalledExactlyOnceWith(id, { ...data, name: 'Somewhere Else' });
     });
 
     it('navigates to the source list page', async () => {

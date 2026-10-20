@@ -25,6 +25,7 @@ export const TEST_SOURCES: Source[] = [
   {
     id: 'iir00305003lfkdj',
     name: 'BistroMD',
+    description: 'Pre-made frozen meals designed around specific nutritional needs.',
   },
   {
     id: 'ifiii2100flk32',
@@ -33,15 +34,19 @@ export const TEST_SOURCES: Source[] = [
   {
     id: 'fiie002934009ser',
     name: 'CookUnity',
+    description: 'Chef inspired pre-cooked meals.',
+    url: 'https://www.cookunity.com/',
   },
   // Leave these sources unreferenced by TEST_RECIPES. They exist so tests can cover sources that no recipe uses.
   {
     id: 'hngr00t91aa20plq8',
     name: 'Hungryroot',
+    url: 'https://www.hungryroot.com/',
   },
   {
     id: 'brgrkng44cc81rmt2',
     name: 'Burger King',
+    description: 'You rule!',
   },
 ];
 

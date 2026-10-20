@@ -43,6 +43,47 @@ describe('Validation Rules', () => {
     });
   });
 
+  describe('url', () => {
+    it('returns true if no value is specified', () => {
+      expect(validationRules.url(undefined)).toBe(true);
+      expect(validationRules.url(null)).toBe(true);
+      expect(validationRules.url('')).toBe(true);
+      expect(validationRules.url('   ')).toBe(true);
+    });
+
+    it('returns true for http and https URLs', () => {
+      expect(validationRules.url('https://www.cookunity.com/')).toBe(true);
+      expect(validationRules.url('http://example.com')).toBe(true);
+      expect(validationRules.url('https://example.com/path?q=1&x=2#section')).toBe(true);
+      expect(validationRules.url('http://localhost:3000')).toBe(true);
+      expect(validationRules.url('https://127.0.0.1/foo')).toBe(true);
+      expect(validationRules.url('https://[::1]/')).toBe(true);
+      expect(validationRules.url('HTTP://Example.COM/Path')).toBe(true);
+      expect(validationRules.url('  https://example.com  ')).toBe(true);
+    });
+
+    it('returns "Must be an http or https URL" for other schemes', () => {
+      expect(validationRules.url('ftp://example.com')).toBe('Must be an http or https URL');
+      expect(validationRules.url('ws://example.com')).toBe('Must be an http or https URL');
+      expect(validationRules.url('wss://example.com')).toBe('Must be an http or https URL');
+      expect(validationRules.url('javascript:alert(1)')).toBe('Must be an http or https URL');
+      expect(validationRules.url('mailto:user@example.com')).toBe('Must be an http or https URL');
+      expect(validationRules.url('file:///etc/passwd')).toBe('Must be an http or https URL');
+      expect(validationRules.url('data:text/plain,hi')).toBe('Must be an http or https URL');
+    });
+
+    it('returns "Must be an http or https URL" for values that are not URLs', () => {
+      expect(validationRules.url('example.com')).toBe('Must be an http or https URL');
+      expect(validationRules.url('www.example.com')).toBe('Must be an http or https URL');
+      expect(validationRules.url('http://')).toBe('Must be an http or https URL');
+      expect(validationRules.url('https://')).toBe('Must be an http or https URL');
+      expect(validationRules.url('//example.com')).toBe('Must be an http or https URL');
+      expect(validationRules.url('not a url')).toBe('Must be an http or https URL');
+      expect(validationRules.url('http://ex ample.com')).toBe('Must be an http or https URL');
+      expect(validationRules.url('https://example.com:99999')).toBe('Must be an http or https URL');
+    });
+  });
+
   describe('positive', () => {
     it('returns true if null or undefined', () => {
       expect(validationRules.positive(undefined)).toBe(true);

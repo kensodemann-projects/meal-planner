@@ -5,6 +5,16 @@ export const validationRules = {
     return (value !== null && value !== undefined) || 'Required';
   },
   email: (value: string | null | undefined) => !value?.trim() || /.+@.+\..+/.test(value) || 'Invalid e-mail',
+  url: (value: string | null | undefined) => {
+    const trimmed = value?.trim();
+    if (!trimmed) return true;
+    try {
+      const protocol = new URL(trimmed).protocol;
+      return protocol === 'http:' || protocol === 'https:' || 'Must be an http or https URL';
+    } catch {
+      return 'Must be an http or https URL';
+    }
+  },
   positive: (value: number | null | undefined) => {
     if (value === null || value === undefined) return true;
     if (Number.isNaN(value)) return 'Must be a valid positive number';
