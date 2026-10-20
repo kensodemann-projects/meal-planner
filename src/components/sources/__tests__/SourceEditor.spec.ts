@@ -288,6 +288,29 @@ describe('Source Editor', () => {
           ],
         ]);
       });
+
+      it('trims description and url and omits them when blank or whitespace-only', async () => {
+        wrapper = mountComponent();
+        const nameInput = wrapper.findComponent('[data-testid="name-input"]').find('input');
+        const descriptionInput = wrapper.findComponent('[data-testid="description-input"]').find('textarea');
+        const urlInput = wrapper.findComponent('[data-testid="url-input"]').find('input');
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        await nameInput.setValue('Somewhere Else');
+        await descriptionInput.setValue('   ');
+        await urlInput.setValue('  https://example.com/bistro  ');
+        await flushPromises();
+        await saveButton.trigger('click');
+        expect(wrapper.emitted('save')).toEqual([[{ name: 'Somewhere Else', url: 'https://example.com/bistro' }]]);
+
+        await descriptionInput.setValue('  A neighborhood bistro.  ');
+        await urlInput.setValue('   ');
+        await flushPromises();
+        await saveButton.trigger('click');
+        expect(wrapper.emitted('save')).toEqual([
+          [{ name: 'Somewhere Else', url: 'https://example.com/bistro' }],
+          [{ name: 'Somewhere Else', description: 'A neighborhood bistro.' }],
+        ]);
+      });
     });
 
     describe('for update', () => {
@@ -408,6 +431,41 @@ describe('Source Editor', () => {
             },
           ],
         ]);
+      });
+
+      it('trims description and url when saving', async () => {
+        const source = TEST_SOURCES[3];
+        wrapper = mountComponent({ source });
+        const descriptionInput = wrapper.findComponent('[data-testid="description-input"]').find('textarea');
+        const urlInput = wrapper.findComponent('[data-testid="url-input"]').find('input');
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        await descriptionInput.setValue('  Updated description  ');
+        await urlInput.setValue('  https://example.com/updated  ');
+        await flushPromises();
+        await saveButton.trigger('click');
+        expect(wrapper.emitted('save')).toEqual([
+          [
+            {
+              id: source.id,
+              name: source.name,
+              description: 'Updated description',
+              url: 'https://example.com/updated',
+            },
+          ],
+        ]);
+      });
+
+      it('omits description and url when they are cleared', async () => {
+        const source = TEST_SOURCES[3];
+        wrapper = mountComponent({ source });
+        const descriptionInput = wrapper.findComponent('[data-testid="description-input"]').find('textarea');
+        const urlInput = wrapper.findComponent('[data-testid="url-input"]').find('input');
+        const saveButton = wrapper.findComponent('[data-testid="save-button"]');
+        await descriptionInput.setValue('   ');
+        await urlInput.setValue('');
+        await flushPromises();
+        await saveButton.trigger('click');
+        expect(wrapper.emitted('save')).toEqual([[{ id: source.id, name: source.name }]]);
       });
     });
   });
