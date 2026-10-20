@@ -41,6 +41,17 @@ export default defineConfig({
         ],
       },
     }),
+    // Vitest 5 fsModuleCache can persist Vuetify virtual SASS modules incorrectly on reruns.
+    {
+      name: 'vitest-vuetify-fs-cache',
+      configureVitest({ defineCacheKeyGenerator }) {
+        defineCacheKeyGenerator(({ id }) => {
+          if (id.includes('plugin-vuetify')) {
+            return false;
+          }
+        });
+      },
+    },
   ],
   optimizeDeps: {
     exclude: [
