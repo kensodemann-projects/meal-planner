@@ -345,7 +345,14 @@ const calculateNutritionInformation = async () => {
   nutritionInfoLoading.value = true;
   const recipe = createRecipeFromForm();
   try {
-    nutrition.value = await generateNutritionData(recipe);
+    // A missing prepared source is passed through so the generator throws and the existing catch shows the error.
+    nutrition.value =
+      recipe.kind === 'prepared'
+        ? await generateNutritionData(
+            recipe,
+            sources.value.find((source) => source.id === recipe.sourceId),
+          )
+        : await generateNutritionData(recipe);
     showSuccessSnackbar.value = true;
   } catch {
     showErrorSnackbar.value = true;

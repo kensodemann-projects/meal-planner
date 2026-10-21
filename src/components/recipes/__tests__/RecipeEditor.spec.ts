@@ -3,8 +3,8 @@ import { useNutritionGenerator } from '@/core/nutrition-generator';
 import { TEST_PREPARED_RECIPE, TEST_RECIPES, TEST_SOURCES } from '@/data/__tests__/test-data';
 import { useRecipesData } from '@/data/recipes';
 import { useSourcesData } from '@/data/sources';
-import type { Source } from '@/models/source';
 import type { Recipe, RecipeIngredient, RecipeKind, RecipeStep } from '@/models/recipe';
+import type { Source } from '@/models/source';
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import type { Component, Ref } from 'vue';
@@ -1255,6 +1255,97 @@ describe('Recipe Editor', () => {
           expect(nutritionInputs.fat.element.value).toBe(BEER_CHEESE.fat.toString());
           expect(nutritionInputs.protein.element.value).toBe(BEER_CHEESE.protein.toString());
         });
+      });
+
+      describe('the recipe sent to the generator', () => {
+        const nutritionResult = { calories: 350, sodium: 500, sugar: 8, carbs: 25, fat: 12, protein: 18 };
+
+        beforeEach(() => {
+          const { generateNutritionData } = useNutritionGenerator();
+          (generateNutritionData as Mock).mockResolvedValue(nutritionResult);
+        });
+
+        it('sends a homemade recipe with no source', async () => {
+          wrapper = mountComponent();
+          await setupValidState(wrapper);
+          const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+          await button.trigger('click');
+          await flushPromises();
+
+          const { generateNutritionData } = useNutritionGenerator();
+          expect(generateNutritionData).toHaveBeenCalledOnce();
+          expect(generateNutritionData).toHaveBeenCalledWith(
+            expect.objectContaining({
+              kind: 'homemade',
+              name: 'Test Recipe',
+              servings: 4,
+              ingredients: [
+                expect.objectContaining({
+                  id: 'test-ingredient-id',
+                  units: 1,
+                  unitOfMeasure: findUnitOfMeasure('cup'),
+                  name: 'Test Ingredient',
+                }),
+              ],
+            }),
+          );
+          expect((generateNutritionData as Mock).mock.calls[0]).toHaveLength(1);
+        });
+
+        it('sends a prepared recipe with the selected source', async () => {
+          const cookUnity = TEST_SOURCES.find((source) => source.id === 'fiie002934009ser')!;
+          wrapper = mountComponent({ kind: 'prepared' });
+          await setupValidState(wrapper, 'prepared');
+          const inputs = getPreparedInputs(wrapper);
+          await inputs.source.setValue(cookUnity.id!);
+          const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+          await button.trigger('click');
+          await flushPromises();
+
+          const { generateNutritionData } = useNutritionGenerator();
+          expect(generateNutritionData).toHaveBeenCalledOnce();
+          expect(generateNutritionData).toHaveBeenCalledWith(
+            expect.objectContaining({
+              kind: 'prepared',
+              name: 'Test Recipe',
+              servings: 4,
+              sourceId: cookUnity.id,
+            }),
+            expect.objectContaining({
+              id: cookUnity.id,
+              name: cookUnity.name,
+              url: cookUnity.url,
+            }),
+          );
+        });
+      });
+
+      it('shows an error and leaves nutrition unchanged when the prepared source is missing', async () => {
+        const { sources } = useSourcesData();
+        (sources as Ref<Source[]>).value = [];
+        const { generateNutritionData } = useNutritionGenerator();
+        (generateNutritionData as Mock).mockImplementation(async (_recipe: Recipe, source?: Source) => {
+          if (!source) throw new Error('A prepared recipe requires a source');
+          return { calories: 0, sodium: 0, sugar: 0, carbs: 0, fat: 0, protein: 0 };
+        });
+
+        wrapper = mountComponent({ recipe: TEST_PREPARED_RECIPE });
+        const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+        await button.trigger('click');
+        await flushPromises();
+
+        const errorSnackbar = wrapper.findAllComponents(components.VSnackbar).find((s) => s.props('color') === 'error');
+        expect(errorSnackbar).toBeDefined();
+        expect(errorSnackbar!.props('modelValue')).toBe(true);
+        const nutritionInputs = getNutritionInputs(wrapper);
+        expect(nutritionInputs.calories.element.value).toBe(TEST_PREPARED_RECIPE.calories.toString());
+        expect(nutritionInputs.sodium.element.value).toBe(TEST_PREPARED_RECIPE.sodium.toString());
+        expect(nutritionInputs.sugar.element.value).toBe(TEST_PREPARED_RECIPE.sugar.toString());
+        expect(nutritionInputs.carbs.element.value).toBe(TEST_PREPARED_RECIPE.carbs.toString());
+        expect(nutritionInputs.fat.element.value).toBe(TEST_PREPARED_RECIPE.fat.toString());
+        expect(nutritionInputs.protein.element.value).toBe(TEST_PREPARED_RECIPE.protein.toString());
+        expect(generateNutritionData).toHaveBeenCalledOnce();
+        expect((generateNutritionData as Mock).mock.calls[0]?.[1]).toBeUndefined();
       });
     });
   });
