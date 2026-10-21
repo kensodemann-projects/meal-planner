@@ -297,4 +297,90 @@ describe('use nutrition generator', () => {
       expect(mockGenerateContent).not.toHaveBeenCalled();
     });
   });
+
+  describe('prepared recipes from Generic Restaurant', () => {
+    const genericRestaurant = {
+      ...TEST_SOURCES.find((source) => source.id === 'restaurant')!,
+      url: 'https://example.com/ignored-restaurant-url',
+    };
+    const cookUnity = TEST_SOURCES.find((source) => source.id === 'fiie002934009ser')!;
+
+    const preparedRecipe: Recipe = {
+      ...mockRecipe,
+      id: 'prepared-harissa',
+      name: 'Harissa Chicken',
+      description: 'Spicy harissa chicken with roasted vegetables',
+      kind: 'prepared',
+      sourceId: genericRestaurant.id,
+      category: 'Poultry',
+      cuisine: 'Mediterranean',
+      servings: 2,
+      ingredients: [],
+      steps: [],
+    };
+
+    beforeEach(() => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => JSON.stringify(mockNutrition) },
+      });
+    });
+
+    const promptFor = async (recipe: Recipe, source?: (typeof TEST_SOURCES)[number]) => {
+      const { generateNutritionData } = useNutritionGenerator();
+      await generateNutritionData(recipe, source);
+      return mockGenerateContent.mock.calls[0]![0] as string;
+    };
+
+    it('asks for a typical restaurant serving and ignores the source name and URL', async () => {
+      const prompt = await promptFor(preparedRecipe, genericRestaurant);
+      expect(prompt).toContain('Harissa Chicken');
+      expect(prompt).toContain('typical restaurant serving');
+      expect(prompt).toContain('unless the dish name');
+      expect(prompt).toContain(String(preparedRecipe.servings));
+      expect(prompt).toContain('Spicy harissa chicken with roasted vegetables');
+      expect(prompt).toContain('Category');
+      expect(prompt).toContain('Poultry');
+      expect(prompt).toContain('Cuisine');
+      expect(prompt).toContain('Mediterranean');
+      expect(prompt).not.toContain('Generic Restaurant');
+      expect(prompt).not.toContain('published');
+      expect(prompt).not.toContain('Here are the ingredients');
+      expect(prompt).not.toContain('https://example.com/ignored-restaurant-url');
+    });
+
+    it('omits description, category, and cuisine when they are absent', async () => {
+      const recipe = {
+        ...preparedRecipe,
+        description: null,
+        category: undefined,
+        cuisine: undefined,
+      } as unknown as Recipe;
+      const prompt = await promptFor(recipe, genericRestaurant);
+      expect(prompt).not.toContain('Category');
+      expect(prompt).not.toContain('Cuisine');
+      expect(prompt).not.toMatch(/description/i);
+      expect(prompt).toContain(String(recipe.servings));
+      expect(prompt).toContain('typical restaurant serving');
+    });
+
+    it('sends a chain-named dish through the same generic prompt', async () => {
+      const { generateNutritionData } = useNutritionGenerator();
+      await generateNutritionData(preparedRecipe, genericRestaurant);
+      await generateNutritionData({ ...preparedRecipe, name: 'Burger King Whopper' }, genericRestaurant);
+      const harissaPrompt = mockGenerateContent.mock.calls[0]![0] as string;
+      const whopperPrompt = mockGenerateContent.mock.calls[1]![0] as string;
+      expect(whopperPrompt).toBe(harissaPrompt.replaceAll('Harissa Chicken', 'Burger King Whopper'));
+      expect(whopperPrompt).toContain('Burger King Whopper');
+      expect(whopperPrompt).toContain('typical restaurant serving');
+      expect(whopperPrompt).toContain('unless the dish name');
+      expect(whopperPrompt.match(/Burger King/g)).toEqual(['Burger King']);
+    });
+
+    it('still asks a named source for published nutrition', async () => {
+      const prompt = await promptFor({ ...preparedRecipe, sourceId: cookUnity.id }, cookUnity);
+      expect(prompt).toContain('published');
+      expect(prompt).toContain('CookUnity');
+      expect(prompt).not.toContain('typical restaurant serving');
+    });
+  });
 });

@@ -42,6 +42,15 @@ const namedSourceUserPrompt = (recipe: Recipe, source: Source): string => {
   ].join(' ');
 };
 
+const genericRestaurantUserPrompt = (recipe: Recipe): string =>
+  [
+    `Estimate the nutrition for a typical restaurant serving of ${recipe.name}.`,
+    'Do not assume a specific restaurant chain unless the dish name clearly includes one.',
+    `Servings: ${recipe.servings}.`,
+    ...optionalRecipeContext(recipe),
+    'What is the nutritional breakdown per serving?',
+  ].join(' ');
+
 const userPrompt = (recipe: Recipe, source?: Source): string => {
   if (recipe.kind !== 'prepared') {
     return homemadeUserPrompt(recipe);
@@ -49,10 +58,10 @@ const userPrompt = (recipe: Recipe, source?: Source): string => {
   if (!source) {
     throw new Error('A prepared recipe requires a source');
   }
-  if (source.id !== GENERIC_RESTAURANT_SOURCE_ID) {
-    return namedSourceUserPrompt(recipe, source);
+  if (source.id === GENERIC_RESTAURANT_SOURCE_ID) {
+    return genericRestaurantUserPrompt(recipe);
   }
-  return homemadeUserPrompt(recipe);
+  return namedSourceUserPrompt(recipe, source);
 };
 
 export const useNutritionGenerator = () => {

@@ -59,7 +59,7 @@ These phrases are the contract. Wording around them can vary. Assertions use `to
 | ----- | ---------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1     | [STEP-001] | complete | `src/core/__tests__/nutrition-generator.spec.ts`, then `src/core/nutrition-generator.ts`                                                                  |
 | 2     | [STEP-002] | complete | same two files                                                                                                                                            |
-| 3     | [STEP-003] |          | same two files                                                                                                                                            |
+| 3     | [STEP-003] | complete | same two files                                                                                                                                            |
 | 4     | [STEP-004] |          | `src/core/__mocks__/nutrition-generator.ts`, then `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
 
 Within a step, add the failing spec cases first, then change production code until those cases pass. Each step changes at least one file. The existing parser cases (plain JSON, fenced JSON, malformed JSON, and backend failures) stay in `nutrition-generator.spec.ts` and keep passing as part of the commit gate. They are not their own step.
@@ -154,6 +154,8 @@ Use a prepared recipe named like the issue examples (`Harissa Chicken`) and the 
 ---
 
 ## [STEP-003] Generic Restaurant asks for a typical serving
+
+**Status:** complete
 
 **Acceptance criteria:** Generic Restaurant wording asks for a typical restaurant estimate, not a specific chain, unless the dish name implies one.
 
