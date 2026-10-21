@@ -3,8 +3,34 @@ import type { Recipe } from '@/models/recipe';
 import { getGenerativeModel } from 'firebase/ai';
 import { useFirebaseApp } from './firebase-app';
 
+const nonBlank = (value: string | null | undefined): string | undefined => {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : undefined;
+};
+
+const optionalRecipeContext = (recipe: Recipe): string[] => {
+  const description = nonBlank(recipe.description);
+  const category = nonBlank(recipe.category);
+  const cuisine = nonBlank(recipe.cuisine);
+  const lines: string[] = [];
+  if (description) lines.push(`Description: ${description}.`);
+  if (category) lines.push(`Category: ${category}.`);
+  if (cuisine) lines.push(`Cuisine: ${cuisine}.`);
+  return lines;
+};
+
+const homemadeUserPrompt = (recipe: Recipe): string =>
+  [
+    `I am making ${recipe.servings} servings of ${recipe.name}.`,
+    `Here are the ingredients: ${JSON.stringify(recipe.ingredients)}.`,
+    `Here are the steps to prepare: ${JSON.stringify(recipe.steps)}.`,
+    ...optionalRecipeContext(recipe),
+    'What is the nutritional breakdown per serving?',
+  ].join(' ');
+
 export const useNutritionGenerator = () => {
-  const systemInstruction = `You are an expert dietician. Given the recipe name, list of ingredients, steps to prepare, and the number of servings the recipe makes, you provide a per-serving nutritional breakdown with the following data points:
+  // Prepared meals omit ingredients and steps, so the instruction cannot require them on every request.
+  const systemInstruction = `You are an expert dietician. You provide a per-serving nutritional breakdown with the following data points:
 
 - calories
 - carbs (g)
@@ -33,8 +59,7 @@ For other requests, you will respond that you only provide nutritional informati
   const captureJson = /^\s*`{3}json\s*(\{.*\})\s*`{3}\s*$/s;
 
   const generateNutritionData = async (recipe: Recipe): Promise<Nutrition> => {
-    const userPrompt = `I am making ${recipe.servings} servings of ${recipe.name}. Here are the ingredients: ${JSON.stringify(recipe.ingredients)}. Here are the steps to prepare: ${JSON.stringify(recipe.steps)}. What is the nutritional breakdown per serving?`;
-    const result = await model.generateContent(userPrompt);
+    const result = await model.generateContent(homemadeUserPrompt(recipe));
     const text = result.response.text();
     return JSON.parse(text.replace(captureJson, '$1')) as Nutrition;
   };

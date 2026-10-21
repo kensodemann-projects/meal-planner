@@ -93,12 +93,68 @@ describe('use nutrition generator', () => {
       const { generateNutritionData } = useNutritionGenerator();
       await generateNutritionData(mockRecipe);
       const prompt = mockGenerateContent.mock.calls[0]![0] as string;
+      expect(prompt).toContain('Here are the ingredients');
       expect(prompt).toContain(mockRecipe.ingredients[0]!.name);
+    });
+
+    it('includes the preparation steps in the prompt', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => JSON.stringify(mockNutrition) },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await generateNutritionData(mockRecipe);
+      const prompt = mockGenerateContent.mock.calls[0]![0] as string;
+      expect(prompt).toContain('Here are the steps');
+      expect(prompt).toContain('Grill chicken for 20 minutes');
+    });
+
+    it('includes description, category, and cuisine when they are set', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => JSON.stringify(mockNutrition) },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await generateNutritionData(mockRecipe);
+      const prompt = mockGenerateContent.mock.calls[0]![0] as string;
+      expect(prompt).toContain('Simple grilled chicken breast');
+      expect(prompt).toContain('Category');
+      expect(prompt).toContain('Poultry');
+      expect(prompt).toContain('Cuisine');
+      expect(prompt).toContain('American');
+    });
+
+    it('omits description, category, and cuisine when they are absent', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => JSON.stringify(mockNutrition) },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      const recipe = {
+        ...mockRecipe,
+        description: null,
+        category: undefined,
+        cuisine: undefined,
+      } as unknown as Recipe;
+      await generateNutritionData(recipe);
+      const prompt = mockGenerateContent.mock.calls[0]![0] as string;
+      expect(prompt).not.toContain('Category');
+      expect(prompt).not.toContain('Cuisine');
+      expect(prompt).not.toMatch(/description/i);
+      expect(prompt).toContain(String(recipe.servings));
+      expect(prompt).toContain('Here are the ingredients');
     });
 
     it('initializes the Gemini model lazily inside the composable', () => {
       useNutritionGenerator();
       expect(getGenerativeModel).toHaveBeenCalledOnce();
+      const modelParams = vi.mocked(getGenerativeModel).mock.calls[0]![1];
+      if (!modelParams || !('systemInstruction' in modelParams) || typeof modelParams.systemInstruction !== 'string') {
+        throw new Error('expected a string system instruction');
+      }
+      expect(modelParams.systemInstruction).toContain('calories');
+      expect(modelParams.systemInstruction).toContain('sodium');
+      expect(modelParams.systemInstruction).toContain('sugar');
+      expect(modelParams.systemInstruction).toContain('carbs');
+      expect(modelParams.systemInstruction).toContain('fat');
+      expect(modelParams.systemInstruction).toContain('protein');
     });
 
     it('returns the parsed nutrition when the response is plain JSON', async () => {
