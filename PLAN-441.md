@@ -55,12 +55,12 @@ These phrases are the contract. Wording around them can vary. Assertions use `to
 
 ## File order
 
-| Order | Step       | Files                                                                                                                                                     |
-| ----- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | [STEP-001] | `src/core/__tests__/nutrition-generator.spec.ts`, then `src/core/nutrition-generator.ts`                                                                  |
-| 2     | [STEP-002] | same two files                                                                                                                                            |
-| 3     | [STEP-003] | same two files                                                                                                                                            |
-| 4     | [STEP-004] | `src/core/__mocks__/nutrition-generator.ts`, then `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
+| Order | Step       | Status   | Files                                                                                                                                                     |
+| ----- | ---------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | [STEP-001] | complete | `src/core/__tests__/nutrition-generator.spec.ts`, then `src/core/nutrition-generator.ts`                                                                  |
+| 2     | [STEP-002] | complete | same two files                                                                                                                                            |
+| 3     | [STEP-003] |          | same two files                                                                                                                                            |
+| 4     | [STEP-004] |          | `src/core/__mocks__/nutrition-generator.ts`, then `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
 
 Within a step, add the failing spec cases first, then change production code until those cases pass. Each step changes at least one file. The existing parser cases (plain JSON, fenced JSON, malformed JSON, and backend failures) stay in `nutrition-generator.spec.ts` and keep passing as part of the commit gate. They are not their own step.
 
@@ -77,6 +77,8 @@ pnpm lint
 ---
 
 ## [STEP-001] Homemade prompt keeps ingredients and steps
+
+**Status:** complete
 
 **Acceptance criteria:** Homemade prompts still include recipe name, servings, ingredients, and steps. Description, category, cuisine, and servings are included when present.
 
@@ -112,6 +114,8 @@ pnpm vitest run src/core/__tests__/nutrition-generator.spec.ts
 ---
 
 ## [STEP-002] Named source asks for published nutrition
+
+**Status:** complete
 
 **Acceptance criteria:** Prepared prompts include the source name and recipe name. Named-source wording asks to look up published nutrition for that source. A source URL is given to the model when the source has one.
 
