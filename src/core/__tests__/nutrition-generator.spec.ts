@@ -1,4 +1,9 @@
+import { TEST_SOURCES } from '@/data/__tests__/test-data';
+import type { Recipe } from '@/models/recipe';
+import { getGenerativeModel } from 'firebase/ai';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { findUnitOfMeasure } from '../find-unit-of-measure';
+import { useNutritionGenerator } from '../nutrition-generator';
 
 const { mockGenerateContent } = vi.hoisted(() => {
   return { mockGenerateContent: vi.fn() };
@@ -15,11 +20,6 @@ vi.mock('../firebase-app', () => ({
     aiBackend: { name: 'mock-ai-backend' },
   }),
 }));
-
-import type { Recipe } from '@/models/recipe';
-import { getGenerativeModel } from 'firebase/ai';
-import { useNutritionGenerator } from '../nutrition-generator';
-import { findUnitOfMeasure } from '../find-unit-of-measure';
 
 const mockRecipe: Recipe = {
   id: 'recipe-1',
@@ -204,6 +204,97 @@ describe('use nutrition generator', () => {
       });
       const { generateNutritionData } = useNutritionGenerator();
       await expect(generateNutritionData(mockRecipe)).rejects.toThrow(SyntaxError);
+    });
+  });
+
+  describe('prepared recipes with a named source', () => {
+    const cookUnity = TEST_SOURCES.find((source) => source.id === 'fiie002934009ser')!;
+    const bistroMd = TEST_SOURCES.find((source) => source.name === 'BistroMD')!;
+
+    const preparedRecipe: Recipe = {
+      ...mockRecipe,
+      id: 'prepared-harissa',
+      name: 'Harissa Chicken',
+      description: 'Spicy harissa chicken with roasted vegetables',
+      kind: 'prepared',
+      sourceId: cookUnity.id,
+      category: 'Poultry',
+      cuisine: 'Mediterranean',
+      servings: 2,
+      ingredients: [],
+      steps: [],
+    };
+
+    beforeEach(() => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => JSON.stringify(mockNutrition) },
+      });
+    });
+
+    const promptFor = async (recipe: Recipe, source?: (typeof TEST_SOURCES)[number]) => {
+      const { generateNutritionData } = useNutritionGenerator();
+      const result = await generateNutritionData(recipe, source);
+      const prompt = mockGenerateContent.mock.calls[0]![0] as string;
+      return { prompt, result };
+    };
+
+    it('asks for published nutrition for that source and still parses the six-number JSON', async () => {
+      const { prompt, result } = await promptFor(preparedRecipe, cookUnity);
+      expect(prompt).toContain('CookUnity');
+      expect(prompt).toContain('Harissa Chicken');
+      expect(prompt).toContain('ready-to-eat');
+      expect(prompt).toContain('published');
+      expect(prompt).toContain('best estimate');
+      expect(prompt).toContain('https://www.cookunity.com/');
+      expect(result).toEqual(mockNutrition);
+    });
+
+    it('includes servings and, when set, description, category, and cuisine', async () => {
+      const { prompt } = await promptFor(preparedRecipe, cookUnity);
+      expect(prompt).toContain(String(preparedRecipe.servings));
+      expect(prompt).toContain('Spicy harissa chicken with roasted vegetables');
+      expect(prompt).toContain('Category');
+      expect(prompt).toContain('Poultry');
+      expect(prompt).toContain('Cuisine');
+      expect(prompt).toContain('Mediterranean');
+    });
+
+    it('does not use the homemade ingredients lead-in', async () => {
+      const { prompt } = await promptFor(preparedRecipe, cookUnity);
+      expect(prompt).not.toContain('Here are the ingredients');
+    });
+
+    it('omits the source URL when the source has none', async () => {
+      const { prompt } = await promptFor(preparedRecipe, bistroMd);
+      expect(prompt).toContain('BistroMD');
+      expect(prompt).not.toContain('http');
+    });
+
+    it('omits a blank source URL', async () => {
+      const { prompt } = await promptFor(preparedRecipe, { ...cookUnity, url: '   ' });
+      expect(prompt).toContain('CookUnity');
+      expect(prompt).not.toContain('http');
+    });
+
+    it('omits description, category, and cuisine when they are absent', async () => {
+      const recipe = {
+        ...preparedRecipe,
+        description: null,
+        category: undefined,
+        cuisine: undefined,
+      } as unknown as Recipe;
+      const { prompt } = await promptFor(recipe, cookUnity);
+      expect(prompt).not.toContain('Category');
+      expect(prompt).not.toContain('Cuisine');
+      expect(prompt).not.toMatch(/description/i);
+      expect(prompt).toContain(String(recipe.servings));
+      expect(prompt).not.toContain('Here are the ingredients');
+    });
+
+    it('rejects a prepared recipe when no source is provided and does not call the model', async () => {
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(preparedRecipe)).rejects.toThrow('A prepared recipe requires a source');
+      expect(mockGenerateContent).not.toHaveBeenCalled();
     });
   });
 });

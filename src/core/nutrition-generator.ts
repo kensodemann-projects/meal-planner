@@ -1,5 +1,7 @@
+import { GENERIC_RESTAURANT_SOURCE_ID } from '@/data/sources';
 import type { Nutrition } from '@/models/nutrition';
 import type { Recipe } from '@/models/recipe';
+import type { Source } from '@/models/source';
 import { getGenerativeModel } from 'firebase/ai';
 import { useFirebaseApp } from './firebase-app';
 
@@ -27,6 +29,31 @@ const homemadeUserPrompt = (recipe: Recipe): string =>
     ...optionalRecipeContext(recipe),
     'What is the nutritional breakdown per serving?',
   ].join(' ');
+
+const namedSourceUserPrompt = (recipe: Recipe, source: Source): string => {
+  const url = nonBlank(source.url);
+  return [
+    `This is a prepared, ready-to-eat item from ${source.name} named ${recipe.name}.`,
+    'Prefer published per-serving nutrition. If published numbers are unavailable, use your best estimate.',
+    ...(url ? [`Source URL: ${url}.`] : []),
+    `Servings: ${recipe.servings}.`,
+    ...optionalRecipeContext(recipe),
+    'What is the nutritional breakdown per serving?',
+  ].join(' ');
+};
+
+const userPrompt = (recipe: Recipe, source?: Source): string => {
+  if (recipe.kind !== 'prepared') {
+    return homemadeUserPrompt(recipe);
+  }
+  if (!source) {
+    throw new Error('A prepared recipe requires a source');
+  }
+  if (source.id !== GENERIC_RESTAURANT_SOURCE_ID) {
+    return namedSourceUserPrompt(recipe, source);
+  }
+  return homemadeUserPrompt(recipe);
+};
 
 export const useNutritionGenerator = () => {
   // Prepared meals omit ingredients and steps, so the instruction cannot require them on every request.
@@ -58,8 +85,8 @@ For other requests, you will respond that you only provide nutritional informati
   const model = getGenerativeModel(aiBackend, { model: 'gemini-2.5-flash', systemInstruction });
   const captureJson = /^\s*`{3}json\s*(\{.*\})\s*`{3}\s*$/s;
 
-  const generateNutritionData = async (recipe: Recipe): Promise<Nutrition> => {
-    const result = await model.generateContent(homemadeUserPrompt(recipe));
+  const generateNutritionData = async (recipe: Recipe, source?: Source): Promise<Nutrition> => {
+    const result = await model.generateContent(userPrompt(recipe, source));
     const text = result.response.text();
     return JSON.parse(text.replace(captureJson, '$1')) as Nutrition;
   };
