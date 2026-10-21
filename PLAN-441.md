@@ -60,11 +60,19 @@ These phrases are the contract. Wording around them can vary. Assertions use `to
 | 1     | [STEP-001] | `src/core/__tests__/nutrition-generator.spec.ts`, then `src/core/nutrition-generator.ts`                                                                  |
 | 2     | [STEP-002] | same two files                                                                                                                                            |
 | 3     | [STEP-003] | same two files                                                                                                                                            |
-| 4     | [STEP-004] | no new edits; re-run the parser cases                                                                                                                     |
-| 5     | [STEP-005] | `src/core/__mocks__/nutrition-generator.ts`, then `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
-| 6     | [STEP-006] | no new edits                                                                                                                                              |
+| 4     | [STEP-004] | `src/core/__mocks__/nutrition-generator.ts`, then `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
 
-Within a step, add the failing spec cases first, then change production code until those cases pass.
+Within a step, add the failing spec cases first, then change production code until those cases pass. Each step changes at least one file. The existing parser cases (plain JSON, fenced JSON, malformed JSON, and backend failures) stay in `nutrition-generator.spec.ts` and keep passing as part of the commit gate. They are not their own step.
+
+## Commit gate
+
+Every step ends in a commit to be performed by a human. The focused `pnpm vitest run` under a step is the spot-check for that step’s new behavior. It does not replace the gate. Before committing, all three of these must succeed:
+
+```bash
+pnpm build
+pnpm test
+pnpm lint
+```
 
 ---
 
@@ -97,7 +105,9 @@ pnpm vitest run src/core/__tests__/nutrition-generator.spec.ts
 - A recipe with `description: null` and no category or cuisine omits those three. Servings and the ingredients sentence remain.
 - `getGenerativeModel` is still called once per `useNutritionGenerator()` call. The system instruction still lists `calories`, `sodium`, `sugar`, `carbs`, `fat`, and `protein`.
 
-**Done when:** a homemade call produces the ingredients/steps prompt plus the extra context fields that are set, and the parser tests in this file still pass without edits.
+**Done when:** a homemade call produces the ingredients/steps prompt plus the extra context fields that are set, and `captureJson` then `JSON.parse` is still the only response path.
+
+**Commit:** `pnpm build`, `pnpm test`, and `pnpm lint` all succeed.
 
 ---
 
@@ -135,6 +145,8 @@ Use a prepared recipe named like the issue examples (`Harissa Chicken`) and the 
 
 **Done when:** a named source changes only the user prompt, and the model still returns the same six-number JSON through the existing parser.
 
+**Commit:** `pnpm build`, `pnpm test`, and `pnpm lint` all succeed.
+
 ---
 
 ## [STEP-003] Generic Restaurant asks for a typical serving
@@ -167,35 +179,11 @@ Call with a prepared recipe and `TEST_SOURCES`’s `{ id: 'restaurant', name: 'G
 
 **Done when:** the three prompt shapes are covered in one spec file, and generic vs named is decided only by the source id.
 
----
-
-## [STEP-004] Response parsing stays the same
-
-**Acceptance criteria:** Response parsing and JSON shape are unchanged.
-
-**Files:** none.
-
-**Spot-check**
-
-```bash
-pnpm vitest run src/core/__tests__/nutrition-generator.spec.ts
-```
-
-Confirm these existing cases still pass and still go through one `JSON.parse` after `captureJson`:
-
-- plain JSON
-- a ` ```json ` fence
-- a fenced response with extra whitespace
-- malformed JSON throws `SyntaxError`
-- backend and network failures reject with the original error
-
-`Nutrition` in `src/models/nutrition.ts` is still the six numbers. The generator return type is still `Promise<Nutrition>`.
-
-**Done when:** those parser cases pass with no new fields and no second parser for prepared recipes.
+**Commit:** `pnpm build`, `pnpm test`, and `pnpm lint` all succeed.
 
 ---
 
-## [STEP-005] Editor passes the selected source
+## [STEP-004] Editor passes the selected source
 
 **Acceptance criteria:** Calculate Nutrition on a prepared meal uses the source chosen in the form. Homemade calculation does not require a source.
 
@@ -229,27 +217,8 @@ The editor spec already mocks `@/core/nutrition-generator` and `@/data/sources`.
 - Prepared click when `sources` is empty: the error snackbar opens and nutrition fields stay at their previous values.
 - Existing loading, success, and error cases still pass.
 
+The page specs (`add-homemade`, `add-prepared`, and recipe update) mock `useNutritionGenerator`. If the new signature makes one of them fail to compile, fix `src/core/__mocks__/nutrition-generator.ts` in this step.
+
 **Done when:** the prepared form sends the selected source into the generator, and a homemade click does not.
 
----
-
-## [STEP-006] Regression pass
-
-**Files:** none, unless a failure points back at an earlier step.
-
-**Spot-check**
-
-```bash
-pnpm vitest run \
-  src/core/__tests__/nutrition-generator.spec.ts \
-  src/components/recipes/__tests__/RecipeEditor.spec.ts \
-  src/pages/recipes/__tests__/add-homemade.spec.ts \
-  src/pages/recipes/__tests__/add-prepared.spec.ts \
-  src/pages/recipes/\[id\]/__tests__/update.spec.ts
-```
-
-The page specs mock `useNutritionGenerator` and should not need edits. If one fails to compile, the mock signature from [STEP-005] is the place to fix.
-
-With a dev server, on a prepared recipe whose source is CookUnity, click Calculate Nutrition and confirm the nutrition fields fill from the model response. On a prepared recipe whose source is Generic Restaurant, the same button still fills the six fields. On a homemade recipe, Calculate Nutrition still requires a valid ingredient and still fills the six fields.
-
-**Done when:** the generator specs assert all three prompt shapes, parsing is unchanged, and the editor passes the source only for prepared recipes.
+**Commit:** `pnpm build`, `pnpm test`, and `pnpm lint` all succeed.
