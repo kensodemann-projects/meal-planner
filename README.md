@@ -64,6 +64,8 @@ Units of measure are used to specify ingredient quantities in recipes. The follo
 
 Everything commonly eaten at a meal is modeled as a "recipe." A recipe is either **homemade** or **prepared**.
 
+Recipes saved before the type existed have no stored kind and are treated as homemade.
+
 Every recipe stores:
 
 - Name
@@ -97,7 +99,7 @@ A prepared recipe is a ready-to-eat item from a meal service, the grocery store,
 - A named source prefers published per-serving numbers for that source. The source URL is included when the source has one. If published numbers are unavailable, the values are estimated.
 - Generic Restaurant asks for a typical restaurant serving of the dish. That estimate does not use the source name or URL, and it does not assume a specific restaurant chain unless the dish name clearly includes one.
 
-## Sources
+## Sources for Recipes
 
 A source identifies where a prepared recipe comes from. Each source stores:
 
@@ -153,7 +155,7 @@ Where meal plans are created and managed. The landing page offers quick links to
 
 ## Recipes
 
-Browse, search, and manage the recipe library. Recipes can be filtered by category, cuisine, and calorie range. Clicking a recipe shows its full details. New recipes are added from the action button, which first asks whether the recipe is homemade or prepared.
+Browse, search, and manage the recipe library. Recipes can be filtered by category, cuisine, and calorie range. Clicking a recipe shows its full details. New recipes are added from the action button, which first asks whether the recipe is homemade or prepared. Prepared recipes show their source on the summary card and in the recipe detail. The search box also matches the recipe type, so searching for `prepared` or `homemade` narrows the library.
 
 ## Settings
 
