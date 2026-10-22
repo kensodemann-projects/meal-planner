@@ -172,13 +172,6 @@ describe('SortableListEditor', () => {
     expect(dragHandle.exists()).toBe(false);
   });
 
-  it('uses custom list class when provided', () => {
-    wrapper = mountComponent({ listClass: 'custom-list-class' });
-
-    const draggable = wrapper.find('[class*="custom-list-class"]');
-    expect(draggable.exists()).toBe(true);
-  });
-
   it('preserves item IDs when updating', async () => {
     const items: TestItem[] = [{ id: 'original-id', value: 'Original' }];
     wrapper = mountComponent({ modelValue: items });

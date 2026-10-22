@@ -7,7 +7,7 @@
 
     <draggable
       v-model="internalList"
-      :class="listClass"
+      class="editable-list"
       :data-testid="`${testIdPrefix}-list`"
       item-key="id"
       :disabled="!sortable"
@@ -54,13 +54,11 @@ const props = withDefaults(
     addPrompt?: string;
     sortable?: boolean;
     testIdPrefix?: string;
-    listClass?: string;
   }>(),
   {
     addPrompt: 'Add',
     sortable: true,
     testIdPrefix: 'item',
-    listClass: 'editable-list',
   },
 );
 
