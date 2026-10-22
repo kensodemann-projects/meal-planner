@@ -1,5 +1,6 @@
 import { TEST_SOURCES } from '@/data/__tests__/test-data';
 import type { Recipe } from '@/models/recipe';
+import type { Source } from '@/models/source';
 import { getGenerativeModel } from 'firebase/ai';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { findUnitOfMeasure } from '../find-unit-of-measure';
@@ -41,6 +42,14 @@ const mockRecipe: Recipe = {
   ingredients: [{ id: 'ing-1', units: 4, unitOfMeasure: findUnitOfMeasure('item'), name: 'chicken breasts' }],
   steps: [{ id: 'step-1', instruction: 'Grill chicken for 20 minutes' }],
 };
+
+const withoutOptionalContext = (recipe: Recipe): Recipe =>
+  ({
+    ...recipe,
+    description: null,
+    category: undefined,
+    cuisine: undefined,
+  }) as unknown as Recipe;
 
 const mockNutrition = {
   calories: 250,
@@ -127,12 +136,7 @@ describe('use nutrition generator', () => {
         response: { text: () => JSON.stringify(mockNutrition) },
       });
       const { generateNutritionData } = useNutritionGenerator();
-      const recipe = {
-        ...mockRecipe,
-        description: null,
-        category: undefined,
-        cuisine: undefined,
-      } as unknown as Recipe;
+      const recipe = withoutOptionalContext(mockRecipe);
       await generateNutritionData(recipe);
       const prompt = mockGenerateContent.mock.calls[0]![0] as string;
       expect(prompt).not.toContain('Category');
@@ -231,7 +235,7 @@ describe('use nutrition generator', () => {
       });
     });
 
-    const promptFor = async (recipe: Recipe, source?: (typeof TEST_SOURCES)[number]) => {
+    const promptFor = async (recipe: Recipe, source?: Source) => {
       const { generateNutritionData } = useNutritionGenerator();
       const result = await generateNutritionData(recipe, source);
       const prompt = mockGenerateContent.mock.calls[0]![0] as string;
@@ -277,12 +281,7 @@ describe('use nutrition generator', () => {
     });
 
     it('omits description, category, and cuisine when they are absent', async () => {
-      const recipe = {
-        ...preparedRecipe,
-        description: null,
-        category: undefined,
-        cuisine: undefined,
-      } as unknown as Recipe;
+      const recipe = withoutOptionalContext(preparedRecipe);
       const { prompt } = await promptFor(recipe, cookUnity);
       expect(prompt).not.toContain('Category');
       expect(prompt).not.toContain('Cuisine');
@@ -325,7 +324,7 @@ describe('use nutrition generator', () => {
       });
     });
 
-    const promptFor = async (recipe: Recipe, source?: (typeof TEST_SOURCES)[number]) => {
+    const promptFor = async (recipe: Recipe, source?: Source) => {
       const { generateNutritionData } = useNutritionGenerator();
       await generateNutritionData(recipe, source);
       return mockGenerateContent.mock.calls[0]![0] as string;
@@ -349,12 +348,7 @@ describe('use nutrition generator', () => {
     });
 
     it('omits description, category, and cuisine when they are absent', async () => {
-      const recipe = {
-        ...preparedRecipe,
-        description: null,
-        category: undefined,
-        cuisine: undefined,
-      } as unknown as Recipe;
+      const recipe = withoutOptionalContext(preparedRecipe);
       const prompt = await promptFor(recipe, genericRestaurant);
       expect(prompt).not.toContain('Category');
       expect(prompt).not.toContain('Cuisine');
