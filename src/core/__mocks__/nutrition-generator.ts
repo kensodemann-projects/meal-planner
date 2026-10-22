@@ -1,5 +1,5 @@
+import type { NutritionPromptRecipe } from '@/core/nutrition-generator';
 import type { Nutrition } from '@/models/nutrition';
-import type { Recipe } from '@/models/recipe';
 import type { Source } from '@/models/source';
 import { vi } from 'vitest';
 
@@ -13,7 +13,7 @@ const generateNutritionData = vi.fn().mockResolvedValue({
 });
 
 export const useNutritionGenerator: () => {
-  generateNutritionData: (recipe: Recipe, source?: Source) => Promise<Nutrition>;
+  generateNutritionData: (recipe: NutritionPromptRecipe, source?: Source) => Promise<Nutrition>;
 } = () => {
   return {
     generateNutritionData,

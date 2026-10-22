@@ -4,7 +4,7 @@ import type { Source } from '@/models/source';
 import { getGenerativeModel } from 'firebase/ai';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { findUnitOfMeasure } from '../find-unit-of-measure';
-import { useNutritionGenerator } from '../nutrition-generator';
+import { useNutritionGenerator, type NutritionPromptRecipe } from '../nutrition-generator';
 
 const { mockGenerateContent } = vi.hoisted(() => {
   return { mockGenerateContent: vi.fn() };
@@ -43,13 +43,12 @@ const mockRecipe: Recipe = {
   steps: [{ id: 'step-1', instruction: 'Grill chicken for 20 minutes' }],
 };
 
-const withoutOptionalContext = (recipe: Recipe): Recipe =>
-  ({
-    ...recipe,
-    description: null,
-    category: undefined,
-    cuisine: undefined,
-  }) as unknown as Recipe;
+const withoutOptionalContext = (recipe: Recipe): NutritionPromptRecipe => ({
+  ...recipe,
+  description: null,
+  category: undefined,
+  cuisine: undefined,
+});
 
 const mockNutrition = {
   calories: 250,
@@ -235,7 +234,7 @@ describe('use nutrition generator', () => {
       });
     });
 
-    const promptFor = async (recipe: Recipe, source?: Source) => {
+    const promptFor = async (recipe: NutritionPromptRecipe, source?: Source) => {
       const { generateNutritionData } = useNutritionGenerator();
       const result = await generateNutritionData(recipe, source);
       const prompt = mockGenerateContent.mock.calls[0]![0] as string;
@@ -324,7 +323,7 @@ describe('use nutrition generator', () => {
       });
     });
 
-    const promptFor = async (recipe: Recipe, source?: Source) => {
+    const promptFor = async (recipe: NutritionPromptRecipe, source?: Source) => {
       const { generateNutritionData } = useNutritionGenerator();
       await generateNutritionData(recipe, source);
       return mockGenerateContent.mock.calls[0]![0] as string;

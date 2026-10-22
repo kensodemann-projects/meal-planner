@@ -184,7 +184,7 @@
 </template>
 
 <script setup lang="ts">
-import { useNutritionGenerator } from '@/core/nutrition-generator';
+import { useNutritionGenerator, type NutritionPromptRecipe } from '@/core/nutrition-generator';
 import { validationRules } from '@/core/validation-rules';
 import { cuisines } from '@/data/cuisines';
 import { recipeCategories } from '@/data/recipe-categories';
@@ -341,9 +341,32 @@ const disableNutritionButton = computed(() => {
   );
 });
 
+const nutritionPromptFromForm = (): NutritionPromptRecipe => {
+  const shared = {
+    name: name.value.trim(),
+    description: description.value.trim() || null,
+    kind: props.kind,
+    category: category.value,
+    cuisine: cuisine.value,
+    servings: servings.value!,
+  };
+  return props.kind === 'homemade'
+    ? {
+        ...shared,
+        ingredients: ingredients.value.filter(isValidIngredient),
+        steps: steps.value.filter(isValidStep),
+      }
+    : {
+        ...shared,
+        sourceId: sourceId.value ?? undefined,
+        ingredients: [],
+        steps: [],
+      };
+};
+
 const calculateNutritionInformation = async () => {
   nutritionInfoLoading.value = true;
-  const recipe = createRecipeFromForm();
+  const recipe = nutritionPromptFromForm();
   try {
     // A missing prepared source is passed through so the generator throws and the existing catch shows the error.
     nutrition.value =

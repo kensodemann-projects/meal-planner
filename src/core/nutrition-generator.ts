@@ -1,16 +1,25 @@
 import { GENERIC_RESTAURANT_SOURCE_ID } from '@/data/sources';
 import type { Nutrition } from '@/models/nutrition';
-import type { Recipe } from '@/models/recipe';
+import type { Cuisine, Recipe, RecipeCategory } from '@/models/recipe';
 import type { Source } from '@/models/source';
 import { getGenerativeModel } from 'firebase/ai';
 import { useFirebaseApp } from './firebase-app';
+
+// Calculate Nutrition can run before category or cuisine are selected.
+export type NutritionPromptRecipe = Pick<
+  Recipe,
+  'name' | 'description' | 'kind' | 'sourceId' | 'servings' | 'ingredients' | 'steps'
+> & {
+  category?: RecipeCategory | null;
+  cuisine?: Cuisine | null;
+};
 
 const nonBlank = (value: string | null | undefined): string | undefined => {
   const trimmed = value?.trim();
   return trimmed ? trimmed : undefined;
 };
 
-const optionalRecipeContext = (recipe: Recipe): string[] => {
+const optionalRecipeContext = (recipe: NutritionPromptRecipe): string[] => {
   const description = nonBlank(recipe.description);
   const category = nonBlank(recipe.category);
   const cuisine = nonBlank(recipe.cuisine);
@@ -21,7 +30,7 @@ const optionalRecipeContext = (recipe: Recipe): string[] => {
   return lines;
 };
 
-const homemadeUserPrompt = (recipe: Recipe): string =>
+const homemadeUserPrompt = (recipe: NutritionPromptRecipe): string =>
   [
     `I am making ${recipe.servings} servings of ${recipe.name}.`,
     `Here are the ingredients: ${JSON.stringify(recipe.ingredients)}.`,
@@ -30,7 +39,7 @@ const homemadeUserPrompt = (recipe: Recipe): string =>
     'What is the nutritional breakdown per serving?',
   ].join(' ');
 
-const namedSourceUserPrompt = (recipe: Recipe, source: Source): string => {
+const namedSourceUserPrompt = (recipe: NutritionPromptRecipe, source: Source): string => {
   const url = nonBlank(source.url);
   return [
     `This is a prepared, ready-to-eat item from ${source.name} named ${recipe.name}.`,
@@ -42,7 +51,7 @@ const namedSourceUserPrompt = (recipe: Recipe, source: Source): string => {
   ].join(' ');
 };
 
-const genericRestaurantUserPrompt = (recipe: Recipe): string =>
+const genericRestaurantUserPrompt = (recipe: NutritionPromptRecipe): string =>
   [
     `Estimate the nutrition for a typical restaurant serving of ${recipe.name}.`,
     'Do not assume a specific restaurant chain unless the dish name clearly includes one.',
@@ -51,7 +60,7 @@ const genericRestaurantUserPrompt = (recipe: Recipe): string =>
     'What is the nutritional breakdown per serving?',
   ].join(' ');
 
-const userPrompt = (recipe: Recipe, source?: Source): string => {
+const userPrompt = (recipe: NutritionPromptRecipe, source?: Source): string => {
   if (recipe.kind !== 'prepared') {
     return homemadeUserPrompt(recipe);
   }
@@ -94,7 +103,7 @@ For other requests, you will respond that you only provide nutritional informati
   const model = getGenerativeModel(aiBackend, { model: 'gemini-2.5-flash', systemInstruction });
   const captureJson = /^\s*`{3}json\s*(\{.*\})\s*`{3}\s*$/s;
 
-  const generateNutritionData = async (recipe: Recipe, source?: Source): Promise<Nutrition> => {
+  const generateNutritionData = async (recipe: NutritionPromptRecipe, source?: Source): Promise<Nutrition> => {
     const result = await model.generateContent(userPrompt(recipe, source));
     const text = result.response.text();
     return JSON.parse(text.replace(captureJson, '$1')) as Nutrition;
