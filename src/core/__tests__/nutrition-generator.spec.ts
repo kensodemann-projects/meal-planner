@@ -375,5 +375,17 @@ describe('use nutrition generator', () => {
       expect(prompt).toContain('CookUnity');
       expect(prompt).not.toContain('typical restaurant serving');
     });
+
+    it('treats any id other than the generic restaurant id as a named source', async () => {
+      const prompt = await promptFor(preparedRecipe, {
+        id: 'user-added',
+        name: 'Generic Restaurant',
+        url: 'https://example.com/not-generic',
+      });
+      expect(prompt).toContain('published');
+      expect(prompt).toContain('Generic Restaurant');
+      expect(prompt).toContain('https://example.com/not-generic');
+      expect(prompt).not.toContain('typical restaurant serving');
+    });
   });
 });
