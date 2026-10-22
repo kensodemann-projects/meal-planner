@@ -62,28 +62,54 @@ Units of measure are used to specify ingredient quantities in recipes. The follo
 
 ## Recipes
 
-Everything commonly eaten at a meal is modeled as a "recipe." This includes both traditional recipes (with ingredients, steps, etc.) and simple food items (e.g., "Milk" or "Orange").
+Everything commonly eaten at a meal is modeled as a "recipe." A recipe is either **homemade** or **prepared**.
 
-Each recipe stores the following information:
+Recipes saved before the type existed have no stored kind and are treated as homemade.
+
+Every recipe stores:
 
 - Name
 - Description
 - Category
 - Cuisine
 - Number of Servings
-- Cooking Time
-- Difficulty
-- Ingredients list
-  - Quantity
-  - Unit of Measure
-  - Name
-- Steps
 - Calories
 - Sodium (mg)
 - Sugar (g)
 - Total Carbs (g)
 - Fat (g)
 - Protein (g)
+
+A homemade recipe is one you assemble yourself, from a simple item such as "Milk" or "Orange" to a full dish. It also stores:
+
+- Difficulty
+- Preparation Time
+- Cooking Time
+- Ingredients list
+  - Quantity
+  - Unit of Measure
+  - Name
+- Steps
+
+A prepared recipe is a ready-to-eat item from a meal service, the grocery store, or a restaurant. It requires a source, and it does not ask for difficulty, preparation time, cooking time, ingredients, or steps.
+
+**Calculate Nutrition** fills in the per-serving values:
+
+- A homemade recipe is estimated from its ingredients and steps.
+- A named source prefers published per-serving numbers for that source. The source URL is included when the source has one. If published numbers are unavailable, the values are estimated.
+- Generic Restaurant asks for a typical restaurant serving of the dish. That estimate does not use the source name or URL, and it does not assume a specific restaurant chain unless the dish name clearly includes one.
+
+## Sources for Recipes
+
+A source identifies where a prepared recipe comes from. Each source stores:
+
+- Name
+- Description (optional)
+- URL (optional)
+
+Sources are maintained from the sidebar **Recipe Sources** page: the list, an add page, and an update page for each source. A source that is used by a recipe cannot be deleted.
+
+The emulator seed includes a single source, Generic Restaurant (`id` `restaurant`). That source cannot be deleted. Additional sources, such as a meal-delivery service, are created in the app.
 
 ## Meals
 
@@ -129,7 +155,7 @@ Where meal plans are created and managed. The landing page offers quick links to
 
 ## Recipes
 
-Browse, search, and manage the recipe library. Recipes can be filtered by category, cuisine, and calorie range. Clicking a recipe shows its full details, including ingredients, steps, and nutritional info. New recipes can be added via the action button.
+Browse, search, and manage the recipe library. Recipes can be filtered by category, cuisine, and calorie range. Clicking a recipe shows its full details. New recipes are added from the action button, which first asks whether the recipe is homemade or prepared. Prepared recipes show their source on the summary card and in the recipe detail. The search box also matches the recipe type, so searching for `prepared` or `homemade` narrows the library.
 
 ## Settings
 
@@ -140,3 +166,7 @@ Configure app-wide preferences, including:
 - Tolerance percentage used to define the acceptable range around each target for color coding
 
 Also displays the current app version.
+
+## Recipe Sources
+
+Maintain the sources used by prepared recipes. The page lists every source. New sources are added from the action button, and clicking a source opens it for editing. The seeded Generic Restaurant source cannot be deleted. Any other source that is still used by a recipe cannot be deleted either.
