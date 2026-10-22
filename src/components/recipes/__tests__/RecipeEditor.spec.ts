@@ -927,6 +927,101 @@ describe('Recipe Editor', () => {
           expect(saveButton.attributes('disabled')).toBeDefined();
         });
 
+        it('is enabled when an ingredient is changed and disabled when that change is reverted', async () => {
+          const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const ingredients = listArea.findAllComponents(IngredientEditorRow);
+          await ingredients[2]?.vm.$emit('changed', {
+            id: '3d56a852-d60c-453d-ba8b-61e8091c07aa',
+            units: 1,
+            unitOfMeasure: findUnitOfMeasure('lb'),
+            name: 'fudge',
+          });
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          const restored = listArea.findAllComponents(IngredientEditorRow);
+          await restored[2]?.vm.$emit('changed', BEER_CHEESE.ingredients[2]);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('is enabled when a step is changed and disabled when that change is reverted', async () => {
+          const listArea = wrapper.find('[data-testid="step-list-grid"]');
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const steps = listArea.findAllComponents(StepEditorRow);
+          await steps[2]?.vm.$emit('changed', {
+            id: BEER_CHEESE.steps[2]!.id,
+            instruction: 'Stir in the beer all at once.',
+          });
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          const restored = listArea.findAllComponents(StepEditorRow);
+          await restored[2]?.vm.$emit('changed', BEER_CHEESE.steps[2]);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('stays disabled when an added ingredient is removed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await wrapper.find('[data-testid="add-ingredient-button"]').trigger('click');
+          const rows = wrapper.find('[data-testid="ingredient-list-grid"]').findAllComponents(IngredientEditorRow);
+          await rows[rows.length - 1]?.vm.$emit('delete');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('stays disabled when an added step is removed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await wrapper.find('[data-testid="add-step-button"]').trigger('click');
+          const rows = wrapper.find('[data-testid="step-list-grid"]').findAllComponents(StepEditorRow);
+          await rows[rows.length - 1]?.vm.$emit('delete');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('is enabled when ingredients are reordered and disabled when the order is restored', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const editor = wrapper
+            .findAllComponents({ name: 'SortableListEditor' })
+            .find((list) => list.props('testIdPrefix') === 'ingredient')!;
+          const opened = [...(editor.props('modelValue') as RecipeIngredient[])];
+          await editor.vm.$emit('update:modelValue', [...opened].reverse());
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await editor.vm.$emit('update:modelValue', opened);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('is enabled when steps are reordered and disabled when the order is restored', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const editor = wrapper
+            .findAllComponents({ name: 'SortableListEditor' })
+            .find((list) => list.props('testIdPrefix') === 'step')!;
+          const opened = [...(editor.props('modelValue') as RecipeStep[])];
+          await editor.vm.$emit('update:modelValue', [...opened].reverse());
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await editor.vm.$emit('update:modelValue', opened);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('does not mutate the recipe when an ingredient or step row is edited in place', () => {
+          wrapper.unmount();
+          const recipe = structuredClone(BEER_CHEESE);
+          const openedRecipe = structuredClone(recipe);
+          wrapper = mountComponent({ recipe });
+
+          const ingredient = wrapper
+            .find('[data-testid="ingredient-list-grid"]')
+            .findAllComponents(IngredientEditorRow)[0]!
+            .props('ingredient') as RecipeIngredient;
+          const step = wrapper
+            .find('[data-testid="step-list-grid"]')
+            .findAllComponents(StepEditorRow)[0]!
+            .props('step') as RecipeStep;
+
+          ingredient.name = 'Salted Butter';
+          step.instruction = 'Melt the butter.';
+
+          expect(wrapper.props('recipe')).toEqual(openedRecipe);
+          expect(ingredient).not.toBe((wrapper.props('recipe') as Recipe).ingredients[0]);
+          expect(step).not.toBe((wrapper.props('recipe') as Recipe).steps[0]);
+        });
+
         it('emits the entered data on click', async () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
           const inputs = getInputs(wrapper);

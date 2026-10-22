@@ -103,7 +103,6 @@
         title="Ingredients"
         :validate-item="isValidIngredient"
         :create-item="createIngredient"
-        @list-modified="listChanged = true"
         add-prompt="Add Ingredient"
         test-id-prefix="ingredient"
       >
@@ -117,7 +116,6 @@
         title="Steps"
         :validate-item="isValidStep"
         :create-item="createStep"
-        @list-modified="listChanged = true"
         add-prompt="Add Step"
         test-id-prefix="step"
       >
@@ -199,7 +197,7 @@ import type {
   RecipeKind,
   RecipeStep,
 } from '@/models/recipe';
-import { computed, onMounted, ref, shallowRef, watch } from 'vue';
+import { computed, onMounted, ref, shallowRef, toRaw } from 'vue';
 import type { VTextField } from 'vuetify/components';
 
 const emit = defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'cancel'): void }>();
@@ -229,14 +227,17 @@ const nutrition = ref<Partial<Nutrition>>({
   fat: props.recipe?.fat || 0,
   protein: props.recipe?.protein || 0,
 });
-const ingredients = ref<Partial<RecipeIngredient>[]>(props.recipe ? [...props.recipe.ingredients] : []);
-const steps = ref<Partial<RecipeStep>[]>(props.recipe ? [...props.recipe.steps] : []);
+// structuredClone rejects Vue reactive proxies, so unwrap the prop lists first.
+const cloneList = <T,>(items: T[]): T[] => structuredClone(toRaw(items));
+const ingredients = ref<Partial<RecipeIngredient>[]>(props.recipe ? cloneList(props.recipe.ingredients) : []);
+const steps = ref<Partial<RecipeStep>[]>(props.recipe ? cloneList(props.recipe.steps) : []);
+const openedIngredients: Partial<RecipeIngredient>[] = props.recipe ? cloneList(props.recipe.ingredients) : [];
+const openedSteps: Partial<RecipeStep>[] = props.recipe ? cloneList(props.recipe.steps) : [];
 const nutritionInfoLoading = shallowRef(false);
 const showSuccessSnackbar = shallowRef(false);
 const showErrorSnackbar = shallowRef(false);
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
-const listChanged = shallowRef(false);
 
 const recipeNames = computed((): string[] => recipes.value.filter((x) => x.id !== props.recipe?.id).map((x) => x.name));
 
@@ -275,10 +276,29 @@ const isValidStep = (item: Partial<RecipeStep>): item is RecipeStep => {
   return 'instruction' in item && !!item.instruction?.trim();
 };
 
+const ingredientAtIndexDiffers = (current: Partial<RecipeIngredient>, opened: Partial<RecipeIngredient>): boolean =>
+  current.id !== opened.id ||
+  current.units !== opened.units ||
+  current.name !== opened.name ||
+  current.unitOfMeasure?.id !== opened.unitOfMeasure?.id ||
+  current.unitOfMeasure?.name !== opened.unitOfMeasure?.name ||
+  current.unitOfMeasure?.type !== opened.unitOfMeasure?.type ||
+  current.unitOfMeasure?.system !== opened.unitOfMeasure?.system;
+
+const stepAtIndexDiffers = (current: Partial<RecipeStep>, opened: Partial<RecipeStep>): boolean =>
+  current.id !== opened.id || current.instruction !== opened.instruction;
+
+const listDiffers = <T,>(
+  current: Partial<T>[],
+  opened: Partial<T>[],
+  itemDiffers: (currentItem: Partial<T>, openedItem: Partial<T>) => boolean,
+): boolean => current.length !== opened.length || current.some((item, index) => itemDiffers(item, opened[index]!));
+
 const isModified = computed((): boolean => {
   if (!props.recipe) return true;
   return (
-    listChanged.value ||
+    listDiffers(ingredients.value, openedIngredients, ingredientAtIndexDiffers) ||
+    listDiffers(steps.value, openedSteps, stepAtIndexDiffers) ||
     props.recipe.name !== name.value ||
     (props.recipe.description || '') !== description.value ||
     props.recipe.category !== category.value ||

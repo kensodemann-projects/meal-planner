@@ -18,10 +18,10 @@ Issue: [#461](https://github.com/kensodemann-projects/meal-planner/issues/461) (
 
 **File order**
 
-| Order | Step       | Status | Files                                                                                                   |
-| ----- | ---------- | ------ | ------------------------------------------------------------------------------------------------------- |
-| 1     | [STEP-001] |        | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
-| 2     | [STEP-002] |        | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
+| Order | Step       | Status   | Files                                                                                                   |
+| ----- | ---------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| 1     | [STEP-001] | complete | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
+| 2     | [STEP-002] |          | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
 
 **Commit gate** — the human commits. A spot-check does not replace the gate.
 
@@ -35,7 +35,7 @@ All three must succeed with no warning or error before that commit.
 
 ## [STEP-001] Compare ingredient and step lists to the opened recipe
 
-**Status:**
+**Status:** complete
 
 **Acceptance criteria:** Save stays disabled when an ingredient or step is edited and then restored, and when a row is added and then removed. Save enables when ingredient or step content or order differs from the opened recipe. Editing a list item does not change the recipe object passed into the editor. `listChanged` is gone.
 
