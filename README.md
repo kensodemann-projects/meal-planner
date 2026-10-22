@@ -62,7 +62,7 @@ Units of measure are used to specify ingredient quantities in recipes. The follo
 
 ## Recipes
 
-Everything commonly eaten at a meal is modeled as a "recipe." A recipe is either **homemade** or **prepared**. Adding a recipe starts at the type choice (`/recipes/add`).
+Everything commonly eaten at a meal is modeled as a "recipe." A recipe is either **homemade** or **prepared**.
 
 Every recipe stores:
 
@@ -89,7 +89,7 @@ A homemade recipe is one you assemble yourself, from a simple item such as "Milk
   - Name
 - Steps
 
-A prepared recipe is a ready-to-eat item from a meal service, the grocery store, or a restaurant. It requires a source and does not store difficulty, preparation time, cooking time, ingredients, or steps.
+A prepared recipe is a ready-to-eat item from a meal service, the grocery store, or a restaurant. It requires a source, and it does not ask for difficulty, preparation time, cooking time, ingredients, or steps.
 
 **Calculate Nutrition** fills in the per-serving values:
 
