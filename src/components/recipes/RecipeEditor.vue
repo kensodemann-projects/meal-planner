@@ -299,8 +299,8 @@ const isModified = computed((): boolean => {
   return (
     listDiffers(ingredients.value, openedIngredients, ingredientAtIndexDiffers) ||
     listDiffers(steps.value, openedSteps, stepAtIndexDiffers) ||
-    props.recipe.name !== name.value ||
-    (props.recipe.description || '') !== description.value ||
+    name.value.trim() !== props.recipe.name ||
+    (description.value.trim() || null) !== (props.recipe.description || null) ||
     props.recipe.category !== category.value ||
     props.recipe.cuisine !== cuisine.value ||
     props.recipe.difficulty !== difficulty.value ||

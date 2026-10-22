@@ -884,6 +884,32 @@ describe('Recipe Editor', () => {
           expect(saveButton.attributes('disabled')).toBeUndefined();
         });
 
+        it('stays disabled when the name only gains surrounding spaces', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          await getInputs(wrapper).name.setValue(`  ${BEER_CHEESE.name}  `);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('stays disabled when the description only gains surrounding spaces', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          await getInputs(wrapper).description.setValue(`  ${BEER_CHEESE.description}  `);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it(`is enabled when the description is changed from "${BEER_CHEESE.description}" to spaces`, async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          await getInputs(wrapper).description.setValue('   ');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('stays disabled when a null description is set to spaces', async () => {
+          wrapper.unmount();
+          wrapper = mountComponent({ recipe: { ...BEER_CHEESE, description: null } });
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          await getInputs(wrapper).description.setValue('   ');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
         it('is enabled if an ingredient is changed', async () => {
           const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
@@ -1127,6 +1153,26 @@ describe('Recipe Editor', () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
           await getFieldSetters()[field].setValue(value);
           expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('stays disabled when the name only gains surrounding spaces', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          await getPreparedInputs(wrapper).name.setValue(`  ${prepared.name}  `);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('stays disabled when the description only gains surrounding spaces', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          await getPreparedInputs(wrapper).description.setValue(`  ${prepared.description}  `);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('stays disabled when a null description is set to spaces', async () => {
+          wrapper.unmount();
+          wrapper = mountComponent({ recipe: { ...prepared, description: null } });
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          await getPreparedInputs(wrapper).description.setValue('   ');
+          expect(saveButton.attributes('disabled')).toBeDefined();
         });
 
         it('emits the entered data on click', async () => {

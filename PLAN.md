@@ -21,7 +21,7 @@ Issue: [#461](https://github.com/kensodemann-projects/meal-planner/issues/461) (
 | Order | Step       | Status   | Files                                                                                                   |
 | ----- | ---------- | -------- | ------------------------------------------------------------------------------------------------------- |
 | 1     | [STEP-001] | complete | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
-| 2     | [STEP-002] |          | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
+| 2     | [STEP-002] | complete | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
 
 **Commit gate** — the human commits. A spot-check does not replace the gate.
 
@@ -82,7 +82,7 @@ pnpm vitest run src/components/recipes/__tests__/RecipeEditor.spec.ts
 
 ## [STEP-002] Ignore name and description whitespace that save trims
 
-**Status:**
+**Status:** complete
 
 **Acceptance criteria:** Save stays disabled when name or description differs from the opened recipe only by surrounding whitespace that save would trim away. A whitespace-only description leaves Save disabled when the opened description is null, and enables Save when the opened description is non-empty text.
 
