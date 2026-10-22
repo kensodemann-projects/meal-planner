@@ -106,7 +106,6 @@
         @list-modified="listChanged = true"
         add-prompt="Add Ingredient"
         test-id-prefix="ingredient"
-        list-class="ingredient-list editable-list"
       >
         <template #item="{ item, onAddNext, onChange, onDelete }">
           <IngredientEditorRow :ingredient="item" @add-next="onAddNext" @changed="onChange" @delete="onDelete" />
@@ -121,7 +120,6 @@
         @list-modified="listChanged = true"
         add-prompt="Add Step"
         test-id-prefix="step"
-        list-class="step-list editable-list"
       >
         <template #item="{ item, onAddNext, onChange, onDelete }">
           <StepEditorRow :step="item" @add-next="onAddNext" @changed="onChange" @delete="onDelete" />
@@ -386,13 +384,3 @@ const calculateNutritionInformation = async () => {
 
 onMounted(() => nameInput.value?.focus());
 </script>
-
-<style scoped>
-.ingredient-list,
-.step-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin: 16px;
-}
-</style>
