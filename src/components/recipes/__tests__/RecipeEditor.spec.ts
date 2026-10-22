@@ -57,7 +57,7 @@ const mountComponent = (props = {}) =>
               </div>
             </div>
           `,
-          props: ['modelValue', 'title', 'validateItem', 'createItem', 'testIdPrefix', 'listClass', 'sortable'],
+          props: ['modelValue', 'title', 'validateItem', 'createItem', 'testIdPrefix', 'sortable'],
           computed: {
             hasInvalidItems() {
               return this.modelValue.some((item: any) => !this.validateItem(item));
