@@ -32,10 +32,11 @@ const optionalRecipeContext = (recipe: NutritionPromptRecipe): string[] => {
 
 const homemadeUserPrompt = (recipe: NutritionPromptRecipe): string =>
   [
-    `I am making ${recipe.servings} servings of ${recipe.name}.`,
+    `I am making ${recipe.name}.`,
     `Here are the ingredients: ${JSON.stringify(recipe.ingredients)}.`,
     `Here are the steps to prepare: ${JSON.stringify(recipe.steps)}.`,
     ...optionalRecipeContext(recipe),
+    `This recipe makes ${recipe.servings} servings.`,
     'What is the nutritional breakdown per serving?',
   ].join(' ');
 
@@ -94,13 +95,17 @@ Your response must be a JSON object in the following format:
   "protein": integer in grams
 }
 
+Always be sure to adjust the nutritional information to a per-serving basis based on the number of servings the recipe produces.
+
+If the request includes a "Source URL" try using that URL to look up nutritional information.
+
 You will only respond with the nutrition information JSON without surrounding text.
 
 You will only respond to nutritional information requests.
 For other requests, you will respond that you only provide nutritional information.`;
 
   const { aiBackend } = useFirebaseApp();
-  const model = getGenerativeModel(aiBackend, { model: 'gemini-2.5-flash', systemInstruction });
+  const model = getGenerativeModel(aiBackend, { model: 'gemini-3.5-flash-lite', systemInstruction });
   const captureJson = /^\s*`{3}json\s*(\{.*\})\s*`{3}\s*$/s;
 
   const generateNutritionData = async (recipe: NutritionPromptRecipe, source?: Source): Promise<Nutrition> => {
