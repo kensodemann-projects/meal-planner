@@ -158,6 +158,9 @@ describe('use nutrition generator', () => {
       expect(modelParams.systemInstruction).toContain('carbs');
       expect(modelParams.systemInstruction).toContain('fat');
       expect(modelParams.systemInstruction).toContain('protein');
+      expect(modelParams.systemInstruction).not.toContain('list of ingredients');
+      expect(modelParams.systemInstruction).not.toContain('steps to prepare');
+      expect(modelParams.systemInstruction).toContain('per-serving nutritional breakdown');
     });
 
     it('returns the parsed nutrition when the response is plain JSON', async () => {
