@@ -64,14 +64,12 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   'update:modelValue': [value: Partial<T>[]];
-  'list-modified': [];
 }>();
 
 const internalList = computed({
   get: () => props.modelValue,
   set: (value: Partial<T>[]) => {
     emit('update:modelValue', value);
-    emit('list-modified');
   },
 });
 

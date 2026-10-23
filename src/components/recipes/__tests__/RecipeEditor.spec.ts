@@ -67,19 +67,16 @@ const mountComponent = (props = {}) =>
             addItem() {
               const newArr = [...this.modelValue, this.createItem()];
               this.$emit('update:modelValue', newArr);
-              this.$emit('list-modified');
             },
             changeItem(updated: any, index: number) {
               const arr = [...this.modelValue];
               arr[index] = updated;
               this.$emit('update:modelValue', arr);
-              this.$emit('list-modified');
             },
             deleteItem(index: number) {
               const arr = [...this.modelValue];
               arr.splice(index, 1);
               this.$emit('update:modelValue', arr);
-              this.$emit('list-modified');
             },
           },
         },
@@ -884,6 +881,32 @@ describe('Recipe Editor', () => {
           expect(saveButton.attributes('disabled')).toBeUndefined();
         });
 
+        it('stays disabled when the name only gains surrounding spaces', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          await getInputs(wrapper).name.setValue(`  ${BEER_CHEESE.name}  `);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('stays disabled when the description only gains surrounding spaces', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          await getInputs(wrapper).description.setValue(`  ${BEER_CHEESE.description}  `);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it(`is enabled when the description is changed from "${BEER_CHEESE.description}" to spaces`, async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          await getInputs(wrapper).description.setValue('   ');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('stays disabled when a null description is set to spaces', async () => {
+          wrapper.unmount();
+          wrapper = mountComponent({ recipe: { ...BEER_CHEESE, description: null } });
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          await getInputs(wrapper).description.setValue('   ');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
         it('is enabled if an ingredient is changed', async () => {
           const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
@@ -925,6 +948,103 @@ describe('Recipe Editor', () => {
           const button = wrapper.find('[data-testid="add-step-button"]');
           await button.trigger('click');
           expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('is enabled when an ingredient is changed and disabled when that change is reverted', async () => {
+          const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const ingredients = listArea.findAllComponents(IngredientEditorRow);
+          await ingredients[2]?.vm.$emit('changed', {
+            id: '3d56a852-d60c-453d-ba8b-61e8091c07aa',
+            units: 1,
+            unitOfMeasure: findUnitOfMeasure('lb'),
+            name: 'fudge',
+          });
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          const restored = listArea.findAllComponents(IngredientEditorRow);
+          await restored[2]?.vm.$emit('changed', BEER_CHEESE.ingredients[2]);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('is enabled when a step is changed and disabled when that change is reverted', async () => {
+          const listArea = wrapper.find('[data-testid="step-list-grid"]');
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const steps = listArea.findAllComponents(StepEditorRow);
+          await steps[2]?.vm.$emit('changed', {
+            id: BEER_CHEESE.steps[2]!.id,
+            instruction: 'Stir in the beer all at once.',
+          });
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          const restored = listArea.findAllComponents(StepEditorRow);
+          await restored[2]?.vm.$emit('changed', BEER_CHEESE.steps[2]);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('stays disabled when an added ingredient is removed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await wrapper.find('[data-testid="add-ingredient-button"]').trigger('click');
+          const rows = wrapper.find('[data-testid="ingredient-list-grid"]').findAllComponents(IngredientEditorRow);
+          await rows[rows.length - 1]?.vm.$emit('delete');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('stays disabled when an added step is removed', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await wrapper.find('[data-testid="add-step-button"]').trigger('click');
+          const rows = wrapper.find('[data-testid="step-list-grid"]').findAllComponents(StepEditorRow);
+          await rows[rows.length - 1]?.vm.$emit('delete');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('is enabled when ingredients are reordered and disabled when the order is restored', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const editor = wrapper
+            .findAllComponents({ name: 'SortableListEditor' })
+            .find((list) => list.props('testIdPrefix') === 'ingredient')!;
+          const opened = [...(editor.props('modelValue') as RecipeIngredient[])];
+          await editor.vm.$emit('update:modelValue', [...opened].reverse());
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await editor.vm.$emit('update:modelValue', opened);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('is enabled when steps are reordered and disabled when the order is restored', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const editor = wrapper
+            .findAllComponents({ name: 'SortableListEditor' })
+            .find((list) => list.props('testIdPrefix') === 'step')!;
+          const opened = [...(editor.props('modelValue') as RecipeStep[])];
+          await editor.vm.$emit('update:modelValue', [...opened].reverse());
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await editor.vm.$emit('update:modelValue', opened);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('does not mutate the recipe when an ingredient or step row is edited in place', () => {
+          wrapper.unmount();
+          const recipe = structuredClone(BEER_CHEESE);
+          const openedRecipe = structuredClone(recipe);
+          wrapper = mountComponent({ recipe });
+
+          const ingredient = wrapper
+            .find('[data-testid="ingredient-list-grid"]')
+            .findAllComponents(IngredientEditorRow)[0]!
+            .props('ingredient') as RecipeIngredient;
+          const step = wrapper
+            .find('[data-testid="step-list-grid"]')
+            .findAllComponents(StepEditorRow)[0]!
+            .props('step') as RecipeStep;
+
+          ingredient.name = 'Salted Butter';
+          ingredient.unitOfMeasure.name = 'Modified Unit';
+          step.instruction = 'Melt the butter.';
+
+          expect(wrapper.props('recipe')).toEqual(openedRecipe);
+          expect(ingredient).not.toBe((wrapper.props('recipe') as Recipe).ingredients[0]);
+          expect(ingredient.unitOfMeasure).not.toBe((wrapper.props('recipe') as Recipe).ingredients[0]!.unitOfMeasure);
+          expect(step).not.toBe((wrapper.props('recipe') as Recipe).steps[0]);
         });
 
         it('emits the entered data on click', async () => {
@@ -1032,6 +1152,26 @@ describe('Recipe Editor', () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
           await getFieldSetters()[field].setValue(value);
           expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('stays disabled when the name only gains surrounding spaces', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          await getPreparedInputs(wrapper).name.setValue(`  ${prepared.name}  `);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('stays disabled when the description only gains surrounding spaces', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          await getPreparedInputs(wrapper).description.setValue(`  ${prepared.description}  `);
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('stays disabled when a null description is set to spaces', async () => {
+          wrapper.unmount();
+          wrapper = mountComponent({ recipe: { ...prepared, description: null } });
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          await getPreparedInputs(wrapper).description.setValue('   ');
+          expect(saveButton.attributes('disabled')).toBeDefined();
         });
 
         it('emits the entered data on click', async () => {

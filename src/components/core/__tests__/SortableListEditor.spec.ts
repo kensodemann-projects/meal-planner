@@ -104,15 +104,6 @@ describe('SortableListEditor', () => {
     expect(emittedValue?.[0]).toHaveProperty('value', '');
   });
 
-  it('emits list-modified when item is added', async () => {
-    wrapper = mountComponent();
-    const addButton = wrapper.find('[data-testid="add-test-item-button"]');
-
-    await addButton.trigger('click');
-
-    expect(wrapper.emitted('list-modified')).toBeTruthy();
-  });
-
   it('renders items using the slot', () => {
     const items: TestItem[] = [
       { id: '1', value: 'First' },
@@ -135,7 +126,6 @@ describe('SortableListEditor', () => {
     expect(emitted).toBeTruthy();
     const emittedValue = emitted?.[0]?.[0] as TestItem[];
     expect(emittedValue?.[0]?.value).toBe('Updated');
-    expect(wrapper.emitted('list-modified')).toBeTruthy();
   });
 
   it('deletes item when onDelete is called from slot', async () => {
@@ -153,7 +143,6 @@ describe('SortableListEditor', () => {
     const emittedValue = emitted?.[0]?.[0] as TestItem[];
     expect(emittedValue).toHaveLength(1);
     expect(emittedValue?.[0]?.id).toBe('2');
-    expect(wrapper.emitted('list-modified')).toBeTruthy();
   });
 
   it('shows drag handle when sortable is true', () => {
@@ -184,7 +173,7 @@ describe('SortableListEditor', () => {
     expect(emittedValue?.[0]?.id).toBe('original-id');
   });
 
-  it('reorders items when dragged and emits list-modified event', async () => {
+  it('reorders items when dragged', async () => {
     const items: TestItem[] = [
       { id: '1', value: 'First' },
       { id: '2', value: 'Second' },
@@ -211,9 +200,6 @@ describe('SortableListEditor', () => {
     expect(emitted).toBeTruthy();
     const emittedValue = emitted?.[0]?.[0] as TestItem[];
     expect(emittedValue).toEqual(reorderedItems);
-
-    // Verify list-modified event was emitted
-    expect(wrapper.emitted('list-modified')).toBeTruthy();
   });
 
   it('does not allow reordering when sortable is false', () => {
@@ -245,16 +231,6 @@ describe('SortableListEditor', () => {
       expect(emittedValue?.[0]?.value).toBe('First');
       expect(emittedValue?.[1]).toHaveProperty('id');
       expect(emittedValue?.[1]).toHaveProperty('value', '');
-    });
-
-    it('emits list-modified when onAddNext is called', async () => {
-      const items: TestItem[] = [{ id: '1', value: 'First' }];
-      wrapper = mountComponent({ modelValue: items });
-
-      const addNextButton = wrapper.find('.add-next-button');
-      await addNextButton.trigger('click');
-
-      expect(wrapper.emitted('list-modified')).toBeTruthy();
     });
 
     it('can add multiple items via onAddNext', async () => {
