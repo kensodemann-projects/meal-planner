@@ -242,14 +242,16 @@ const listChanged = shallowRef(false);
 
 const recipeNames = computed((): string[] => recipes.value.filter((x) => x.id !== props.recipe?.id).map((x) => x.name));
 
-const nameRules = computed(() => [
+const mustBeUniqueName = computed(() => validationRules.mustBeUnique(recipeNames.value));
+
+const nameRules = [
   validationRules.required,
   (value: string | null | undefined) => {
     if (!value?.trim()) return true;
     if (loading.value) return 'Recipes are still loading';
-    return validationRules.mustBeUnique(recipeNames.value)(value);
+    return mustBeUniqueName.value(value);
   },
-]);
+];
 
 watch([loading, recipeNames], () => {
   if (name.value.trim()) {
