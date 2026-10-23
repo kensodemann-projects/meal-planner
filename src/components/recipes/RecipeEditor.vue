@@ -10,7 +10,7 @@
             label="Name"
             placeholder="Enter the name of the recipe..."
             v-model="name"
-            :rules="[validationRules.required, validationRules.mustBeUnique(recipeNames)]"
+            :rules="nameRules"
             data-testid="name-input"
             ref="nameInput"
           ></v-text-field>
@@ -199,7 +199,7 @@ import type {
   RecipeKind,
   RecipeStep,
 } from '@/models/recipe';
-import { computed, onMounted, ref, shallowRef } from 'vue';
+import { computed, onMounted, ref, shallowRef, watch } from 'vue';
 import type { VTextField } from 'vuetify/components';
 
 const emit = defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'cancel'): void }>();
@@ -208,7 +208,7 @@ const props = withDefaults(defineProps<{ recipe?: Recipe; kind?: RecipeKind }>()
 });
 
 const { generateNutritionData } = useNutritionGenerator();
-const { recipes } = useRecipesData();
+const { loading, recipes } = useRecipesData();
 const { sources } = useSourcesData();
 
 const valid = shallowRef(false);
@@ -239,6 +239,23 @@ const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 const listChanged = shallowRef(false);
 
 const recipeNames = computed((): string[] => recipes.value.filter((x) => x.id !== props.recipe?.id).map((x) => x.name));
+
+const mustBeUniqueName = computed(() => validationRules.mustBeUnique(recipeNames.value));
+
+const nameRules = [
+  validationRules.required,
+  (value: string | null | undefined) => {
+    if (!value?.trim()) return true;
+    if (loading.value) return 'Recipes are still loading';
+    return mustBeUniqueName.value(value);
+  },
+];
+
+watch([loading, recipeNames], () => {
+  if (name.value.trim()) {
+    nameInput.value?.validate();
+  }
+});
 
 const createIngredient = (): Partial<RecipeIngredient> => ({
   id: globalThis.crypto.randomUUID(),

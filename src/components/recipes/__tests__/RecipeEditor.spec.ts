@@ -360,8 +360,9 @@ describe('Recipe Editor', () => {
   let wrapper: EditorWrapper;
 
   beforeEach(() => {
-    const { recipes } = useRecipesData();
+    const { loading, recipes } = useRecipesData();
     (recipes as Ref<Recipe[]>).value = TEST_RECIPES;
+    (loading as Ref<boolean>).value = false;
   });
 
   afterEach(() => {
@@ -445,6 +446,46 @@ describe('Recipe Editor', () => {
         await input.setValue('redrum');
         await input.trigger('blur');
         expect(wrapper.text()).not.toContain('already exists');
+      });
+
+      it('shows a loading message until recipes finish loading', async () => {
+        wrapper.unmount();
+        const { loading, recipes } = useRecipesData();
+        (loading as Ref<boolean>).value = true;
+        (recipes as Ref<Recipe[]>).value = [];
+        wrapper = mountComponent();
+
+        const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
+        await input.trigger('focus');
+        await input.setValue('classic spaghetti carbonara');
+        await input.trigger('blur');
+        expect(wrapper.text()).toContain('Recipes are still loading');
+        expect(wrapper.text()).not.toContain('already exists');
+
+        (recipes as Ref<Recipe[]>).value = TEST_RECIPES;
+        (loading as Ref<boolean>).value = false;
+        await flushPromises();
+        expect(wrapper.text()).toContain('"classic spaghetti carbonara" already exists');
+        expect(wrapper.text()).not.toContain('Recipes are still loading');
+      });
+
+      it('does not show Required on a new recipe when the pending list finishes loading', async () => {
+        wrapper.unmount();
+        const { loading, recipes } = useRecipesData();
+        (loading as Ref<boolean>).value = true;
+        (recipes as Ref<Recipe[]>).value = [];
+        wrapper = mountComponent();
+        await flushPromises();
+
+        const nameField = wrapper.getComponent('[data-testid="name-input"]');
+        expect(nameField.text()).not.toContain('Required');
+
+        (recipes as Ref<Recipe[]>).value = TEST_RECIPES;
+        (loading as Ref<boolean>).value = false;
+        await flushPromises();
+
+        expect(nameField.text()).not.toContain('Required');
+        expect(nameField.text()).not.toContain('Recipes are still loading');
       });
 
       it('allows the name to be reset', async () => {
