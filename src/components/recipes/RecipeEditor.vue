@@ -197,7 +197,7 @@ import type {
   RecipeKind,
   RecipeStep,
 } from '@/models/recipe';
-import { computed, onMounted, ref, shallowRef, toRaw } from 'vue';
+import { computed, onMounted, ref, shallowRef, toRaw, watch } from 'vue';
 import type { VTextField } from 'vuetify/components';
 
 const emit = defineEmits<{ (event: 'save', payload: Recipe): void; (event: 'cancel'): void }>();
