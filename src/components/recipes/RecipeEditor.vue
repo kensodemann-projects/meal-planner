@@ -237,7 +237,16 @@ const showErrorSnackbar = shallowRef(false);
 
 const nameInput = ref<InstanceType<typeof VTextField> | null>(null);
 
-const recipeNames = computed((): string[] => recipes.value.filter((x) => x.id !== props.recipe?.id).map((x) => x.name));
+const recipeNames = computed((): string[] =>
+  recipes.value
+    .filter(
+      (x) =>
+        x.id !== props.recipe?.id &&
+        x.kind === props.kind &&
+        (props.kind === 'homemade' || x.sourceId === sourceId.value),
+    )
+    .map((x) => x.name),
+);
 
 const mustBeUniqueName = computed(() => validationRules.mustBeUnique(recipeNames.value));
 
