@@ -531,6 +531,26 @@ describe('Recipe Editor', () => {
         expect(wrapper.text()).toContain('already exists');
       });
 
+      it('rejects a homemade name that matches a recipe whose kind is undefined', async () => {
+        const storedName = 'Weeknight Chili';
+        const { recipes } = useRecipesData();
+        (recipes as Ref<Recipe[]>).value = [
+          ...TEST_RECIPES,
+          {
+            ...TEST_RECIPES[0]!,
+            id: 'kind-undefined-1',
+            name: storedName,
+            kind: undefined,
+          } as any,
+        ];
+
+        const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
+        await input.trigger('focus');
+        await input.setValue(storedName);
+        await input.trigger('blur');
+        expect(wrapper.text()).toContain('already exists');
+      });
+
       it('accepts a homemade name when CookUnity is selected', async () => {
         const inputs = mountPreparedEditor();
         await inputs.source.setValue(cookUnityId);

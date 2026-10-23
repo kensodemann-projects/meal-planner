@@ -242,7 +242,7 @@ const recipeNames = computed((): string[] =>
     .filter(
       (x) =>
         x.id !== props.recipe?.id &&
-        x.kind === props.kind &&
+        (x.kind || 'homemade') === props.kind &&
         (props.kind === 'homemade' || x.sourceId === sourceId.value),
     )
     .map((x) => x.name),
