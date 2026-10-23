@@ -231,8 +231,6 @@ const nutrition = ref<Partial<Nutrition>>({
 const cloneList = <T,>(items: T[]): T[] => structuredClone(toRaw(items));
 const ingredients = ref<Partial<RecipeIngredient>[]>(props.recipe ? cloneList(props.recipe.ingredients) : []);
 const steps = ref<Partial<RecipeStep>[]>(props.recipe ? cloneList(props.recipe.steps) : []);
-const openedIngredients: Partial<RecipeIngredient>[] = props.recipe ? cloneList(props.recipe.ingredients) : [];
-const openedSteps: Partial<RecipeStep>[] = props.recipe ? cloneList(props.recipe.steps) : [];
 const nutritionInfoLoading = shallowRef(false);
 const showSuccessSnackbar = shallowRef(false);
 const showErrorSnackbar = shallowRef(false);
@@ -297,8 +295,8 @@ const listDiffers = <T,>(
 const isModified = computed((): boolean => {
   if (!props.recipe) return true;
   return (
-    listDiffers(ingredients.value, openedIngredients, ingredientAtIndexDiffers) ||
-    listDiffers(steps.value, openedSteps, stepAtIndexDiffers) ||
+    listDiffers(ingredients.value, props.recipe.ingredients, ingredientAtIndexDiffers) ||
+    listDiffers(steps.value, props.recipe.steps, stepAtIndexDiffers) ||
     name.value.trim() !== props.recipe.name ||
     (description.value.trim() || null) !== (props.recipe.description || null) ||
     props.recipe.category !== category.value ||
