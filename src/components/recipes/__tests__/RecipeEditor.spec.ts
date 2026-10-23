@@ -67,19 +67,16 @@ const mountComponent = (props = {}) =>
             addItem() {
               const newArr = [...this.modelValue, this.createItem()];
               this.$emit('update:modelValue', newArr);
-              this.$emit('list-modified');
             },
             changeItem(updated: any, index: number) {
               const arr = [...this.modelValue];
               arr[index] = updated;
               this.$emit('update:modelValue', arr);
-              this.$emit('list-modified');
             },
             deleteItem(index: number) {
               const arr = [...this.modelValue];
               arr.splice(index, 1);
               this.$emit('update:modelValue', arr);
-              this.$emit('list-modified');
             },
           },
         },
