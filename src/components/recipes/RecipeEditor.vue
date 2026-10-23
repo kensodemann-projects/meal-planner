@@ -252,7 +252,9 @@ const nameRules = computed(() => [
 ]);
 
 watch([loading, recipeNames], () => {
-  nameInput.value?.validate();
+  if (name.value.trim()) {
+    nameInput.value?.validate();
+  }
 });
 
 const createIngredient = (): Partial<RecipeIngredient> => ({

@@ -469,6 +469,25 @@ describe('Recipe Editor', () => {
         expect(wrapper.text()).not.toContain('Recipes are still loading');
       });
 
+      it('does not show Required on a new recipe when the pending list finishes loading', async () => {
+        wrapper.unmount();
+        const { loading, recipes } = useRecipesData();
+        (loading as Ref<boolean>).value = true;
+        (recipes as Ref<Recipe[]>).value = [];
+        wrapper = mountComponent();
+        await flushPromises();
+
+        const nameField = wrapper.getComponent('[data-testid="name-input"]');
+        expect(nameField.text()).not.toContain('Required');
+
+        (recipes as Ref<Recipe[]>).value = TEST_RECIPES;
+        (loading as Ref<boolean>).value = false;
+        await flushPromises();
+
+        expect(nameField.text()).not.toContain('Required');
+        expect(nameField.text()).not.toContain('Recipes are still loading');
+      });
+
       it('allows the name to be reset', async () => {
         wrapper.unmount();
         wrapper = mountComponent({ recipe: { ...TEST_RECIPES[0] } });
