@@ -500,6 +500,106 @@ describe('Recipe Editor', () => {
         await textField.trigger('blur');
         expect(wrapper.text()).not.toContain('already exists');
       });
+
+      const cookUnityId = 'fiie002934009ser';
+      const bistroMdId = 'iir00305003lfkdj';
+      const harissa = TEST_RECIPES.find((recipe) => recipe.id === 'prepared-1')!;
+
+      const mountPreparedEditor = (recipe?: Recipe) => {
+        wrapper.unmount();
+        const { sources } = useSourcesData();
+        (sources as Ref<Source[]>).value = TEST_SOURCES;
+        wrapper = mountComponent(recipe ? { recipe } : { kind: 'prepared' });
+        return getPreparedInputs(wrapper);
+      };
+
+      it('accepts a prepared recipe name on a homemade editor', async () => {
+        const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
+
+        await input.trigger('focus');
+        await input.setValue(harissa.name);
+        await input.trigger('blur');
+        expect(wrapper.text()).not.toContain('already exists');
+      });
+
+      it('rejects a homemade name that differs only by case and surrounding spaces', async () => {
+        const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
+
+        await input.trigger('focus');
+        await input.setValue(`  ${TEST_RECIPES[0]!.name.toLowerCase()}  `);
+        await input.trigger('blur');
+        expect(wrapper.text()).toContain('already exists');
+      });
+
+      it('accepts a homemade name when CookUnity is selected', async () => {
+        const inputs = mountPreparedEditor();
+        await inputs.source.setValue(cookUnityId);
+        await inputs.name.trigger('focus');
+        await inputs.name.setValue(TEST_RECIPES[0]!.name);
+        await inputs.name.trigger('blur');
+        expect(wrapper.text()).not.toContain('already exists');
+      });
+
+      it('accepts a name from another source when BistroMD is selected', async () => {
+        const inputs = mountPreparedEditor();
+        await inputs.source.setValue(bistroMdId);
+        await inputs.name.trigger('focus');
+        await inputs.name.setValue(harissa.name);
+        await inputs.name.trigger('blur');
+        expect(wrapper.text()).not.toContain('already exists');
+      });
+
+      it('rejects a name that matches another recipe from the selected source after trim and case folding', async () => {
+        const inputs = mountPreparedEditor();
+        await inputs.source.setValue(cookUnityId);
+        await inputs.name.trigger('focus');
+        await inputs.name.setValue(`  ${harissa.name.toLowerCase()}  `);
+        await inputs.name.trigger('blur');
+        expect(wrapper.text()).toContain('already exists');
+      });
+
+      it('allows the open prepared recipe to keep its name and rejects another name from the same source', async () => {
+        const sameSourceName = 'Lemon Herb Salmon';
+        const { recipes } = useRecipesData();
+        // TEST_RECIPES has only one CookUnity recipe, so the same-source clash needs a second one.
+        (recipes as Ref<Recipe[]>).value = [
+          ...TEST_RECIPES,
+          {
+            ...harissa,
+            id: 'prepared-cookunity-2',
+            name: sameSourceName,
+            sourceId: cookUnityId,
+          },
+        ];
+        const inputs = mountPreparedEditor({ ...harissa });
+
+        expect(wrapper.text()).not.toContain('already exists');
+        await inputs.name.trigger('focus');
+        await inputs.name.setValue(sameSourceName);
+        await inputs.name.trigger('blur');
+        expect(wrapper.text()).toContain('already exists');
+
+        await inputs.name.setValue(harissa.name);
+        await inputs.name.trigger('blur');
+        expect(wrapper.text()).not.toContain('already exists');
+      });
+
+      it('rechecks the name when the selected source changes', async () => {
+        const inputs = mountPreparedEditor();
+        await inputs.source.setValue(cookUnityId);
+        await inputs.name.trigger('focus');
+        await inputs.name.setValue(harissa.name);
+        await inputs.name.trigger('blur');
+        expect(wrapper.text()).toContain('already exists');
+
+        await inputs.source.setValue(bistroMdId);
+        await flushPromises();
+        expect(wrapper.text()).not.toContain('already exists');
+
+        await inputs.source.setValue(cookUnityId);
+        await flushPromises();
+        expect(wrapper.text()).toContain('already exists');
+      });
     });
 
     describe('category', () => {
