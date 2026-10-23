@@ -1038,10 +1038,12 @@ describe('Recipe Editor', () => {
             .props('step') as RecipeStep;
 
           ingredient.name = 'Salted Butter';
+          ingredient.unitOfMeasure.name = 'Modified Unit';
           step.instruction = 'Melt the butter.';
 
           expect(wrapper.props('recipe')).toEqual(openedRecipe);
           expect(ingredient).not.toBe((wrapper.props('recipe') as Recipe).ingredients[0]);
+          expect(ingredient.unitOfMeasure).not.toBe((wrapper.props('recipe') as Recipe).ingredients[0]!.unitOfMeasure);
           expect(step).not.toBe((wrapper.props('recipe') as Recipe).steps[0]);
         });
 
