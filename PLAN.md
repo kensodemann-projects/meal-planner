@@ -26,11 +26,11 @@ Issue: [#463](https://github.com/kensodemann-projects/meal-planner/issues/463) (
 
 **File order**
 
-| Order | Step       | Status | Files                                                                                                                                                                                                                                               |
-| ----- | ---------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | [STEP-001] |        | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts`                                                                                                                                             |
-| 2     | [STEP-002] |        | `src/components/recipes/IngredientEditorRow.vue`, then `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/IngredientEditorRow.spec.ts`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts`                 |
-| 3     | [STEP-003] |        | `src/components/portions/NutritionEditorRows.vue`, then `src/components/portions/__tests__/NutritionEditorRows.spec.ts`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts`, then `src/components/meals/__tests__/MealItemEditor.spec.ts` |
+| Order | Step       | Status   | Files                                                                                                                                                                                                                                               |
+| ----- | ---------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | [STEP-001] | complete | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts`                                                                                                                                             |
+| 2     | [STEP-002] |          | `src/components/recipes/IngredientEditorRow.vue`, then `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/IngredientEditorRow.spec.ts`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts`                 |
+| 3     | [STEP-003] |          | `src/components/portions/NutritionEditorRows.vue`, then `src/components/portions/__tests__/NutritionEditorRows.spec.ts`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts`, then `src/components/meals/__tests__/MealItemEditor.spec.ts` |
 
 **Commit gate** — the human commits. A spot-check does not replace the gate.
 
@@ -44,7 +44,7 @@ All three must succeed with no warning or error before that commit.
 
 ## [STEP-001] Require positive recipe servings
 
-**Status:**
+**Status:** complete
 
 **Acceptance criteria:** Servings of `0` or less fail validation and keep Save disabled on homemade and prepared recipes. A positive servings value still allows Save when the rest of the form is valid. Prep and cook time still allow `0`.
 

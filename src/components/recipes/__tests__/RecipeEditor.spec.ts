@@ -14,6 +14,7 @@ import * as directives from 'vuetify/directives';
 import {
   autocompleteIsRequired,
   numberInputIsRequired,
+  numberInputMustBePositive,
   numberInputMustBeZeroOrGreater,
   textFieldIsRequired,
 } from '../../__tests__/test-utils';
@@ -586,6 +587,10 @@ describe('Recipe Editor', () => {
       it('is required', async () => {
         await numberInputIsRequired(wrapper, 'servings-input');
       });
+
+      it('must be a positive number', async () => {
+        await numberInputMustBePositive(wrapper, 'servings-input');
+      });
     });
 
     describe('prep time', () => {
@@ -688,6 +693,21 @@ describe('Recipe Editor', () => {
           await nutritionInputs.carbs.setValue('40');
           await nutritionInputs.fat.setValue('12');
           await nutritionInputs.protein.setValue('6');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is disabled when servings is zero or negative', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          await fillHomemade(wrapper);
+          await inputs.servings.setValue('0');
+          await inputs.servings.trigger('blur');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.servings.setValue('-1');
+          await inputs.servings.trigger('blur');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.servings.setValue('2');
+          await inputs.servings.trigger('blur');
           expect(saveButton.attributes('disabled')).toBeUndefined();
         });
 
@@ -837,6 +857,21 @@ describe('Recipe Editor', () => {
           await nutritionInputs.carbs.setValue('33');
           await nutritionInputs.fat.setValue('11');
           await nutritionInputs.protein.setValue('22');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is disabled when servings is zero or negative', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getPreparedInputs(wrapper);
+          await fillPrepared(wrapper, sourceId);
+          await inputs.servings.setValue('0');
+          await inputs.servings.trigger('blur');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.servings.setValue('-1');
+          await inputs.servings.trigger('blur');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.servings.setValue('1');
+          await inputs.servings.trigger('blur');
           expect(saveButton.attributes('disabled')).toBeUndefined();
         });
 
