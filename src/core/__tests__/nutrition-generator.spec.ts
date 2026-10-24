@@ -247,7 +247,7 @@ describe('use nutrition generator', () => {
         response: { text: () => JSON.stringify({ ...mockNutrition, calories: '250' }) },
       });
       const { generateNutritionData } = useNutritionGenerator();
-      await expect(generateNutritionData(mockRecipe)).rejects.toThrow(Error);
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow('Invalid nutrition response');
     });
 
     it('rejects a missing protein field', async () => {
@@ -264,7 +264,7 @@ describe('use nutrition generator', () => {
         },
       });
       const { generateNutritionData } = useNutritionGenerator();
-      await expect(generateNutritionData(mockRecipe)).rejects.toThrow(Error);
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow('Invalid nutrition response');
     });
 
     it('rejects null', async () => {
@@ -272,7 +272,7 @@ describe('use nutrition generator', () => {
         response: { text: () => 'null' },
       });
       const { generateNutritionData } = useNutritionGenerator();
-      await expect(generateNutritionData(mockRecipe)).rejects.toThrow(Error);
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow('Invalid nutrition response');
     });
 
     it('rejects a negative fat value', async () => {
@@ -280,15 +280,15 @@ describe('use nutrition generator', () => {
         response: { text: () => JSON.stringify({ ...mockNutrition, fat: -1 }) },
       });
       const { generateNutritionData } = useNutritionGenerator();
-      await expect(generateNutritionData(mockRecipe)).rejects.toThrow(Error);
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow('Invalid nutrition response');
     });
 
-    it('rejects NaN', async () => {
+    it('rejects NaN in JSON text as a syntax error', async () => {
       mockGenerateContent.mockResolvedValue({
         response: { text: () => '{"calories":NaN,"sodium":0,"sugar":0,"carbs":0,"fat":0,"protein":0}' },
       });
       const { generateNutritionData } = useNutritionGenerator();
-      await expect(generateNutritionData(mockRecipe)).rejects.toThrow(Error);
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow(SyntaxError);
     });
 
     it('rejects Infinity', async () => {
@@ -296,7 +296,7 @@ describe('use nutrition generator', () => {
         response: { text: () => '{"calories":1e999,"sodium":0,"sugar":0,"carbs":0,"fat":0,"protein":0}' },
       });
       const { generateNutritionData } = useNutritionGenerator();
-      await expect(generateNutritionData(mockRecipe)).rejects.toThrow(Error);
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow('Invalid nutrition response');
     });
 
     it('rejects a JSON array', async () => {
@@ -304,7 +304,7 @@ describe('use nutrition generator', () => {
         response: { text: () => JSON.stringify([mockNutrition]) },
       });
       const { generateNutritionData } = useNutritionGenerator();
-      await expect(generateNutritionData(mockRecipe)).rejects.toThrow(Error);
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow('Invalid nutrition response');
     });
 
     it('rejects a JSON string', async () => {
@@ -312,7 +312,7 @@ describe('use nutrition generator', () => {
         response: { text: () => JSON.stringify('not-nutrition') },
       });
       const { generateNutritionData } = useNutritionGenerator();
-      await expect(generateNutritionData(mockRecipe)).rejects.toThrow(Error);
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow('Invalid nutrition response');
     });
 
     it('returns only the six nutrition fields', async () => {
