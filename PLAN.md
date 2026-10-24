@@ -2,7 +2,7 @@
 
 Issue: [#481](https://github.com/kensodemann-projects/meal-planner/issues/481) (OPEN). Related to [#461](https://github.com/kensodemann-projects/meal-planner/issues/461).
 
-On `main` (`9bb486b`), `src/components/recipes/RecipeEditor.vue` compares lists with `listDiffers`, `ingredientAtIndexDiffers`, and `stepAtIndexDiffers`. `isModified` trims the recipe name and description before comparing them to the opened values. `createRecipeFromForm` trims `name` and `description`, then stores `ingredients.value.filter(isValidIngredient)` and `steps.value.filter(isValidStep)` with the raw strings. `ingredientAtIndexDiffers` compares `current.name !== opened.name`. `stepAtIndexDiffers` compares `current.instruction !== opened.instruction`. `isValidStep` already rejects a blank instruction via `instruction?.trim()`. `isValidIngredient` treats any non-empty `name` as present, including a name that is only spaces. This branch does not contain `9bb486b` yet; it still uses the `listChanged` latch. Update this branch onto `main` before implementing a step.
+This branch is `main` at `33a11f4` plus this plan. `src/components/recipes/RecipeEditor.vue` compares lists with `listDiffers`, `ingredientAtIndexDiffers`, and `stepAtIndexDiffers`. `isModified` trims the recipe name and description before comparing them to the opened values. `createRecipeFromForm` returns `undefined` when a required value is absent, and `save` returns without emitting in that case. Otherwise it trims `name` and `description`. The homemade return stores `ingredients.value.filter(isValidIngredient)` and `steps.value.filter(isValidStep)` with the raw strings. The prepared return stores empty arrays. `ingredientAtIndexDiffers` compares `current.name !== opened.name`. `stepAtIndexDiffers` compares `current.instruction !== opened.instruction`. `isValidStep` already rejects a blank instruction via `instruction?.trim()`. `isValidIngredient` treats any non-empty `name` as present, including a name that is only spaces.
 
 **Decisions**
 
@@ -60,12 +60,12 @@ In `isValidIngredient`, require `item.name?.trim()` along with `units` and `unit
 
 In `ingredientAtIndexDiffers`, compare `(current.name ?? '').trim()` to `opened.name`. In `stepAtIndexDiffers`, compare `(current.instruction ?? '').trim()` to `opened.instruction`. Leave id, units, unit of measure, order, and length checks unchanged.
 
-In the homemade branch of `createRecipeFromForm` only, map the filtered ingredients and steps so each saved `name` and `instruction` is the trimmed form value. Keep ids and the other fields. Leave the prepared branch as empty arrays.
+In the homemade return of `createRecipeFromForm` only, map the filtered ingredients and steps so each saved `name` and `instruction` is the trimmed form value. Keep ids and the other fields. Leave the `absent` early returns, the `save` guard that skips an `undefined` recipe, and the prepared empty arrays.
 
 In the homemade update `the save button` block, add cases that emit `changed` on ingredient row 2 (`Chopped Onion`) and step row 2, matching the existing row-edit tests:
 
 - Surrounding spaces only (`  ${opened}  `) leave `[data-testid="save-button"]` disabled.
-- A whitespace-only value (`   `) leaves Save disabled, and clicking Save does not emit `save`.
+- A whitespace-only value (`   `) leaves `[data-testid="save-button"]` disabled. Assert that disabled attribute only. Do not call the save click handler. Unlike `does not emit save when a required field is missing`, the other required fields are still present, so `save` emits and the validity filter omits that row. A disabled button does not fire click.
 - A trimmed value that differs (`  Extra Onion  `, and a step instruction with surrounding spaces around new text) enables Save. The `save` payload has the trimmed name or instruction, and the other rows stay as opened.
 - An internal space change (`Chopped  Onion`) enables Save and is stored with that internal space.
 
