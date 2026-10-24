@@ -146,9 +146,11 @@ const expectSaveFollowsNonNegativeNutrition = async (wrapper: EditorWrapper) => 
   for (const field of Object.values(nutritionInputs)) {
     await field.setValue('-1');
     await field.trigger('blur');
+    await flushPromises();
     expect(saveButton.attributes('disabled')).toBeDefined();
     await field.setValue('0');
     await field.trigger('blur');
+    await flushPromises();
     expect(saveButton.attributes('disabled')).toBeUndefined();
   }
 };
