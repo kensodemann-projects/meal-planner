@@ -9,8 +9,8 @@ Issue: [#466](https://github.com/kensodemann-projects/meal-planner/issues/466) (
 - Untrusted recipe fields travel as one JSON object. Homemade data is `{ name, ingredients, steps }`. Prepared data is `{ name }` only.
 - Instruction sentences do not interpolate the recipe name, ingredients, or steps. Source name, source URL, servings, description, category, and cuisine stay in the instruction text.
 - A reply is accepted only when `calories`, `sodium`, `sugar`, `carbs`, `fat`, and `protein` are all finite numbers greater than or equal to 0. Zero and fractional values are accepted. Numeric strings, missing fields, `null`, booleans, `NaN`, `Infinity`, and negative numbers are rejected. Extra keys are dropped. A rejected nutrition object throws `Error`. Unparseable text still throws `SyntaxError` from `JSON.parse`. The editor keeps showing the existing error snackbar from its `catch`.
-- A response is stale when the name, servings, ingredients, or steps that `nutritionPromptFromForm()` would send now differ from the snapshot taken when that request started. Compare at settlement, after trim and after filtering to valid ingredients and steps. Changing description, category, cuisine, source, difficulty, or times does not make the response stale. Restoring the snapshot before settlement still applies the result. A stale settlement leaves nutrition fields unchanged and leaves both snackbars unchanged.
-- The generator never sees a later form edit, so stale coverage belongs in `RecipeEditor.spec.ts`. Generator specs cover a valid reply and an invalid reply. The editor's existing success and error cases stay the valid-reply and invalid-reply coverage.
+- A settled calculation is applied even if name, servings, ingredients, or steps changed while the request was in flight. Ignoring that response will not be implemented.
+- Generator specs cover a valid reply and an invalid reply. The editor's existing success and error cases stay that coverage. Stale-reply coverage will not be added.
 
 **Out of scope**
 
@@ -32,7 +32,7 @@ Issue: [#466](https://github.com/kensodemann-projects/meal-planner/issues/466) (
 | ----- | ---------- | -------- | ------------------------------------------------------------------------------------------------------- |
 | 1     | [STEP-001] | complete | `src/core/nutrition-generator.ts`, then `src/core/__tests__/nutrition-generator.spec.ts`                |
 | 2     | [STEP-002] | complete | `src/core/nutrition-generator.ts`, then `src/core/__tests__/nutrition-generator.spec.ts`                |
-| 3     | [STEP-003] |          | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
+| 3     | [STEP-003] | won't do | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
 
 **Commit gate** — the human commits. A spot-check does not replace the gate.
 
@@ -115,7 +115,7 @@ Keep the existing plain-JSON and markdown-fence cases returning `mockNutrition`.
 
 ## [STEP-003] Ignore a nutrition response for a changed recipe
 
-**Status:**
+**Status:** won't do
 
 **Acceptance criteria:** A settled calculation updates nutrition and opens the success snackbar only when name, servings, ingredients, and steps still match the request snapshot. A rejection opens the error snackbar only in that same case. A stale settlement leaves the nutrition fields and both snackbars unchanged, then clears the loading flag. Nutrition inputs stay editable during the request.
 
