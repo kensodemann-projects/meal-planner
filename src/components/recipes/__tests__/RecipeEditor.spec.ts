@@ -1272,6 +1272,107 @@ describe('Recipe Editor', () => {
           expect(saveButton.attributes('disabled')).toBeDefined();
         });
 
+        it('stays disabled when an ingredient name only gains surrounding spaces', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const opened = BEER_CHEESE.ingredients[2]!;
+          const ingredients = wrapper
+            .find('[data-testid="ingredient-list-grid"]')
+            .findAllComponents(IngredientEditorRow);
+          await ingredients[2]?.vm.$emit('changed', { ...opened, name: `  ${opened.name}  ` });
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('stays disabled when a step instruction only gains surrounding spaces', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const opened = BEER_CHEESE.steps[2]!;
+          const steps = wrapper.find('[data-testid="step-list-grid"]').findAllComponents(StepEditorRow);
+          await steps[2]?.vm.$emit('changed', { ...opened, instruction: `  ${opened.instruction}  ` });
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('stays disabled when an ingredient name is only spaces', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const opened = BEER_CHEESE.ingredients[2]!;
+          const ingredients = wrapper
+            .find('[data-testid="ingredient-list-grid"]')
+            .findAllComponents(IngredientEditorRow);
+          await ingredients[2]?.vm.$emit('changed', { ...opened, name: '   ' });
+          await flushPromises();
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('disables adding another ingredient when an ingredient name is only spaces', async () => {
+          const addIngredientButton = wrapper.find('[data-testid="add-ingredient-button"]');
+          const opened = BEER_CHEESE.ingredients[2]!;
+          const ingredients = wrapper
+            .find('[data-testid="ingredient-list-grid"]')
+            .findAllComponents(IngredientEditorRow);
+          expect(addIngredientButton.attributes('disabled')).toBeUndefined();
+          await ingredients[2]?.vm.$emit('changed', { ...opened, name: '   ' });
+          expect(addIngredientButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('stays disabled when a step instruction is only spaces', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const opened = BEER_CHEESE.steps[2]!;
+          const steps = wrapper.find('[data-testid="step-list-grid"]').findAllComponents(StepEditorRow);
+          await steps[2]?.vm.$emit('changed', { ...opened, instruction: '   ' });
+          await flushPromises();
+          expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('emits the trimmed ingredient name when surrounding spaces surround a new name', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const opened = BEER_CHEESE.ingredients[2]!;
+          const ingredients = wrapper
+            .find('[data-testid="ingredient-list-grid"]')
+            .findAllComponents(IngredientEditorRow);
+          await ingredients[2]?.vm.$emit('changed', { ...opened, name: '  Extra Onion  ' });
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await saveButton.trigger('click');
+          const emitted = wrapper.emitted('save')?.[0]?.[0] as Recipe;
+          expect(emitted.ingredients).toEqual(
+            BEER_CHEESE.ingredients.map((ingredient, index) =>
+              index === 2 ? { ...ingredient, name: 'Extra Onion' } : ingredient,
+            ),
+          );
+          expect(emitted.steps).toEqual([...BEER_CHEESE.steps]);
+        });
+
+        it('emits the trimmed step instruction when surrounding spaces surround new text', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const opened = BEER_CHEESE.steps[2]!;
+          const steps = wrapper.find('[data-testid="step-list-grid"]').findAllComponents(StepEditorRow);
+          await steps[2]?.vm.$emit('changed', { ...opened, instruction: '  Stir in the beer all at once.  ' });
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await saveButton.trigger('click');
+          const emitted = wrapper.emitted('save')?.[0]?.[0] as Recipe;
+          expect(emitted.steps).toEqual(
+            BEER_CHEESE.steps.map((step, index) =>
+              index === 2 ? { ...step, instruction: 'Stir in the beer all at once.' } : step,
+            ),
+          );
+          expect(emitted.ingredients).toEqual([...BEER_CHEESE.ingredients]);
+        });
+
+        it('emits an ingredient name that only changes by an internal space', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const opened = BEER_CHEESE.ingredients[2]!;
+          const ingredients = wrapper
+            .find('[data-testid="ingredient-list-grid"]')
+            .findAllComponents(IngredientEditorRow);
+          await ingredients[2]?.vm.$emit('changed', { ...opened, name: 'Chopped  Onion' });
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+          await saveButton.trigger('click');
+          const emitted = wrapper.emitted('save')?.[0]?.[0] as Recipe;
+          expect(emitted.ingredients).toEqual(
+            BEER_CHEESE.ingredients.map((ingredient, index) =>
+              index === 2 ? { ...ingredient, name: 'Chopped  Onion' } : ingredient,
+            ),
+          );
+          expect(emitted.steps).toEqual([...BEER_CHEESE.steps]);
+        });
+
         it('is enabled if an ingredient is changed', async () => {
           const listArea = wrapper.find('[data-testid="ingredient-list-grid"]');
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
@@ -1850,6 +1951,35 @@ describe('Recipe Editor', () => {
             }),
           );
           expect((generateNutritionData as Mock).mock.calls[0]).toHaveLength(1);
+        });
+
+        it('trims ingredient names and step instructions before sending them', async () => {
+          wrapper = mountComponent({ recipe: BEER_CHEESE });
+          const openedIngredient = BEER_CHEESE.ingredients[2]!;
+          const openedStep = BEER_CHEESE.steps[2]!;
+          const ingredients = wrapper
+            .find('[data-testid="ingredient-list-grid"]')
+            .findAllComponents(IngredientEditorRow);
+          const steps = wrapper.find('[data-testid="step-list-grid"]').findAllComponents(StepEditorRow);
+          await ingredients[2]?.vm.$emit('changed', { ...openedIngredient, name: '  Extra Onion  ' });
+          await steps[2]?.vm.$emit('changed', { ...openedStep, instruction: '  Stir in the beer all at once.  ' });
+
+          const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+          await button.trigger('click');
+          await flushPromises();
+
+          const { generateNutritionData } = useNutritionGenerator();
+          expect(generateNutritionData).toHaveBeenCalledOnce();
+          expect(generateNutritionData).toHaveBeenCalledWith(
+            expect.objectContaining({
+              ingredients: BEER_CHEESE.ingredients.map((ingredient, index) =>
+                index === 2 ? { ...ingredient, name: 'Extra Onion' } : ingredient,
+              ),
+              steps: BEER_CHEESE.steps.map((step, index) =>
+                index === 2 ? { ...step, instruction: 'Stir in the beer all at once.' } : step,
+              ),
+            }),
+          );
         });
 
         it('sends a prepared recipe with the selected source', async () => {
