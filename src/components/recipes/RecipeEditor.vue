@@ -404,14 +404,16 @@ const disableNutritionButton = computed(() => {
   );
 });
 
-const nutritionPromptFromForm = (): NutritionPromptRecipe => {
+const nutritionPromptFromForm = (): NutritionPromptRecipe | undefined => {
+  const servingsValue = servings.value;
+  if (absent(servingsValue)) return undefined;
   const shared = {
     name: name.value.trim(),
     description: description.value.trim() || null,
     kind: props.kind,
     category: category.value,
     cuisine: cuisine.value,
-    servings: servings.value!,
+    servings: servingsValue,
   };
   return props.kind === 'homemade'
     ? {
@@ -428,8 +430,9 @@ const nutritionPromptFromForm = (): NutritionPromptRecipe => {
 };
 
 const calculateNutritionInformation = async () => {
-  nutritionInfoLoading.value = true;
   const recipe = nutritionPromptFromForm();
+  if (recipe === undefined) return;
+  nutritionInfoLoading.value = true;
   try {
     // A missing prepared source is passed through so the generator throws and the existing catch shows the error.
     nutrition.value =

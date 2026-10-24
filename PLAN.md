@@ -29,7 +29,7 @@ Issue: [#462](https://github.com/kensodemann-projects/meal-planner/issues/462) (
 | Order | Step       | Status   | Files                                                                                                   |
 | ----- | ---------- | -------- | ------------------------------------------------------------------------------------------------------- |
 | 1     | [STEP-001] | complete | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
-| 2     | [STEP-002] |          | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
+| 2     | [STEP-002] | complete | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
 
 **Commit gate** — the human commits. A spot-check does not replace the gate.
 
@@ -92,7 +92,7 @@ pnpm vitest run src/components/recipes/__tests__/RecipeEditor.spec.ts
 
 ## [STEP-002] Drop the servings assertion on the nutrition prompt
 
-**Status:**
+**Status:** complete
 
 **Acceptance criteria:** Calculate Nutrition still sends the current `NutritionPromptRecipe` and, for a prepared recipe, the selected source. The prompt is built from a checked servings value, with no non-null assertion. A missing servings value does not call the generator.
 
