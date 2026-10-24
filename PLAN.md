@@ -21,9 +21,9 @@ Creating a recipe in `RecipeEditor` leaves calories unset and sets sodium, sugar
 
 **File order**
 
-| Order | Step       | Status | Files                                                                                                   |
-| ----- | ---------- | ------ | ------------------------------------------------------------------------------------------------------- |
-| 1     | [STEP-001] |        | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
+| Order | Step       | Status   | Files                                                                                                   |
+| ----- | ---------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| 1     | [STEP-001] | complete | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
 
 **Commit gate** — the human commits. A spot-check does not replace the gate.
 
@@ -37,7 +37,7 @@ All three must succeed with no warning or error before that commit.
 
 ## [STEP-001] Leave nutrition empty when creating a recipe
 
-**Status:**
+**Status:** complete
 
 **Acceptance criteria:** A new homemade or prepared recipe shows all six nutrition inputs empty, and Save stays disabled until each has a number or Calculate Nutrition fills them. Editing still shows each stored nutrition value, including 0.
 
