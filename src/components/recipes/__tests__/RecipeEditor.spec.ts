@@ -629,39 +629,16 @@ describe('Recipe Editor', () => {
       });
     });
 
-    describe('calories', () => {
+    describe.each([
+      { name: 'calories', testId: 'calories-input' },
+      { name: 'sodium', testId: 'sodium-input' },
+      { name: 'sugar', testId: 'sugar-input' },
+      { name: 'carbs', testId: 'carbs-input' },
+      { name: 'fat', testId: 'fat-input' },
+      { name: 'protein', testId: 'protein-input' },
+    ])('$name', ({ testId }) => {
       it('must be zero or greater', async () => {
-        await numberInputMustBeZeroOrGreater(wrapper, 'calories-input');
-      });
-    });
-
-    describe('sodium', () => {
-      it('must be zero or greater', async () => {
-        await numberInputMustBeZeroOrGreater(wrapper, 'sodium-input');
-      });
-    });
-
-    describe('sugar', () => {
-      it('must be zero or greater', async () => {
-        await numberInputMustBeZeroOrGreater(wrapper, 'sugar-input');
-      });
-    });
-
-    describe('carbs', () => {
-      it('must be zero or greater', async () => {
-        await numberInputMustBeZeroOrGreater(wrapper, 'carbs-input');
-      });
-    });
-
-    describe('fat', () => {
-      it('must be zero or greater', async () => {
-        await numberInputMustBeZeroOrGreater(wrapper, 'fat-input');
-      });
-    });
-
-    describe('protein', () => {
-      it('must be zero or greater', async () => {
-        await numberInputMustBeZeroOrGreater(wrapper, 'protein-input');
+        await numberInputMustBeZeroOrGreater(wrapper, testId);
       });
     });
   });
