@@ -184,6 +184,18 @@ const fillPrepared = async (
   }
 };
 
+const addValidIngredient = async (w: EditorWrapper) => {
+  const addButton = w.find('[data-testid="add-ingredient-button"]');
+  await addButton.trigger('click');
+  const ingredientRows = w.find('[data-testid="ingredient-list-grid"]').findAllComponents(IngredientEditorRow);
+  await ingredientRows[0]?.vm.$emit('changed', {
+    id: 'test-ingredient-id',
+    units: 1,
+    unitOfMeasure: findUnitOfMeasure('cup'),
+    name: 'Test Ingredient',
+  });
+};
+
 const FILLED_INGREDIENT: RecipeIngredient = {
   id: 'bd3543e0-68d4-4ba0-a1a6-29548d46464b',
   units: 1,
@@ -621,6 +633,7 @@ describe('Recipe Editor', () => {
         it('is disabled until all required fields are filled in', async () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
           const inputs = getInputs(wrapper);
+          const nutritionInputs = getNutritionInputs(wrapper);
           await inputs.category.setValue('Dessert');
           await inputs.cuisine.setValue('American');
           await inputs.difficulty.setValue('Easy');
@@ -628,8 +641,13 @@ describe('Recipe Editor', () => {
           await inputs.servings.setValue('2');
           await inputs.prepTimeMinutes.setValue('30');
           await inputs.cookTimeMinutes.setValue('45');
+          await nutritionInputs.calories.setValue('325');
           expect(saveButton.attributes('disabled')).toBeDefined();
-          await fillHomemade(wrapper);
+          await nutritionInputs.sodium.setValue('120');
+          await nutritionInputs.sugar.setValue('8');
+          await nutritionInputs.carbs.setValue('40');
+          await nutritionInputs.fat.setValue('12');
+          await nutritionInputs.protein.setValue('6');
           expect(saveButton.attributes('disabled')).toBeUndefined();
         });
 
@@ -694,18 +712,7 @@ describe('Recipe Editor', () => {
           await inputs.servings.setValue('2');
           await inputs.prepTimeMinutes.setValue('30');
           await inputs.cookTimeMinutes.setValue('45');
-
-          const addButton = wrapper.find('[data-testid="add-ingredient-button"]');
-          await addButton.trigger('click');
-          const ingredientRows = wrapper
-            .find('[data-testid="ingredient-list-grid"]')
-            .findAllComponents(IngredientEditorRow);
-          await ingredientRows[0]?.vm.$emit('changed', {
-            id: 'test-ingredient-id',
-            units: 1,
-            unitOfMeasure: findUnitOfMeasure('cup'),
-            name: 'Test Ingredient',
-          });
+          await addValidIngredient(wrapper);
 
           expect(saveButton.attributes('disabled')).toBeDefined();
 
@@ -1338,18 +1345,6 @@ describe('Recipe Editor', () => {
   });
 
   describe('calculate nutrition button', () => {
-    const addValidIngredient = async (w: EditorWrapper) => {
-      const addButton = w.find('[data-testid="add-ingredient-button"]');
-      await addButton.trigger('click');
-      const ingredientRows = w.find('[data-testid="ingredient-list-grid"]').findAllComponents(IngredientEditorRow);
-      await ingredientRows[0]?.vm.$emit('changed', {
-        id: 'test-ingredient-id',
-        units: 1,
-        unitOfMeasure: findUnitOfMeasure('cup'),
-        name: 'Test Ingredient',
-      });
-    };
-
     const setupValidState = async (w: EditorWrapper, kind: RecipeKind = 'homemade') => {
       if (kind === 'homemade') {
         const inputs = getInputs(w);
