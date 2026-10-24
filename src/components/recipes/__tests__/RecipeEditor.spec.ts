@@ -14,6 +14,7 @@ import * as directives from 'vuetify/directives';
 import {
   autocompleteIsRequired,
   numberInputIsRequired,
+  numberInputMustBePositive,
   numberInputMustBeZeroOrGreater,
   textFieldIsRequired,
 } from '../../__tests__/test-utils';
@@ -138,6 +139,22 @@ const getNutritionInputs = (wrapper: EditorWrapper) => ({
   protein: wrapper.findComponent('[data-testid="protein-input"]').find('input'),
 });
 
+const expectSaveFollowsNonNegativeNutrition = async (wrapper: EditorWrapper) => {
+  const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+  const nutritionInputs = getNutritionInputs(wrapper);
+
+  for (const field of Object.values(nutritionInputs)) {
+    await field.setValue('-1');
+    await field.trigger('blur');
+    await flushPromises();
+    expect(saveButton.attributes('disabled')).toBeDefined();
+    await field.setValue('0');
+    await field.trigger('blur');
+    await flushPromises();
+    expect(saveButton.attributes('disabled')).toBeUndefined();
+  }
+};
+
 const asFieldSetters = (fields: Record<string, FieldSetter>) => fields;
 
 const fillHomemade = async (wrapper: EditorWrapper, options?: { name?: string; description?: string }) => {
@@ -159,6 +176,7 @@ const fillHomemade = async (wrapper: EditorWrapper, options?: { name?: string; d
   if (options?.description !== undefined) {
     await inputs.description.setValue(options.description);
   }
+  await flushPromises();
 };
 
 const fillPrepared = async (
@@ -182,6 +200,7 @@ const fillPrepared = async (
   if (options?.description !== undefined) {
     await inputs.description.setValue(options.description);
   }
+  await flushPromises();
 };
 
 const addValidIngredient = async (w: EditorWrapper) => {
@@ -586,6 +605,10 @@ describe('Recipe Editor', () => {
       it('is required', async () => {
         await numberInputIsRequired(wrapper, 'servings-input');
       });
+
+      it('must be a positive number', async () => {
+        await numberInputMustBePositive(wrapper, 'servings-input');
+      });
     });
 
     describe('prep time', () => {
@@ -605,6 +628,19 @@ describe('Recipe Editor', () => {
 
       it('must be zero or greater', async () => {
         await numberInputMustBeZeroOrGreater(wrapper, 'cook-time-input');
+      });
+    });
+
+    describe.each([
+      { name: 'calories', testId: 'calories-input' },
+      { name: 'sodium', testId: 'sodium-input' },
+      { name: 'sugar', testId: 'sugar-input' },
+      { name: 'carbs', testId: 'carbs-input' },
+      { name: 'fat', testId: 'fat-input' },
+      { name: 'protein', testId: 'protein-input' },
+    ])('$name', ({ testId }) => {
+      it('must be zero or greater', async () => {
+        await numberInputMustBeZeroOrGreater(wrapper, testId);
       });
     });
   });
@@ -682,13 +718,35 @@ describe('Recipe Editor', () => {
           await inputs.prepTimeMinutes.setValue('30');
           await inputs.cookTimeMinutes.setValue('45');
           await nutritionInputs.calories.setValue('325');
+          await flushPromises();
           expect(saveButton.attributes('disabled')).toBeDefined();
           await nutritionInputs.sodium.setValue('120');
           await nutritionInputs.sugar.setValue('8');
           await nutritionInputs.carbs.setValue('40');
           await nutritionInputs.fat.setValue('12');
           await nutritionInputs.protein.setValue('6');
+          await flushPromises();
           expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is disabled when servings is zero or negative', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          await fillHomemade(wrapper);
+          await inputs.servings.setValue('0');
+          await inputs.servings.trigger('blur');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.servings.setValue('-1');
+          await inputs.servings.trigger('blur');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.servings.setValue('2');
+          await inputs.servings.trigger('blur');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is disabled when a nutrition value is negative', async () => {
+          await fillHomemade(wrapper);
+          await expectSaveFollowsNonNegativeNutrition(wrapper);
         });
 
         it('is disabled if an invalid ingredient exists in the ingredients list', async () => {
@@ -698,6 +756,51 @@ describe('Recipe Editor', () => {
           const button = wrapper.find('[data-testid="add-ingredient-button"]');
           await button.trigger('click');
           expect(saveButton.attributes('disabled')).toBeDefined();
+        });
+
+        it('is disabled when the only ingredient amount is not positive', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const addIngredientButton = wrapper.find('[data-testid="add-ingredient-button"]');
+          const calculateButton = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+          const expectControlsEnabled = (enabled: boolean) => {
+            if (enabled) {
+              expect(saveButton.attributes('disabled')).toBeUndefined();
+              expect(addIngredientButton.attributes('disabled')).toBeUndefined();
+              expect(calculateButton.attributes('disabled')).toBeUndefined();
+              return;
+            }
+            expect(saveButton.attributes('disabled')).toBeDefined();
+            expect(addIngredientButton.attributes('disabled')).toBeDefined();
+            expect(calculateButton.attributes('disabled')).toBeDefined();
+          };
+          const ingredientRow = () =>
+            wrapper.find('[data-testid="ingredient-list-grid"]').findComponent(IngredientEditorRow);
+
+          await fillHomemade(wrapper);
+          await addIngredientButton.trigger('click');
+          const current = ingredientRow().props('ingredient') as Partial<RecipeIngredient>;
+          ingredientRow().vm.$emit('changed', {
+            ...current,
+            units: 0.25,
+            unitOfMeasure: findUnitOfMeasure('cup'),
+            name: 'Butter',
+          });
+          await flushPromises();
+          expectControlsEnabled(true);
+
+          const setUnits = async (value: string) => {
+            const unitsInput = ingredientRow().find('[data-testid="units-input"]').find('input');
+            await unitsInput.setValue(value);
+            await unitsInput.trigger('blur');
+            await flushPromises();
+          };
+
+          await setUnits('0');
+          expectControlsEnabled(false);
+          await setUnits('-1');
+          expectControlsEnabled(false);
+          await setUnits('0.25');
+          expectControlsEnabled(true);
         });
 
         it('is disabled if an invalid step exists in the steps list', async () => {
@@ -837,7 +940,28 @@ describe('Recipe Editor', () => {
           await nutritionInputs.carbs.setValue('33');
           await nutritionInputs.fat.setValue('11');
           await nutritionInputs.protein.setValue('22');
+          await flushPromises();
           expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is disabled when servings is zero or negative', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getPreparedInputs(wrapper);
+          await fillPrepared(wrapper, sourceId);
+          await inputs.servings.setValue('0');
+          await inputs.servings.trigger('blur');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.servings.setValue('-1');
+          await inputs.servings.trigger('blur');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await inputs.servings.setValue('1');
+          await inputs.servings.trigger('blur');
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is disabled when a nutrition value is negative', async () => {
+          await fillPrepared(wrapper, sourceId);
+          await expectSaveFollowsNonNegativeNutrition(wrapper);
         });
 
         it('emits the description if entered', async () => {

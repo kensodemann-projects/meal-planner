@@ -50,7 +50,7 @@
           <v-number-input
             label="Servings"
             v-model="servings"
-            :rules="[validationRules.required]"
+            :rules="[validationRules.required, validationRules.positive]"
             data-testid="servings-input"
           ></v-number-input>
         </v-col>
@@ -271,7 +271,11 @@ const createStep = (): Partial<RecipeStep> => ({
 
 const isValidIngredient = (item: Partial<RecipeIngredient>): item is RecipeIngredient => {
   return (
-    'units' in item && 'name' in item && 'unitOfMeasure' in item && !!(item.units && item.name && item.unitOfMeasure)
+    typeof item.units === 'number' &&
+    item.units > 0 &&
+    'name' in item &&
+    'unitOfMeasure' in item &&
+    !!(item.name && item.unitOfMeasure)
   );
 };
 

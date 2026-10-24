@@ -462,6 +462,23 @@ describe('MealItemEditor', () => {
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });
 
+      it('is disabled when a nutrition value is negative', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        await fillRequiredCreateFields();
+        const fields = ['calories-input', 'sodium-input', 'sugar-input', 'carbs-input', 'fat-input', 'protein-input'];
+        for (const testId of fields) {
+          const input = wrapper.findComponent(`[data-testid="${testId}"]`).find('input');
+          await input.setValue('-1');
+          await input.trigger('blur');
+          await flushPromises();
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await input.setValue('0');
+          await input.trigger('blur');
+          await flushPromises();
+          expect(saveButton.attributes('disabled')).toBeUndefined();
+        }
+      });
+
       it('becomes disabled again if a required field is cleared', async () => {
         const saveButton = wrapper.getComponent('[data-testid="save-button"]');
         await fillRequiredCreateFields();
@@ -544,6 +561,19 @@ describe('MealItemEditor', () => {
         expect(saveButton.attributes('disabled')).toBeDefined();
         const caloriesInput = wrapper.findComponent('[data-testid="calories-input"]').find('input');
         await caloriesInput.setValue(631);
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeUndefined();
+      });
+
+      it('stays disabled when calories is negative', async () => {
+        const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+        const caloriesInput = wrapper.findComponent('[data-testid="calories-input"]').find('input');
+        await caloriesInput.setValue('-1');
+        await caloriesInput.trigger('blur');
+        await flushPromises();
+        expect(saveButton.attributes('disabled')).toBeDefined();
+        await caloriesInput.setValue('0');
+        await caloriesInput.trigger('blur');
         await flushPromises();
         expect(saveButton.attributes('disabled')).toBeUndefined();
       });

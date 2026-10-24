@@ -6,7 +6,7 @@
         hide-details
         control-variant="hidden"
         :precision="null"
-        :rules="[validationRules.required]"
+        :rules="[validationRules.required, validationRules.positive]"
         v-model="units"
         data-testid="units-input"
         ref="unitsInput"

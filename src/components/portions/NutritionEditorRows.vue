@@ -5,7 +5,7 @@
         label="Calories"
         v-model="calories"
         :precision="null"
-        :rules="[validationRules.required]"
+        :rules="[validationRules.required, validationRules.zeroOrGreater]"
         data-testid="calories-input"
       ></v-number-input>
     </v-col>
@@ -14,7 +14,7 @@
         label="Sodium (mg)"
         v-model="sodium"
         :precision="null"
-        :rules="[validationRules.required]"
+        :rules="[validationRules.required, validationRules.zeroOrGreater]"
         data-testid="sodium-input"
       ></v-number-input>
     </v-col>
@@ -23,7 +23,7 @@
         label="Sugar (g)"
         v-model="sugar"
         :precision="null"
-        :rules="[validationRules.required]"
+        :rules="[validationRules.required, validationRules.zeroOrGreater]"
         data-testid="sugar-input"
       ></v-number-input>
     </v-col>
@@ -35,7 +35,7 @@
         label="Carbs (g)"
         v-model="carbs"
         :precision="null"
-        :rules="[validationRules.required]"
+        :rules="[validationRules.required, validationRules.zeroOrGreater]"
         data-testid="carbs-input"
       ></v-number-input>
     </v-col>
@@ -44,7 +44,7 @@
         label="Fat (g)"
         v-model="fat"
         :precision="null"
-        :rules="[validationRules.required]"
+        :rules="[validationRules.required, validationRules.zeroOrGreater]"
         data-testid="fat-input"
       ></v-number-input>
     </v-col>
@@ -53,7 +53,7 @@
         label="Protein (g)"
         v-model="protein"
         :precision="null"
-        :rules="[validationRules.required]"
+        :rules="[validationRules.required, validationRules.zeroOrGreater]"
         data-testid="protein-input"
       ></v-number-input>
     </v-col>
