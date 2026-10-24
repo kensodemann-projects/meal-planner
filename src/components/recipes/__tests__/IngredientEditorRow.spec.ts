@@ -53,6 +53,31 @@ describe('Ingredient Editor Row', () => {
       expect(emitted?.length).toBe(1);
       expect((emitted![0]![0] as RecipeIngredient).units).toBe(73);
     });
+
+    it('must be a positive number', async () => {
+      wrapper = mountComponent({ ingredient: { ...TEST_INGREDIENTS[1]! } });
+      const numberInput = () =>
+        wrapper.findComponent('[data-testid="units-input"]') as VueWrapper<components.VNumberInput>;
+
+      const setUnits = async (value: number) => {
+        const input = numberInput().find('input');
+        await input.setValue(value);
+        await input.trigger('blur');
+        const emitted = wrapper.emitted('changed');
+        const latest = emitted?.[emitted.length - 1]?.[0] as RecipeIngredient;
+        await wrapper.setProps({ ingredient: latest });
+        await flushPromises();
+      };
+
+      await setUnits(0);
+      expect(await numberInput().vm.validate()).toContain('Must be a positive number');
+
+      await setUnits(-1);
+      expect(await numberInput().vm.validate()).toContain('Must be a positive number');
+
+      await setUnits(0.25);
+      expect(await numberInput().vm.validate()).not.toContain('Must be a positive number');
+    });
   });
 
   describe('unit of measure', () => {
@@ -232,7 +257,7 @@ describe('Ingredient Editor Row', () => {
       const confirmDialog = wrapper.findComponent(ConfirmDialog);
       expect(confirmDialog.exists()).toBe(true);
 
-      await confirmDialog.vm.$emit('confirm');
+      confirmDialog.vm.$emit('confirm');
       await flushPromises();
 
       const emitted = wrapper.emitted('delete');
@@ -251,7 +276,7 @@ describe('Ingredient Editor Row', () => {
       const confirmDialog = wrapper.findComponent(ConfirmDialog);
       expect(confirmDialog.exists()).toBe(true);
 
-      await confirmDialog.vm.$emit('cancel');
+      confirmDialog.vm.$emit('cancel');
       await flushPromises();
 
       const emitted = wrapper.emitted('delete');

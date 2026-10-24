@@ -29,7 +29,7 @@ Issue: [#463](https://github.com/kensodemann-projects/meal-planner/issues/463) (
 | Order | Step       | Status   | Files                                                                                                                                                                                                                                               |
 | ----- | ---------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1     | [STEP-001] | complete | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts`                                                                                                                                             |
-| 2     | [STEP-002] |          | `src/components/recipes/IngredientEditorRow.vue`, then `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/IngredientEditorRow.spec.ts`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts`                 |
+| 2     | [STEP-002] | complete | `src/components/recipes/IngredientEditorRow.vue`, then `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/IngredientEditorRow.spec.ts`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts`                 |
 | 3     | [STEP-003] |          | `src/components/portions/NutritionEditorRows.vue`, then `src/components/portions/__tests__/NutritionEditorRows.spec.ts`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts`, then `src/components/meals/__tests__/MealItemEditor.spec.ts` |
 
 **Commit gate** — the human commits. A spot-check does not replace the gate.
@@ -79,7 +79,7 @@ pnpm vitest run src/components/recipes/__tests__/RecipeEditor.spec.ts
 
 ## [STEP-002] Require positive ingredient amounts
 
-**Status:**
+**Status:** complete
 
 **Acceptance criteria:** Ingredient units of `0` or less fail validation and are not treated as a valid ingredient. A positive fraction such as `0.25` remains valid. Save, Add Ingredient, and Calculate Nutrition stay disabled while the only ingredient has a non-positive amount, and they enable once that amount is positive and the rest of the homemade form is valid.
 

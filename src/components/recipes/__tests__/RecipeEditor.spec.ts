@@ -720,6 +720,51 @@ describe('Recipe Editor', () => {
           expect(saveButton.attributes('disabled')).toBeDefined();
         });
 
+        it('is disabled when the only ingredient amount is not positive', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const addIngredientButton = wrapper.find('[data-testid="add-ingredient-button"]');
+          const calculateButton = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+          const expectControlsEnabled = (enabled: boolean) => {
+            if (enabled) {
+              expect(saveButton.attributes('disabled')).toBeUndefined();
+              expect(addIngredientButton.attributes('disabled')).toBeUndefined();
+              expect(calculateButton.attributes('disabled')).toBeUndefined();
+              return;
+            }
+            expect(saveButton.attributes('disabled')).toBeDefined();
+            expect(addIngredientButton.attributes('disabled')).toBeDefined();
+            expect(calculateButton.attributes('disabled')).toBeDefined();
+          };
+          const ingredientRow = () =>
+            wrapper.find('[data-testid="ingredient-list-grid"]').findComponent(IngredientEditorRow);
+
+          await fillHomemade(wrapper);
+          await addIngredientButton.trigger('click');
+          const current = ingredientRow().props('ingredient') as Partial<RecipeIngredient>;
+          ingredientRow().vm.$emit('changed', {
+            ...current,
+            units: 0.25,
+            unitOfMeasure: findUnitOfMeasure('cup'),
+            name: 'Butter',
+          });
+          await flushPromises();
+          expectControlsEnabled(true);
+
+          const setUnits = async (value: string) => {
+            const unitsInput = ingredientRow().find('[data-testid="units-input"]').find('input');
+            await unitsInput.setValue(value);
+            await unitsInput.trigger('blur');
+            await flushPromises();
+          };
+
+          await setUnits('0');
+          expectControlsEnabled(false);
+          await setUnits('-1');
+          expectControlsEnabled(false);
+          await setUnits('0.25');
+          expectControlsEnabled(true);
+        });
+
         it('is disabled if an invalid step exists in the steps list', async () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
           await fillHomemade(wrapper);
