@@ -709,6 +709,25 @@ describe('Recipe Editor', () => {
           expect(saveButton.attributes('disabled')).toBeDefined();
         });
 
+        it('does not emit save when a required field is missing', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
+          const inputs = getInputs(wrapper);
+          await inputs.category.setValue('Dessert');
+          await inputs.cuisine.setValue('American');
+          await inputs.difficulty.setValue('Easy');
+          await inputs.name.setValue('Apple Pie');
+          await inputs.servings.setValue('2');
+          await inputs.prepTimeMinutes.setValue('30');
+          await inputs.cookTimeMinutes.setValue('45');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          // A disabled button does not fire click, so call the handler Save is bound to.
+          const onClick = saveButton.vm.$attrs.onClick;
+          expect(onClick).toBeTypeOf('function');
+          if (typeof onClick !== 'function') return;
+          await onClick(new MouseEvent('click'));
+          expect(wrapper.emitted('save')).toBeUndefined();
+        });
+
         it('emits the entered data on click', async () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
           await fillHomemade(wrapper, { name: ' Apple Pie   ' });
@@ -1509,6 +1528,32 @@ describe('Recipe Editor', () => {
       await addValidIngredient(wrapper);
       const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
       expect(button.attributes('disabled')).toBeDefined();
+    });
+
+    it('does not calculate nutrition when servings is missing', async () => {
+      const { generateNutritionData } = useNutritionGenerator();
+      wrapper = mountComponent();
+      const inputs = getInputs(wrapper);
+      await inputs.name.setValue('Test Recipe');
+      await addValidIngredient(wrapper);
+      const button = wrapper.getComponent('[data-testid="calculate-nutrition-button"]') as VueWrapper<components.VBtn>;
+      expect(button.attributes('disabled')).toBeDefined();
+      // A disabled button does not fire click, so call the handler Calculate Nutrition is bound to.
+      const onClick = button.vm.$attrs.onClick;
+      expect(onClick).toBeTypeOf('function');
+      if (typeof onClick !== 'function') return;
+      await onClick(new MouseEvent('click'));
+      await flushPromises();
+      expect(generateNutritionData).not.toHaveBeenCalled();
+      const errorSnackbar = wrapper
+        .findAllComponents(components.VSnackbar)
+        .find((snackbar) => snackbar.props('color') === 'error');
+      const successSnackbar = wrapper
+        .findAllComponents(components.VSnackbar)
+        .find((snackbar) => snackbar.props('color') === 'success');
+      expect(errorSnackbar?.props('modelValue')).toBe(false);
+      expect(successSnackbar?.props('modelValue')).toBe(false);
+      expect(button.findComponent(components.VBtn).props('loading')).toBe(false);
     });
 
     describe('for a homemade recipe', () => {

@@ -320,53 +320,78 @@ const isModified = computed((): boolean => {
   );
 });
 
-const createRecipeFromForm = (): Recipe =>
-  props.kind === 'homemade'
-    ? {
-        name: name.value.trim(),
-        description: description.value.trim() || null,
-        kind: props.kind,
-        category: category.value!,
-        cuisine: cuisine.value!,
-        difficulty: difficulty.value!,
-        servings: servings.value!,
-        prepTimeMinutes: prepTimeMinutes.value!,
-        cookTimeMinutes: cookTimeMinutes.value!,
-        calories: nutrition.value.calories!,
-        sodium: nutrition.value.sodium!,
-        sugar: nutrition.value.sugar!,
-        carbs: nutrition.value.carbs!,
-        fat: nutrition.value.fat!,
-        protein: nutrition.value.protein!,
-        ingredients: ingredients.value.filter(isValidIngredient),
-        steps: steps.value.filter(isValidStep),
-      }
-    : {
-        name: name.value.trim(),
-        description: description.value.trim() || null,
-        kind: props.kind,
-        sourceId: sourceId.value!,
-        category: category.value!,
-        cuisine: cuisine.value!,
-        difficulty: 'Easy',
-        servings: servings.value!,
-        prepTimeMinutes: 0,
-        cookTimeMinutes: 0,
-        calories: nutrition.value.calories!,
-        sodium: nutrition.value.sodium!,
-        sugar: nutrition.value.sugar!,
-        carbs: nutrition.value.carbs!,
-        fat: nutrition.value.fat!,
-        protein: nutrition.value.protein!,
-        ingredients: [],
-        steps: [],
-      };
+const absent = (value: unknown): value is null | undefined => value === null || value === undefined;
+
+const createRecipeFromForm = (): Recipe | undefined => {
+  const categoryValue = category.value;
+  const cuisineValue = cuisine.value;
+  const servingsValue = servings.value;
+  const { calories, sodium, sugar, carbs, fat, protein } = nutrition.value;
+  if (
+    absent(categoryValue) ||
+    absent(cuisineValue) ||
+    absent(servingsValue) ||
+    absent(calories) ||
+    absent(sodium) ||
+    absent(sugar) ||
+    absent(carbs) ||
+    absent(fat) ||
+    absent(protein)
+  ) {
+    return undefined;
+  }
+
+  const shared = {
+    name: name.value.trim(),
+    description: description.value.trim() || null,
+    kind: props.kind,
+    category: categoryValue,
+    cuisine: cuisineValue,
+    servings: servingsValue,
+    calories,
+    sodium,
+    sugar,
+    carbs,
+    fat,
+    protein,
+  };
+
+  if (props.kind === 'homemade') {
+    const difficultyValue = difficulty.value;
+    const prepTime = prepTimeMinutes.value;
+    const cookTime = cookTimeMinutes.value;
+    if (absent(difficultyValue) || absent(prepTime) || absent(cookTime)) {
+      return undefined;
+    }
+    return {
+      ...shared,
+      difficulty: difficultyValue,
+      prepTimeMinutes: prepTime,
+      cookTimeMinutes: cookTime,
+      ingredients: ingredients.value.filter(isValidIngredient),
+      steps: steps.value.filter(isValidStep),
+    };
+  }
+
+  const selectedSourceId = sourceId.value;
+  if (absent(selectedSourceId)) {
+    return undefined;
+  }
+  return {
+    ...shared,
+    sourceId: selectedSourceId,
+    difficulty: 'Easy',
+    prepTimeMinutes: 0,
+    cookTimeMinutes: 0,
+    ingredients: [],
+    steps: [],
+  };
+};
 
 const save = () => {
   const recipe = createRecipeFromForm();
-  emit('save', {
-    ...(props.recipe ? { ...recipe, id: props.recipe.id } : recipe),
-  });
+  if (recipe === undefined) return;
+  emit('save', props.recipe ? { ...recipe, id: props.recipe.id } : recipe);
 };
 
 const disableNutritionButton = computed(() => {
@@ -379,14 +404,16 @@ const disableNutritionButton = computed(() => {
   );
 });
 
-const nutritionPromptFromForm = (): NutritionPromptRecipe => {
+const nutritionPromptFromForm = (): NutritionPromptRecipe | undefined => {
+  const servingsValue = servings.value;
+  if (absent(servingsValue)) return undefined;
   const shared = {
     name: name.value.trim(),
     description: description.value.trim() || null,
     kind: props.kind,
     category: category.value,
     cuisine: cuisine.value,
-    servings: servings.value!,
+    servings: servingsValue,
   };
   return props.kind === 'homemade'
     ? {
@@ -403,8 +430,9 @@ const nutritionPromptFromForm = (): NutritionPromptRecipe => {
 };
 
 const calculateNutritionInformation = async () => {
-  nutritionInfoLoading.value = true;
   const recipe = nutritionPromptFromForm();
+  if (recipe === undefined) return;
+  nutritionInfoLoading.value = true;
   try {
     // A missing prepared source is passed through so the generator throws and the existing catch shows the error.
     nutrition.value =
