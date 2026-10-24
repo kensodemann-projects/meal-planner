@@ -176,6 +176,7 @@ const fillHomemade = async (wrapper: EditorWrapper, options?: { name?: string; d
   if (options?.description !== undefined) {
     await inputs.description.setValue(options.description);
   }
+  await flushPromises();
 };
 
 const fillPrepared = async (
@@ -199,6 +200,7 @@ const fillPrepared = async (
   if (options?.description !== undefined) {
     await inputs.description.setValue(options.description);
   }
+  await flushPromises();
 };
 
 const addValidIngredient = async (w: EditorWrapper) => {
@@ -716,12 +718,14 @@ describe('Recipe Editor', () => {
           await inputs.prepTimeMinutes.setValue('30');
           await inputs.cookTimeMinutes.setValue('45');
           await nutritionInputs.calories.setValue('325');
+          await flushPromises();
           expect(saveButton.attributes('disabled')).toBeDefined();
           await nutritionInputs.sodium.setValue('120');
           await nutritionInputs.sugar.setValue('8');
           await nutritionInputs.carbs.setValue('40');
           await nutritionInputs.fat.setValue('12');
           await nutritionInputs.protein.setValue('6');
+          await flushPromises();
           expect(saveButton.attributes('disabled')).toBeUndefined();
         });
 
@@ -936,6 +940,7 @@ describe('Recipe Editor', () => {
           await nutritionInputs.carbs.setValue('33');
           await nutritionInputs.fat.setValue('11');
           await nutritionInputs.protein.setValue('22');
+          await flushPromises();
           expect(saveButton.attributes('disabled')).toBeUndefined();
         });
 
