@@ -5,12 +5,16 @@
 In order to build this application, you will need to create a `.env` file with the following data in it:
 
 ```
+# Obtain the appropriate information from the Firebase console.
 VITE_FIREBASE_API_KEY=your-dev-api-key-here
 VITE_FIREBASE_MESSAGING_SENDER_ID=your-dev-sender-id-here
 VITE_FIREBASE_APP_ID=your-dev-app-id-here
-```
+VITE_FIREBASE_MEASUREMENT_ID=your-measurement-id  # optional — omit to disable Analytics
 
-Obtain the appropriate information from the Firebase console.
+# Optional. Stable App Check debug token for local development.
+# Omit to let the SDK print a new token in the browser console.
+# VITE_APPCHECK_DEBUG_TOKEN=your-debug-token
+```
 
 ## Build and Deploy
 

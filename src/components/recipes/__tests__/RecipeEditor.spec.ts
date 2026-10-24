@@ -151,6 +151,11 @@ const fillHomemade = async (wrapper: EditorWrapper, options?: { name?: string; d
   await inputs.prepTimeMinutes.setValue('30');
   await inputs.cookTimeMinutes.setValue('45');
   await nutritionInputs.calories.setValue('325');
+  await nutritionInputs.sodium.setValue('120');
+  await nutritionInputs.sugar.setValue('8');
+  await nutritionInputs.carbs.setValue('40');
+  await nutritionInputs.fat.setValue('12');
+  await nutritionInputs.protein.setValue('6');
   if (options?.description !== undefined) {
     await inputs.description.setValue(options.description);
   }
@@ -169,9 +174,26 @@ const fillPrepared = async (
   await inputs.name.setValue(options?.name ?? 'Black Cod Bowl');
   await inputs.servings.setValue('1');
   await nutritionInputs.calories.setValue('540');
+  await nutritionInputs.sodium.setValue('210');
+  await nutritionInputs.sugar.setValue('4');
+  await nutritionInputs.carbs.setValue('33');
+  await nutritionInputs.fat.setValue('11');
+  await nutritionInputs.protein.setValue('22');
   if (options?.description !== undefined) {
     await inputs.description.setValue(options.description);
   }
+};
+
+const addValidIngredient = async (w: EditorWrapper) => {
+  const addButton = w.find('[data-testid="add-ingredient-button"]');
+  await addButton.trigger('click');
+  const ingredientRows = w.find('[data-testid="ingredient-list-grid"]').findAllComponents(IngredientEditorRow);
+  await ingredientRows[0]?.vm.$emit('changed', {
+    id: 'test-ingredient-id',
+    units: 1,
+    unitOfMeasure: findUnitOfMeasure('cup'),
+    name: 'Test Ingredient',
+  });
 };
 
 const FILLED_INGREDIENT: RecipeIngredient = {
@@ -605,11 +627,11 @@ describe('Recipe Editor', () => {
         expect(inputs.prepTimeMinutes.element.value).toBe('');
         expect(inputs.cookTimeMinutes.element.value).toBe('');
         expect(nutritionInputs.calories.element.value).toBe('');
-        expect(nutritionInputs.sodium.element.value).toBe('0');
-        expect(nutritionInputs.sugar.element.value).toBe('0');
-        expect(nutritionInputs.carbs.element.value).toBe('0');
-        expect(nutritionInputs.fat.element.value).toBe('0');
-        expect(nutritionInputs.protein.element.value).toBe('0');
+        expect(nutritionInputs.sodium.element.value).toBe('');
+        expect(nutritionInputs.sugar.element.value).toBe('');
+        expect(nutritionInputs.carbs.element.value).toBe('');
+        expect(nutritionInputs.fat.element.value).toBe('');
+        expect(nutritionInputs.protein.element.value).toBe('');
       });
 
       registerEditableListTests(() => wrapper, {
@@ -651,10 +673,21 @@ describe('Recipe Editor', () => {
         it('is disabled until all required fields are filled in', async () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
           const inputs = getInputs(wrapper);
+          const nutritionInputs = getNutritionInputs(wrapper);
           await inputs.category.setValue('Dessert');
           await inputs.cuisine.setValue('American');
+          await inputs.difficulty.setValue('Easy');
+          await inputs.name.setValue('Apple Pie');
+          await inputs.servings.setValue('2');
+          await inputs.prepTimeMinutes.setValue('30');
+          await inputs.cookTimeMinutes.setValue('45');
+          await nutritionInputs.calories.setValue('325');
           expect(saveButton.attributes('disabled')).toBeDefined();
-          await fillHomemade(wrapper);
+          await nutritionInputs.sodium.setValue('120');
+          await nutritionInputs.sugar.setValue('8');
+          await nutritionInputs.carbs.setValue('40');
+          await nutritionInputs.fat.setValue('12');
+          await nutritionInputs.protein.setValue('6');
           expect(saveButton.attributes('disabled')).toBeUndefined();
         });
 
@@ -694,15 +727,39 @@ describe('Recipe Editor', () => {
               prepTimeMinutes: 30,
               cookTimeMinutes: 45,
               calories: 325,
-              sodium: 0,
-              sugar: 0,
-              carbs: 0,
-              fat: 0,
-              protein: 0,
+              sodium: 120,
+              sugar: 8,
+              carbs: 40,
+              fat: 12,
+              protein: 6,
               ingredients: [],
               steps: [],
             },
           ]);
+        });
+
+        it('stays disabled until calculate nutrition fills the nutrition fields', async () => {
+          const nutritionResult = { calories: 350, sodium: 500, sugar: 8, carbs: 25, fat: 12, protein: 18 };
+          const { generateNutritionData } = useNutritionGenerator();
+          (generateNutritionData as Mock).mockResolvedValueOnce(nutritionResult);
+
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getInputs(wrapper);
+          await inputs.category.setValue('Dessert');
+          await inputs.cuisine.setValue('American');
+          await inputs.difficulty.setValue('Easy');
+          await inputs.name.setValue('Apple Pie');
+          await inputs.servings.setValue('2');
+          await inputs.prepTimeMinutes.setValue('30');
+          await inputs.cookTimeMinutes.setValue('45');
+          await addValidIngredient(wrapper);
+
+          expect(saveButton.attributes('disabled')).toBeDefined();
+
+          const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+          await button.trigger('click');
+          await flushPromises();
+          expect(saveButton.attributes('disabled')).toBeUndefined();
         });
       });
     });
@@ -726,11 +783,11 @@ describe('Recipe Editor', () => {
         expect(inputs.source.props('modelValue')).toBeNull();
         expect(inputs.servings.element.value).toBe('');
         expect(nutritionInputs.calories.element.value).toBe('');
-        expect(nutritionInputs.sodium.element.value).toBe('0');
-        expect(nutritionInputs.sugar.element.value).toBe('0');
-        expect(nutritionInputs.carbs.element.value).toBe('0');
-        expect(nutritionInputs.fat.element.value).toBe('0');
-        expect(nutritionInputs.protein.element.value).toBe('0');
+        expect(nutritionInputs.sodium.element.value).toBe('');
+        expect(nutritionInputs.sugar.element.value).toBe('');
+        expect(nutritionInputs.carbs.element.value).toBe('');
+        expect(nutritionInputs.fat.element.value).toBe('');
+        expect(nutritionInputs.protein.element.value).toBe('');
         expect(autocompleteLabeled(wrapper, 'Difficulty')).toBeUndefined();
         expect(wrapper.find('[data-testid="prep-time-input"]').exists()).toBe(false);
         expect(wrapper.find('[data-testid="cook-time-input"]').exists()).toBe(false);
@@ -753,9 +810,14 @@ describe('Recipe Editor', () => {
           await inputs.name.setValue('Black Cod Bowl');
           await inputs.servings.setValue('1');
           await nutritionInputs.calories.setValue('540');
-          expect(saveButton.attributes('disabled')).toBeDefined();
           await inputs.source.setValue(sourceId);
           await flushPromises();
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          await nutritionInputs.sodium.setValue('210');
+          await nutritionInputs.sugar.setValue('4');
+          await nutritionInputs.carbs.setValue('33');
+          await nutritionInputs.fat.setValue('11');
+          await nutritionInputs.protein.setValue('22');
           expect(saveButton.attributes('disabled')).toBeUndefined();
         });
 
@@ -790,15 +852,36 @@ describe('Recipe Editor', () => {
               prepTimeMinutes: 0,
               cookTimeMinutes: 0,
               calories: 540,
-              sodium: 0,
-              sugar: 0,
-              carbs: 0,
-              fat: 0,
-              protein: 0,
+              sodium: 210,
+              sugar: 4,
+              carbs: 33,
+              fat: 11,
+              protein: 22,
               ingredients: [],
               steps: [],
             },
           ]);
+        });
+
+        it('stays disabled until calculate nutrition fills the nutrition fields', async () => {
+          const nutritionResult = { calories: 350, sodium: 500, sugar: 8, carbs: 25, fat: 12, protein: 18 };
+          const { generateNutritionData } = useNutritionGenerator();
+          (generateNutritionData as Mock).mockResolvedValueOnce(nutritionResult);
+
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+          const inputs = getPreparedInputs(wrapper);
+          await inputs.category.setValue('Seafood');
+          await inputs.cuisine.setValue('Japanese');
+          await inputs.name.setValue('Black Cod Bowl');
+          await inputs.servings.setValue('1');
+          await inputs.source.setValue(sourceId);
+          await flushPromises();
+          expect(saveButton.attributes('disabled')).toBeDefined();
+
+          const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+          await button.trigger('click');
+          await flushPromises();
+          expect(saveButton.attributes('disabled')).toBeUndefined();
         });
       });
 
@@ -947,6 +1030,20 @@ describe('Recipe Editor', () => {
         expect(nutritionInputs.carbs.element.value).toBe(BEER_CHEESE.carbs.toString());
         expect(nutritionInputs.fat.element.value).toBe(BEER_CHEESE.fat.toString());
         expect(nutritionInputs.protein.element.value).toBe(BEER_CHEESE.protein.toString());
+      });
+
+      it('shows a stored zero in each nutrition input', () => {
+        wrapper.unmount();
+        wrapper = mountComponent({
+          recipe: { ...BEER_CHEESE, calories: 0, sodium: 0, sugar: 0, carbs: 0, fat: 0, protein: 0 },
+        });
+        const nutritionInputs = getNutritionInputs(wrapper);
+        expect(nutritionInputs.calories.element.value).toBe('0');
+        expect(nutritionInputs.sodium.element.value).toBe('0');
+        expect(nutritionInputs.sugar.element.value).toBe('0');
+        expect(nutritionInputs.carbs.element.value).toBe('0');
+        expect(nutritionInputs.fat.element.value).toBe('0');
+        expect(nutritionInputs.protein.element.value).toBe('0');
       });
 
       registerEditableListTests(() => wrapper, {
@@ -1373,18 +1470,6 @@ describe('Recipe Editor', () => {
   });
 
   describe('calculate nutrition button', () => {
-    const addValidIngredient = async (w: EditorWrapper) => {
-      const addButton = w.find('[data-testid="add-ingredient-button"]');
-      await addButton.trigger('click');
-      const ingredientRows = w.find('[data-testid="ingredient-list-grid"]').findAllComponents(IngredientEditorRow);
-      await ingredientRows[0]?.vm.$emit('changed', {
-        id: 'test-ingredient-id',
-        units: 1,
-        unitOfMeasure: findUnitOfMeasure('cup'),
-        name: 'Test Ingredient',
-      });
-    };
-
     const setupValidState = async (w: EditorWrapper, kind: RecipeKind = 'homemade') => {
       if (kind === 'homemade') {
         const inputs = getInputs(w);

@@ -221,11 +221,11 @@ const prepTimeMinutes = shallowRef<number | undefined>(props.recipe?.prepTimeMin
 const cookTimeMinutes = shallowRef<number | undefined>(props.recipe?.cookTimeMinutes);
 const nutrition = ref<Partial<Nutrition>>({
   calories: props.recipe?.calories,
-  sodium: props.recipe?.sodium || 0,
-  sugar: props.recipe?.sugar || 0,
-  carbs: props.recipe?.carbs || 0,
-  fat: props.recipe?.fat || 0,
-  protein: props.recipe?.protein || 0,
+  sodium: props.recipe?.sodium,
+  sugar: props.recipe?.sugar,
+  carbs: props.recipe?.carbs,
+  fat: props.recipe?.fat,
+  protein: props.recipe?.protein,
 });
 // structuredClone rejects Vue reactive proxies, so unwrap the prop lists first.
 const cloneList = <T,>(items: T[]): T[] => structuredClone(toRaw(items));
