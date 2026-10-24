@@ -139,6 +139,20 @@ const getNutritionInputs = (wrapper: EditorWrapper) => ({
   protein: wrapper.findComponent('[data-testid="protein-input"]').find('input'),
 });
 
+const expectSaveFollowsNonNegativeNutrition = async (wrapper: EditorWrapper) => {
+  const saveButton = wrapper.getComponent('[data-testid="save-button"]');
+  const nutritionInputs = getNutritionInputs(wrapper);
+
+  for (const field of Object.values(nutritionInputs)) {
+    await field.setValue('-1');
+    await field.trigger('blur');
+    expect(saveButton.attributes('disabled')).toBeDefined();
+    await field.setValue('0');
+    await field.trigger('blur');
+    expect(saveButton.attributes('disabled')).toBeUndefined();
+  }
+};
+
 const asFieldSetters = (fields: Record<string, FieldSetter>) => fields;
 
 const fillHomemade = async (wrapper: EditorWrapper, options?: { name?: string; description?: string }) => {
@@ -612,6 +626,42 @@ describe('Recipe Editor', () => {
         await numberInputMustBeZeroOrGreater(wrapper, 'cook-time-input');
       });
     });
+
+    describe('calories', () => {
+      it('must be zero or greater', async () => {
+        await numberInputMustBeZeroOrGreater(wrapper, 'calories-input');
+      });
+    });
+
+    describe('sodium', () => {
+      it('must be zero or greater', async () => {
+        await numberInputMustBeZeroOrGreater(wrapper, 'sodium-input');
+      });
+    });
+
+    describe('sugar', () => {
+      it('must be zero or greater', async () => {
+        await numberInputMustBeZeroOrGreater(wrapper, 'sugar-input');
+      });
+    });
+
+    describe('carbs', () => {
+      it('must be zero or greater', async () => {
+        await numberInputMustBeZeroOrGreater(wrapper, 'carbs-input');
+      });
+    });
+
+    describe('fat', () => {
+      it('must be zero or greater', async () => {
+        await numberInputMustBeZeroOrGreater(wrapper, 'fat-input');
+      });
+    });
+
+    describe('protein', () => {
+      it('must be zero or greater', async () => {
+        await numberInputMustBeZeroOrGreater(wrapper, 'protein-input');
+      });
+    });
   });
 
   describe('for create', () => {
@@ -709,6 +759,11 @@ describe('Recipe Editor', () => {
           await inputs.servings.setValue('2');
           await inputs.servings.trigger('blur');
           expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is disabled when a nutrition value is negative', async () => {
+          await fillHomemade(wrapper);
+          await expectSaveFollowsNonNegativeNutrition(wrapper);
         });
 
         it('is disabled if an invalid ingredient exists in the ingredients list', async () => {
@@ -918,6 +973,11 @@ describe('Recipe Editor', () => {
           await inputs.servings.setValue('1');
           await inputs.servings.trigger('blur');
           expect(saveButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('is disabled when a nutrition value is negative', async () => {
+          await fillPrepared(wrapper, sourceId);
+          await expectSaveFollowsNonNegativeNutrition(wrapper);
         });
 
         it('emits the description if entered', async () => {

@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import { numberInputIsRequired } from '../../__tests__/test-utils';
+import { numberInputIsRequired, numberInputMustBeZeroOrGreater } from '../../__tests__/test-utils';
 import NutritionEditorRows from '../NutritionEditorRows.vue';
 
 const vuetify = createVuetify({
@@ -44,6 +44,11 @@ describe('NutritionEditorRows', () => {
       await numberInputIsRequired(wrapper, 'calories-input');
     });
 
+    it('must be zero or greater', async () => {
+      wrapper = mountComponent({});
+      await numberInputMustBeZeroOrGreater(wrapper, 'calories-input');
+    });
+
     it('is initialized properly', () => {
       wrapper = mountComponent({ ...TEST_HOMEMADE_RECIPE, calories: 143 });
       const calsInput = wrapper.findComponent('[data-testid="calories-input"]') as VueWrapper<components.VNumberInput>;
@@ -71,6 +76,11 @@ describe('NutritionEditorRows', () => {
     it('is required', async () => {
       wrapper = mountComponent({});
       await numberInputIsRequired(wrapper, 'sodium-input');
+    });
+
+    it('must be zero or greater', async () => {
+      wrapper = mountComponent({});
+      await numberInputMustBeZeroOrGreater(wrapper, 'sodium-input');
     });
 
     it('is initialized properly', () => {
@@ -102,6 +112,11 @@ describe('NutritionEditorRows', () => {
       await numberInputIsRequired(wrapper, 'sugar-input');
     });
 
+    it('must be zero or greater', async () => {
+      wrapper = mountComponent({});
+      await numberInputMustBeZeroOrGreater(wrapper, 'sugar-input');
+    });
+
     it('is initialized properly', () => {
       wrapper = mountComponent({ ...TEST_HOMEMADE_RECIPE, sugar: 143 });
       const sugarInput = wrapper.findComponent('[data-testid="sugar-input"]') as VueWrapper<components.VNumberInput>;
@@ -129,6 +144,11 @@ describe('NutritionEditorRows', () => {
     it('is required', async () => {
       wrapper = mountComponent({});
       await numberInputIsRequired(wrapper, 'carbs-input');
+    });
+
+    it('must be zero or greater', async () => {
+      wrapper = mountComponent({});
+      await numberInputMustBeZeroOrGreater(wrapper, 'carbs-input');
     });
 
     it('is initialized properly', () => {
@@ -160,6 +180,11 @@ describe('NutritionEditorRows', () => {
       await numberInputIsRequired(wrapper, 'fat-input');
     });
 
+    it('must be zero or greater', async () => {
+      wrapper = mountComponent({});
+      await numberInputMustBeZeroOrGreater(wrapper, 'fat-input');
+    });
+
     it('is initialized properly', () => {
       wrapper = mountComponent({ ...TEST_HOMEMADE_RECIPE, fat: 8 });
       const fatInput = wrapper.findComponent('[data-testid="fat-input"]') as VueWrapper<components.VNumberInput>;
@@ -189,6 +214,11 @@ describe('NutritionEditorRows', () => {
     it('is required', async () => {
       wrapper = mountComponent({});
       await numberInputIsRequired(wrapper, 'protein-input');
+    });
+
+    it('must be zero or greater', async () => {
+      wrapper = mountComponent({});
+      await numberInputMustBeZeroOrGreater(wrapper, 'protein-input');
     });
 
     it('is initialized properly', () => {
