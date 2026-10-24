@@ -1301,6 +1301,17 @@ describe('Recipe Editor', () => {
           expect(saveButton.attributes('disabled')).toBeDefined();
         });
 
+        it('disables adding another ingredient when an ingredient name is only spaces', async () => {
+          const addIngredientButton = wrapper.find('[data-testid="add-ingredient-button"]');
+          const opened = BEER_CHEESE.ingredients[2]!;
+          const ingredients = wrapper
+            .find('[data-testid="ingredient-list-grid"]')
+            .findAllComponents(IngredientEditorRow);
+          expect(addIngredientButton.attributes('disabled')).toBeUndefined();
+          await ingredients[2]?.vm.$emit('changed', { ...opened, name: '   ' });
+          expect(addIngredientButton.attributes('disabled')).toBeDefined();
+        });
+
         it('stays disabled when a step instruction is only spaces', async () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
           const opened = BEER_CHEESE.steps[2]!;
