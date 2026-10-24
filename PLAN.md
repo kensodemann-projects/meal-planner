@@ -28,11 +28,11 @@ Issue: [#466](https://github.com/kensodemann-projects/meal-planner/issues/466) (
 
 **File order**
 
-| Order | Step       | Status | Files                                                                                                   |
-| ----- | ---------- | ------ | ------------------------------------------------------------------------------------------------------- |
-| 1     | [STEP-001] |        | `src/core/nutrition-generator.ts`, then `src/core/__tests__/nutrition-generator.spec.ts`                |
-| 2     | [STEP-002] |        | `src/core/nutrition-generator.ts`, then `src/core/__tests__/nutrition-generator.spec.ts`                |
-| 3     | [STEP-003] |        | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
+| Order | Step       | Status   | Files                                                                                                   |
+| ----- | ---------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| 1     | [STEP-001] | complete | `src/core/nutrition-generator.ts`, then `src/core/__tests__/nutrition-generator.spec.ts`                |
+| 2     | [STEP-002] |          | `src/core/nutrition-generator.ts`, then `src/core/__tests__/nutrition-generator.spec.ts`                |
+| 3     | [STEP-003] |          | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
 
 **Commit gate** — the human commits. A spot-check does not replace the gate.
 
@@ -46,7 +46,7 @@ All three must succeed with no warning or error before that commit.
 
 ## [STEP-001] Delimit recipe fields in the nutrition prompt
 
-**Status:**
+**Status:** complete
 
 **Acceptance criteria:** Homemade prompts send name, ingredients, and steps only inside one JSON object. Prepared prompts send only the name inside that object. Instruction sentences no longer contain those fields as prose. Servings, optional context, source name, source URL, and the #441 published-versus-estimate wording stay.
 
