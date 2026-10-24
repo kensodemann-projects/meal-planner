@@ -81,7 +81,22 @@ describe('use nutrition generator', () => {
       const { generateNutritionData } = useNutritionGenerator();
       await generateNutritionData(mockRecipe);
       const prompt = mockGenerateContent.mock.calls[0]![0] as string;
-      expect(prompt).toContain(mockRecipe.name);
+      expect(prompt).toContain(
+        JSON.stringify({ name: mockRecipe.name, ingredients: mockRecipe.ingredients, steps: mockRecipe.steps }),
+      );
+      expect(prompt).not.toContain('I am making');
+    });
+
+    it('keeps an injected homemade name only inside the recipe JSON', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => JSON.stringify(mockNutrition) },
+      });
+      const recipe = { ...mockRecipe, name: 'ZZZ-INJECTED-NAME' };
+      const { generateNutritionData } = useNutritionGenerator();
+      await generateNutritionData(recipe);
+      const prompt = mockGenerateContent.mock.calls[0]![0] as string;
+      const payload = JSON.stringify({ name: recipe.name, ingredients: recipe.ingredients, steps: recipe.steps });
+      expect(prompt.replace(payload, '')).not.toContain('ZZZ-INJECTED-NAME');
     });
 
     it('includes the number of servings in the prompt', async () => {
@@ -101,7 +116,9 @@ describe('use nutrition generator', () => {
       const { generateNutritionData } = useNutritionGenerator();
       await generateNutritionData(mockRecipe);
       const prompt = mockGenerateContent.mock.calls[0]![0] as string;
-      expect(prompt).toContain('Here are the ingredients');
+      expect(prompt).toContain(
+        JSON.stringify({ name: mockRecipe.name, ingredients: mockRecipe.ingredients, steps: mockRecipe.steps }),
+      );
       expect(prompt).toContain(mockRecipe.ingredients[0]!.name);
     });
 
@@ -112,7 +129,9 @@ describe('use nutrition generator', () => {
       const { generateNutritionData } = useNutritionGenerator();
       await generateNutritionData(mockRecipe);
       const prompt = mockGenerateContent.mock.calls[0]![0] as string;
-      expect(prompt).toContain('Here are the steps');
+      expect(prompt).toContain(
+        JSON.stringify({ name: mockRecipe.name, ingredients: mockRecipe.ingredients, steps: mockRecipe.steps }),
+      );
       expect(prompt).toContain('Grill chicken for 20 minutes');
     });
 
@@ -142,7 +161,9 @@ describe('use nutrition generator', () => {
       expect(prompt).not.toContain('Cuisine');
       expect(prompt).not.toMatch(/description/i);
       expect(prompt).toContain(String(recipe.servings));
-      expect(prompt).toContain('Here are the ingredients');
+      expect(prompt).toContain(
+        JSON.stringify({ name: recipe.name, ingredients: recipe.ingredients, steps: recipe.steps }),
+      );
     });
 
     it('initializes the Gemini model lazily inside the composable', () => {
@@ -211,6 +232,98 @@ describe('use nutrition generator', () => {
       const { generateNutritionData } = useNutritionGenerator();
       await expect(generateNutritionData(mockRecipe)).rejects.toThrow(SyntaxError);
     });
+
+    it('accepts zero and fractional nutrition values', async () => {
+      const nutrition = { calories: 0, sodium: 0, sugar: 0, carbs: 0, fat: 0, protein: 1.5 };
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => JSON.stringify(nutrition) },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(mockRecipe)).resolves.toEqual(nutrition);
+    });
+
+    it('rejects a string calorie value', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => JSON.stringify({ ...mockNutrition, calories: '250' }) },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow('Invalid nutrition response');
+    });
+
+    it('rejects a missing protein field', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: {
+          text: () =>
+            JSON.stringify({
+              calories: mockNutrition.calories,
+              sodium: mockNutrition.sodium,
+              fat: mockNutrition.fat,
+              carbs: mockNutrition.carbs,
+              sugar: mockNutrition.sugar,
+            }),
+        },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow('Invalid nutrition response');
+    });
+
+    it('rejects null', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => 'null' },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow('Invalid nutrition response');
+    });
+
+    it('rejects a negative fat value', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => JSON.stringify({ ...mockNutrition, fat: -1 }) },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow('Invalid nutrition response');
+    });
+
+    it('rejects NaN in JSON text as a syntax error', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => '{"calories":NaN,"sodium":0,"sugar":0,"carbs":0,"fat":0,"protein":0}' },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow(SyntaxError);
+    });
+
+    it('rejects Infinity', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => '{"calories":1e999,"sodium":0,"sugar":0,"carbs":0,"fat":0,"protein":0}' },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow('Invalid nutrition response');
+    });
+
+    it('rejects a JSON array', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => JSON.stringify([mockNutrition]) },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow('Invalid nutrition response');
+    });
+
+    it('rejects a JSON string', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => JSON.stringify('not-nutrition') },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow('Invalid nutrition response');
+    });
+
+    it('returns only the six nutrition fields', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => JSON.stringify({ ...mockNutrition, note: 'estimate' }) },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      const result = await generateNutritionData(mockRecipe);
+      expect(result).toEqual(mockNutrition);
+      expect(result).not.toHaveProperty('note');
+    });
   });
 
   describe('prepared recipes with a named source', () => {
@@ -246,12 +359,14 @@ describe('use nutrition generator', () => {
 
     it('asks for published nutrition for that source and still parses the six-number JSON', async () => {
       const { prompt, result } = await promptFor(preparedRecipe, cookUnity);
+      expect(prompt).toContain(JSON.stringify({ name: preparedRecipe.name }));
       expect(prompt).toContain('CookUnity');
-      expect(prompt).toContain('Harissa Chicken');
       expect(prompt).toContain('ready-to-eat');
       expect(prompt).toContain('published');
       expect(prompt).toContain('best estimate');
       expect(prompt).toContain('https://www.cookunity.com/');
+      expect(prompt).not.toContain('"ingredients"');
+      expect(prompt).not.toContain('"steps"');
       expect(result).toEqual(mockNutrition);
     });
 
@@ -265,9 +380,14 @@ describe('use nutrition generator', () => {
       expect(prompt).toContain('Mediterranean');
     });
 
-    it('does not use the homemade ingredients lead-in', async () => {
+    it('sends only the item name in the recipe JSON', async () => {
       const { prompt } = await promptFor(preparedRecipe, cookUnity);
-      expect(prompt).not.toContain('Here are the ingredients');
+      const payload = JSON.stringify({ name: preparedRecipe.name });
+      expect(prompt).toContain(payload);
+      // the following ensures the recipe.name is not injected anywhere else in the prompt
+      expect(prompt.replace(payload, '')).not.toContain(preparedRecipe.name);
+      expect(prompt).not.toContain('"ingredients"');
+      expect(prompt).not.toContain('"steps"');
     });
 
     it('omits the source URL when the source has none', async () => {
@@ -289,7 +409,9 @@ describe('use nutrition generator', () => {
       expect(prompt).not.toContain('Cuisine');
       expect(prompt).not.toMatch(/description/i);
       expect(prompt).toContain(String(recipe.servings));
-      expect(prompt).not.toContain('Here are the ingredients');
+      expect(prompt).toContain(JSON.stringify({ name: recipe.name }));
+      expect(prompt).not.toContain('"ingredients"');
+      expect(prompt).not.toContain('"steps"');
     });
 
     it('rejects a prepared recipe when no source is provided and does not call the model', async () => {
@@ -334,7 +456,7 @@ describe('use nutrition generator', () => {
 
     it('asks for a typical restaurant serving and ignores the source name and URL', async () => {
       const prompt = await promptFor(preparedRecipe, genericRestaurant);
-      expect(prompt).toContain('Harissa Chicken');
+      expect(prompt).toContain(JSON.stringify({ name: preparedRecipe.name }));
       expect(prompt).toContain('typical restaurant serving');
       expect(prompt).toContain('unless the dish name');
       expect(prompt).toContain(String(preparedRecipe.servings));
@@ -345,7 +467,8 @@ describe('use nutrition generator', () => {
       expect(prompt).toContain('Mediterranean');
       expect(prompt).not.toContain('Generic Restaurant');
       expect(prompt).not.toContain('published');
-      expect(prompt).not.toContain('Here are the ingredients');
+      expect(prompt).not.toContain('"ingredients"');
+      expect(prompt).not.toContain('"steps"');
       expect(prompt).not.toContain('https://example.com/ignored-restaurant-url');
     });
 
