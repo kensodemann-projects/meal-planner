@@ -1953,6 +1953,35 @@ describe('Recipe Editor', () => {
           expect((generateNutritionData as Mock).mock.calls[0]).toHaveLength(1);
         });
 
+        it('trims ingredient names and step instructions before sending them', async () => {
+          wrapper = mountComponent({ recipe: BEER_CHEESE });
+          const openedIngredient = BEER_CHEESE.ingredients[2]!;
+          const openedStep = BEER_CHEESE.steps[2]!;
+          const ingredients = wrapper
+            .find('[data-testid="ingredient-list-grid"]')
+            .findAllComponents(IngredientEditorRow);
+          const steps = wrapper.find('[data-testid="step-list-grid"]').findAllComponents(StepEditorRow);
+          await ingredients[2]?.vm.$emit('changed', { ...openedIngredient, name: '  Extra Onion  ' });
+          await steps[2]?.vm.$emit('changed', { ...openedStep, instruction: '  Stir in the beer all at once.  ' });
+
+          const button = wrapper.findComponent('[data-testid="calculate-nutrition-button"]');
+          await button.trigger('click');
+          await flushPromises();
+
+          const { generateNutritionData } = useNutritionGenerator();
+          expect(generateNutritionData).toHaveBeenCalledOnce();
+          expect(generateNutritionData).toHaveBeenCalledWith(
+            expect.objectContaining({
+              ingredients: BEER_CHEESE.ingredients.map((ingredient, index) =>
+                index === 2 ? { ...ingredient, name: 'Extra Onion' } : ingredient,
+              ),
+              steps: BEER_CHEESE.steps.map((step, index) =>
+                index === 2 ? { ...step, instruction: 'Stir in the beer all at once.' } : step,
+              ),
+            }),
+          );
+        });
+
         it('sends a prepared recipe with the selected source', async () => {
           const cookUnity = TEST_SOURCES.find((source) => source.id === 'fiie002934009ser')!;
           wrapper = mountComponent({ kind: 'prepared' });

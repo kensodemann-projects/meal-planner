@@ -283,6 +283,18 @@ const isValidStep = (item: Partial<RecipeStep>): item is RecipeStep => {
   return 'instruction' in item && !!item.instruction?.trim();
 };
 
+const validTrimmedIngredients = (): RecipeIngredient[] =>
+  ingredients.value.filter(isValidIngredient).map((ingredient) => ({
+    ...ingredient,
+    name: ingredient.name.trim(),
+  }));
+
+const validTrimmedSteps = (): RecipeStep[] =>
+  steps.value.filter(isValidStep).map((step) => ({
+    ...step,
+    instruction: step.instruction.trim(),
+  }));
+
 const ingredientAtIndexDiffers = (current: Partial<RecipeIngredient>, opened: Partial<RecipeIngredient>): boolean =>
   current.id !== opened.id ||
   current.units !== opened.units ||
@@ -372,14 +384,8 @@ const createRecipeFromForm = (): Recipe | undefined => {
       difficulty: difficultyValue,
       prepTimeMinutes: prepTime,
       cookTimeMinutes: cookTime,
-      ingredients: ingredients.value.filter(isValidIngredient).map((ingredient) => ({
-        ...ingredient,
-        name: ingredient.name.trim(),
-      })),
-      steps: steps.value.filter(isValidStep).map((step) => ({
-        ...step,
-        instruction: step.instruction.trim(),
-      })),
+      ingredients: validTrimmedIngredients(),
+      steps: validTrimmedSteps(),
     };
   }
 
@@ -428,8 +434,8 @@ const nutritionPromptFromForm = (): NutritionPromptRecipe | undefined => {
   return props.kind === 'homemade'
     ? {
         ...shared,
-        ingredients: ingredients.value.filter(isValidIngredient),
-        steps: steps.value.filter(isValidStep),
+        ingredients: validTrimmedIngredients(),
+        steps: validTrimmedSteps(),
       }
     : {
         ...shared,
