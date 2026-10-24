@@ -68,6 +68,27 @@ const genericRestaurantUserPrompt = (recipe: NutritionPromptRecipe): string =>
     'What is the nutritional breakdown per serving?',
   ].join(' ');
 
+const isFiniteNonNegative = (value: unknown): value is number =>
+  typeof value === 'number' && Number.isFinite(value) && value >= 0;
+
+const nutritionFromReply = (value: unknown): Nutrition => {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    throw new Error('Invalid nutrition response');
+  }
+  const { calories, sodium, sugar, carbs, fat, protein } = value as Record<string, unknown>;
+  if (
+    !isFiniteNonNegative(calories) ||
+    !isFiniteNonNegative(sodium) ||
+    !isFiniteNonNegative(sugar) ||
+    !isFiniteNonNegative(carbs) ||
+    !isFiniteNonNegative(fat) ||
+    !isFiniteNonNegative(protein)
+  ) {
+    throw new Error('Invalid nutrition response');
+  }
+  return { calories, sodium, sugar, carbs, fat, protein };
+};
+
 const userPrompt = (recipe: NutritionPromptRecipe, source?: Source): string => {
   if (recipe.kind !== 'prepared') {
     return homemadeUserPrompt(recipe);
@@ -118,7 +139,7 @@ For other requests, you will respond that you only provide nutritional informati
   const generateNutritionData = async (recipe: NutritionPromptRecipe, source?: Source): Promise<Nutrition> => {
     const result = await model.generateContent(userPrompt(recipe, source));
     const text = result.response.text();
-    return JSON.parse(text.replace(captureJson, '$1')) as Nutrition;
+    return nutritionFromReply(JSON.parse(text.replace(captureJson, '$1')));
   };
 
   return { generateNutritionData };

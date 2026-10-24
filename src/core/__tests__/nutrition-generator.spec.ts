@@ -232,6 +232,98 @@ describe('use nutrition generator', () => {
       const { generateNutritionData } = useNutritionGenerator();
       await expect(generateNutritionData(mockRecipe)).rejects.toThrow(SyntaxError);
     });
+
+    it('accepts zero and fractional nutrition values', async () => {
+      const nutrition = { calories: 0, sodium: 0, sugar: 0, carbs: 0, fat: 0, protein: 1.5 };
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => JSON.stringify(nutrition) },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(mockRecipe)).resolves.toEqual(nutrition);
+    });
+
+    it('rejects a string calorie value', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => JSON.stringify({ ...mockNutrition, calories: '250' }) },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow(Error);
+    });
+
+    it('rejects a missing protein field', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: {
+          text: () =>
+            JSON.stringify({
+              calories: mockNutrition.calories,
+              sodium: mockNutrition.sodium,
+              fat: mockNutrition.fat,
+              carbs: mockNutrition.carbs,
+              sugar: mockNutrition.sugar,
+            }),
+        },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow(Error);
+    });
+
+    it('rejects null', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => 'null' },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow(Error);
+    });
+
+    it('rejects a negative fat value', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => JSON.stringify({ ...mockNutrition, fat: -1 }) },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow(Error);
+    });
+
+    it('rejects NaN', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => '{"calories":NaN,"sodium":0,"sugar":0,"carbs":0,"fat":0,"protein":0}' },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow(Error);
+    });
+
+    it('rejects Infinity', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => '{"calories":1e999,"sodium":0,"sugar":0,"carbs":0,"fat":0,"protein":0}' },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow(Error);
+    });
+
+    it('rejects a JSON array', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => JSON.stringify([mockNutrition]) },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow(Error);
+    });
+
+    it('rejects a JSON string', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => JSON.stringify('not-nutrition') },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      await expect(generateNutritionData(mockRecipe)).rejects.toThrow(Error);
+    });
+
+    it('returns only the six nutrition fields', async () => {
+      mockGenerateContent.mockResolvedValue({
+        response: { text: () => JSON.stringify({ ...mockNutrition, note: 'estimate' }) },
+      });
+      const { generateNutritionData } = useNutritionGenerator();
+      const result = await generateNutritionData(mockRecipe);
+      expect(result).toEqual(mockNutrition);
+      expect(result).not.toHaveProperty('note');
+    });
   });
 
   describe('prepared recipes with a named source', () => {

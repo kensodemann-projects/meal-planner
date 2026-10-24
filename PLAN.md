@@ -31,7 +31,7 @@ Issue: [#466](https://github.com/kensodemann-projects/meal-planner/issues/466) (
 | Order | Step       | Status   | Files                                                                                                   |
 | ----- | ---------- | -------- | ------------------------------------------------------------------------------------------------------- |
 | 1     | [STEP-001] | complete | `src/core/nutrition-generator.ts`, then `src/core/__tests__/nutrition-generator.spec.ts`                |
-| 2     | [STEP-002] |          | `src/core/nutrition-generator.ts`, then `src/core/__tests__/nutrition-generator.spec.ts`                |
+| 2     | [STEP-002] | complete | `src/core/nutrition-generator.ts`, then `src/core/__tests__/nutrition-generator.spec.ts`                |
 | 3     | [STEP-003] |          | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
 
 **Commit gate** — the human commits. A spot-check does not replace the gate.
@@ -80,7 +80,7 @@ In the generator spec:
 
 ## [STEP-002] Accept only finite non-negative nutrition
 
-**Status:**
+**Status:** complete
 
 **Acceptance criteria:** `generateNutritionData` returns the six nutrition numbers only when each is a finite number greater than or equal to 0. Any other reply rejects, and the returned object has no extra keys.
 
