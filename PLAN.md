@@ -26,10 +26,10 @@ Issue: [#462](https://github.com/kensodemann-projects/meal-planner/issues/462) (
 
 **File order**
 
-| Order | Step       | Status | Files                                                                                                   |
-| ----- | ---------- | ------ | ------------------------------------------------------------------------------------------------------- |
-| 1     | [STEP-001] |        | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
-| 2     | [STEP-002] |        | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
+| Order | Step       | Status   | Files                                                                                                   |
+| ----- | ---------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| 1     | [STEP-001] | complete | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
+| 2     | [STEP-002] |          | `src/components/recipes/RecipeEditor.vue`, then `src/components/recipes/__tests__/RecipeEditor.spec.ts` |
 
 **Commit gate** — the human commits. A spot-check does not replace the gate.
 
@@ -43,7 +43,7 @@ All three must succeed with no warning or error before that commit.
 
 ## [STEP-001] Assemble a recipe from shared and kind-specific fields
 
-**Status:**
+**Status:** complete
 
 **Acceptance criteria:** Homemade and prepared saves are built from one shared set of fields plus kind-specific fields. The builder uses checked values and contains no non-null assertions. Save emits that recipe only when the builder returns one, and includes the existing id when editing. Prepared saves still force difficulty Easy, zero prep and cook times, and empty ingredients and steps.
 
