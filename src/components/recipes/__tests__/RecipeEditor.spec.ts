@@ -806,6 +806,14 @@ describe('Recipe Editor', () => {
         const bistroMdId = 'iir00305003lfkdj';
         const harissa = TEST_RECIPES.find((recipe) => recipe.id === 'prepared-1')!;
 
+        it('does not flag a duplicate name before a source is selected', async () => {
+          const inputs = getPreparedInputs(wrapper);
+          await inputs.name.trigger('focus');
+          await inputs.name.setValue(harissa.name);
+          await inputs.name.trigger('blur');
+          expect(wrapper.text()).not.toContain('already exists');
+        });
+
         it('accepts a homemade name when CookUnity is selected', async () => {
           const inputs = getPreparedInputs(wrapper);
           await inputs.source.setValue(sourceId);
