@@ -382,7 +382,10 @@ describe('use nutrition generator', () => {
 
     it('sends only the item name in the recipe JSON', async () => {
       const { prompt } = await promptFor(preparedRecipe, cookUnity);
-      expect(prompt).toContain(JSON.stringify({ name: preparedRecipe.name }));
+      const payload = JSON.stringify({ name: preparedRecipe.name });
+      expect(prompt).toContain(payload);
+      // the following ensures the recipe.name is not injected anywhere else in the prompt
+      expect(prompt.replace(payload, '')).not.toContain(preparedRecipe.name);
       expect(prompt).not.toContain('"ingredients"');
       expect(prompt).not.toContain('"steps"');
     });
