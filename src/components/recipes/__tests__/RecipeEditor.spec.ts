@@ -676,6 +676,25 @@ describe('Recipe Editor', () => {
           expect(saveButton.attributes('disabled')).toBeDefined();
         });
 
+        it('does not emit save when a required field is missing', async () => {
+          const saveButton = wrapper.getComponent('[data-testid="save-button"]') as VueWrapper<components.VBtn>;
+          const inputs = getInputs(wrapper);
+          await inputs.category.setValue('Dessert');
+          await inputs.cuisine.setValue('American');
+          await inputs.difficulty.setValue('Easy');
+          await inputs.name.setValue('Apple Pie');
+          await inputs.servings.setValue('2');
+          await inputs.prepTimeMinutes.setValue('30');
+          await inputs.cookTimeMinutes.setValue('45');
+          expect(saveButton.attributes('disabled')).toBeDefined();
+          // A disabled button does not fire click, so call the handler Save is bound to.
+          const onClick = saveButton.vm.$attrs.onClick;
+          expect(onClick).toBeTypeOf('function');
+          if (typeof onClick !== 'function') return;
+          await onClick(new MouseEvent('click'));
+          expect(wrapper.emitted('save')).toBeUndefined();
+        });
+
         it('emits the entered data on click', async () => {
           const saveButton = wrapper.getComponent('[data-testid="save-button"]');
           await fillHomemade(wrapper, { name: ' Apple Pie   ' });
