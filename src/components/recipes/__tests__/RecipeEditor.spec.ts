@@ -500,6 +500,46 @@ describe('Recipe Editor', () => {
         await textField.trigger('blur');
         expect(wrapper.text()).not.toContain('already exists');
       });
+
+      const harissa = TEST_RECIPES.find((recipe) => recipe.id === 'prepared-1')!;
+
+      it('accepts a prepared recipe name on a homemade editor', async () => {
+        const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
+
+        await input.trigger('focus');
+        await input.setValue(harissa.name);
+        await input.trigger('blur');
+        expect(wrapper.text()).not.toContain('already exists');
+      });
+
+      it('rejects a homemade name that differs only by case and surrounding spaces', async () => {
+        const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
+
+        await input.trigger('focus');
+        await input.setValue(`  ${TEST_RECIPES[0]!.name.toLowerCase()}  `);
+        await input.trigger('blur');
+        expect(wrapper.text()).toContain('already exists');
+      });
+
+      it('rejects a homemade name that matches a recipe whose kind is undefined', async () => {
+        const storedName = 'Weeknight Chili';
+        const { recipes } = useRecipesData();
+        (recipes as Ref<Recipe[]>).value = [
+          ...TEST_RECIPES,
+          {
+            ...TEST_RECIPES[0]!,
+            id: 'kind-undefined-1',
+            name: storedName,
+            kind: undefined,
+          } as unknown as Recipe,
+        ];
+
+        const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
+        await input.trigger('focus');
+        await input.setValue(storedName);
+        await input.trigger('blur');
+        expect(wrapper.text()).toContain('already exists');
+      });
     });
 
     describe('category', () => {
@@ -759,6 +799,91 @@ describe('Recipe Editor', () => {
               steps: [],
             },
           ]);
+        });
+      });
+
+      describe('name uniqueness', () => {
+        const bistroMdId = 'iir00305003lfkdj';
+        const harissa = TEST_RECIPES.find((recipe) => recipe.id === 'prepared-1')!;
+
+        it('does not flag a duplicate name before a source is selected', async () => {
+          const inputs = getPreparedInputs(wrapper);
+          await inputs.name.trigger('focus');
+          await inputs.name.setValue(harissa.name);
+          await inputs.name.trigger('blur');
+          expect(wrapper.text()).not.toContain('already exists');
+        });
+
+        it('accepts a homemade name when CookUnity is selected', async () => {
+          const inputs = getPreparedInputs(wrapper);
+          await inputs.source.setValue(sourceId);
+          await inputs.name.trigger('focus');
+          await inputs.name.setValue(TEST_RECIPES[0]!.name);
+          await inputs.name.trigger('blur');
+          expect(wrapper.text()).not.toContain('already exists');
+        });
+
+        it('accepts a name from another source when BistroMD is selected', async () => {
+          const inputs = getPreparedInputs(wrapper);
+          await inputs.source.setValue(bistroMdId);
+          await inputs.name.trigger('focus');
+          await inputs.name.setValue(harissa.name);
+          await inputs.name.trigger('blur');
+          expect(wrapper.text()).not.toContain('already exists');
+        });
+
+        it('rejects a name that matches another recipe from the selected source after trim and case folding', async () => {
+          const inputs = getPreparedInputs(wrapper);
+          await inputs.source.setValue(sourceId);
+          await inputs.name.trigger('focus');
+          await inputs.name.setValue(`  ${harissa.name.toLowerCase()}  `);
+          await inputs.name.trigger('blur');
+          expect(wrapper.text()).toContain('already exists');
+        });
+
+        it('allows the open prepared recipe to keep its name and rejects another name from the same source', async () => {
+          const sameSourceName = 'Lemon Herb Salmon';
+          const { recipes } = useRecipesData();
+          // TEST_RECIPES has only one CookUnity recipe, so the same-source clash needs a second one.
+          (recipes as Ref<Recipe[]>).value = [
+            ...TEST_RECIPES,
+            {
+              ...harissa,
+              id: 'prepared-cookunity-2',
+              name: sameSourceName,
+              sourceId,
+            },
+          ];
+          wrapper.unmount();
+          wrapper = mountComponent({ recipe: { ...harissa } });
+          const inputs = getPreparedInputs(wrapper);
+
+          expect(wrapper.text()).not.toContain('already exists');
+          await inputs.name.trigger('focus');
+          await inputs.name.setValue(sameSourceName);
+          await inputs.name.trigger('blur');
+          expect(wrapper.text()).toContain('already exists');
+
+          await inputs.name.setValue(harissa.name);
+          await inputs.name.trigger('blur');
+          expect(wrapper.text()).not.toContain('already exists');
+        });
+
+        it('rechecks the name when the selected source changes', async () => {
+          const inputs = getPreparedInputs(wrapper);
+          await inputs.source.setValue(sourceId);
+          await inputs.name.trigger('focus');
+          await inputs.name.setValue(harissa.name);
+          await inputs.name.trigger('blur');
+          expect(wrapper.text()).toContain('already exists');
+
+          await inputs.source.setValue(bistroMdId);
+          await flushPromises();
+          expect(wrapper.text()).not.toContain('already exists');
+
+          await inputs.source.setValue(sourceId);
+          await flushPromises();
+          expect(wrapper.text()).toContain('already exists');
         });
       });
     });
