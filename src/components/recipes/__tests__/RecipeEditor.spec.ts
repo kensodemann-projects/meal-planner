@@ -541,7 +541,7 @@ describe('Recipe Editor', () => {
             id: 'kind-undefined-1',
             name: storedName,
             kind: undefined,
-          } as any,
+          } as unknown as Recipe,
         ];
 
         const input = wrapper.findComponent('[data-testid="name-input"]').find('input');
