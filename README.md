@@ -22,10 +22,10 @@ basis. They are all application wide for all users.
 A category classifies the type of recipe. The following categories are supported:
 
 - Beef, Pork, Lamb, Poultry, Seafood
-- Vegetarian, Beans, Produce, Nuts & Seeds
-- Bread & Bakery, Grains, Pasta
+- Vegetarian
+- Bread, Grain, Pasta
 - Appetizer, Breakfast, Soup, Salad, Side Dish, Sauce
-- Dairy, Snack, Dessert, Beverage
+- Dessert, Beverage
 
 ## Cuisine
 
