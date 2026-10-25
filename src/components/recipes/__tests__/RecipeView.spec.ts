@@ -194,8 +194,10 @@ describe('RecipeView', () => {
         expect(wrapper.find('h1').exists()).toBe(false);
       });
 
-      it('renders the name in an h2', () => {
-        expect(wrapper.find('h2').text()).toBe(TEST_HOMEMADE_RECIPE.name);
+      it('renders only the recipe name as an h2', () => {
+        const headings = wrapper.findAll('h2');
+        expect(headings).toHaveLength(1);
+        expect(headings[0]?.text()).toBe(TEST_HOMEMADE_RECIPE.name);
       });
 
       it('renders Ingredients as an h3 and omits an h2 in that section', () => {
@@ -204,13 +206,15 @@ describe('RecipeView', () => {
         expect(section.find('h3').text()).toBe('Ingredients');
       });
 
-      it('renders Steps as an h3', () => {
+      it('renders Steps as an h3 and omits an h2 in that section', () => {
         const section = wrapper.find('[data-testid="steps-section"]');
+        expect(section.find('h2').exists()).toBe(false);
         expect(section.find('h3').text()).toBe('Steps');
       });
 
-      it('renders Nutritional Information as an h3', () => {
+      it('renders Nutritional Information as an h3 and omits an h2 in that section', () => {
         const section = wrapper.find('[data-testid="nutritional-information-section"]');
+        expect(section.find('h2').exists()).toBe(false);
         expect(section.find('h3').text()).toBe('Nutritional Information');
       });
     });
@@ -286,12 +290,19 @@ describe('RecipeView', () => {
       });
     });
 
-    it('renders the name in an h2', () => {
-      expect(wrapper.find('h2').text()).toBe(TEST_PREPARED_RECIPE.name);
+    it('does not render an h1', () => {
+      expect(wrapper.find('h1').exists()).toBe(false);
     });
 
-    it('renders Nutritional Information as an h3', () => {
+    it('renders only the recipe name as an h2', () => {
+      const headings = wrapper.findAll('h2');
+      expect(headings).toHaveLength(1);
+      expect(headings[0]?.text()).toBe(TEST_PREPARED_RECIPE.name);
+    });
+
+    it('renders Nutritional Information as an h3 and omits an h2 in that section', () => {
       const section = wrapper.find('[data-testid="nutritional-information-section"]');
+      expect(section.find('h2').exists()).toBe(false);
       expect(section.find('h3').text()).toBe('Nutritional Information');
     });
 
