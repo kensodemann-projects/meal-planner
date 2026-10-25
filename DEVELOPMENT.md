@@ -36,8 +36,10 @@ Once enough has been done to justify releasing, then from the fully merged `main
 1. Create a branch. Ex: `git checkout -b release`
 1. `pnpm bump`
 1. Review and commit using a message such as "release vX.Y.Z"
-1. Do a pull request, review, merge.
-1. Back on main make sure local is up to date, `git pull`
+1. Create a pull request (`gh pr create -t "release vX.Y.Z"`)
+1. Note the number, use the PR to double check your changes
+1. Merge the pull request (`gh pr merge -r`)
+1. Switch back to `main` and make sure local is up to date: `git pull`
 1. `git tag -a vX.Y.Z -m "release vX.Y.Z"`
 1. `git push --tags`
 1. `pnpm release`

@@ -1,5 +1,18 @@
 # meal-planner
 
+## 2.1.0
+
+### Minor Changes
+
+- befc37a: Allow the usage of prepared meals. This includes meals from prepared meal services, frozen meals from the grocery store, and restaurant meals.
+
+### Patch Changes
+
+- af30972: Remove unused EditableItem type.
+- 6f52258: Upgrade dependencies.
+  Tabbing out of a populated autocomplete now keeps the current selection instead of clearing it (Vuetify 4.2 search-sync).
+- c81a9f2: Modify recipe entry to force the user to enter all nutritional information before save.
+
 ## 2.0.0
 
 ### Major Changes
