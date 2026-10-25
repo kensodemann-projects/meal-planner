@@ -24,9 +24,9 @@ Section title text stays `Ingredients`, `Steps`, and `Nutritional Information`. 
 
 ## File order
 
-| Order | Step       | Status | Files                                                                                               |
-| ----- | ---------- | ------ | --------------------------------------------------------------------------------------------------- |
-| 1     | [STEP-001] |        | `src/components/recipes/RecipeView.vue`, then `src/components/recipes/__tests__/RecipeView.spec.ts` |
+| Order | Step       | Status   | Files                                                                                               |
+| ----- | ---------- | -------- | --------------------------------------------------------------------------------------------------- |
+| 1     | [STEP-001] | complete | `src/components/recipes/RecipeView.vue`, then `src/components/recipes/__tests__/RecipeView.spec.ts` |
 
 ## Commit gate
 
@@ -40,7 +40,7 @@ pnpm lint
 
 ## [STEP-001] Cascade RecipeView headings from headingLevel
 
-**Status:**
+**Status:** complete
 
 **Acceptance criteria:** `RecipeView` accepts optional `headingLevel: 1 | 2` defaulting to `1`. The recipe name renders as `h${headingLevel}`. Ingredients, Steps, and Nutritional Information render as `h${headingLevel + 1}` when those sections are shown. The recipe detail page is unchanged. Homemade versus prepared display from #442 is unchanged. Unit tests cover both heading levels for the recipe name and for the section headings.
 

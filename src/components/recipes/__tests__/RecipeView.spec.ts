@@ -17,8 +17,9 @@ const vuetify = createVuetify({
   components,
   directives,
 });
-const mountComponent = (props: { recipe: Recipe } = { recipe: { ...TEST_HOMEMADE_RECIPE, id: 'test-132' } }) =>
-  mount(RecipeView, { props, global: { plugins: [vuetify] } });
+const mountComponent = (
+  props: { recipe: Recipe; headingLevel?: 1 | 2 } = { recipe: { ...TEST_HOMEMADE_RECIPE, id: 'test-132' } },
+) => mount(RecipeView, { props, global: { plugins: [vuetify] } });
 
 const preparedSource = TEST_SOURCES.find((source) => source.id === TEST_PREPARED_RECIPE.sourceId)!;
 
@@ -180,6 +181,39 @@ describe('RecipeView', () => {
         expect(text).toContain(`Protein: ${TEST_HOMEMADE_RECIPE.protein}g`);
       });
     });
+
+    describe('when headingLevel is 2', () => {
+      beforeEach(() => {
+        wrapper = mountComponent({
+          recipe: { ...TEST_HOMEMADE_RECIPE, id: 'test-132' },
+          headingLevel: 2,
+        });
+      });
+
+      it('does not render an h1', () => {
+        expect(wrapper.find('h1').exists()).toBe(false);
+      });
+
+      it('renders the name in an h2', () => {
+        expect(wrapper.find('h2').text()).toBe(TEST_HOMEMADE_RECIPE.name);
+      });
+
+      it('renders Ingredients as an h3 and omits an h2 in that section', () => {
+        const section = wrapper.find('[data-testid="ingredients-section"]');
+        expect(section.find('h2').exists()).toBe(false);
+        expect(section.find('h3').text()).toBe('Ingredients');
+      });
+
+      it('renders Steps as an h3', () => {
+        const section = wrapper.find('[data-testid="steps-section"]');
+        expect(section.find('h3').text()).toBe('Steps');
+      });
+
+      it('renders Nutritional Information as an h3', () => {
+        const section = wrapper.find('[data-testid="nutritional-information-section"]');
+        expect(section.find('h3').text()).toBe('Nutritional Information');
+      });
+    });
   });
 
   describe('prepared recipes', () => {
@@ -239,6 +273,42 @@ describe('RecipeView', () => {
       wrapper.unmount();
       wrapper = mountComponent({ recipe: { ...TEST_PREPARED_RECIPE, sourceId: 'missing-source' } });
       expect(metadataCard(wrapper, 'Source')?.props('value')).toBe('');
+    });
+  });
+
+  describe('prepared recipes when headingLevel is 2', () => {
+    beforeEach(() => {
+      const { sources } = useSourcesData();
+      (sources as Ref<Source[]>).value = TEST_SOURCES;
+      wrapper = mountComponent({
+        recipe: { ...TEST_PREPARED_RECIPE, id: 'prepared-1' },
+        headingLevel: 2,
+      });
+    });
+
+    it('renders the name in an h2', () => {
+      expect(wrapper.find('h2').text()).toBe(TEST_PREPARED_RECIPE.name);
+    });
+
+    it('renders Nutritional Information as an h3', () => {
+      const section = wrapper.find('[data-testid="nutritional-information-section"]');
+      expect(section.find('h3').text()).toBe('Nutritional Information');
+    });
+
+    it('hides the ingredients and steps sections', () => {
+      expect(wrapper.find('[data-testid="ingredients-section"]').exists()).toBe(false);
+      expect(wrapper.find('[data-testid="steps-section"]').exists()).toBe(false);
+    });
+
+    it('renders the source name', () => {
+      expect(metadataCard(wrapper, 'Source')?.props('value')).toBe(preparedSource.name);
+    });
+
+    it('hides difficulty, prep time, and cook time', () => {
+      const section = wrapper.find('[data-testid="description-section"]');
+      expect(section.text()).not.toContain('Difficulty:');
+      expect(section.text()).not.toContain('Prep Time:');
+      expect(section.text()).not.toContain('Cook Time:');
     });
   });
 });
