@@ -1,5 +1,5 @@
 <template>
-  <h1>{{ recipe.name }}</h1>
+  <component :is="nameTag">{{ recipe.name }}</component>
 
   <section data-testid="description-section">
     <div class="ma-4 pre-formatted">{{ recipe.description }}</div>
@@ -28,7 +28,7 @@
     <v-row density="compact">
       <v-col cols="12" md="6">
         <section data-testid="ingredients-section">
-          <h2>Ingredients</h2>
+          <component :is="sectionTag">Ingredients</component>
           <ul class="mt-2">
             <li v-for="ingredient in recipe.ingredients" :key="ingredient.id">
               <template v-if="ingredient.unitOfMeasure.id === 'item'">
@@ -44,7 +44,7 @@
 
       <v-col cols="12" md="6">
         <section data-testid="steps-section">
-          <h2>Steps</h2>
+          <component :is="sectionTag">Steps</component>
           <ol class="mt-2">
             <li v-for="step in recipe.steps" :key="step.id">
               {{ step.instruction }}
@@ -58,7 +58,7 @@
   <v-divider class="my-4" />
 
   <section data-testid="nutritional-information-section">
-    <h2 class="mx-4">Nutritional Information</h2>
+    <component :is="sectionTag" class="mx-4">Nutritional Information</component>
     <NutritionData :value="recipe" />
   </section>
 
@@ -70,9 +70,17 @@ import { useSourcesData } from '@/data/sources';
 import type { Recipe } from '@/models/recipe';
 import { computed } from 'vue';
 
-const props = defineProps<{ recipe: Recipe }>();
+const props = withDefaults(
+  defineProps<{
+    recipe: Recipe;
+    headingLevel?: 1 | 2;
+  }>(),
+  { headingLevel: 1 },
+);
 const { sources } = useSourcesData();
 
+const nameTag = computed(() => (props.headingLevel === 1 ? 'h1' : 'h2'));
+const sectionTag = computed(() => (props.headingLevel === 1 ? 'h2' : 'h3'));
 const isHomemade = computed(() => props.recipe.kind !== 'prepared');
 const sourceName = computed(() => sources.value.find((s) => s.id === props.recipe.sourceId)?.name || '');
 
