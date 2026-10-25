@@ -278,48 +278,31 @@ describe('RecipeView', () => {
       wrapper = mountComponent({ recipe: { ...TEST_PREPARED_RECIPE, sourceId: 'missing-source' } });
       expect(metadataCard(wrapper, 'Source')?.props('value')).toBe('');
     });
-  });
 
-  describe('prepared recipes when headingLevel is 2', () => {
-    beforeEach(() => {
-      const { sources } = useSourcesData();
-      (sources as Ref<Source[]>).value = TEST_SOURCES;
-      wrapper = mountComponent({
-        recipe: { ...TEST_PREPARED_RECIPE, id: 'prepared-1' },
-        headingLevel: 2,
+    describe('when headingLevel is 2', () => {
+      beforeEach(() => {
+        wrapper.unmount();
+        wrapper = mountComponent({
+          recipe: { ...TEST_PREPARED_RECIPE, id: 'prepared-1' },
+          headingLevel: 2,
+        });
       });
-    });
 
-    it('does not render an h1', () => {
-      expect(wrapper.find('h1').exists()).toBe(false);
-    });
+      it('does not render an h1', () => {
+        expect(wrapper.find('h1').exists()).toBe(false);
+      });
 
-    it('renders only the recipe name as an h2', () => {
-      const headings = wrapper.findAll('h2');
-      expect(headings).toHaveLength(1);
-      expect(headings[0]?.text()).toBe(TEST_PREPARED_RECIPE.name);
-    });
+      it('renders only the recipe name as an h2', () => {
+        const headings = wrapper.findAll('h2');
+        expect(headings).toHaveLength(1);
+        expect(headings[0]?.text()).toBe(TEST_PREPARED_RECIPE.name);
+      });
 
-    it('renders Nutritional Information as an h3 and omits an h2 in that section', () => {
-      const section = wrapper.find('[data-testid="nutritional-information-section"]');
-      expect(section.find('h2').exists()).toBe(false);
-      expect(section.find('h3').text()).toBe('Nutritional Information');
-    });
-
-    it('hides the ingredients and steps sections', () => {
-      expect(wrapper.find('[data-testid="ingredients-section"]').exists()).toBe(false);
-      expect(wrapper.find('[data-testid="steps-section"]').exists()).toBe(false);
-    });
-
-    it('renders the source name', () => {
-      expect(metadataCard(wrapper, 'Source')?.props('value')).toBe(preparedSource.name);
-    });
-
-    it('hides difficulty, prep time, and cook time', () => {
-      const section = wrapper.find('[data-testid="description-section"]');
-      expect(section.text()).not.toContain('Difficulty:');
-      expect(section.text()).not.toContain('Prep Time:');
-      expect(section.text()).not.toContain('Cook Time:');
+      it('renders Nutritional Information as an h3 and omits an h2 in that section', () => {
+        const section = wrapper.find('[data-testid="nutritional-information-section"]');
+        expect(section.find('h2').exists()).toBe(false);
+        expect(section.find('h3').text()).toBe('Nutritional Information');
+      });
     });
   });
 });
