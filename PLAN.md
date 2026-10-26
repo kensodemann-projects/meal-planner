@@ -41,10 +41,10 @@ Related to [#436](https://github.com/kensodemann-projects/meal-planner/issues/43
 
 **File order**
 
-| Order | Step       | Status | Files                                           |
-| ----- | ---------- | ------ | ----------------------------------------------- |
-| 1     | [STEP-001] |        | `src/pages/dashboard/recipes.vue`               |
-| 2     | [STEP-002] |        | `src/pages/dashboard/__tests__/recipes.spec.ts` |
+| Order | Step       | Status   | Files                                           |
+| ----- | ---------- | -------- | ----------------------------------------------- |
+| 1     | [STEP-001] | complete | `src/pages/dashboard/recipes.vue`               |
+| 2     | [STEP-002] |          | `src/pages/dashboard/__tests__/recipes.spec.ts` |
 
 **Commit gate** — the human commits. A spot-check does not replace the gate.
 
@@ -58,7 +58,7 @@ All three must succeed with no warning or error before that commit.
 
 ## [STEP-001] Replace the meal recipes placeholder
 
-**Status:**
+**Status:** complete
 
 **Acceptance criteria:** `/dashboard/recipes` shows today’s recipes for a valid `mealType`, with the contract copy for empty, unrecognized, and missing-recipe states, and Close returns to `/dashboard`.
 
