@@ -11,7 +11,7 @@
             <RecipeView :recipe="row.recipe" :heading-level="2" />
           </template>
           <template v-else>
-            {{ row.item.name }}
+            <h2>{{ row.item.name }}</h2>
             <p>Recipe unavailable.</p>
           </template>
         </div>
