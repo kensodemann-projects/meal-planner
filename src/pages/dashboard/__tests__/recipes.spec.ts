@@ -8,6 +8,7 @@ import type { MealPlan } from '@/models/meal-plan';
 import type { Recipe } from '@/models/recipe';
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+import { reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
@@ -53,10 +54,12 @@ const mountPage = () => mount(RecipesPage, { global: { plugins: [vuetify] } });
 const planRequest = () => useMealPlansData().getMealPlanForDate as Mock;
 const recipeRequest = () => useRecipesData().getRecipe as Mock;
 
+const routeState = reactive<{ query: Record<string, unknown> }>({
+  query: { mealType: 'breakfast' },
+});
+
 const setMealType = (mealType?: string | string[]) => {
-  (useRoute as Mock).mockReturnValue({
-    query: mealType === undefined ? {} : { mealType },
-  });
+  routeState.query = mealType === undefined ? {} : { mealType };
 };
 
 describe('meal recipes page', () => {
@@ -74,6 +77,7 @@ describe('meal recipes page', () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date(2025, 11, 25));
     setMealType('breakfast');
+    (useRoute as Mock).mockReturnValue(routeState);
     (useRouter as Mock).mockReturnValue({
       push: vi.fn(),
     });
@@ -114,7 +118,7 @@ describe('meal recipes page', () => {
       ['an undefined mealType (brunch)', { mealType: 'brunch' }],
       ['an array', { mealType: ['breakfast'] }],
     ] as const)('rejects %s', async (_label, query) => {
-      (useRoute as Mock).mockReturnValue({ query });
+      routeState.query = { ...query };
       wrapper = await renderPage();
       expect(wrapper.text()).toContain('This meal type is not recognized.');
       expect(wrapper.find('h1').exists()).toBe(false);
@@ -161,6 +165,66 @@ describe('meal recipes page', () => {
       expect(wrapper.find('h1').text()).toBe('Breakfast');
       expect(wrapper.text()).not.toContain('No recipes planned for this meal today.');
       expect(wrapper.findComponent(RecipeView).exists()).toBe(false);
+    });
+
+    it('discards a stale lookup when mealType changes and renders the newer meal', async () => {
+      const breakfastItem = mealItem({
+        id: 'breakfast-item',
+        name: homemadeRecipe.name,
+        recipeId: homemadeRecipe.id!,
+        servings: 4,
+      });
+      const lunchItem = mealItem({
+        id: 'lunch-item',
+        name: preparedRecipe.name,
+        recipeId: preparedRecipe.id!,
+        servings: 3,
+      });
+      let resolveBreakfastPlan!: (plan: MealPlan) => void;
+      let resolveLunchPlan!: (plan: MealPlan) => void;
+      planRequest()
+        .mockReturnValueOnce(
+          new Promise<MealPlan>((resolve) => {
+            resolveBreakfastPlan = resolve;
+          }),
+        )
+        .mockReturnValueOnce(
+          new Promise<MealPlan>((resolve) => {
+            resolveLunchPlan = resolve;
+          }),
+        );
+      recipeRequest().mockImplementation(async (id: string) => {
+        if (id === homemadeRecipe.id) return homemadeRecipe;
+        if (id === preparedRecipe.id) return preparedRecipe;
+        return null;
+      });
+
+      wrapper = mountPage();
+      await flushPromises();
+      expect(wrapper.find('h1').text()).toBe('Breakfast');
+      expect(wrapper.findComponent(RecipeView).exists()).toBe(false);
+
+      setMealType('lunch');
+      await flushPromises();
+      expect(wrapper.find('h1').text()).toBe('Lunch');
+      expect(wrapper.findComponent(RecipeView).exists()).toBe(false);
+      expect(planRequest()).toHaveBeenCalledTimes(2);
+
+      resolveLunchPlan(mealPlanFor([{ id: 'lunch', type: 'Lunch', items: [lunchItem] }]));
+      await flushPromises();
+      expect(wrapper.find('h1').text()).toBe('Lunch');
+      expect(wrapper.findComponent(RecipeView).props('recipe')).toEqual(preparedRecipe);
+      expect(wrapper.text()).toContain('Planned servings: 3');
+      expect(wrapper.text()).not.toContain(homemadeRecipe.name);
+      expect(recipeRequest()).toHaveBeenCalledExactlyOnceWith(preparedRecipe.id);
+
+      resolveBreakfastPlan(mealPlanFor([{ id: 'breakfast', type: 'Breakfast', items: [breakfastItem] }]));
+      await flushPromises();
+      expect(wrapper.find('h1').text()).toBe('Lunch');
+      expect(wrapper.findComponent(RecipeView).props('recipe')).toEqual(preparedRecipe);
+      expect(wrapper.text()).toContain('Planned servings: 3');
+      expect(wrapper.text()).not.toContain(homemadeRecipe.name);
+      expect(recipeRequest()).toHaveBeenCalledExactlyOnceWith(preparedRecipe.id);
     });
   });
 
