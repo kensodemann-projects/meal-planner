@@ -1,5 +1,11 @@
 # meal-planner
 
+## 2.2.0
+
+### Minor Changes
+
+- d563b17: Show recipes for a single meal from panels on the dashboard.
+
 ## 2.1.0
 
 ### Minor Changes
