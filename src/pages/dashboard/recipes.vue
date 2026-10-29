@@ -45,7 +45,8 @@ type MealRecipeRow = {
   recipe: Recipe | null;
 };
 
-const isMealQuery = (value: unknown): value is MealQuery => typeof value === 'string' && value in MEAL_QUERIES;
+const isMealQuery = (value: unknown): value is MealQuery =>
+  typeof value === 'string' && Object.hasOwn(MEAL_QUERIES, value);
 
 const route = useRoute();
 const router = useRouter();
