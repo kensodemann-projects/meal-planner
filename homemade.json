@@ -1,0 +1,1321 @@
+[
+  {
+    "Name": "Greek Salad",
+    "Description": "Fresh Mediterranean salad with crisp vegetables, olives, and creamy feta cheese.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Salad",
+    "Cuisine": "Greek",
+    "Difficulty": "Easy",
+    "Servings": 4,
+    "PrepTimeMinutes": 15,
+    "CookTimeMinutes": 0,
+    "Calories": 285,
+    "Protein": 9,
+    "Carbs": 14,
+    "Fat": 23,
+    "Sugar": 7,
+    "Sodium": 780,
+    "Ingredients": [
+      { "Order": 1, "Units": 2, "UOM": "Item", "Name": "Cucumber" },
+      { "Order": 2, "Units": 4, "UOM": "Item", "Name": "Tomatoes" },
+      { "Order": 3, "Units": 1, "UOM": "Item", "Name": "Red onion" },
+      { "Order": 4, "Units": 1, "UOM": "Cup", "Name": "Kalmata olives" },
+      { "Order": 5, "Units": 8, "UOM": "Ounce", "Name": "Feta cheese" },
+      { "Order": 6, "Units": 0.25, "UOM": "Cup", "Name": "Extra virgin olive oil" },
+      { "Order": 7, "Units": 2, "UOM": "Tablespoon", "Name": "Red wine vinegar" },
+      { "Order": 8, "Units": 1, "UOM": "Teaspoon", "Name": "Dried oregano" },
+      { "Order": 9, "Units": 0.5, "UOM": "Teaspoon", "Name": "Salt" },
+      { "Order": 10, "Units": 0.25, "UOM": "Teaspoon", "Name": "Black pepper" }
+    ],
+    "Steps": [
+      { "Order": 1, "Instruction": "Cut cucumbers and tomatoes into large chunks." },
+      { "Order": 2, "Instruction": "Slice red onion into thin half-moons." },
+      { "Order": 3, "Instruction": "Combine vegetables in a large bowl with olives." },
+      { "Order": 4, "Instruction": "Whisk olive oil, vinegar, oregano, salt, and pepper." },
+      { "Order": 5, "Instruction": "Pour dressing over salad and toss gently." },
+      { "Order": 6, "Instruction": "Top with large pieces of feta cheese." },
+      { "Order": 7, "Instruction": "Let sit for 5 minutes before serving to allow flavors to meld." }
+    ]
+  },
+  {
+    "Name": "Kung Pao Chicken",
+    "Description": "Spicy Sichuan stir-fry with tender chicken, peanuts, and dried chilies in savory sauce.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Poultry",
+    "Cuisine": "Chinese",
+    "Difficulty": "Normal",
+    "Servings": 4,
+    "PrepTimeMinutes": 20,
+    "CookTimeMinutes": 15,
+    "Calories": 395,
+    "Protein": 32,
+    "Carbs": 12,
+    "Fat": 25,
+    "Sugar": 3,
+    "Sodium": 920,
+    "Ingredients": [
+      { "Order": 1, "Units": 1.5, "UOM": "Pound", "Name": "Chicken thights" },
+      { "Order": 2, "Units": 0.5, "UOM": "Cup", "Name": "Roated peanuts" },
+      { "Order": 3, "Units": 12, "UOM": "Item", "Name": "Dried red chilies" },
+      { "Order": 4, "Units": 1, "UOM": "Teaspoon", "Name": "Sichuan peppercorns" },
+      { "Order": 5, "Units": 3, "UOM": "Tablespoon", "Name": "Soy Sauce" },
+      { "Order": 6, "Units": 2, "UOM": "Tablespoon", "Name": "Rice vinegar" },
+      { "Order": 7, "Units": 1, "UOM": "Tablespoon", "Name": "Sesame oil" },
+      { "Order": 8, "Units": 1, "UOM": "Tablespoon", "Name": "Cornstarch" },
+      { "Order": 9, "Units": 4, "UOM": "Item", "Name": "Green onions" },
+      { "Order": 10, "Units": 3, "UOM": "Item", "Name": "Garlic" },
+      { "Order": 11, "Units": 1, "UOM": "Item", "Name": "Ginger (about a 1 inch piece)" }
+    ],
+    "Steps": [
+      { "Order": 1, "Instruction": "Cut chicken into 1-inch cubes. Marinate with 1 tbsp soy sauce and cornstarch." },
+      { "Order": 2, "Instruction": "Mix remaining soy sauce, rice vinegar, and sesame oil for the sauce." },
+      { "Order": 3, "Instruction": "Heat wok over high heat. Toast Sichuan peppercorns briefly, then set aside." },
+      { "Order": 4, "Instruction": "Stir-fry chicken until golden, about 5 minutes. Remove from wok." },
+      { "Order": 5, "Instruction": "Add dried chilies, garlic, and ginger. Stir-fry for 30 seconds." },
+      { "Order": 6, "Instruction": "Return chicken to wok. Add sauce and peanuts." },
+      { "Order": 7, "Instruction": "Toss until sauce thickens and coats the chicken." },
+      { "Order": 8, "Instruction": "Garnish with sliced green onions and serve over rice." }
+    ]
+  },
+  {
+    "Name": "Miso Ramen",
+    "Description": "Hearty Japanese noodle soup with rich miso broth, tender chashu pork, and soft-boiled egg.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Soup",
+    "Cuisine": "Japanese",
+    "Difficulty": "Advanced",
+    "Servings": 4,
+    "PrepTimeMinutes": 45,
+    "CookTimeMinutes": 60,
+    "Calories": 620,
+    "Protein": 35,
+    "Carbs": 52,
+    "Fat": 32,
+    "Sugar": 6,
+    "Sodium": 1450,
+    "Ingredients": [
+      { "Order": 1, "Units": 14, "UOM": "Ounce", "Name": "Ramen noodles" },
+      { "Order": 2, "Units": 1, "UOM": "Pound", "Name": "Pork belly" },
+      { "Order": 3, "Units": 4, "UOM": "Tablespoon", "Name": "White miso paste" },
+      { "Order": 4, "Units": 8, "UOM": "Cup", "Name": "Chicken broth" },
+      { "Order": 5, "Units": 3, "UOM": "Tablespoon", "Name": "Soy sauce" },
+      { "Order": 6, "Units": 2, "UOM": "Tablespoon", "Name": "Sake" },
+      { "Order": 7, "Units": 4, "UOM": "Item", "Name": "Eggs" },
+      { "Order": 8, "Units": 4, "UOM": "Item", "Name": "Green onion" },
+      { "Order": 9, "Units": 4, "UOM": "Item", "Name": "Nori sheets" },
+      { "Order": 10, "Units": 1, "UOM": "Cup", "Name": "Corn kernels" },
+      { "Order": 11, "Units": 1, "UOM": "Tablespoon", "Name": "Sesame oil" }
+    ],
+    "Steps": [
+      { "Order": 1, "Instruction": "Braise pork belly in soy sauce, sake, and water for 2 hours until tender." },
+      { "Order": 2, "Instruction": "Soft-boil eggs for 7 minutes, then marinate in soy sauce mixture." },
+      { "Order": 3, "Instruction": "Heat chicken broth and whisk in miso paste until dissolved." },
+      { "Order": 4, "Instruction": "Add sesame oil and adjust seasoning with more soy sauce if needed." },
+      { "Order": 5, "Instruction": "Cook ramen noodles according to package directions." },
+      { "Order": 6, "Instruction": "Slice chashu pork into 1/4-inch thick pieces." },
+      { "Order": 7, "Instruction": "Divide noodles among bowls, ladle hot broth over them." },
+      { "Order": 8, "Instruction": "Top with sliced pork, halved egg, corn, nori, and sliced green onions." }
+    ]
+  },
+  {
+    "Name": "Pad Thai",
+    "Description": "Classic Thai stir-fried rice noodles with shrimp, tofu, peanuts, and tangy tamarind sauce.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Seafood",
+    "Cuisine": "Thai",
+    "Difficulty": "Normal",
+    "Servings": 4,
+    "PrepTimeMinutes": 25,
+    "CookTimeMinutes": 15,
+    "Calories": 425,
+    "Protein": 28,
+    "Carbs": 48,
+    "Fat": 14,
+    "Sugar": 12,
+    "Sodium": 890,
+    "Ingredients": [
+      { "Order": 1, "Units": 8, "UOM": "Ounce", "Name": "Rice noodles" },
+      { "Order": 2, "Units": 1, "UOM": "Pound", "Name": "Shrimp" },
+      { "Order": 3, "Units": 4, "UOM": "Ounce", "Name": "Firm Tofu" },
+      { "Order": 4, "Units": 2, "UOM": "Item", "Name": "Eggs" },
+      { "Order": 5, "Units": 2, "UOM": "Cup", "Name": "Bean sprouts" },
+      { "Order": 6, "Units": 3, "UOM": "Tablespoon", "Name": "Tamarind paste" },
+      { "Order": 7, "Units": 3, "UOM": "Tablespoon", "Name": "Fish sauce" },
+      { "Order": 8, "Units": 2, "UOM": "Tablespoon", "Name": "Palm sugar" },
+      { "Order": 9, "Units": 0.25, "UOM": "Cup", "Name": "Roasted peanuts" },
+      { "Order": 10, "Units": 4, "UOM": "Item", "Name": "Green onions" },
+      { "Order": 11, "Units": 1, "UOM": "Item", "Name": "Lime" }
+    ],
+    "Steps": [
+      { "Order": 1, "Instruction": "Soak rice noodles in warm water for 30 minutes, then drain." },
+      { "Order": 2, "Instruction": "Mix tamarind paste, fish sauce, and palm sugar to make the sauce." },
+      { "Order": 3, "Instruction": "Heat oil in a wok over high heat. Stir-fry tofu until golden, set aside." },
+      { "Order": 4, "Instruction": "Cook shrimp until pink, about 2 minutes per side. Set aside." },
+      { "Order": 5, "Instruction": "Scramble eggs in the wok, then add noodles and sauce." },
+      { "Order": 6, "Instruction": "Toss until noodles are coated and slightly caramelized." },
+      { "Order": 7, "Instruction": "Add tofu, shrimp, bean sprouts, and green onions. Toss to combine." },
+      { "Order": 8, "Instruction": "Serve topped with crushed peanuts and lime wedges." }
+    ]
+  },
+  {
+    "Name": "Tiramisu",
+    "Description": "Classic Italian dessert with espresso-soaked ladyfingers and mascarpone cream.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Dessert",
+    "Cuisine": "Italian",
+    "Difficulty": "Normal",
+    "Servings": 12,
+    "PrepTimeMinutes": 30,
+    "CookTimeMinutes": 0,
+    "Calories": 385,
+    "Protein": 7,
+    "Carbs": 32,
+    "Fat": 24,
+    "Sugar": 24,
+    "Sodium": 85,
+    "Ingredients": [
+      { "Order": 1, "Units": 36, "UOM": "Item", "Name": "Ladyfinger cookies" },
+      { "Order": 2, "Units": 16, "UOM": "Ounce", "Name": "Mascarpone cheese" },
+      { "Order": 3, "Units": 6, "UOM": "Item", "Name": "Egg yolks" },
+      { "Order": 4, "Units": 0.75, "UOM": "Cup", "Name": "Sugar" },
+      { "Order": 5, "Units": 1.5, "UOM": "Cup", "Name": "Heavy Cream" },
+      { "Order": 6, "Units": 2, "UOM": "Cup", "Name": "Espresso" },
+      { "Order": 7, "Units": 0.25, "UOM": "Cup", "Name": "Kahlua or Rum" },
+      { "Order": 8, "Units": 3, "UOM": "Tablespoon", "Name": "Cocoa powder" },
+      { "Order": 9, "Units": 1, "UOM": "Teaspoon", "Name": "Vanilla extract" }
+    ],
+    "Steps": [
+      { "Order": 1, "Instruction": "Brew espresso and let cool. Mix with Kahlua." },
+      { "Order": 2, "Instruction": "Whisk egg yolks with sugar over double boiler until thick and pale." },
+      { "Order": 3, "Instruction": "Remove from heat. Fold in mascarpone and vanilla." },
+      { "Order": 4, "Instruction": "Whip heavy cream to stiff peaks. Fold into mascarpone mixture." },
+      { "Order": 5, "Instruction": "Quickly dip ladyfingers in espresso mixture. Arrange in 9x13 dish." },
+      { "Order": 6, "Instruction": "Spread half the mascarpone cream over ladyfingers." },
+      { "Order": 7, "Instruction": "Repeat with another layer of dipped ladyfingers and remaining cream." },
+      { "Order": 8, "Instruction": "Refrigerate at least 4 hours. Dust with cocoa powder before serving." }
+    ]
+  },
+  {
+    "Name": "Indian Lentils and Pasta",
+    "Description": "A turmeric and cumin spiced lentil and tomato stew finished with orzo and fresh cilantro.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Vegetarian",
+    "Cuisine": "Indian",
+    "Difficulty": "Easy",
+    "Servings": 6,
+    "PrepTimeMinutes": 10,
+    "CookTimeMinutes": 45,
+    "Calories": 170,
+    "Protein": 7,
+    "Carbs": 30,
+    "Fat": 3,
+    "Sugar": 4,
+    "Sodium": 170,
+    "Ingredients": [
+      { "Order": 1, "Units": 1, "UOM": "Tablespoon", "Name": "vegetable oil" },
+      { "Order": 2, "Units": 1, "UOM": "Item", "Name": "large onion, chopped" },
+      { "Order": 3, "Units": 2, "UOM": "Item", "Name": "garlic cloves, finely chopped (or 0.5 tsp garlic powder)" },
+      { "Order": 4, "Units": 3, "UOM": "Cup", "Name": "water" },
+      { "Order": 5, "Units": 15, "UOM": "Ounce", "Name": "canned diced tomatoes with juice" },
+      { "Order": 6, "Units": 0.5, "UOM": "Cup", "Name": "dry lentils, rinsed" },
+      { "Order": 7, "Units": 1, "UOM": "Teaspoon", "Name": "ground cumin" },
+      { "Order": 8, "Units": 1, "UOM": "Teaspoon", "Name": "turmeric" },
+      { "Order": 9, "Units": 0.25, "UOM": "Teaspoon", "Name": "red pepper flakes (optional)" },
+      { "Order": 10, "Units": 0.5, "UOM": "Cup", "Name": "orzo or tiny pasta" },
+      { "Order": 11, "Units": 0.25, "UOM": "Cup", "Name": "fresh cilantro, chopped" }
+    ],
+    "Steps": [
+      {
+        "Order": 1,
+        "Instruction": "Heat oil in a large skillet over medium heat. Add onion and garlic and cook 3 to 4 minutes."
+      },
+      {
+        "Order": 2,
+        "Instruction": "Stir in water, diced tomatoes with juice, lentils, cumin, turmeric and red pepper flakes, if desired."
+      },
+      { "Order": 3, "Instruction": "Bring to a boil. Cover, reduce heat to low and simmer for 25 minutes." },
+      { "Order": 4, "Instruction": "Add pasta and cook uncovered until pasta is tender, about 10 minutes." },
+      { "Order": 5, "Instruction": "Sprinkle with cilantro and serve warm. Refrigerate leftovers within 2 hours." }
+    ]
+  },
+  {
+    "Name": "Curried Pumpkin Soup",
+    "Description": "A creamy pumpkin and mushroom soup warmed with curry powder, nutmeg and a touch of honey.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Soup",
+    "Cuisine": "Indian",
+    "Difficulty": "Easy",
+    "Servings": 8,
+    "PrepTimeMinutes": 10,
+    "CookTimeMinutes": 30,
+    "Calories": 110,
+    "Protein": 5,
+    "Carbs": 15,
+    "Fat": 3.5,
+    "Sugar": 11,
+    "Sodium": 380,
+    "Ingredients": [
+      { "Order": 1, "Units": 0.5, "UOM": "Pound", "Name": "fresh mushrooms, sliced" },
+      { "Order": 2, "Units": 0.5, "UOM": "Cup", "Name": "onion, chopped" },
+      { "Order": 3, "Units": 2, "UOM": "Tablespoon", "Name": "margarine" },
+      { "Order": 4, "Units": 2, "UOM": "Tablespoon", "Name": "all-purpose flour" },
+      { "Order": 5, "Units": 1, "UOM": "Teaspoon", "Name": "curry powder" },
+      { "Order": 6, "Units": 3, "UOM": "Cup", "Name": "vegetable broth" },
+      { "Order": 7, "Units": 15, "UOM": "Ounce", "Name": "canned solid-pack pumpkin" },
+      { "Order": 8, "Units": 12, "UOM": "Ounce", "Name": "canned evaporated milk" },
+      { "Order": 9, "Units": 1, "UOM": "Tablespoon", "Name": "honey" },
+      { "Order": 10, "Units": 0.5, "UOM": "Teaspoon", "Name": "salt" },
+      { "Order": 11, "Units": 0.25, "UOM": "Teaspoon", "Name": "pepper" },
+      { "Order": 12, "Units": 0.25, "UOM": "Teaspoon", "Name": "ground nutmeg" },
+      { "Order": 13, "Units": 1, "UOM": "Pinch", "Name": "fresh or frozen chives, for garnish (optional)" }
+    ],
+    "Steps": [
+      {
+        "Order": 1,
+        "Instruction": "In a 4 quart or larger saucepan, saute the mushrooms and onion in margarine until tender."
+      },
+      { "Order": 2, "Instruction": "Stir in the flour and curry powder until blended. Gradually add the broth." },
+      { "Order": 3, "Instruction": "Bring to a boil; cook and stir for 2 minutes or until thickened." },
+      { "Order": 4, "Instruction": "Add the pumpkin, evaporated milk, honey, salt, pepper and nutmeg; heat through." },
+      { "Order": 5, "Instruction": "Garnish with chives if desired. Refrigerate leftovers within 2 hours." }
+    ]
+  },
+  {
+    "Name": "Hot Apple Orange Cider",
+    "Description": "Apple juice simmered with halved oranges, cloves, allspice and cinnamon sticks for a warming spiced drink.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Beverage",
+    "Cuisine": "American",
+    "Difficulty": "Easy",
+    "Servings": 12,
+    "PrepTimeMinutes": 5,
+    "CookTimeMinutes": 120,
+    "Calories": 90,
+    "Protein": 0,
+    "Carbs": 21,
+    "Fat": 0,
+    "Sugar": 18,
+    "Sodium": 15,
+    "Ingredients": [
+      { "Order": 1, "Units": 64, "UOM": "FluidOunce", "Name": "100% apple juice (8 cups)" },
+      { "Order": 2, "Units": 32, "UOM": "FluidOunce", "Name": "water (4 cups)" },
+      { "Order": 3, "Units": 2, "UOM": "Item", "Name": "oranges, cut in half" },
+      { "Order": 4, "Units": 12, "UOM": "Each", "Name": "whole cloves" },
+      { "Order": 5, "Units": 2, "UOM": "Each", "Name": "allspice berries" },
+      { "Order": 6, "Units": 6, "UOM": "Each", "Name": "cinnamon sticks" }
+    ],
+    "Steps": [
+      {
+        "Order": 1,
+        "Instruction": "In a 4 quart stock pot, add apple juice, water, halved oranges and all the spices."
+      },
+      { "Order": 2, "Instruction": "Bring to a boil, then reduce heat and simmer for 2 hours." },
+      { "Order": 3, "Instruction": "Strain out the spices and serve hot. Refrigerate leftovers within 2 hours." }
+    ]
+  },
+  {
+    "Name": "Leek and Mushroom Orzo",
+    "Description": "Toasted orzo simmered in broth with sauteed leeks, mushrooms and tomato, finished with a little cream cheese.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Pasta",
+    "Cuisine": "Italian",
+    "Difficulty": "Easy",
+    "Servings": 9,
+    "PrepTimeMinutes": 15,
+    "CookTimeMinutes": 30,
+    "Calories": 150,
+    "Protein": 5,
+    "Carbs": 24,
+    "Fat": 4,
+    "Sugar": 3,
+    "Sodium": 300,
+    "Ingredients": [
+      { "Order": 1, "Units": 2, "UOM": "Cup", "Name": "leeks, chopped" },
+      { "Order": 2, "Units": 1, "UOM": "Tablespoon", "Name": "oil" },
+      { "Order": 3, "Units": 2, "UOM": "Cup", "Name": "mushrooms, sliced" },
+      { "Order": 4, "Units": 1, "UOM": "Cup", "Name": "dry orzo pasta" },
+      { "Order": 5, "Units": 2, "UOM": "Cup", "Name": "chicken or vegetable broth" },
+      { "Order": 6, "Units": 1.5, "UOM": "Cup", "Name": "tomato, chopped" },
+      { "Order": 7, "Units": 3, "UOM": "Tablespoon", "Name": "cream cheese" },
+      { "Order": 8, "Units": 1, "UOM": "Teaspoon", "Name": "garlic powder" },
+      { "Order": 9, "Units": 0.25, "UOM": "Teaspoon", "Name": "salt" },
+      { "Order": 10, "Units": 0.25, "UOM": "Teaspoon", "Name": "pepper" }
+    ],
+    "Steps": [
+      {
+        "Order": 1,
+        "Instruction": "Saute leeks in oil in a medium skillet over medium heat, stirring occasionally, until soft, about 5 minutes."
+      },
+      { "Order": 2, "Instruction": "Add mushrooms and cook until soft, about 5 minutes." },
+      { "Order": 3, "Instruction": "Stir in the orzo and toast lightly, stirring frequently, for about 3 minutes." },
+      {
+        "Order": 4,
+        "Instruction": "Add broth and bring to a boil. Reduce to a simmer, stirring occasionally, until the orzo is almost tender, about 8 minutes."
+      },
+      { "Order": 5, "Instruction": "Add the tomatoes and simmer until the orzo is tender, about 2 minutes." },
+      {
+        "Order": 6,
+        "Instruction": "Remove from heat and stir in cream cheese, garlic powder, salt and pepper. Serve warm."
+      }
+    ]
+  },
+  {
+    "Name": "Pasta Ratatouille",
+    "Description": "Provencal-style eggplant, zucchini, pepper and tomato saute served over pasta and topped with shredded cheese.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Vegetarian",
+    "Cuisine": "French",
+    "Difficulty": "Normal",
+    "Servings": 9,
+    "PrepTimeMinutes": 20,
+    "CookTimeMinutes": 30,
+    "Calories": 220,
+    "Protein": 9,
+    "Carbs": 32,
+    "Fat": 7,
+    "Sugar": 4,
+    "Sodium": 280,
+    "Ingredients": [
+      { "Order": 1, "Units": 8, "UOM": "Ounce", "Name": "uncooked pasta (rotini, penne or bow tie)" },
+      { "Order": 2, "Units": 2, "UOM": "Tablespoon", "Name": "vegetable oil" },
+      { "Order": 3, "Units": 0.5, "UOM": "Cup", "Name": "onion, chopped" },
+      { "Order": 4, "Units": 2, "UOM": "Item", "Name": "garlic cloves, finely chopped (or 0.5 tsp garlic powder)" },
+      { "Order": 5, "Units": 1, "UOM": "Item", "Name": "medium green bell pepper, chopped" },
+      { "Order": 6, "Units": 1, "UOM": "Item", "Name": "small zucchini, cubed" },
+      { "Order": 7, "Units": 1, "UOM": "Item", "Name": "small eggplant, cubed" },
+      { "Order": 8, "Units": 2, "UOM": "Item", "Name": "medium tomatoes, cubed" },
+      { "Order": 9, "Units": 0.75, "UOM": "Teaspoon", "Name": "salt" },
+      { "Order": 10, "Units": 0.25, "UOM": "Teaspoon", "Name": "pepper" },
+      { "Order": 11, "Units": 1, "UOM": "Teaspoon", "Name": "dried basil" },
+      { "Order": 12, "Units": 1, "UOM": "Cup", "Name": "shredded cheese" }
+    ],
+    "Steps": [
+      { "Order": 1, "Instruction": "Cook pasta according to package directions. Drain and set aside." },
+      {
+        "Order": 2,
+        "Instruction": "Heat oil in a large skillet over medium heat. Add onion and garlic and cook until soft."
+      },
+      { "Order": 3, "Instruction": "Add bell pepper, zucchini and eggplant. Cook about 10 to 12 minutes." },
+      {
+        "Order": 4,
+        "Instruction": "Stir in tomatoes, salt, pepper and basil. Cook another 2 to 4 minutes or until heated through."
+      },
+      { "Order": 5, "Instruction": "Serve over pasta and top with cheese. Refrigerate leftovers within 2 hours." }
+    ]
+  },
+  {
+    "Name": "Hummus with Tahini",
+    "Description": "A quick blender dip of chickpeas, lemon juice, garlic and tahini, served in 2 tablespoon portions.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Appetizer",
+    "Cuisine": "MiddleEastern",
+    "Difficulty": "Easy",
+    "Servings": 12,
+    "PrepTimeMinutes": 5,
+    "CookTimeMinutes": 0,
+    "Calories": 50,
+    "Protein": 2,
+    "Carbs": 5,
+    "Fat": 3,
+    "Sugar": 1,
+    "Sodium": 40,
+    "Ingredients": [
+      { "Order": 1, "Units": 15, "UOM": "Ounce", "Name": "canned garbanzo beans, drained and rinsed" },
+      { "Order": 2, "Units": 2, "UOM": "Tablespoon", "Name": "lemon juice" },
+      { "Order": 3, "Units": 1.5, "UOM": "Tablespoon", "Name": "vegetable oil" },
+      { "Order": 4, "Units": 2, "UOM": "Tablespoon", "Name": "water" },
+      { "Order": 5, "Units": 1, "UOM": "Item", "Name": "garlic clove (or 0.25 tsp garlic powder)" },
+      { "Order": 6, "Units": 1, "UOM": "Tablespoon", "Name": "tahini (sesame seed paste)" }
+    ],
+    "Steps": [
+      { "Order": 1, "Instruction": "Place all ingredients in a blender." },
+      {
+        "Order": 2,
+        "Instruction": "Blend until it reaches the consistency you like: longer for a smooth dip, less for a chunky one."
+      },
+      { "Order": 3, "Instruction": "If the hummus seems too thick, add 2 teaspoons of water and blend again." },
+      {
+        "Order": 4,
+        "Instruction": "No blender: mash the beans well with a fork on a large plate, then mix in the other ingredients."
+      },
+      { "Order": 5, "Instruction": "Refrigerate leftovers within 2 hours." }
+    ]
+  },
+  {
+    "Name": "Mushroom Bulgur Pilaf",
+    "Description": "Toasted bulgur cooked in broth with browned mushrooms and onion, then tossed with fresh spinach.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Grain",
+    "Cuisine": "MiddleEastern",
+    "Difficulty": "Normal",
+    "Servings": 6,
+    "PrepTimeMinutes": 10,
+    "CookTimeMinutes": 45,
+    "Calories": 90,
+    "Protein": 4,
+    "Carbs": 18,
+    "Fat": 1.5,
+    "Sugar": 2,
+    "Sodium": 70,
+    "Ingredients": [
+      { "Order": 1, "Units": 1, "UOM": "Cup", "Name": "onion, chopped (1 medium)" },
+      { "Order": 2, "Units": 1.5, "UOM": "Teaspoon", "Name": "vegetable oil" },
+      { "Order": 3, "Units": 3, "UOM": "Cup", "Name": "mushrooms, sliced or chopped" },
+      { "Order": 4, "Units": 0.75, "UOM": "Cup", "Name": "bulgur" },
+      { "Order": 5, "Units": 1.5, "UOM": "Cup", "Name": "low-sodium broth" },
+      { "Order": 6, "Units": 0.5, "UOM": "Teaspoon", "Name": "garlic powder" },
+      { "Order": 7, "Units": 0.25, "UOM": "Teaspoon", "Name": "pepper" },
+      { "Order": 8, "Units": 2, "UOM": "Cup", "Name": "packed fresh spinach, roughly chopped" }
+    ],
+    "Steps": [
+      { "Order": 1, "Instruction": "In a medium saucepan over medium heat, saute onion in oil until softened." },
+      {
+        "Order": 2,
+        "Instruction": "Add mushrooms and saute until beginning to brown, stirring often. Stir in bulgur and keep stirring until browned."
+      },
+      {
+        "Order": 3,
+        "Instruction": "Add broth, garlic powder and pepper. Cover, reduce heat to low and cook 15 to 20 minutes, until bulgur is tender and liquid is absorbed."
+      },
+      {
+        "Order": 4,
+        "Instruction": "Remove from heat, mix in the spinach and serve. Refrigerate leftovers within 2 hours."
+      }
+    ]
+  },
+  {
+    "Name": "Grilled Tuna with Chickpea and Spinach Salad",
+    "Description": "Lemon, garlic and oregano marinated tuna steaks grilled and served over a chickpea, spinach and tomato salad.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Seafood",
+    "Cuisine": "Mediterranean",
+    "Difficulty": "Normal",
+    "Servings": 4,
+    "PrepTimeMinutes": 25,
+    "CookTimeMinutes": 20,
+    "Calories": 282,
+    "Protein": 31,
+    "Carbs": 15,
+    "Fat": 10,
+    "Sugar": 2,
+    "Sodium": 418,
+    "Ingredients": [
+      { "Order": 1, "Units": 1, "UOM": "Tablespoon", "Name": "olive or canola oil" },
+      { "Order": 2, "Units": 1, "UOM": "Tablespoon", "Name": "garlic, minced (2 to 3 cloves)" },
+      { "Order": 3, "Units": 2, "UOM": "Tablespoon", "Name": "lemon juice, for the tuna" },
+      { "Order": 4, "Units": 1, "UOM": "Tablespoon", "Name": "fresh oregano, minced (or 1 tsp dried)" },
+      { "Order": 5, "Units": 12, "UOM": "Ounce", "Name": "tuna steak, cut into 4 portions" },
+      {
+        "Order": 6,
+        "Units": 7.75,
+        "UOM": "Ounce",
+        "Name": "low-sodium canned chickpeas, drained and rinsed (half a 15.5 oz can)"
+      },
+      { "Order": 7, "Units": 5, "UOM": "Ounce", "Name": "leaf spinach, rinsed and dried (half a 10 oz bag)" },
+      { "Order": 8, "Units": 1, "UOM": "Tablespoon", "Name": "lemon juice, for the salad" },
+      { "Order": 9, "Units": 1, "UOM": "Item", "Name": "medium tomato, cut into wedges" },
+      { "Order": 10, "Units": 0.125, "UOM": "Teaspoon", "Name": "salt" },
+      { "Order": 11, "Units": 0.125, "UOM": "Teaspoon", "Name": "ground black pepper" }
+    ],
+    "Steps": [
+      {
+        "Order": 1,
+        "Instruction": "Preheat a grill pan or oven broiler, with the rack 3 inches from the heat, on high."
+      },
+      {
+        "Order": 2,
+        "Instruction": "Combine oil, garlic, 2 tablespoons lemon juice and oregano, and brush over the tuna steaks. Marinate 5 to 10 minutes."
+      },
+      {
+        "Order": 3,
+        "Instruction": "Meanwhile, combine all salad ingredients. The salad can be made up to 2 hours ahead and refrigerated."
+      },
+      {
+        "Order": 4,
+        "Instruction": "Grill or broil tuna on high heat 3 to 4 minutes per side, until opaque and it separates easily with a fork (145 degrees F)."
+      },
+      { "Order": 5, "Instruction": "Serve one tuna steak over 1 cup of the salad." }
+    ]
+  },
+  {
+    "Name": "Beef and Broccoli",
+    "Description": "Ground beef and broccoli in a ginger, garlic and sesame soy sauce, served over bulgur.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Beef",
+    "Cuisine": "Chinese",
+    "Difficulty": "Normal",
+    "Servings": 7,
+    "PrepTimeMinutes": 15,
+    "CookTimeMinutes": 30,
+    "Calories": 210,
+    "Protein": 13,
+    "Carbs": 23,
+    "Fat": 7,
+    "Sugar": 5,
+    "Sodium": 350,
+    "Ingredients": [
+      { "Order": 1, "Units": 0.75, "UOM": "Pound", "Name": "lean ground beef" },
+      { "Order": 2, "Units": 0.25, "UOM": "Teaspoon", "Name": "ground ginger" },
+      { "Order": 3, "Units": 0.75, "UOM": "Teaspoon", "Name": "garlic powder" },
+      { "Order": 4, "Units": 2, "UOM": "Tablespoon", "Name": "packed brown sugar" },
+      { "Order": 5, "Units": 0.25, "UOM": "Cup", "Name": "low-sodium soy sauce" },
+      { "Order": 6, "Units": 2, "UOM": "Teaspoon", "Name": "cornstarch" },
+      { "Order": 7, "Units": 1, "UOM": "Tablespoon", "Name": "sesame oil" },
+      { "Order": 8, "Units": 0.25, "UOM": "Teaspoon", "Name": "red pepper flakes" },
+      { "Order": 9, "Units": 0.5, "UOM": "Cup", "Name": "water" },
+      { "Order": 10, "Units": 4, "UOM": "Cup", "Name": "broccoli, chopped (fresh or frozen)" },
+      { "Order": 11, "Units": 3, "UOM": "Cup", "Name": "cooked bulgur" }
+    ],
+    "Steps": [
+      {
+        "Order": 1,
+        "Instruction": "Cook beef, ginger and garlic powder in a skillet over medium-high heat until the meat is browned."
+      },
+      {
+        "Order": 2,
+        "Instruction": "In a medium bowl, mix brown sugar, soy sauce, cornstarch, sesame oil, pepper flakes and water."
+      },
+      {
+        "Order": 3,
+        "Instruction": "Add the sauce to the beef and cook for 5 minutes. Add broccoli and cook until tender."
+      },
+      { "Order": 4, "Instruction": "Serve over cooked bulgur. Refrigerate leftovers within 2 hours." }
+    ]
+  },
+  {
+    "Name": "Steamed Chicken Wontons",
+    "Description": "Hand-folded wontons filled with spiced ground chicken, cabbage and carrot, steamed until tender.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Appetizer",
+    "Cuisine": "Chinese",
+    "Difficulty": "Advanced",
+    "Servings": 6,
+    "PrepTimeMinutes": 30,
+    "CookTimeMinutes": 10,
+    "Calories": 220,
+    "Protein": 12,
+    "Carbs": 32,
+    "Fat": 5,
+    "Sugar": 1,
+    "Sodium": 410,
+    "Ingredients": [
+      { "Order": 1, "Units": 0.25, "UOM": "Cup", "Name": "green onion, finely chopped" },
+      { "Order": 2, "Units": 0.25, "UOM": "Teaspoon", "Name": "salt" },
+      { "Order": 3, "Units": 0.5, "UOM": "Teaspoon", "Name": "sugar" },
+      { "Order": 4, "Units": 0.25, "UOM": "Teaspoon", "Name": "cumin" },
+      { "Order": 5, "Units": 0.25, "UOM": "Teaspoon", "Name": "ground ginger (or 0.5 tsp fresh grated)" },
+      { "Order": 6, "Units": 0.125, "UOM": "Teaspoon", "Name": "pepper" },
+      { "Order": 7, "Units": 1, "UOM": "Pinch", "Name": "cinnamon" },
+      { "Order": 8, "Units": 1.5, "UOM": "Teaspoon", "Name": "cornstarch" },
+      { "Order": 9, "Units": 1.5, "UOM": "Teaspoon", "Name": "toasted sesame oil" },
+      { "Order": 10, "Units": 1, "UOM": "Cup", "Name": "cooked ground chicken (0.5 lb uncooked)" },
+      { "Order": 11, "Units": 1.5, "UOM": "Cup", "Name": "shredded cabbage" },
+      { "Order": 12, "Units": 0.75, "UOM": "Cup", "Name": "shredded carrot" },
+      { "Order": 13, "Units": 36, "UOM": "Piece", "Name": "wonton wrappers" },
+      { "Order": 14, "Units": 1, "UOM": "Pinch", "Name": "water or egg white, for sealing the edges" }
+    ],
+    "Steps": [
+      { "Order": 1, "Instruction": "Combine green onion, spices, cornstarch and sesame oil in a large bowl." },
+      { "Order": 2, "Instruction": "Add the cooked chicken, cabbage and carrot. Mix well." },
+      {
+        "Order": 3,
+        "Instruction": "Place 1 tablespoon of filling in the center of each wonton wrapper and brush the edges with water or egg white."
+      },
+      {
+        "Order": 4,
+        "Instruction": "Fold each wrapper diagonally so the corners line up and press the edges to seal. Bring the two side corners together over the filling and pinch to close."
+      },
+      {
+        "Order": 5,
+        "Instruction": "Spray a steamer basket with nonstick spray. Add wontons so they do not touch, cover and steam over simmering water 6 to 7 minutes."
+      }
+    ]
+  },
+  {
+    "Name": "Garlic Ginger Ramen with Beef",
+    "Description": "A one-skillet weeknight ramen with browned beef, mixed vegetables, garlic and fresh ginger.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Pasta",
+    "Cuisine": "Japanese",
+    "Difficulty": "Easy",
+    "Servings": 6,
+    "PrepTimeMinutes": 10,
+    "CookTimeMinutes": 15,
+    "Calories": 280,
+    "Protein": 12,
+    "Carbs": 31,
+    "Fat": 11,
+    "Sugar": 3,
+    "Sodium": 430,
+    "Ingredients": [
+      { "Order": 1, "Units": 0.5, "UOM": "Pound", "Name": "lean ground beef (15% fat)" },
+      { "Order": 2, "Units": 2, "UOM": "Cup", "Name": "water" },
+      {
+        "Order": 3,
+        "Units": 2,
+        "UOM": "Each",
+        "Name": "packages soy sauce flavor instant ramen noodles, broken up (use 1 seasoning packet)"
+      },
+      { "Order": 4, "Units": 16, "UOM": "Ounce", "Name": "frozen Asian-style vegetables" },
+      { "Order": 5, "Units": 2, "UOM": "Item", "Name": "green onions, thinly sliced" },
+      { "Order": 6, "Units": 1, "UOM": "Tablespoon", "Name": "fresh ginger, grated (or 0.25 tsp ground ginger)" },
+      { "Order": 7, "Units": 2, "UOM": "Item", "Name": "garlic cloves, minced (or 0.5 tsp garlic powder)" }
+    ],
+    "Steps": [
+      {
+        "Order": 1,
+        "Instruction": "In a large skillet over medium-high heat, brown the ground beef until no longer pink. Drain the fat."
+      },
+      { "Order": 2, "Instruction": "Add 2 cups water and one seasoning packet to the beef and mix well." },
+      {
+        "Order": 3,
+        "Instruction": "Add frozen vegetables, green onion, ginger and garlic and bring to a boil over high heat."
+      },
+      {
+        "Order": 4,
+        "Instruction": "Add the ramen noodles, reduce heat to low and simmer 3 to 5 minutes until the vegetables are tender, stirring occasionally."
+      }
+    ]
+  },
+  {
+    "Name": "Chicken Mole",
+    "Description": "Whole chicken simmered until tender, then finished in a chili, cocoa and peanut butter mole sauce.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Poultry",
+    "Cuisine": "Mexican",
+    "Difficulty": "Advanced",
+    "Servings": 7,
+    "PrepTimeMinutes": 20,
+    "CookTimeMinutes": 45,
+    "Calories": 180,
+    "Protein": 21,
+    "Carbs": 10,
+    "Fat": 6,
+    "Sugar": 2,
+    "Sodium": 270,
+    "Ingredients": [
+      { "Order": 1, "Units": 3.5, "UOM": "Pound", "Name": "whole chicken, cut into pieces, skin and fat removed" },
+      { "Order": 2, "Units": 1, "UOM": "Item", "Name": "onion, chopped" },
+      { "Order": 3, "Units": 4, "UOM": "Item", "Name": "garlic cloves, chopped (or 1 tsp garlic powder)" },
+      { "Order": 4, "Units": 5, "UOM": "Cup", "Name": "water, divided" },
+      { "Order": 5, "Units": 0.25, "UOM": "Cup", "Name": "chili powder or ground chile powder" },
+      { "Order": 6, "Units": 1, "UOM": "Teaspoon", "Name": "oregano" },
+      { "Order": 7, "Units": 1, "UOM": "Tablespoon", "Name": "unsweetened cocoa powder" },
+      { "Order": 8, "Units": 0.5, "UOM": "Cup", "Name": "all-purpose flour" },
+      { "Order": 9, "Units": 1, "UOM": "Tablespoon", "Name": "sugar" },
+      { "Order": 10, "Units": 0.5, "UOM": "Teaspoon", "Name": "salt" },
+      { "Order": 11, "Units": 1, "UOM": "Teaspoon", "Name": "pepper" },
+      { "Order": 12, "Units": 1, "UOM": "Tablespoon", "Name": "peanut butter" }
+    ],
+    "Steps": [
+      {
+        "Order": 1,
+        "Instruction": "Cut the chicken into thighs, legs, breast, wings and back. Remove skin and fat from all but the wings and back, and cut breast pieces in half."
+      },
+      {
+        "Order": 2,
+        "Instruction": "In a large pot, combine chicken, onion, garlic and 4.5 cups water. Boil, then simmer on low 30 minutes, until cooked through (165 degrees F)."
+      },
+      {
+        "Order": 3,
+        "Instruction": "Meanwhile, mix chili powder, oregano, cocoa, flour, sugar, salt and pepper. Stir in the remaining 0.5 cup water until smooth, then stir in peanut butter."
+      },
+      {
+        "Order": 4,
+        "Instruction": "Move the cooked chicken to a bowl. Slowly whisk the seasoning mix into the broth, bring to a boil, then cook on medium-low 15 minutes or until thickened."
+      },
+      {
+        "Order": 5,
+        "Instruction": "Return the chicken to the pot, whole or shredded, and heat through. Refrigerate leftovers within 2 hours."
+      }
+    ]
+  },
+  {
+    "Name": "Pozole with Chicken",
+    "Description": "A quick red chile and hominy soup with shredded chicken, topped with cabbage, radish, lime and cilantro.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Soup",
+    "Cuisine": "Mexican",
+    "Difficulty": "Normal",
+    "Servings": 6,
+    "PrepTimeMinutes": 20,
+    "CookTimeMinutes": 25,
+    "Calories": 170,
+    "Protein": 18,
+    "Carbs": 16,
+    "Fat": 5,
+    "Sugar": 4,
+    "Sodium": 580,
+    "Ingredients": [
+      { "Order": 1, "Units": 1, "UOM": "Teaspoon", "Name": "vegetable oil" },
+      { "Order": 2, "Units": 1, "UOM": "Cup", "Name": "onion, chopped" },
+      { "Order": 3, "Units": 2, "UOM": "Item", "Name": "garlic cloves, minced (or 0.5 tsp garlic powder)" },
+      {
+        "Order": 4,
+        "Units": 10,
+        "UOM": "Ounce",
+        "Name": "canned red chile sauce (or 8 oz tomato sauce plus 2 to 4 Tbsp chili powder)"
+      },
+      { "Order": 5, "Units": 3, "UOM": "Cup", "Name": "low-sodium chicken broth" },
+      { "Order": 6, "Units": 1, "UOM": "Teaspoon", "Name": "cumin" },
+      { "Order": 7, "Units": 1, "UOM": "Teaspoon", "Name": "oregano" },
+      { "Order": 8, "Units": 15, "UOM": "Ounce", "Name": "canned hominy, drained and rinsed" },
+      { "Order": 9, "Units": 2, "UOM": "Cup", "Name": "cooked shredded chicken" },
+      {
+        "Order": 10,
+        "Units": 1,
+        "UOM": "Pinch",
+        "Name": "toppings: shredded cabbage, sliced radish, chopped onion, lime juice, cilantro, avocado (optional)"
+      }
+    ],
+    "Steps": [
+      {
+        "Order": 1,
+        "Instruction": "In a large saucepan on medium heat, saute onion in oil until it begins to soften, about 5 minutes. Add garlic and cook 1 minute."
+      },
+      {
+        "Order": 2,
+        "Instruction": "Add the chile sauce, broth, cumin, oregano and hominy and bring to a boil, stirring."
+      },
+      {
+        "Order": 3,
+        "Instruction": "Reduce heat and simmer uncovered for 10 minutes. Stir in the chicken and heat through, about 2 minutes."
+      },
+      {
+        "Order": 4,
+        "Instruction": "Spoon into shallow bowls and add toppings as desired. Refrigerate leftovers within 2 hours."
+      }
+    ]
+  },
+  {
+    "Name": "Minestrone Soup",
+    "Description": "A hearty vegetable, kidney bean and macaroni soup simmered in a basil-scented tomato broth.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Soup",
+    "Cuisine": "Italian",
+    "Difficulty": "Normal",
+    "Servings": 10,
+    "PrepTimeMinutes": 15,
+    "CookTimeMinutes": 45,
+    "Calories": 130,
+    "Protein": 5,
+    "Carbs": 22,
+    "Fat": 3.5,
+    "Sugar": 3,
+    "Sodium": 220,
+    "Ingredients": [
+      { "Order": 1, "Units": 1, "UOM": "Item", "Name": "medium onion, chopped" },
+      { "Order": 2, "Units": 1, "UOM": "Item", "Name": "celery stalk, diced" },
+      { "Order": 3, "Units": 1, "UOM": "Item", "Name": "large carrot, sliced" },
+      { "Order": 4, "Units": 2, "UOM": "Tablespoon", "Name": "vegetable oil" },
+      { "Order": 5, "Units": 1, "UOM": "Item", "Name": "large potato, chopped" },
+      { "Order": 6, "Units": 15, "UOM": "Ounce", "Name": "canned chopped tomatoes with juice" },
+      { "Order": 7, "Units": 30, "UOM": "Ounce", "Name": "low-sodium broth (two 15 oz cans)" },
+      { "Order": 8, "Units": 15, "UOM": "Ounce", "Name": "canned kidney beans, drained and rinsed" },
+      { "Order": 9, "Units": 1, "UOM": "Teaspoon", "Name": "dried basil" },
+      { "Order": 10, "Units": 0.5, "UOM": "Cup", "Name": "uncooked macaroni" },
+      { "Order": 11, "Units": 2, "UOM": "Item", "Name": "small zucchini, sliced" },
+      { "Order": 12, "Units": 0.5, "UOM": "Teaspoon", "Name": "salt" },
+      { "Order": 13, "Units": 0.25, "UOM": "Teaspoon", "Name": "pepper" }
+    ],
+    "Steps": [
+      {
+        "Order": 1,
+        "Instruction": "In a 5 quart saucepan over medium heat, cook onion, celery and carrot in oil, stirring, until the onion is soft but not browned."
+      },
+      { "Order": 2, "Instruction": "Add potato, tomatoes, broth, beans and basil." },
+      { "Order": 3, "Instruction": "Bring to a boil, then reduce heat. Cover and simmer for 15 minutes." },
+      { "Order": 4, "Instruction": "Add macaroni and zucchini and simmer another 15 minutes." },
+      {
+        "Order": 5,
+        "Instruction": "Taste and adjust seasoning with salt and pepper. Refrigerate leftovers within 2 hours."
+      }
+    ]
+  },
+  {
+    "Name": "Classic Honey Flan",
+    "Description": "Light baked custards sweetened with honey and lemon zest, set over a honey-cinnamon base and inverted to serve.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Dessert",
+    "Cuisine": "French",
+    "Difficulty": "Advanced",
+    "Servings": 4,
+    "PrepTimeMinutes": 5,
+    "CookTimeMinutes": 45,
+    "Calories": 199,
+    "Protein": 8,
+    "Carbs": 40,
+    "Fat": 2,
+    "Sugar": 34,
+    "Sodium": 114,
+    "Ingredients": [
+      { "Order": 1, "Units": 1, "UOM": "Pinch", "Name": "nonstick cooking spray" },
+      { "Order": 2, "Units": 1, "UOM": "Item", "Name": "large egg" },
+      { "Order": 3, "Units": 0.5, "UOM": "Cup", "Name": "egg substitute" },
+      { "Order": 4, "Units": 1.5, "UOM": "Cup", "Name": "fat-free (skim) milk" },
+      { "Order": 5, "Units": 7, "UOM": "Tablespoon", "Name": "honey, divided (0.25 cup plus 3 Tbsp)" },
+      { "Order": 6, "Units": 0.5, "UOM": "Teaspoon", "Name": "grated lemon zest" },
+      { "Order": 7, "Units": 1, "UOM": "Teaspoon", "Name": "vanilla" },
+      { "Order": 8, "Units": 0.5, "UOM": "Teaspoon", "Name": "ground cinnamon" }
+    ],
+    "Steps": [
+      {
+        "Order": 1,
+        "Instruction": "Preheat oven to 325 degrees F. Spray four ovenproof custard cups with nonstick spray. Bring water to a boil for the water bath."
+      },
+      {
+        "Order": 2,
+        "Instruction": "In a bowl, beat the egg, egg substitute, milk, 0.25 cup plus 1 Tbsp honey, lemon zest and vanilla until mixed but not foamy."
+      },
+      { "Order": 3, "Instruction": "In a separate bowl, blend the remaining 2 Tbsp honey with the cinnamon." },
+      {
+        "Order": 4,
+        "Instruction": "Set the cups in a large baking dish. Spoon 0.5 Tbsp honey-cinnamon into each cup, then divide the egg mixture among them."
+      },
+      {
+        "Order": 5,
+        "Instruction": "Place on the middle oven rack and pour boiling water into the dish to a depth of 1 inch. Bake 45 minutes, until a knife comes out clean."
+      },
+      { "Order": 6, "Instruction": "Serve warm or cold: loosen the edges with a knife and invert onto dessert plates." }
+    ]
+  },
+  {
+    "Name": "Buttermilk Scones",
+    "Description": "Drop-style whole wheat and buttermilk scones studded with raisins, baked until well browned.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Bread",
+    "Cuisine": "American",
+    "Difficulty": "Normal",
+    "Servings": 9,
+    "PrepTimeMinutes": 20,
+    "CookTimeMinutes": 20,
+    "Calories": 230,
+    "Protein": 5,
+    "Carbs": 42,
+    "Fat": 6,
+    "Sugar": 20,
+    "Sodium": 270,
+    "Ingredients": [
+      { "Order": 1, "Units": 1, "UOM": "Cup", "Name": "whole wheat flour" },
+      { "Order": 2, "Units": 0.75, "UOM": "Cup", "Name": "all-purpose flour" },
+      { "Order": 3, "Units": 0.33, "UOM": "Cup", "Name": "sugar" },
+      { "Order": 4, "Units": 1, "UOM": "Teaspoon", "Name": "baking powder" },
+      { "Order": 5, "Units": 0.5, "UOM": "Teaspoon", "Name": "baking soda" },
+      { "Order": 6, "Units": 0.25, "UOM": "Teaspoon", "Name": "salt" },
+      { "Order": 7, "Units": 1, "UOM": "Cup", "Name": "raisins" },
+      { "Order": 8, "Units": 0.25, "UOM": "Cup", "Name": "butter, melted" },
+      { "Order": 9, "Units": 0.67, "UOM": "Cup", "Name": "buttermilk" }
+    ],
+    "Steps": [
+      { "Order": 1, "Instruction": "Preheat oven to 400 degrees F." },
+      {
+        "Order": 2,
+        "Instruction": "Combine whole wheat flour, all-purpose flour, sugar, baking powder, baking soda and salt in a medium bowl. Mix well."
+      },
+      { "Order": 3, "Instruction": "Add raisins and mix lightly." },
+      {
+        "Order": 4,
+        "Instruction": "In a small bowl, combine melted butter and buttermilk. Add to the flour mixture and mix gently."
+      },
+      { "Order": 5, "Instruction": "Spoon the dough into 9 equal mounds on a greased baking sheet." },
+      {
+        "Order": 6,
+        "Instruction": "Bake until well browned, 18 to 20 minutes. Serve hot or at room temperature, ideally the same day."
+      }
+    ]
+  },
+  {
+    "Name": "Cherry Puff Pancake",
+    "Description": "An oven-baked puffed pancake poured over sweet cherries in a hot buttered skillet and sprinkled with almonds.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Breakfast",
+    "Cuisine": "American",
+    "Difficulty": "Normal",
+    "Servings": 4,
+    "PrepTimeMinutes": 5,
+    "CookTimeMinutes": 15,
+    "Calories": 240,
+    "Protein": 8,
+    "Carbs": 29,
+    "Fat": 10,
+    "Sugar": 15,
+    "Sodium": 120,
+    "Ingredients": [
+      { "Order": 1, "Units": 3, "UOM": "Item", "Name": "eggs" },
+      { "Order": 2, "Units": 0.5, "UOM": "Cup", "Name": "nonfat or 1% milk" },
+      { "Order": 3, "Units": 1, "UOM": "Teaspoon", "Name": "vanilla" },
+      { "Order": 4, "Units": 0.5, "UOM": "Cup", "Name": "all-purpose flour" },
+      { "Order": 5, "Units": 1, "UOM": "Tablespoon", "Name": "sugar" },
+      { "Order": 6, "Units": 1, "UOM": "Pinch", "Name": "cinnamon" },
+      { "Order": 7, "Units": 2, "UOM": "Tablespoon", "Name": "margarine or butter" },
+      { "Order": 8, "Units": 2, "UOM": "Cup", "Name": "sweet cherries, halved and pitted (fresh or thawed frozen)" },
+      { "Order": 9, "Units": 0.25, "UOM": "Cup", "Name": "sliced almonds (optional)" }
+    ],
+    "Steps": [
+      { "Order": 1, "Instruction": "Preheat oven to 450 degrees F." },
+      { "Order": 2, "Instruction": "In a medium bowl or blender, beat the eggs, milk and vanilla until well blended." },
+      {
+        "Order": 3,
+        "Instruction": "Mix the flour, sugar and cinnamon, add to the liquid ingredients and mix until there are no lumps."
+      },
+      {
+        "Order": 4,
+        "Instruction": "Melt the butter in a 10 or 11 inch ovenproof skillet in the hot oven until bubbly. Remove and quickly spread the cherries over the bottom."
+      },
+      { "Order": 5, "Instruction": "Pour the batter over the cherries and sprinkle with almonds, if using." },
+      {
+        "Order": 6,
+        "Instruction": "Bake 15 to 20 minutes, until the edges are browned and the center is golden. Cool slightly and cut into 4 pieces."
+      }
+    ]
+  },
+  {
+    "Name": "Oven Baked Salmon",
+    "Description": "Simple salmon fillets drizzled with oil, seasoned with salt and pepper, and roasted in a hot oven.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Seafood",
+    "Cuisine": "American",
+    "Difficulty": "Easy",
+    "Servings": 4,
+    "PrepTimeMinutes": 5,
+    "CookTimeMinutes": 15,
+    "Calories": 160,
+    "Protein": 23,
+    "Carbs": 0,
+    "Fat": 7,
+    "Sugar": 0,
+    "Sodium": 230,
+    "Ingredients": [
+      { "Order": 1, "Units": 1, "UOM": "Tablespoon", "Name": "vegetable oil" },
+      {
+        "Order": 2,
+        "Units": 14,
+        "UOM": "Ounce",
+        "Name": "fresh or thawed salmon (12 to 16 oz), cut into 3 or 4 pieces"
+      },
+      { "Order": 3, "Units": 0.25, "UOM": "Teaspoon", "Name": "salt" },
+      { "Order": 4, "Units": 0.25, "UOM": "Teaspoon", "Name": "pepper" }
+    ],
+    "Steps": [
+      { "Order": 1, "Instruction": "Preheat the oven to 450 degrees F." },
+      {
+        "Order": 2,
+        "Instruction": "Place the salmon skin side down on a foil-lined baking pan. Drizzle with oil and sprinkle with salt and pepper."
+      },
+      {
+        "Order": 3,
+        "Instruction": "Bake 10 to 15 minutes depending on thickness, until the fish is opaque and flakes with a fork (145 degrees F in the center)."
+      },
+      { "Order": 4, "Instruction": "Serve skin side down. Refrigerate leftovers within 2 hours." }
+    ]
+  },
+  {
+    "Name": "Ham and Vegetable Chowder",
+    "Description": "A creamy-style chowder of cabbage, potato, cream-style corn and lean ham, topped with cheddar.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Pork",
+    "Cuisine": "American",
+    "Difficulty": "Easy",
+    "Servings": 10,
+    "PrepTimeMinutes": 15,
+    "CookTimeMinutes": 20,
+    "Calories": 170,
+    "Protein": 8,
+    "Carbs": 22,
+    "Fat": 5,
+    "Sugar": 7,
+    "Sodium": 280,
+    "Ingredients": [
+      { "Order": 1, "Units": 1, "UOM": "Tablespoon", "Name": "vegetable oil" },
+      { "Order": 2, "Units": 1, "UOM": "Item", "Name": "small onion, chopped" },
+      { "Order": 3, "Units": 6, "UOM": "Cup", "Name": "cabbage, chopped (about half a head)" },
+      { "Order": 4, "Units": 1, "UOM": "Item", "Name": "large potato, peeled and diced" },
+      { "Order": 5, "Units": 29, "UOM": "Ounce", "Name": "low-sodium chicken broth (two 14.5 oz cans)" },
+      { "Order": 6, "Units": 30, "UOM": "Ounce", "Name": "cream-style corn (two 15 oz cans)" },
+      { "Order": 7, "Units": 1, "UOM": "Cup", "Name": "lean ham (8% fat), chopped" },
+      { "Order": 8, "Units": 0.5, "UOM": "Teaspoon", "Name": "pepper" },
+      { "Order": 9, "Units": 0.5, "UOM": "Cup", "Name": "cheddar cheese, grated" }
+    ],
+    "Steps": [
+      {
+        "Order": 1,
+        "Instruction": "Heat oil in a 4 quart or larger saucepan. Saute onion, cabbage and potato over medium heat until soft, about 10 minutes, stirring often."
+      },
+      { "Order": 2, "Instruction": "Add chicken broth, corn, ham and pepper." },
+      { "Order": 3, "Instruction": "Cover and simmer until the potato is tender, about 10 minutes." },
+      { "Order": 4, "Instruction": "Serve hot, sprinkled with cheese. Refrigerate leftovers within 2 hours." }
+    ]
+  },
+  {
+    "Name": "Quick Tomato Pasta Sauce",
+    "Description": "A 20 minute pantry tomato sauce with garlic, lemon and a pinch of red pepper for pasta or recipes.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Sauce",
+    "Cuisine": "Italian",
+    "Difficulty": "Easy",
+    "Servings": 4,
+    "PrepTimeMinutes": 5,
+    "CookTimeMinutes": 15,
+    "Calories": 60,
+    "Protein": 2,
+    "Carbs": 8,
+    "Fat": 2.5,
+    "Sugar": 5,
+    "Sodium": 340,
+    "Ingredients": [
+      { "Order": 1, "Units": 2, "UOM": "Teaspoon", "Name": "vegetable oil" },
+      { "Order": 2, "Units": 2, "UOM": "Item", "Name": "garlic cloves, minced (or 0.5 tsp garlic powder)" },
+      { "Order": 3, "Units": 14.5, "UOM": "Ounce", "Name": "canned diced or crushed tomatoes" },
+      { "Order": 4, "Units": 0.25, "UOM": "Teaspoon", "Name": "salt" },
+      { "Order": 5, "Units": 0.25, "UOM": "Teaspoon", "Name": "pepper" },
+      { "Order": 6, "Units": 1, "UOM": "Tablespoon", "Name": "lemon juice (optional)" },
+      { "Order": 7, "Units": 0.25, "UOM": "Teaspoon", "Name": "red pepper flakes (optional)" }
+    ],
+    "Steps": [
+      {
+        "Order": 1,
+        "Instruction": "In a medium saucepan, heat the oil over medium heat. Add garlic and cook 1 minute. If using garlic powder, skip the oil and this step."
+      },
+      {
+        "Order": 2,
+        "Instruction": "Add tomatoes, lemon juice, salt, pepper and red pepper flakes, if desired. Cook until heated through, stirring occasionally."
+      },
+      { "Order": 3, "Instruction": "For a thicker sauce, cook 10 to 20 minutes more so the liquid can evaporate." },
+      {
+        "Order": 4,
+        "Instruction": "Serve over pasta or use in any recipe calling for pasta sauce. Refrigerate leftovers within 2 hours."
+      }
+    ]
+  },
+  {
+    "Name": "Stir-Fry Noodles with Peanut Sauce",
+    "Description": "Ramen noodles tossed with chicken, carrots and cabbage in a spicy ginger peanut butter and soy sauce.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Poultry",
+    "Cuisine": "Thai",
+    "Difficulty": "Normal",
+    "Servings": 10,
+    "PrepTimeMinutes": 10,
+    "CookTimeMinutes": 30,
+    "Calories": 180,
+    "Protein": 10,
+    "Carbs": 18,
+    "Fat": 8,
+    "Sugar": 4,
+    "Sodium": 260,
+    "Ingredients": [
+      { "Order": 1, "Units": 4, "UOM": "Cup", "Name": "water, for the noodles" },
+      {
+        "Order": 2,
+        "Units": 6,
+        "UOM": "Ounce",
+        "Name": "ramen-style noodles (two 3 oz packages, flavor packets discarded)"
+      },
+      { "Order": 3, "Units": 2, "UOM": "Item", "Name": "boneless skinless chicken breasts, cut in thin strips" },
+      { "Order": 4, "Units": 0.25, "UOM": "Cup", "Name": "peanut butter" },
+      { "Order": 5, "Units": 2, "UOM": "Tablespoon", "Name": "soy sauce" },
+      { "Order": 6, "Units": 0.5, "UOM": "Cup", "Name": "water, for the sauce" },
+      { "Order": 7, "Units": 1, "UOM": "Tablespoon", "Name": "vegetable oil" },
+      { "Order": 8, "Units": 1, "UOM": "Teaspoon", "Name": "red pepper flakes" },
+      { "Order": 9, "Units": 1, "UOM": "Teaspoon", "Name": "fresh ginger, finely chopped (or 0.5 tsp ground)" },
+      { "Order": 10, "Units": 2, "UOM": "Item", "Name": "carrots, thinly sliced (about 2 cups)" },
+      { "Order": 11, "Units": 6, "UOM": "Cup", "Name": "cabbage, thinly sliced (half a large head)" },
+      { "Order": 12, "Units": 0.25, "UOM": "Cup", "Name": "green onion, thinly sliced" }
+    ],
+    "Steps": [
+      {
+        "Order": 1,
+        "Instruction": "Bring 4 cups water to a boil in a 2 to 3 quart saucepan. Add the noodles without flavor packets, cover and remove from heat. Wait 1 minute, drain and set aside."
+      },
+      {
+        "Order": 2,
+        "Instruction": "In a small saucepan, combine peanut butter, soy sauce and 0.5 cup water. Heat on low, stirring until smooth. Remove from heat."
+      },
+      {
+        "Order": 3,
+        "Instruction": "Heat oil in a large skillet over medium-high heat. Add chicken and cook until no longer pink when cut, 3 to 5 minutes."
+      },
+      {
+        "Order": 4,
+        "Instruction": "Add red pepper, ginger and carrots and cook 2 to 3 minutes. Add cabbage and cook 3 to 4 minutes, until crisp-tender."
+      },
+      { "Order": 5, "Instruction": "Stir in green onion, noodles and peanut sauce. Toss and serve right away." }
+    ]
+  },
+  {
+    "Name": "Cucumber Yogurt Dip",
+    "Description": "A tzatziki-style dip of yogurt, grated cucumber, dill, lemon and garlic served with fresh vegetables.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Appetizer",
+    "Cuisine": "Greek",
+    "Difficulty": "Easy",
+    "Servings": 6,
+    "PrepTimeMinutes": 15,
+    "CookTimeMinutes": 0,
+    "Calories": 109,
+    "Protein": 6.5,
+    "Carbs": 15,
+    "Fat": 3.3,
+    "Sugar": 9.6,
+    "Sodium": 94,
+    "Ingredients": [
+      { "Order": 1, "Units": 2, "UOM": "Cup", "Name": "plain low-fat yogurt" },
+      { "Order": 2, "Units": 2, "UOM": "Item", "Name": "cucumbers (1 grated, 1 sliced)" },
+      { "Order": 3, "Units": 0.5, "UOM": "Cup", "Name": "light sour cream" },
+      { "Order": 4, "Units": 1, "UOM": "Tablespoon", "Name": "lemon juice" },
+      { "Order": 5, "Units": 1, "UOM": "Tablespoon", "Name": "fresh dill (or 1 tsp dried dill)" },
+      { "Order": 6, "Units": 1, "UOM": "Item", "Name": "garlic clove, chopped" },
+      { "Order": 7, "Units": 1, "UOM": "Cup", "Name": "cherry tomatoes" },
+      { "Order": 8, "Units": 1, "UOM": "Cup", "Name": "broccoli florets" },
+      { "Order": 9, "Units": 1, "UOM": "Cup", "Name": "carrot sticks or baby carrots" }
+    ],
+    "Steps": [
+      { "Order": 1, "Instruction": "Peel, seed and grate one cucumber. Slice the other cucumber and set aside." },
+      {
+        "Order": 2,
+        "Instruction": "Mix the yogurt, grated cucumber, sour cream, lemon juice, dill and garlic in a serving bowl. Chill for 1 hour."
+      },
+      {
+        "Order": 3,
+        "Instruction": "Arrange the sliced cucumber, tomatoes, broccoli and carrots on a platter and serve with the dip."
+      },
+      {
+        "Order": 4,
+        "Instruction": "For gyros, spoon the dip into whole wheat pitas with grilled chicken or beef, onion, tomato and lettuce."
+      }
+    ]
+  },
+  {
+    "Name": "Grilled Lamb Salad",
+    "Description": "Soy and rice vinegar marinated lamb skewers grilled and tossed with a crunchy cabbage, carrot and sesame slaw.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Lamb",
+    "Cuisine": "Japanese",
+    "Difficulty": "Normal",
+    "Servings": 4,
+    "PrepTimeMinutes": 18,
+    "CookTimeMinutes": 12,
+    "Calories": 260,
+    "Protein": 23,
+    "Carbs": 20,
+    "Fat": 9,
+    "Sugar": 9,
+    "Sodium": 330,
+    "Ingredients": [
+      { "Order": 1, "Units": 3, "UOM": "Item", "Name": "green onions, sliced" },
+      { "Order": 2, "Units": 12, "UOM": "Ounce", "Name": "boneless leg of lamb, cut into 1 inch cubes" },
+      { "Order": 3, "Units": 4, "UOM": "Each", "Name": "bamboo skewers" },
+      { "Order": 4, "Units": 6, "UOM": "Cup", "Name": "Savoy, Napa or green cabbage, shredded" },
+      { "Order": 5, "Units": 2, "UOM": "Item", "Name": "carrots, shredded" },
+      { "Order": 6, "Units": 2, "UOM": "Tablespoon", "Name": "black or white sesame seeds" },
+      { "Order": 7, "Units": 1, "UOM": "Item", "Name": "small jicama, julienned (optional)" },
+      { "Order": 8, "Units": 2, "UOM": "Tablespoon", "Name": "sugar" },
+      { "Order": 9, "Units": 2, "UOM": "Tablespoon", "Name": "rice vinegar" },
+      { "Order": 10, "Units": 3, "UOM": "Tablespoon", "Name": "low-sodium soy sauce" },
+      { "Order": 11, "Units": 0.25, "UOM": "Cup", "Name": "water" },
+      { "Order": 12, "Units": 1, "UOM": "Tablespoon", "Name": "vegetable oil" }
+    ],
+    "Steps": [
+      {
+        "Order": 1,
+        "Instruction": "Mix the sugar, rice vinegar, soy sauce, water and oil for the marinade and dressing; divide evenly in two."
+      },
+      {
+        "Order": 2,
+        "Instruction": "Place the lamb in a glass dish, pour half of the marinade over it, cover and refrigerate at least 2 hours."
+      },
+      {
+        "Order": 3,
+        "Instruction": "In a large bowl, toss the cabbage, carrots, jicama if using, green onions and sesame seeds. Soak the skewers in water for 30 minutes."
+      },
+      {
+        "Order": 4,
+        "Instruction": "Remove the lamb from the marinade (discard it) and thread onto the 4 skewers. Grill 5 to 6 minutes per side, to 145 degrees F for medium-rare."
+      },
+      {
+        "Order": 5,
+        "Instruction": "Remove the lamb from the skewers, toss with the salad, divide among 4 plates and drizzle with the remaining dressing."
+      }
+    ]
+  },
+  {
+    "Name": "Garlic Bok Choy",
+    "Description": "Bok choy quickly stir-fried with plenty of garlic until the greens wilt and the stems are tender-crisp.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "SideDish",
+    "Cuisine": "Chinese",
+    "Difficulty": "Easy",
+    "Servings": 4,
+    "PrepTimeMinutes": 10,
+    "CookTimeMinutes": 10,
+    "Calories": 40,
+    "Protein": 2,
+    "Carbs": 4,
+    "Fat": 2.5,
+    "Sugar": 1,
+    "Sodium": 370,
+    "Ingredients": [
+      { "Order": 1, "Units": 1, "UOM": "Pound", "Name": "bok choy" },
+      {
+        "Order": 2,
+        "Units": 5,
+        "UOM": "Item",
+        "Name": "garlic cloves, minced (4 to 6, or 1 to 1.5 tsp garlic powder)"
+      },
+      { "Order": 3, "Units": 2, "UOM": "Teaspoon", "Name": "vegetable oil" },
+      { "Order": 4, "Units": 0.5, "UOM": "Teaspoon", "Name": "salt" }
+    ],
+    "Steps": [
+      { "Order": 1, "Instruction": "Cut the bok choy crosswise into easy-to-eat pieces." },
+      {
+        "Order": 2,
+        "Instruction": "In a medium skillet over medium-high heat, saute the garlic in oil until fragrant. If using garlic powder, add it with the salt in the next step."
+      },
+      { "Order": 3, "Instruction": "Add the bok choy and stir quickly. Add salt." },
+      { "Order": 4, "Instruction": "Stir until the greens are wilted and the stems are tender-crisp. Serve hot." }
+    ]
+  },
+  {
+    "Name": "Quinoa Salad",
+    "Description": "Chilled quinoa tossed with carrot, celery, red pepper, green onion and parsley in a light garlic rice vinegar dressing.",
+    "RecipeKind": "Homemade",
+    "RecipeCategory": "Salad",
+    "Cuisine": "Mediterranean",
+    "Difficulty": "Easy",
+    "Servings": 9,
+    "PrepTimeMinutes": 15,
+    "CookTimeMinutes": 15,
+    "Calories": 110,
+    "Protein": 3,
+    "Carbs": 17,
+    "Fat": 3,
+    "Sugar": 2,
+    "Sodium": 35,
+    "Ingredients": [
+      { "Order": 1, "Units": 1, "UOM": "Cup", "Name": "dry quinoa" },
+      { "Order": 2, "Units": 2, "UOM": "Cup", "Name": "water or low-sodium vegetable broth" },
+      { "Order": 3, "Units": 2, "UOM": "Item", "Name": "large carrots, diced" },
+      { "Order": 4, "Units": 3, "UOM": "Item", "Name": "large celery stalks, diced" },
+      { "Order": 5, "Units": 1, "UOM": "Item", "Name": "large red bell pepper, diced" },
+      { "Order": 6, "Units": 3, "UOM": "Item", "Name": "green onions, sliced" },
+      { "Order": 7, "Units": 3, "UOM": "Tablespoon", "Name": "parsley, minced" },
+      { "Order": 8, "Units": 0.5, "UOM": "Cup", "Name": "rice vinegar" },
+      { "Order": 9, "Units": 2, "UOM": "Tablespoon", "Name": "water, for the dressing" },
+      { "Order": 10, "Units": 1, "UOM": "Tablespoon", "Name": "vegetable oil" },
+      { "Order": 11, "Units": 2, "UOM": "Item", "Name": "garlic cloves, finely chopped (or 0.5 tsp garlic powder)" }
+    ],
+    "Steps": [
+      { "Order": 1, "Instruction": "Rinse the quinoa in a fine-mesh strainer under running water for 1 minute." },
+      {
+        "Order": 2,
+        "Instruction": "Bring the water or broth and quinoa to a boil in a 2 to 3 quart saucepan. Lower the heat, cover and simmer 15 minutes. Refrigerate until cool."
+      },
+      { "Order": 3, "Instruction": "While the quinoa cools, combine all the vegetables in a salad bowl." },
+      {
+        "Order": 4,
+        "Instruction": "In a small jar with a tight lid, shake together the rice vinegar, water, oil and garlic. Add to the vegetables."
+      },
+      { "Order": 5, "Instruction": "Add the quinoa and stir gently to combine. Refrigerate leftovers within 2 hours." }
+    ]
+  }
+]
