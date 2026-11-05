@@ -6,7 +6,7 @@ This file is the brief for a later analysis. Running it produces two new files, 
 
 Where the README and the code disagree, follow the code. Where a test and a comment disagree, follow the test.
 
-Do not connect to the OutSystems MCP. Do not generate OML, entities, screens, or prompts that publish an asset. Do not change any file other than `architecture-odc.md` and `build-odc.md`.
+While producing `architecture-odc.md` and `build-odc.md`, do not call OutSystems MCP, and do not generate OML, entities, screens, or a publish. The build host those files describe is OutSystems MCP used from Claude. Do not change any file other than `architecture-odc.md` and `build-odc.md`.
 
 The documentation pages are JavaScript-rendered. If a plain fetch returns only a script warning, open the page and read it. Follow the in-page menu when the detail is on a child page. If a link in this brief cannot be opened, stop and say so. Do not guess in its place.
 
@@ -48,12 +48,16 @@ Use these for the interface, sign-in, and theme.
 26. Roles: https://success.outsystems.com/documentation/outsystems_developer_cloud/user_management/managing_authorization_and_authentication_for_end_users/secure_your_app_with_end_user_roles/
 27. Authentication actions: https://success.outsystems.com/documentation/outsystems_developer_cloud/outsystems_language_and_elements/system_actions/authentication_system_actions/
 
-Sign-in uses the built-in identity provider. The Meal Planner application does not call Firebase, and it has no AI feature. Do not read the Firebase AI or agentic-app documentation, and do not add an agentic app.
+Sign-in uses the built-in identity provider. The application does not call Firebase, and it has no AI feature. Do not read the Firebase AI or agentic-app documentation, and do not add an agentic app.
 
-28. Mentor Studio, for the later build prompts: https://success.outsystems.com/documentation/outsystems_developer_cloud/agentic_development/ai_development_in_mentor_studio/
-29. What Mentor Studio can edit: https://success.outsystems.com/documentation/outsystems_developer_cloud/agentic_development/ai_development_in_mentor_studio/capabilities_and_patterns_for_mentor_studio/
+The ODC web app display name is KWS Meal Planner. Use that name for the asset, the narrow app bar, and the settings heading. The Vue app bar and `package.json` description say Meal Planner. That rename is requested. Record it in the differences table.
 
-Mentor Studio is the tool that builds the asset. It is not a feature of Meal Planner.
+28. OutSystems MCP, the build host: https://success.outsystems.com/documentation/outsystems_developer_cloud/agentic_development/outsystems_mcp/
+29. Delegation to Mentor: https://success.outsystems.com/documentation/outsystems_developer_cloud/agentic_development/outsystems_mcp/delegation_to_mentor/
+30. Evolve an existing app, including publish: https://success.outsystems.com/documentation/outsystems_developer_cloud/agentic_development/outsystems_mcp/evolve_an_existing_app/
+31. What a delegated Mentor edit can change: https://success.outsystems.com/documentation/outsystems_developer_cloud/agentic_development/ai_development_in_mentor_studio/capabilities_and_patterns_for_mentor_studio/
+
+Claude is the MCP host. The OutSystems page names the validated host Claude Code. OutSystems MCP delegates each edit to Mentor on the server. Mentor is not a feature of this product, and the Mentor Studio panel is not the host. Follow the delegation page and the evolve page, including their sections on session expiry and publish.
 
 https://success.outsystems.com/documentation/11/outsystems_mcp/ is the OutSystems 11 Service Studio server. Do not use it. The prompts in `build.md` are part of the ignored O11 plan.
 
@@ -67,7 +71,7 @@ Answer the questions in [Building a well-architected app](https://success.outsys
 - The application does not touch Firebase. No Firebase SDK, Firebase Auth, Firestore, Firebase AI, external entity, REST API, or import job stands in for the current database. Every business read and write uses an ODC entity or static entity. A value that users can change is an entity. A fixed list, such as a category or a unit, is a static entity.
 - Leave out Calculate Nutrition, the recipe generator, and every other feature that needs AI. Nutrition fields stay on the recipe and the meal item, and the user types them.
 - This product is one responsive web app. A mobile app and a mobile library are out of scope.
-- Keep the current look and the current navigation. The Vue app is Vuetify Material Design 3 and follows the system light and dark theme. Reproduce that hierarchy, density, and color roles in the ODC theme, on top of OutSystems UI. [Themes](https://success.outsystems.com/documentation/outsystems_developer_cloud/building_apps/user_interface/themes/) is the mechanism. A screen keeps the same title, the same onward links, and the same cancel, close, and save destinations as the Vue page. The menu keeps the same items in the same order: Dashboard, Planning & Logging, Recipes, then Settings, Recipe Sources, and Logout. Wide screens use a permanent rail that expands on hover. Narrow screens use an app bar titled Meal Planner and a temporary menu. Login and the error page stay outside the menu. When an OutSystems UI widget cannot reproduce a Vuetify behavior, use the closest widget and record the gap. Do not invent a new information architecture or a new visual design.
+- Keep the current look and the current navigation. The Vue app is Vuetify Material Design 3 and follows the system light and dark theme. Reproduce that hierarchy, density, and color roles in the ODC theme, on top of OutSystems UI. [Themes](https://success.outsystems.com/documentation/outsystems_developer_cloud/building_apps/user_interface/themes/) is the mechanism. A screen keeps the same title, the same onward links, and the same cancel, close, and save destinations as the Vue page. The menu keeps the same items in the same order: Dashboard, Planning & Logging, Recipes, then Settings, Recipe Sources, and Logout. Wide screens use a permanent rail that expands on hover. Narrow screens use an app bar titled KWS Meal Planner and a temporary menu. Login and the error page stay outside the menu. When an OutSystems UI widget cannot reproduce a Vuetify behavior, use the closest widget and record the gap. Do not invent a new information architecture or a new visual design.
 - This is one portfolio, one owner, and one sponsor. The two people who use it share one set of plans, recipes, sources, and settings. Cross-portfolio REST is out of scope. [App architecture with multiple portfolios](https://success.outsystems.com/documentation/outsystems_developer_cloud/managing_outsystems_platform_and_apps/asset_portfolios/app_architecture_with_multiple_portfolios/) is background, not a split to apply.
 - Persistent entities live in a web app. [Libraries](https://success.outsystems.com/documentation/outsystems_developer_cloud/building_apps/libraries/) are stateless. A library static entity is an enumeration with no database table. A static entity in an app is a table and can be the target of a foreign key.
 - [Relationships](https://success.outsystems.com/documentation/outsystems_developer_cloud/building_apps/data_management/data_modeling/relationships_between_entities/) inside one app can use Delete Rule Protect or Delete. A relationship that crosses apps is Ignore, and the database creates no constraint. Public entities of an app are read-only to other apps. Server actions can be public only in a library. An app exposes behavior to another app with a service action.
@@ -140,23 +144,23 @@ Include:
 
 Write the prompts that build the design in `architecture-odc.md`. Replace the file if it already exists.
 
-The host is Mentor Studio inside ODC Studio. Each prompt runs against the single asset open in that session. Mentor proposes a plan for a large change and waits. The person reviews that plan, then reviews the applied change, before the next prompt. Follow [AI development in Mentor Studio](https://success.outsystems.com/documentation/outsystems_developer_cloud/agentic_development/ai_development_in_mentor_studio/) and its in-page pages for review and for element coverage.
+The host is Claude, connected to the ODC OutSystems MCP server. The validated host name in the OutSystems MCP documentation is Claude Code. Each prompt is one edit. Claude delegates that edit to Mentor, which changes the app model on the server. Follow [OutSystems MCP](https://success.outsystems.com/documentation/outsystems_developer_cloud/agentic_development/outsystems_mcp/), [Delegation to Mentor](https://success.outsystems.com/documentation/outsystems_developer_cloud/agentic_development/outsystems_mcp/delegation_to_mentor/), and [Evolve an existing app](https://success.outsystems.com/documentation/outsystems_developer_cloud/agentic_development/outsystems_mcp/evolve_an_existing_app/). What the delegated edit can contain follows [Capabilities and patterns for Mentor Studio](https://success.outsystems.com/documentation/outsystems_developer_cloud/agentic_development/ai_development_in_mentor_studio/capabilities_and_patterns_for_mentor_studio/).
 
-If the person uses the remote OutSystems MCP instead of the Mentor panel, the same prompt still applies to one asset. The prompt does not switch assets, publish, release a library, or deploy.
+Work on one app in one session. A prompt does not switch assets, release a library, or deploy to another stage. The edit itself does not publish. After the turn finishes, read the summary and confirm the change was applied. Then say "Publish the change." The agent restates the publish and waits for confirmation. Publishing writes a Development revision. Wait until that publish finishes before the next prompt. A Mentor session discards unpublished edits when it goes idle, so publish before a long pause. Do not start a second publish while one is still running. Do not deploy to QA or Production from these prompts.
 
 Setup, before the first prompt:
 
-1. Create each asset in the design with the correct type. A web app is a web app. A library is a library. Do not create an OutSystems 11 application and do not create modules.
+1. From Claude, create each asset in the design with the correct type. A web app is a web app. A library is a library. The web app name is KWS Meal Planner. Do not create an OutSystems 11 application and do not create modules.
 2. Leave the assets empty of business entities and screens. The prompts add those.
 3. When the design includes a library, publish it and release a version before any prompt that consumes it. An app can add a library element only after that release.
-4. For each prompt: open that asset, start a new Mentor conversation, paste the prompt, and wait until the agent stops.
+4. For each prompt: in the session for that asset, send the prompt, and wait until the turn finishes. Confirm the result, publish, and wait until the publish finishes.
 
 Every prompt includes:
 
-- The open asset's name and type. If another asset is open, or the type is wrong, stop and report the name and type.
+- The asset's name and type. If another asset is in the session, or the type is wrong, stop and report the name and type. Use the asset key once the agent reports it.
 - The released libraries it may consume, or none.
 - The elements to add, in enough detail to match `architecture-odc.md` without reading the Vue app.
-- What the agent must not add: a second asset, a service action that splits a single save, a `UserId` on household data, Firebase, Firestore, an AI model, an agentic app, Calculate Nutrition, the recipe generator, a mobile app, a publish, a new menu, or a screen whose next step differs from `architecture-odc.md`.
+- What the agent must not add: a second asset, a service action that splits a single save, a `UserId` on household data, Firebase, Firestore, an AI model, an agentic app, Calculate Nutrition, the recipe generator, a mobile app, a publish inside the edit, a deploy to another stage, a new menu, or a screen whose next step differs from `architecture-odc.md`.
 
 Scope each prompt so the review is one coherent slice. A web app that holds the whole product gets several prompts in dependency order: reference data, then each aggregate that other data points at, then the writes that must stay in one transaction, then the shell and sign-in, then each screen group. A prompt that would fill more than one of those slices is two prompts.
 

@@ -1,6 +1,6 @@
-# Meal Planner on OutSystems Developer Cloud
+# KWS Meal Planner on OutSystems Developer Cloud
 
-One web app, Meal Planner, holds the household data, the server actions, and the screens. There is no second web app and no library. The theme stays in this app, on top of OutSystems UI.
+One web app, KWS Meal Planner, holds the household data, the server actions, and the screens. There is no second web app and no library. The theme stays in this app, on top of OutSystems UI. The Vue app bar and `package.json` description say Meal Planner. The ODC asset name, the narrow app bar, and the settings heading use KWS Meal Planner.
 
 The Vue app is the behavior. Where the README and the code disagree, this design follows the code and cites the file. Firebase, Firestore, Calculate Nutrition, and the recipe generator are omitted because the brief requires that. The user types the nutrition values.
 
@@ -59,24 +59,24 @@ Cloud-native architecture of OutSystems Developer Cloud gives each app its own r
 
 ## 3. Assets
 
-| Display name | Type    | Why it exists                                                                    | What it owns                                                                         | What it must not contain                                                                                                                                    |
-| ------------ | ------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Meal Planner | Web app | One business need, one web interface, one owner, one sponsor, one release cycle. | Every entity, static entity, structure, server action, screen, block, and the theme. | A second asset, a service action, a public server action, a library, a mobile app, an agentic app, a `UserId` on household data, Firebase, and an AI model. |
+| Display name     | Type    | Why it exists                                                                    | What it owns                                                                         | What it must not contain                                                                                                                                    |
+| ---------------- | ------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| KWS Meal Planner | Web app | One business need, one web interface, one owner, one sponsor, one release cycle. | Every entity, static entity, structure, server action, screen, block, and the theme. | A second asset, a service action, a public server action, a library, a mobile app, an agentic app, a `UserId` on household data, Firebase, and an AI model. |
 
 OutSystems UI is the system library the theme is based on. That dependency is strong: 1-Click Publish bundles the libraries the app uses. This design adds no library of its own. A library is for a stateless piece another asset consumes. Themes can be shared only by a theme library, and this app's theme is not public. There is no consumer, so there is no library to release.
 
 ```mermaid
 flowchart LR
-  MealPlanner["Meal Planner web app"] -->|strong| OutSystemsUI["OutSystems UI system library"]
+  MealPlanner["KWS Meal Planner web app"] -->|strong| OutSystemsUI["OutSystems UI system library"]
 ```
 
 There is no weak edge. Nothing consumes a service action or a public entity.
 
-**Implementation order.** Create the Meal Planner web app and leave it empty of business entities and screens. OutSystems UI is already available. Apply the prompts in `build-odc.md` in order. Publish is a separate step the person takes in ODC Studio. The bootstrap timer is scheduled to run when the app is published, which is the schedule Create and run Timers describes for bootstrap data. There is no library release before a consumer, because there is no library.
+**Implementation order.** From Claude, through OutSystems MCP, create the KWS Meal Planner web app and leave it empty of business entities and screens. OutSystems UI is already available. Apply the prompts in `build-odc.md` in order, one app in one session. Claude delegates each edit to Mentor. After each confirmed edit, publish to Development before the next prompt. A Mentor session discards edits that were not published. Publishing is not a deploy to another stage. The bootstrap timer is scheduled to run when the app is published, which is the schedule Create and run Timers describes for bootstrap data. There is no library release before a consumer, because there is no library.
 
 ## 4. Data
 
-Every entity and static entity is private to Meal Planner. Public is No. Reuse elements across apps says a public entity in a web app is readable by other apps, and a server action cannot be public in an app. Nothing else reads this data.
+Every entity and static entity is private to KWS Meal Planner. Public is No. Reuse elements across apps says a public entity in a web app is readable by other apps, and a server action cannot be public in an app. Nothing else reads this data.
 
 Identifiers stay the platform default: `Id`, Long Integer, AutoNumber. The identifier attribute cannot be renamed after the first publish. The Vue string ids, including `restaurant`, are not copied onto `Id`. The protected source is found by `IsProtected`, because that is the fact the delete rule needs after the Firestore id is gone.
 
@@ -231,7 +231,7 @@ The recipe list shows every match and a count of matches against the full librar
 
 ## 5. Logic
 
-All of these are server actions in Meal Planner, except the two status actions, which are client actions because they only format a color and do not write. None of them is a service action. A service action would commit before the caller finished, and no other asset calls these.
+All of these are server actions in KWS Meal Planner, except the two status actions, which are client actions because they only format a color and do not write. None of them is a service action. A service action would commit before the caller finished, and no other asset calls these.
 
 Failure text below is the text the Vue screen shows. Server actions enforce the same rules so a bypassed form cannot skip them.
 
@@ -390,7 +390,7 @@ The default screen is Dashboard. A registered screen sends an anonymous person t
 
 LayoutSideMenu is the side menu in the theme documentation. On a wide screen the menu is permanent and uses the items below. The Vue rail is `expand-on-hover` and `permanent` (`src/layouts/components/DefaultDesktopLayout.vue`). The themes page describes a menu-behavior parameter and does not describe expand-on-hover. Use the closest side-menu behavior that stays open, and record the hover gap.
 
-On a narrow screen the same items appear in a temporary menu, and the bar title is Meal Planner (`src/layouts/components/DefaultMobileLayout.vue`). The bar uses the primary color. If LayoutSideMenu cannot title that bar, set the title in the layout header and record the gap. Content width follows the Vue shell: maximum 1024 pixels, centered, padding 2rem, and 1rem when the viewport is 600 pixels or narrower.
+On a narrow screen the same items appear in a temporary menu, and the bar title is KWS Meal Planner. The Vue bar title in `src/layouts/components/DefaultMobileLayout.vue` is Meal Planner. The bar uses the primary color. If LayoutSideMenu cannot title that bar, set the title in the layout header and record the gap. Content width follows the Vue shell: maximum 1024 pixels, centered, padding 2rem, and 1rem when the viewport is 600 pixels or narrower.
 
 Menu order, same on both widths, with a divider before Settings:
 
@@ -501,7 +501,7 @@ A card shows the name, category, cuisine, description, servings, and `{calories}
 
 **Recipe editor.** Sections: Basic Information, then Ingredients and Steps for homemade only, then Nutritional Information Per Serving. There is no Calculate Nutrition button. Name is focused on open. Save is enabled when the form is valid and, on update, something changed. Ingredient and step delete each confirm. Enter in the ingredient name or the step instruction adds the next row.
 
-**Settings.** Replaces `src/pages/settings.vue`. The Vue heading is `Meal Planner - v2.2.0`, from `package.json` description and version. This screen's heading is `Meal Planner`. There is no package version to read. Reset restores the values last loaded from Settings. Save calls UpdateSettings and stays here. Save is enabled only when the form is valid and a value changed. There is no Cancel.
+**Settings.** Replaces `src/pages/settings.vue`. The Vue heading is `Meal Planner - v2.2.0`, from `package.json` description and version. This screen's heading is `KWS Meal Planner`. There is no package version to read. Reset restores the values last loaded from Settings. Save calls UpdateSettings and stays here. Save is enabled only when the form is valid and a value changed. There is no Cancel.
 
 **Sources.** Replaces `src/pages/sources/index.vue`. Title `Sources for Recipes`. Empty list: `No sources found`. A row opens Update source. The remove icon is hidden for the protected source and when recipes failed to load. Remove on a used source shows the notification and does not delete. Otherwise it confirms, deletes, and stays here. Add opens Add source.
 
@@ -539,7 +539,7 @@ There is no Firebase client, no Firestore collection, no external entity, no RES
 | The error page icon is warning-circle, not a Death Star. Several food icons use the closest Phosphor icon.                                                                   | Use icons. Phosphor is the new-app library. Those Material glyphs are not in that library.                                                                                                |
 | The side menu may not expand on hover. The narrow bar may not match the Vuetify app bar exactly.                                                                             | Themes describes LayoutSideMenu and a menu behavior, not an expand-on-hover rail.                                                                                                         |
 | One theme, rather than a theme that follows the operating system.                                                                                                            | Themes describes one app theme. `src/plugins/vuetify.ts` uses `defaultTheme: 'system'`.                                                                                                   |
-| Settings heading is `Meal Planner`, without `v2.2.0`.                                                                                                                        | The Vue heading is `package.json`. This app has no package version on the screen.                                                                                                         |
+| The asset, the narrow app bar, and the settings heading are `KWS Meal Planner`. The settings heading has no version.                                                         | Requested name. The Vue app bar and `package.json` description say Meal Planner, and the Vue settings heading appends `v2.2.0`. This app has no package version on the screen.            |
 | Empty text is `""`, not null.                                                                                                                                                | Date and time notes: text has no null.                                                                                                                                                    |
 | Ingredients and steps are child rows with an Order, and meals are child rows.                                                                                                | Entities do not store a document array. Order preserves the Vue list order.                                                                                                               |
 | The protected source is `IsProtected`, not the id `restaurant`.                                                                                                              | Entity identifiers are AutoNumber. The delete rule needs a durable flag.                                                                                                                  |

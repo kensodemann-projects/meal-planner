@@ -1,22 +1,22 @@
-# Build Meal Planner in Mentor Studio
+# Build KWS Meal Planner from Claude
 
-The host is Mentor Studio inside ODC Studio. Each prompt runs against the Meal Planner web app while that asset is the one open in the session. Mentor proposes a plan for a large change and waits. Review the plan, then review the applied change, before the next prompt. Do not publish from a prompt. 1-Click Publish is a separate step you take in ODC Studio after the prompts you want are applied. The bootstrap timer runs when the app is published.
+The host is Claude, connected to the ODC OutSystems MCP server at the tenant. The OutSystems documentation names the validated host Claude Code. Each prompt is one edit to the KWS Meal Planner web app. Claude delegates that edit to Mentor, which changes the app model on the server. Work on this one app in one session. A turn runs one at a time, so wait until it finishes.
 
-If you use the remote OutSystems MCP instead of the Mentor panel, the same prompt still applies to the one open asset. The prompt does not switch assets, publish, release a library, or deploy.
+The edit prompt does not publish, switch assets, release a library, or deploy. When the turn finishes, read the summary and confirm the change was applied. A turn can finish without applying the edit. Then say "Publish the change." The agent restates the publish and waits for confirmation. Confirm it against the app's asset key. Publishing uploads the model, builds it, and deploys that revision to the Development stage connected to the Mentor session. Wait until that publish finishes, and confirm the revision number increased, before the next prompt. Do not start another publish while one is still running. If the result is reported as indeterminate, ask for the publish status again. A Mentor session discards unpublished edits after inactivity, so publish before a long pause. Do not deploy to QA or Production from these prompts. The bootstrap timer runs when the app is published.
 
 The design these prompts implement is `architecture-odc.md`. The prompts repeat the detail Mentor needs so it does not read the Vue app.
 
 ## Setup, before the first prompt
 
-1. Create one web app named Meal Planner. Do not create an OutSystems 11 application. Do not create a module. Do not create a library, a mobile app, or an agentic app.
+1. From Claude, create one web app named KWS Meal Planner. Do not create an OutSystems 11 application. Do not create a module. Do not create a library, a mobile app, or an agentic app.
 2. Leave the app empty of business entities and screens. The default OutSystems UI theme can stay. Do not add a library dependency other than the OutSystems UI the new app already uses.
 3. There is no library to publish or release.
-4. For each prompt: open Meal Planner, confirm the asset type is web app, start a new Mentor conversation, paste the prompt, and wait until the agent stops.
+4. For each prompt: keep the session on KWS Meal Planner, send the prompt, and wait until the turn finishes. Confirm the result, then publish, and wait until the publish finishes.
 
 ## Prompt 1 — Reference data
 
 ```text
-The open asset must be Meal Planner, a web app. If another asset is open, or the type is not a web app, stop and report the open asset's name and type.
+Use Mentor to apply this change to the web app KWS Meal Planner. If another asset is in the session, or the type is not a web app, stop and report that asset's name and type. Use the asset key once it has been reported. Do not publish inside this edit, and do not deploy to another stage.
 
 Released libraries this prompt may consume: none. Do not add a library.
 
@@ -62,13 +62,13 @@ UnitOfMeasure. Custom attributes: Code Text length 20, UnitType of type UnitType
 
 Set Public to No on every static entity.
 
-Do not add a second asset, a service action, a screen, a business entity, a UserId, Firebase, Firestore, an AI model, an agentic app, Calculate Nutrition, the recipe generator, a mobile app, or a publish. Do not add a menu.
+Do not add a second asset, a service action, a screen, a business entity, a UserId, Firebase, Firestore, an AI model, an agentic app, Calculate Nutrition, the recipe generator, a mobile app, or a publish inside this edit. Do not add a menu.
 ```
 
 ## Prompt 2 — Settings, sources, and bootstrap
 
 ```text
-The open asset must be Meal Planner, a web app. If another asset is open, or the type is not a web app, stop and report the open asset's name and type.
+Use Mentor to apply this change to the web app KWS Meal Planner. If another asset is in the session, or the type is not a web app, stop and report that asset's name and type. Use the asset key once it has been reported. Do not publish inside this edit, and do not deploy to another stage.
 
 Released libraries this prompt may consume: none.
 
@@ -88,7 +88,7 @@ Add server action DeleteSource. Input the Source id. If IsProtected is true, do 
 
 Add server action BootstrapReferenceData. It is safe to run again. If no Settings row exists, insert one: MinDailyCalories 1950, MaxDailyCalories 2150, MinDailyProtein 140, MaxDailyProtein 160, MinDailyCarbs 210, MaxDailyCarbs 235, MinDailyFat 60, MaxDailyFat 75, MinDailySodium 1500, MaxDailySodium 2300, MaxDailySugar 38, Tolerance 10, WeekStartDay Sunday. If no Source has IsProtected true, insert Name "Generic Restaurant", empty description, empty URL, IsProtected true. Do not import accounts, emails, or seed files.
 
-Add timer BootstrapOnPublish. It runs BootstrapReferenceData. Schedule it to run when the app is published. Timeout 20 minutes. Do not give it a clock time. Timers are UTC, and this one has no clock. If the Schedule property cannot be set in development, say so in the plan and leave the action ready for the Portal schedule "when published". Do not publish.
+Add timer BootstrapOnPublish. It runs BootstrapReferenceData. Schedule it to run when the app is published. Timeout 20 minutes. Do not give it a clock time. Timers are UTC, and this one has no clock. If the Schedule property cannot be set in development, say so in the plan and leave the action ready for the Portal schedule "when published". Do not publish inside this edit.
 
 Do not add a second asset, a service action, a screen, a UserId, Firebase, Firestore, an AI model, an agentic app, Calculate Nutrition, the recipe generator, a mobile app, or a menu.
 ```
@@ -96,7 +96,7 @@ Do not add a second asset, a service action, a screen, a UserId, Firebase, Fires
 ## Prompt 3 — Recipes
 
 ```text
-The open asset must be Meal Planner, a web app. If another asset is open, or the type is not a web app, stop and report the open asset's name and type.
+Use Mentor to apply this change to the web app KWS Meal Planner. If another asset is in the session, or the type is not a web app, stop and report that asset's name and type. Use the asset key once it has been reported. Do not publish inside this edit, and do not deploy to another stage.
 
 Released libraries this prompt may consume: none.
 
@@ -124,13 +124,13 @@ Keep an ingredient only when Units is a number greater than 0, the trimmed name 
 
 Add server action DeleteRecipe. It deletes the recipe. Child delete rules remove ingredients and steps. Meal items do not exist yet, so this prompt does not check them. A later prompt adds that check to this action. Do not drop the action.
 
-Do not add a second asset, a service action, a screen, a UserId, Firebase, Firestore, an AI model, an agentic app, Calculate Nutrition, the recipe generator, a mobile app, a publish, or a menu.
+Do not add a second asset, a service action, a screen, a UserId, Firebase, Firestore, an AI model, an agentic app, Calculate Nutrition, the recipe generator, a mobile app, a publish inside this edit, or a menu.
 ```
 
 ## Prompt 4 — Plans, meals, and items
 
 ```text
-The open asset must be Meal Planner, a web app. If another asset is open, or the type is not a web app, stop and report the open asset's name and type.
+Use Mentor to apply this change to the web app KWS Meal Planner. If another asset is in the session, or the type is not a web app, stop and report that asset's name and type. Use the asset key once it has been reported. Do not publish inside this edit, and do not deploy to another stage.
 
 Released libraries this prompt may consume: none.
 
@@ -144,13 +144,13 @@ Meal. MealPlanId MealPlan Identifier mandatory, Delete Rule Delete. MealTypeId M
 
 MealItem. MealId Meal Identifier mandatory, Delete Rule Delete. RecipeId Recipe Identifier mandatory, Delete Rule Protect. Name Text 200 mandatory. Servings Decimal mandatory. Calories, Sodium, Sugar, Carbs, Fat, and Protein, each Decimal mandatory. These six numbers are a copy. They are not read from Recipe when the item is displayed. Protect on RecipeId stops a recipe delete while a meal item still points at it. Do not use Ignore or Delete on RecipeId.
 
-Do not add server actions in this prompt. Do not add a second asset, a service action, a screen, a UserId, Firebase, Firestore, an AI model, an agentic app, Calculate Nutrition, the recipe generator, a mobile app, a publish, or a menu.
+Do not add server actions in this prompt. Do not add a second asset, a service action, a screen, a UserId, Firebase, Firestore, an AI model, an agentic app, Calculate Nutrition, the recipe generator, a mobile app, a publish inside this edit, or a menu.
 ```
 
 ## Prompt 5 — Meal-item writes
 
 ```text
-The open asset must be Meal Planner, a web app. If another asset is open, or the type is not a web app, stop and report the open asset's name and type.
+Use Mentor to apply this change to the web app KWS Meal Planner. If another asset is in the session, or the type is not a web app, stop and report that asset's name and type. Use the asset key once it has been reported. Do not publish inside this edit, and do not deploy to another stage.
 
 Released libraries this prompt may consume: none.
 
@@ -164,13 +164,13 @@ RemoveMealItem. Inputs: Date, MealType, and MealItem id. If the plan is gone, wr
 
 Update DeleteRecipe, which already exists. Before it deletes, it checks MealItem. If any meal item has this RecipeId, it does not delete and it fails with the message "This recipe is used in meals and cannot be deleted." If none do, it deletes the recipe, and the child delete rules remove its ingredients and steps. Do not switch RecipeId to Ignore or Delete.
 
-Do not add screens. Do not add a second asset, a UserId, Firebase, Firestore, an AI model, an agentic app, Calculate Nutrition, the recipe generator, a mobile app, a publish, or a menu.
+Do not add screens. Do not add a second asset, a UserId, Firebase, Firestore, an AI model, an agentic app, Calculate Nutrition, the recipe generator, a mobile app, a publish inside this edit, or a menu.
 ```
 
 ## Prompt 6 — Week summary and status
 
 ```text
-The open asset must be Meal Planner, a web app. If another asset is open, or the type is not a web app, stop and report the open asset's name and type.
+Use Mentor to apply this change to the web app KWS Meal Planner. If another asset is in the session, or the type is not a web app, stop and report that asset's name and type. Use the asset key once it has been reported. Do not publish inside this edit, and do not deploy to another stage.
 
 Released libraries this prompt may consume: none.
 
@@ -186,13 +186,13 @@ MaxOnlyStatus(value, max, tolerance) uses deviation max * (max(tolerance, 0) / 1
 
 Represent the five statuses so a screen can pick an icon. Do not add screens in this prompt.
 
-Do not add a second asset, a service action, a UserId, Firebase, Firestore, an AI model, an agentic app, Calculate Nutrition, the recipe generator, a mobile app, a publish, or a menu.
+Do not add a second asset, a service action, a UserId, Firebase, Firestore, an AI model, an agentic app, Calculate Nutrition, the recipe generator, a mobile app, a publish inside this edit, or a menu.
 ```
 
 ## Prompt 7 — Theme, menu, and sign-in
 
 ```text
-The open asset must be Meal Planner, a web app. If another asset is open, or the type is not a web app, stop and report the open asset's name and type.
+Use Mentor to apply this change to the web app KWS Meal Planner. If another asset is in the session, or the type is not a web app, stop and report that asset's name and type. Use the asset key once it has been reported. Do not publish inside this edit, and do not deploy to another stage.
 
 Released libraries this prompt may consume: none. Use the app theme that is already based on OutSystems UI. Do not add a library and do not create a theme library.
 
@@ -200,7 +200,7 @@ Set the app theme's icon library to Phosphor 2.0. Leave Public No. Do not add a 
 
 Use two UI flows. AnonymousFlow uses LayoutBlank, which has no menu. MainFlow uses LayoutSideMenu.
 
-On a wide screen the side menu stays available. On a narrow screen the same items are in a temporary menu, and the bar title is Meal Planner, using the primary color. If LayoutSideMenu cannot expand on hover, keep the closest side menu that stays open on a wide screen and say that in the plan. Content column maximum width 1024 pixels, centered, padding 2rem, and 1rem below 600 pixels.
+On a wide screen the side menu stays available. On a narrow screen the same items are in a temporary menu, and the bar title is KWS Meal Planner, using the primary color. If LayoutSideMenu cannot expand on hover, keep the closest side menu that stays open on a wide screen and say that in the plan. Content column maximum width 1024 pixels, centered, padding 2rem, and 1rem below 600 pixels.
 
 Menu items, in this order, with a divider before Settings. Phosphor Regular weight:
 
@@ -221,13 +221,13 @@ RecoverPasswordRequest and RecoverPasswordReset, anonymous, LayoutBlank. Use the
 
 Error, in MainFlow, so it keeps the menu. Anonymous access, so a signed-out person can open it. Title "I find this failure to load to be disturbing." Subtitle "This is not the page you are looking for." Icon: Phosphor warning-circle, large. No buttons. There is no Death Star icon in Phosphor.
 
-Do not add a second asset, a service action, a UserId, Firebase, Firestore, an AI model, an agentic app, Calculate Nutrition, the recipe generator, a mobile app, or a publish. Do not add menu items beyond the six above. Do not change Logout so that it opens a different screen.
+Do not add a second asset, a service action, a UserId, Firebase, Firestore, an AI model, an agentic app, Calculate Nutrition, the recipe generator, a mobile app, or a publish inside this edit. Do not add menu items beyond the six above. Do not change Logout so that it opens a different screen.
 ```
 
 ## Prompt 8 — Dashboard
 
 ```text
-The open asset must be Meal Planner, a web app. If another asset is open, or the type is not a web app, stop and report the open asset's name and type.
+Use Mentor to apply this change to the web app KWS Meal Planner. If another asset is in the session, or the type is not a web app, stop and report that asset's name and type. Use the asset key once it has been reported. Do not publish inside this edit, and do not deploy to another stage.
 
 Released libraries this prompt may consume: none.
 
@@ -243,13 +243,13 @@ Below the cards, show This Week and Next Week (Planning). Each uses BuildWeeklyS
 
 Add DashboardMeal. Input the meal type code breakfast, lunch, dinner, or snack. Headings Breakfast, Lunch, Dinner, and Snacks. Any other code shows "This meal type is not recognized." and no list. A known type with no items shows "No recipes planned for this meal today." Each item shows "Planned servings: {n}". When the recipe still exists, show the recipe name, description, cuisine, category, and the homemade or prepared metadata from the recipe screen's view, without status icons on nutrition. When the recipe is gone, show the item name as the heading and the text "Recipe unavailable." Close opens Dashboard.
 
-Do not show previous weeks on Dashboard. Do not add Calculate Nutrition or the recipe generator. Do not add a second asset, a service action, a UserId, Firebase, Firestore, an AI model, an agentic app, a mobile app, or a publish.
+Do not show previous weeks on Dashboard. Do not add Calculate Nutrition or the recipe generator. Do not add a second asset, a service action, a UserId, Firebase, Firestore, an AI model, an agentic app, a mobile app, or a publish inside this edit.
 ```
 
 ## Prompt 9 — Planning
 
 ```text
-The open asset must be Meal Planner, a web app. If another asset is open, or the type is not a web app, stop and report the open asset's name and type.
+Use Mentor to apply this change to the web app KWS Meal Planner. If another asset is in the session, or the type is not a web app, stop and report that asset's name and type. Use the asset key once it has been reported. Do not publish inside this edit, and do not deploy to another stage.
 
 Released libraries this prompt may consume: none.
 
@@ -265,13 +265,13 @@ Add UpdateMealItemScreen. Title "Update Meal Item". It opens with the item's dat
 
 Nutrition inputs fail with "Required", "Must be zero or greater", or "Must be a valid number zero or greater". Servings must be a positive number. Date and meal type are required.
 
-Do not add a second asset, a service action that splits the save, a UserId, Firebase, Firestore, an AI model, an agentic app, Calculate Nutrition, the recipe generator, a mobile app, a publish, or a new menu. Do not send Save, Cancel, or Close anywhere other than the screens named here.
+Do not add a second asset, a service action that splits the save, a UserId, Firebase, Firestore, an AI model, an agentic app, Calculate Nutrition, the recipe generator, a mobile app, a publish inside this edit, or a new menu. Do not send Save, Cancel, or Close anywhere other than the screens named here.
 ```
 
 ## Prompt 10 — Recipes
 
 ```text
-The open asset must be Meal Planner, a web app. If another asset is open, or the type is not a web app, stop and report the open asset's name and type.
+Use Mentor to apply this change to the web app KWS Meal Planner. If another asset is in the session, or the type is not a web app, stop and report that asset's name and type. Use the asset key once it has been reported. Do not publish inside this edit, and do not deploy to another stage.
 
 Released libraries this prompt may consume: none.
 
@@ -293,19 +293,19 @@ The editor sections are Basic Information, then Ingredients and Steps for homema
 
 Validation messages: "Required"; while recipes are still loading, "Recipes are still loading"; duplicate name, quote, trimmed name, quote, space, already exists; servings "Must be a positive number"; times "Must be zero or greater"; nutrition "Required" and "Must be zero or greater". Ingredient units are required and positive. Ingredient name and unit are required. Step instruction is required. Deleting an ingredient asks "Are you sure you want to delete this ingredient?" Deleting a step asks "Are you sure you want to delete this step?" Yes and No. Enter in the ingredient name or the step instruction adds the next row.
 
-Do not add a second asset, a service action, a UserId, Firebase, Firestore, an AI model, an agentic app, Calculate Nutrition, the recipe generator, a mobile app, a publish, or a new menu. Do not send Save, Cancel, Close, Modify, or a card click anywhere other than the screens named here.
+Do not add a second asset, a service action, a UserId, Firebase, Firestore, an AI model, an agentic app, Calculate Nutrition, the recipe generator, a mobile app, a publish inside this edit, or a new menu. Do not send Save, Cancel, Close, Modify, or a card click anywhere other than the screens named here.
 ```
 
 ## Prompt 11 — Settings and sources
 
 ```text
-The open asset must be Meal Planner, a web app. If another asset is open, or the type is not a web app, stop and report the open asset's name and type.
+Use Mentor to apply this change to the web app KWS Meal Planner. If another asset is in the session, or the type is not a web app, stop and report that asset's name and type. Use the asset key once it has been reported. Do not publish inside this edit, and do not deploy to another stage.
 
 Released libraries this prompt may consume: none.
 
 Reuse Settings, Source, Recipe, UpdateSettings, AddSource, UpdateSource, and DeleteSource. Screens require a signed-in user and stay in MainFlow. The Settings and Recipe Sources menu items already exist. Do not add a menu item.
 
-Replace the empty Settings screen. Heading "Meal Planner". Do not append a version number. Show one row of inputs for each of calories, protein, fat, carbs, and sodium, with Minimum Daily {Nutrient} and Maximum Daily {Nutrient} and the unit kcal, grams, grams, grams, and mg. Sugar is Maximum Daily Sugar (grams) only. Then Tolerance (%) and Week Start Day, the seven WeekDay labels. Reset restores the values last loaded from the Settings row. Save calls UpdateSettings and stays on Settings. There is no Cancel and no navigation after save. Save is enabled only when the form is valid and a value changed. Use the messages already enforced by UpdateSettings.
+Replace the empty Settings screen. Heading "KWS Meal Planner". Do not append a version number. Show one row of inputs for each of calories, protein, fat, carbs, and sodium, with Minimum Daily {Nutrient} and Maximum Daily {Nutrient} and the unit kcal, grams, grams, grams, and mg. Sugar is Maximum Daily Sugar (grams) only. Then Tolerance (%) and Week Start Day, the seven WeekDay labels. Reset restores the values last loaded from the Settings row. Save calls UpdateSettings and stays on Settings. There is no Cancel and no navigation after save. Save is enabled only when the form is valid and a value changed. Use the messages already enforced by UpdateSettings.
 
 Replace the empty Sources screen. Title "Sources for Recipes". When the list is empty: "No sources found". A row opens UpdateSourceScreen. Hide the remove icon on a source with IsProtected true. If recipes fail to load, show "Recipes have failed to load, deletion of sources is disabled" and hide every remove icon. The remove icon is Phosphor x. If the source is used by a recipe, show a notification titled "Source in use", message "This source is used in recipes and cannot be deleted.", button OK, and do not delete. Otherwise ask "Are you sure you want to delete {name}?", title "Are you sure?", buttons Yes and No. Yes calls DeleteSource and stays on Sources. Add, Phosphor plus, opens AddSourceScreen.
 
@@ -315,9 +315,9 @@ Add UpdateSourceScreen. Same editor, loaded with the source. Cancel opens Source
 
 Name is required. A duplicate trimmed name, ignoring case, shows quote, the trimmed name, quote, space, already exists. A non-empty URL that is not http or https shows "Must be an http or https URL".
 
-Do not add a second asset, a service action, a UserId, Firebase, Firestore, an AI model, an agentic app, Calculate Nutrition, the recipe generator, a mobile app, a publish, or a new menu. Do not send Save or Cancel anywhere other than Sources. Do not leave Settings after save.
+Do not add a second asset, a service action, a UserId, Firebase, Firestore, an AI model, an agentic app, Calculate Nutrition, the recipe generator, a mobile app, a publish inside this edit, or a new menu. Do not send Save or Cancel anywhere other than Sources. Do not leave Settings after save.
 ```
 
 ## After the last prompt
 
-Publish Meal Planner yourself with 1-Click Publish when you are ready. Publishing deploys the Development revision and runs BootstrapOnPublish if its schedule is "when published". If development would not accept that schedule, set it in the ODC Portal on the app's timer configuration, then publish or run the timer once. Confirm one Settings row and one protected Generic Restaurant source. Do not import emulator accounts.
+The publish after prompt 11 is the Development revision that should run BootstrapOnPublish, if its schedule is "when published". If development would not accept that schedule, set it in the ODC Portal on the app's timer configuration, then publish again or run the timer once. Confirm one Settings row and one protected Generic Restaurant source. Do not import emulator accounts. Do not deploy KWS Meal Planner to another stage from these prompts.
